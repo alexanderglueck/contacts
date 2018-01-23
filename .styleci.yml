@@ -1,0 +1,10 @@
+preset: laravel
+
+disabled:
+  - trailing_comma_in_multiline_array
+
+finder:
+  exclude:
+    - "tests"
+  name:
+    - "*.php"

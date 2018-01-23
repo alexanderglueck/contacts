@@ -1,5 +1,9 @@
 # Contacts _(contacts)_
 
+[![Master Build Status](https://travis-ci.org/alexanderglueck/contacts.svg?branch=master)](https://travis-ci.org/alexanderglueck/contacts)
+[![StyleCI](https://styleci.io/repos/117006875/shield?branch=master)](https://styleci.io/repos/117006875)
+
+
 > A simple contact management system to keep track of your friends and family. 
 
 ## Install
