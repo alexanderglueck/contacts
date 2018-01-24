@@ -1,7 +1,15 @@
 preset: laravel
 
+enabled:
+  - phpdoc_annotation_without_dot
+  - not_operator_with_space
+  - concat_with_spaces
+
 disabled:
   - trailing_comma_in_multiline_array
+  - phpdoc_to_comment
+  - phpdoc_summary
+  - concat_without_spaces
 
 finder:
   exclude:
