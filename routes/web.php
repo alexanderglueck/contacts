@@ -12,8 +12,8 @@
 */
 
 Route::get('/', function () {
-    return Redirect::to(route('home'));
-});
+    return view('welcome');
+})->name('welcome');
 
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -68,7 +68,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::delete('contacts/{contact}', 'ContactController@destroy')->name('contacts.destroy');
     Route::get('contacts/{contact}/image', 'ContactController@image')->name('contacts.image');
     Route::put('contacts/{contact}/image', 'ContactController@updateImage')->name('contacts.update_image');
-
 
 
     /**
@@ -181,7 +180,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Map
      */
     Route::get('map', 'MapController@index')->name('map.index');
-    Route::get('map/contacts', 'MapController@contacts')->name('map.contacts');
+    Route::post('map/contacts', 'MapController@contacts')->name('map.contacts');
 
     /**
      * User Settings

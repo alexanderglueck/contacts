@@ -19,6 +19,9 @@ class CreateContactNumbersTable extends Migration
             $table->integer('contact_id')->unsigned();
             $table->string('name');
             $table->string('number');
+
+            $table->boolean('is_default')->default(false);
+
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
 

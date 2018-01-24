@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactAddress extends Model
 {
-
     use Sluggable;
 
     protected $fillable = [
@@ -23,6 +22,30 @@ class ContactAddress extends Model
         'created_by',
         'updated_by'
     ];
+
+    protected $attributes = [
+        'country_id' => 164
+    ];
+
+    /**
+     * Defines the has-many relationship with the Contact model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    /**
+     * Defines the has-many relationship with the Country model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 
     /**
      * Get the route key for the model.
@@ -48,25 +71,5 @@ class ContactAddress extends Model
             ],
 
         ];
-    }
-
-    /**
-     * Defines the has-many relationship with the Contact model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contact()
-    {
-        return $this->belongsTo('App\Models\Contact');
-    }
-
-    /**
-     * Defines the has-many relationship with the Country model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function country()
-    {
-        return $this->belongsTo('App\Models\Country');
     }
 }

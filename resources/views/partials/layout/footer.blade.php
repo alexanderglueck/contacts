@@ -1,5 +1,5 @@
 <div class="footer">
-    <div class="pull-right">
+    <div class="float-right">
         Contacts
     </div>
     <div>

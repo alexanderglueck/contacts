@@ -21,6 +21,7 @@ class ContactDateController extends Controller
      * Display a listing of the resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact)
@@ -35,6 +36,7 @@ class ContactDateController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact)
@@ -49,7 +51,8 @@ class ContactDateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Contact $contact)
@@ -72,9 +75,11 @@ class ContactDateController extends Controller
 
         if ($contactDate->save()) {
             Session::flash('alert-success', 'Datum wurde erstellt!');
+
             return redirect()->route('contact_dates.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Datum konnte nicht erstellt werden!');
+
             return redirect()->route('contact_dates.create', [$contact->slug]);
         }
     }
@@ -82,8 +87,9 @@ class ContactDateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact     $contact
      * @param  \App\Models\ContactDate $contactDate
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactDate $contactDate)
@@ -97,8 +103,9 @@ class ContactDateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact     $contact
      * @param  \App\Models\ContactDate $contactDate
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactDate $contactDate)
@@ -114,8 +121,9 @@ class ContactDateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param  \App\Models\Contact      $contact
+     * @param  \App\Models\ContactDate  $contactDate
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, ContactDate $contactDate)
@@ -128,7 +136,7 @@ class ContactDateController extends Controller
             $this->validationRules['date'] .= 'Y';
         }
 
-        if (!isset($request->skip_year)) {
+        if ( ! isset($request->skip_year)) {
             $request->skip_year = 0;
         }
 
@@ -139,9 +147,11 @@ class ContactDateController extends Controller
 
         if ($contactDate->save()) {
             Session::flash('alert-success', 'Datum wurde aktualisiert!');
+
             return redirect()->route('contact_dates.show', [$contact->slug, $contactDate->slug]);
         } else {
             Session::flash('alert-danger', 'Datum konnte nicht aktualisiert werden!');
+
             return redirect()->route('contact_dates.edit', [$contact->slug, $contactDate->slug]);
         }
     }
@@ -149,17 +159,21 @@ class ContactDateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact     $contact
      * @param  \App\Models\ContactDate $contactDate
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Contact $contact, ContactDate $contactDate)
     {
         if ($contactDate->delete()) {
             Session::flash('alert-success', 'Datum wurde gelöscht!');
+
             return redirect()->route('contact_dates.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Datum konnte nicht gelöscht werden!');
+
             return redirect()->route('contact_dates.delete', [$contact->slug, $contactDate->slug]);
         }
     }
@@ -167,8 +181,9 @@ class ContactDateController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact     $contact
      * @param  \App\Models\ContactDate $contactDate
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, ContactDate $contactDate)

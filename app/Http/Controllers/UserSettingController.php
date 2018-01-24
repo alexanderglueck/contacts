@@ -31,6 +31,7 @@ class UserSettingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -45,9 +46,11 @@ class UserSettingController extends Controller
 
         if (Auth::user()->save()) {
             Session::flash('alert-success', 'Benutzer wurde aktualisiert!');
+
             return redirect()->route('user_settings.edit');
         } else {
             Session::flash('alert-danger', 'Benutzer konnte nicht aktualisiert werden!');
+
             return redirect()->route('user_settings.edit');
         }
     }
@@ -56,6 +59,7 @@ class UserSettingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function updateImage(Request $request)
@@ -81,10 +85,12 @@ class UserSettingController extends Controller
 
             if (Auth::user()->save()) {
                 Session::flash('alert-success', 'Benutzer wurde aktualisiert!');
+
                 return redirect()->route('user_settings.edit');
             }
         } else {
             Session::flash('alert-danger', 'Benutzer konnte nicht aktualisiert werden! ');
+
             return redirect()->route('user_settings.edit');
         }
     }

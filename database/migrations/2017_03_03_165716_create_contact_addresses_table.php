@@ -23,6 +23,9 @@ class CreateContactAddressesTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->integer('country_id')->unsigned()->nullable();
+
+            $table->boolean('is_default')->default(false);
+
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
 

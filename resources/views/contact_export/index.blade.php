@@ -3,21 +3,21 @@
 @section('title', 'Kontakte exportieren')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Kontakte exportieren</h5>
-                    </div>
 
-                    <div class="ibox-content">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="card card-default">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h5>Kontakte exportieren</h5>
+                        </div>
+
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('export.export') }}">
                             {{ csrf_field() }}
 
-                            <div class="form-group{{ $errors->has('contact_group_id') ? ' has-error' : '' }}">
-                                <label for="parent_id" class="col-md-4 control-label">
+                            <div class="form-group{{ $errors->has('contact_group_id') ? ' has-danger' : '' }}">
+                                <label for="parent_id" class="col-md-4 form-control-label">
                                     Kontaktgruppe<span class="required">*</span>
                                 </label>
 
@@ -29,7 +29,7 @@
                                     </select>
 
                                     @if ($errors->has('contact_group_id'))
-                                        <span class="help-block">
+                                        <span class="form-text">
                                             <strong>{{ $errors->first('contact_group_id') }}</strong>
                                         </span>
                                     @endif
@@ -48,5 +48,4 @@
                 </div>
             </div>
         </div>
-    </div>
 @endsection

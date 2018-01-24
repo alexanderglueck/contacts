@@ -23,6 +23,16 @@ class ContactNumber extends Model
     }
 
     /**
+     * Defines the has-many relationship with the Contact model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    /**
      * Get the route key for the model.
      *
      * @return string
@@ -47,13 +57,5 @@ class ContactNumber extends Model
         ];
     }
 
-    /**
-     * Defines the has-many relationship with the Contact model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contact()
-    {
-        return $this->belongsTo('App\Models\Contact');
-    }
+
 }

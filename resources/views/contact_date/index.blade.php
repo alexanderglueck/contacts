@@ -3,23 +3,21 @@
 @section('title', 'Datumsangaben verwalten')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="card-title">
                         <h5>Datumsangaben verwalten</h5>
                     </div>
+                    <p>
+                        <strong>Kontakt Datumsangaben: </strong><br>
+                        <a href="{{ route('contact_dates.create', [$contact->slug]) }}">Datum
+                            hinzufügen</a>
+                    </p>
 
-                    <div class="ibox-content">
+                    @include('partials.contact_date.index')
 
-                        <p><strong>Kontakt Datumsangaben: </strong><br>
-                            <a href="{{ route('contact_dates.create', [$contact->slug]) }}">Datum hinzufügen</a>
-                        </p>
-
-                        @include('partials.contact_date.index')
-
-                    </div>
                 </div>
             </div>
         </div>

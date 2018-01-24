@@ -3,25 +3,24 @@
 @section('title', 'Adresse bearbeiten')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="card-title">
                         <h5>Adresse bearbeiten</h5>
                     </div>
-
-                    <div class="ibox-content">
-                        <form class="form-horizontal" id="submitForm" role="form" method="POST" action="{{ route('contact_addresses.update', [$contact->slug, $contactAddress->slug]) }}">
-                            {{ method_field('PUT') }}
-                            @include('partials.contact_address.edit')
-                        </form>
-                    </div>
-
+                    <form class="form-horizontal" id="submitForm" role="form" method="POST" action="{{ route('contact_addresses.update', [$contact->slug, $contactAddress->slug]) }}">
+                        {{ method_field('PUT') }}
+                        @include('partials.contact_address.edit')
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('js-links')
@@ -51,7 +50,7 @@
                         $('#longitude').val(result[0].geometry.location.lng);
 
                         $form.submit();
-                    }else {
+                    } else {
                         swal({
                             title: "Keine Geo-Daten",
                             text: "Es wurden keine Geo-Daten gefunden. Trotzdem peichern? ",

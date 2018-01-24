@@ -12,6 +12,16 @@ class ContactEmail extends Model
     protected $fillable = ['name', 'email', 'created_by', 'updated_by'];
 
     /**
+     * Defines the has-many relationship with the Contact model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    /**
      * Get the route key for the model.
      *
      * @return string
@@ -36,13 +46,5 @@ class ContactEmail extends Model
         ];
     }
 
-    /**
-     * Defines the has-many relationship with the Contact model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contact()
-    {
-        return $this->belongsTo('App\Models\Contact');
-    }
+
 }

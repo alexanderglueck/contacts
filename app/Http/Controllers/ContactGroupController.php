@@ -22,7 +22,7 @@ class ContactGroupController extends Controller
     public function index()
     {
         return view('contact_group.index', [
-            'contactGroups' => ContactGroup::sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->paginate(10)
         ]);
     }
 
@@ -34,7 +34,7 @@ class ContactGroupController extends Controller
     public function create()
     {
         return view('contact_group.create', [
-            'contactGroups' => ContactGroup::sorted()->get(),
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
             'contactGroup' => new ContactGroup()
         ]);
     }
@@ -43,7 +43,9 @@ class ContactGroupController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
@@ -61,9 +63,11 @@ class ContactGroupController extends Controller
 
         if ($contact->save()) {
             Session::flash('alert-success', 'Kontaktgruppe wurde erstellt!');
+
             return redirect()->route('contact_groups.index');
         } else {
             Session::flash('alert-danger', 'Kontaktgruppe konnte nicht erstellt werden!');
+
             return redirect()->route('contact_groups.create');
         }
     }
@@ -72,6 +76,7 @@ class ContactGroupController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\ContactGroup $contactGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(ContactGroup $contactGroup)
@@ -86,6 +91,7 @@ class ContactGroupController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\ContactGroup $contactGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(ContactGroup $contactGroup)
@@ -102,7 +108,9 @@ class ContactGroupController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \App\Models\ContactGroup $contactGroup
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, ContactGroup $contactGroup)
     {
@@ -118,9 +126,11 @@ class ContactGroupController extends Controller
 
         if ($contactGroup->save()) {
             Session::flash('alert-success', 'Kontaktgruppe wurde aktualisiert!');
+
             return redirect()->route('contact_groups.show', [$contactGroup->slug]);
         } else {
             Session::flash('alert-danger', 'Kontaktgruppe konnte nicht aktualisiert werden!');
+
             return redirect()->route('contact_groups.edit', [$contactGroup->slug]);
         }
     }
@@ -129,15 +139,19 @@ class ContactGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\ContactGroup $contactGroup
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(ContactGroup $contactGroup)
     {
         if ($contactGroup->delete()) {
             Session::flash('alert-success', 'Kontaktgruppe wurde gelöscht!');
+
             return redirect()->route('contact_groups.index');
         } else {
             Session::flash('alert-danger', 'Kontaktgruppe konnte nicht gelöscht werden!');
+
             return redirect()->route('contact_groups.delete', $contactGroup->slug);
         }
     }
@@ -146,6 +160,7 @@ class ContactGroupController extends Controller
      * Show the form for deleting the specified resource.
      *
      * @param  \App\Models\ContactGroup $contactGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(ContactGroup $contactGroup)

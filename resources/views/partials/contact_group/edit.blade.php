@@ -2,22 +2,22 @@
     {{ csrf_field() }}
 
 
-    <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-        <label for="name" class="col-md-4 control-label">Name<span class="required">*</span></label>
+    <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+        <label for="name" class="col-md-4 form-control-label">Name<span class="required">*</span></label>
 
         <div class="col-md-6">
             <input id="name" type="text" class="form-control" name="name" value="{{ old('name', $contactGroup->name) }}" autofocus required>
 
             @if ($errors->has('name'))
-                <span class="help-block">
+                <span class="form-text">
                     <strong>{{ $errors->first('name') }}</strong>
                 </span>
             @endif
         </div>
     </div>
 
-    <div class="form-group{{ $errors->has('parent_id') ? ' has-error' : '' }}">
-        <label for="parent_id" class="col-md-4 control-label">Übergeordnete Kontaktgruppe<span class="required">*</span></label>
+    <div class="form-group{{ $errors->has('parent_id') ? ' has-danger' : '' }}">
+        <label for="parent_id" class="col-md-4 form-control-label">Übergeordnete Kontaktgruppe<span class="required">*</span></label>
 
         <div class="col-md-6">
             <select name="parent_id" id="country_id" class="form-control" >
@@ -30,7 +30,7 @@
             </select>
 
             @if ($errors->has('parent_id'))
-                <span class="help-block">
+                <span class="form-text">
                     <strong>{{ $errors->first('parent_id') }}</strong>
                 </span>
             @endif

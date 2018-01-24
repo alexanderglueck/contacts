@@ -6,9 +6,12 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "barryvdh/laravel-ide-helper": "^2.4",
+        "bugsnag/bugsnag-laravel": "^2.12",
         "cviebrock/eloquent-sluggable": "^4.4",
         "davejamesmiller/laravel-breadcrumbs": "^4.2",
         "fideloper/proxy": "~3.3",
+        "globalcitizen/php-iban": "^2.6",
         "intervention/image": "^2.4",
         "jeroendesloovere/vcard": "^1.5",
         "laravel/framework": "5.5.*",
@@ -53,6 +56,12 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta",
+            "php artisan optimize"
         ]
     },
     "config": {

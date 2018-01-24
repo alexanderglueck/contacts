@@ -3,63 +3,61 @@
 @section('title', 'Bild bearbeiten')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="card-title">
                         <h5>Kontakt Detailansicht</h5>
                     </div>
 
-                    <div class="ibox-content">
-
-                        @if(strlen($contact->image)>0)
-                        <p>Aktuell: <img src="{{ url($contact->image) }}" /></p>
-                        @endif
+                    @if(strlen($contact->image)>0)
+                        <p>Aktuell: <img src="{{ url($contact->image) }}"/></p>
+                    @endif
 
 
-                        <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
-                              action="{{ route('contacts.update_image', [$contact->slug]) }}">
-                            <input type="hidden" name="_method" value="PUT">
-                            {{ csrf_field() }}
+                    <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
+                          action="{{ route('contacts.update_image', [$contact->slug]) }}">
+                        <input type="hidden" name="_method" value="PUT">
+                        {{ csrf_field() }}
 
-                            <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
-                                <label for="image" class="col-md-4 control-label">Bild</label>
+                        <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
+                            <label for="image" class="col-md-4 form-control-label">Bild</label>
 
-                                <div class="col-md-6">
-                                    <div class="image-crop">
-                                        <img src="@if(strlen($contact->image)>0){{ url($contact->image) }}@endif">
-                                    </div>
-                                    <div class="img-preview img-preview-sm"></div>
-                                    <label title="Upload image file" for="inputImage" class="btn btn-primary">
-                                        <input type="file" accept="image/*" name="file" id="inputImage" class="hide">
-                                        Upload new image
-                                    </label>
+                            <div class="col-md-6">
+                                <div class="image-crop">
+                                    <img src="@if(strlen($contact->image)>0){{ url($contact->image) }}@endif">
+                                </div>
+                                <div class="img-preview img-preview-sm"></div>
+                                <label title="Upload image file" for="inputImage" class="btn btn-primary">
+                                    <input type="file" accept="image/*" name="file" id="inputImage" class="hide">
+                                    Upload new image
+                                </label>
 
-                                    @if ($errors->has('image'))
-                                        <span class="help-block">
+                                @if ($errors->has('image'))
+                                    <span class="form-text">
                                             <strong>{{ $errors->first('image') }}</strong>
                                         </span>
-                                    @endif
-                                </div>
+                                @endif
                             </div>
-                            <input type="hidden" id="image-x" name="image_x">
-                            <input type="hidden" id="image-y" name="image_y">
-                            <input type="hidden" id="image-width" name="image_width">
-                            <input type="hidden" id="image-height" name="image_height">
+                        </div>
+                        <input type="hidden" id="image-x" name="image_x">
+                        <input type="hidden" id="image-y" name="image_y">
+                        <input type="hidden" id="image-width" name="image_width">
+                        <input type="hidden" id="image-height" name="image_height">
 
-                            <div class="form-group">
-                                <div class="col-md-8 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        Bild aktualisieren
-                                    </button>
-                                </div>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Bild aktualisieren
+                                </button>
                             </div>
-                        </form>
-
-                    </div>
+                        </div>
+                    </form>
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -84,7 +82,7 @@
             $($image).cropper({
                 aspectRatio: 1,
                 preview: ".img-preview",
-                done: function(data) {
+                done: function (data) {
                     // Output the result data for cropping image.
 
                     $("#image-x").val(data.x);
@@ -97,10 +95,10 @@
 
             var $inputImage = $("#inputImage");
             if (window.FileReader) {
-                $inputImage.change(function() {
+                $inputImage.change(function () {
                     var fileReader = new FileReader(),
-                            files = this.files,
-                            file;
+                        files = this.files,
+                        file;
 
                     if (!files.length) {
                         return;

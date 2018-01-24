@@ -18,15 +18,40 @@ class MapController extends Controller
         return view('map.index', []);
     }
 
-    public function contacts()
+    public function contacts(Request $request)
     {
-        $contactAddresses = ContactAddress::whereNotNull("latitude")->whereNotNull("longitude")->join('contacts', 'contact_id', '=', 'contacts.id')->where('active', 1)->get();
+        $this->validate($request, [
+            'bounds' => 'required|string'
+        ]);
 
-        $markers = array();
+        $rawBounds = explode(",", $request->bounds);
+
+        $bounds = [];
+        $bounds['sw_lat'] = $rawBounds[0];
+        $bounds['sw_lng'] = $rawBounds[1];
+        $bounds['ne_lat'] = $rawBounds[2];
+        $bounds['ne_lng'] = $rawBounds[3];
+
+        $contactAddresses = ContactAddress::whereNotNull("latitude")
+            ->whereNotNull("longitude")
+            ->join('contacts', 'contact_id', '=', 'contacts.id')
+            ->where('active', 1)
+            ->whereRaw("(CASE WHEN " . $bounds['ne_lat'] . " < " . $bounds['sw_lat'] . "
+                    THEN latitude BETWEEN " . $bounds['ne_lat'] . " AND " . $bounds['sw_lat'] . "
+                    ELSE latitude BETWEEN " . $bounds['sw_lat'] . " AND " . $bounds['ne_lat'] . "
+            END) 
+            AND
+            (CASE WHEN " . $bounds['ne_lng'] . " < " . $bounds['sw_lng'] . "
+                    THEN longitude BETWEEN " . $bounds['ne_lng'] . " AND " . $bounds['sw_lng'] . "
+                    ELSE longitude BETWEEN " . $bounds['sw_lng'] . " AND " . $bounds['ne_lng'] . "
+            END)")
+            ->get();
+
+        $markers = [];
 
         foreach ($contactAddresses as $contactAddress) {
 
-            $tempArray = array(
+            $tempArray = [
                 "title" => $contactAddress->contact->fullname,
                 "name" => $contactAddress->name,
                 "latitude" => $contactAddress->latitude,
@@ -39,7 +64,7 @@ class MapController extends Controller
                     $contactAddress->country->country . "<br />" . PHP_EOL .
                     "<br />" . PHP_EOL .
                     "<a href='" . route('contacts.show', $contactAddress->contact->slug) . "'>Kontakt anzeigen</a></p>"
-            );
+            ];
 
             $markers[] = $tempArray;
 

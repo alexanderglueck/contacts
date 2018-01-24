@@ -3,9 +3,40 @@
 /**
  * Home
  */
+
+
+/**
+ * Home
+ */
+Breadcrumbs::register('welcome', function ($breadcrumbs) {
+    $breadcrumbs->push('Home', route('welcome'));
+});
+
 Breadcrumbs::register('home', function ($breadcrumbs) {
     $breadcrumbs->push('Home', route('home'));
 });
+
+/**
+ * Auth: Login
+ */
+Breadcrumbs::register('login', function ($breadcrumbs) {
+    $breadcrumbs->parent('welcome');
+    $breadcrumbs->push('Login', route('login'));
+});
+
+Breadcrumbs::register('register', function ($breadcrumbs) {
+    $breadcrumbs->parent('welcome');
+    $breadcrumbs->push('Register', route('register'));
+});
+
+/**
+ * Auth: Password reset
+ */
+Breadcrumbs::register('password.request', function($breadcrumbs) {
+});
+Breadcrumbs::register('password.reset', function($breadcrumbs) {
+});
+
 
 /**
  * Calendar

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactGroup;
+use App\Events\ContactCreated;
 use App\Models\Gender;
+use App\Rules\ValidIBANFormat;
 use Intervention\Image\Facades\Image;
 use Session;
 use Auth;
@@ -14,7 +16,7 @@ class ContactController extends Controller
 {
 
     private $validationRules = [
-        'salutation' => 'present',
+        'salutation' => 'required',
         'title' => 'present',
         'firstname' => 'required',
         'lastname' => 'required',
@@ -23,7 +25,8 @@ class ContactController extends Controller
         'department' => 'present',
         'job' => 'present',
         'gender_id' => 'integer|exists:genders,id',
-        'nickname' => 'present'
+        'nickname' => 'present',
+        'date_of_birth' => 'required|date_format:d.m.Y',
     ];
 
     /**
@@ -34,7 +37,7 @@ class ContactController extends Controller
     public function index()
     {
         return view('contact.index', [
-            'contacts' => Contact::sorted()->active()->get()
+            'contacts' => Auth::user()->contacts()->sorted()->active()->paginate(10)
         ]);
     }
 
@@ -48,7 +51,7 @@ class ContactController extends Controller
         return view('contact.create', [
             'contact' => new Contact,
             'genders' => Gender::all(),
-            'contactGroups' => ContactGroup::sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
     }
 
@@ -56,11 +59,14 @@ class ContactController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request, $this->validationRules);
+        $this->validate($request, array_merge($this->validationRules, [
+            'iban' => new ValidIBANFormat
+        ]));
 
         $contact = new Contact();
         $contact->fill($request->all());
@@ -69,16 +75,20 @@ class ContactController extends Controller
 
         if ($contact->save()) {
 
-            if (!is_null($request->contact_group_id) && is_array($request->contact_group_id)) {
-                $contact->contactGroups()->sync($request->contact_group_id);
+            if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
+                $contact->contactGroups()->sync($request->contact_groups);
             } else {
                 $contact->contactGroups()->sync([]);
             }
 
+            event(new ContactCreated($contact));
+
             Session::flash('alert-success', 'Kontakt wurde erstellt!');
+
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Kontakt konnte nicht erstellt werden!');
+
             return redirect()->route('contacts.create');
         }
     }
@@ -87,7 +97,9 @@ class ContactController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Contact $contact)
     {
@@ -102,6 +114,7 @@ class ContactController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact)
@@ -110,7 +123,7 @@ class ContactController extends Controller
             'createButtonText' => 'Kontakt bearbeiten',
             'contact' => $contact,
             'genders' => Gender::all(),
-            'contactGroups' => ContactGroup::sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
     }
 
@@ -118,27 +131,32 @@ class ContactController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact)
     {
-        $this->validate($request, $this->validationRules);
+        $this->validate($request, array_merge($this->validationRules, [
+            'iban' => new ValidIBANFormat
+        ]));
 
         $contact->fill($request->all());
         $contact->updated_by = Auth::id();
 
-        if (!is_null($request->contact_group_id) && is_array($request->contact_group_id)) {
-            $contact->contactGroups()->sync($request->contact_group_id);
+        if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
+            $contact->contactGroups()->sync($request->contact_groups);
         } else {
             $contact->contactGroups()->sync([]);
         }
 
         if ($contact->save()) {
             Session::flash('alert-success', 'Kontakt wurde aktualisiert!');
+
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Kontakt konnte nicht aktualisiert werden!');
+
             return redirect()->route('contacts.edit', [$contact->slug]);
         }
     }
@@ -147,15 +165,19 @@ class ContactController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Contact $contact)
     {
         if ($contact->delete()) {
             Session::flash('alert-success', 'Kontakt wurde gelöscht!');
+
             return redirect()->route('contacts.index');
         } else {
             Session::flash('alert-danger', 'Kontakt konnte nicht gelöscht werden!');
+
             return redirect()->route('contacts.delete', [$contact->slug]);
         }
     }
@@ -164,6 +186,7 @@ class ContactController extends Controller
      * Show the form for deleting the specified resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact)
@@ -196,7 +219,7 @@ class ContactController extends Controller
                 intval($request->image_y)
             )->save();
 
-            Image::make(storage_path('app/') . $fileNameOriginal)->resize(200,200)->save();
+            Image::make(storage_path('app/') . $fileNameOriginal)->resize(200, 200)->save();
 
             if ($contact->image) {
                 if (file_exists(storage_path('app/') . $contact->image)) {
@@ -208,10 +231,12 @@ class ContactController extends Controller
 
             if ($contact->save()) {
                 Session::flash('alert-success', 'Kontaktbild wurde aktualisiert!');
+
                 return redirect()->route('contacts.show', $contact->slug);
             }
         } else {
             Session::flash('alert-danger', 'Kontaktbild konnte nicht aktualisiert werden!');
+
             return redirect()->route('contacts.image', $contact->slug);
         }
 

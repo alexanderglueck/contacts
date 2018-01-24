@@ -19,6 +19,7 @@ class ContactEmailController extends Controller
      * Display a listing of the resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact)
@@ -33,6 +34,7 @@ class ContactEmailController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact)
@@ -47,7 +49,8 @@ class ContactEmailController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Contact $contact)
@@ -62,9 +65,11 @@ class ContactEmailController extends Controller
 
         if ($contactEmail->save()) {
             Session::flash('alert-success', 'E-Mail Adresse wurde erstellt!');
+
             return redirect()->route('contact_emails.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'E-Mail Adresse konnte nicht erstellt werden!');
+
             return redirect()->route('contact_emails.create', [$contact->slug]);
         }
     }
@@ -72,8 +77,9 @@ class ContactEmailController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactEmail $contactEmail)
@@ -87,8 +93,9 @@ class ContactEmailController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactEmail $contactEmail)
@@ -104,8 +111,9 @@ class ContactEmailController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, ContactEmail $contactEmail)
@@ -117,9 +125,11 @@ class ContactEmailController extends Controller
 
         if ($contactEmail->save()) {
             Session::flash('alert-success', 'E-Mail wurde aktualisiert!');
+
             return redirect()->route('contact_emails.show', [$contact->slug, $contactEmail->slug]);
         } else {
             Session::flash('alert-danger', 'E-Mail Adresse konnte nicht aktualisiert werden!');
+
             return redirect()->route('contact_emails.edit', [$contact->slug, $contactEmail->slug]);
         }
     }
@@ -127,17 +137,21 @@ class ContactEmailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Contact $contact, ContactEmail $contactEmail)
     {
         if ($contactEmail->delete()) {
             Session::flash('alert-success', 'E-Mail wurde gelöscht!');
+
             return redirect()->route('contact_emails.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'E-Mail Adresse konnte nicht gelöscht werden!');
+
             return redirect()->route('contact_emails.delete', [$contact->slug, $contactEmail->slug]);
         }
     }
@@ -145,8 +159,9 @@ class ContactEmailController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, ContactEmail $contactEmail)

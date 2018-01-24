@@ -20,6 +20,7 @@ class ContactNumberController extends Controller
      * Display a listing of the resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact)
@@ -34,6 +35,7 @@ class ContactNumberController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact)
@@ -48,7 +50,8 @@ class ContactNumberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Contact $contact)
@@ -63,9 +66,11 @@ class ContactNumberController extends Controller
 
         if ($contactNumber->save()) {
             Session::flash('alert-success', 'Nummer wurde erstellt!');
+
             return redirect()->route('contact_numbers.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Nummer konnte nicht erstellt werden!');
+
             return redirect()->route('contact_numbers.create', [$contact->slug]);
         }
     }
@@ -73,8 +78,9 @@ class ContactNumberController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactNumber $contactNumber)
@@ -88,8 +94,9 @@ class ContactNumberController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactNumber $contactNumber)
@@ -104,9 +111,10 @@ class ContactNumberController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, ContactNumber $contactNumber)
@@ -118,9 +126,11 @@ class ContactNumberController extends Controller
 
         if ($contactNumber->save()) {
             Session::flash('alert-success', 'Nummer wurde aktualisiert!');
+
             return redirect()->route('contact_numbers.show', [$contact->slug, $contactNumber->slug]);
         } else {
             Session::flash('alert-danger', 'Nummer konnte nicht aktualisiert werden!');
+
             return redirect()->route('contact_numbers.edit', [$contact->slug, $contactNumber->slug]);
         }
     }
@@ -128,17 +138,21 @@ class ContactNumberController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Contact $contact, ContactNumber $contactNumber)
     {
         if ($contactNumber->delete()) {
             Session::flash('alert-success', 'Nummer wurde gelöscht!');
+
             return redirect()->route('contact_numbers.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Nummer konnte nicht gelöscht werden!');
+
             return redirect()->route('contact_numbers.delete', [$contact->slug, $contactNumber->slug]);
         }
     }
@@ -146,8 +160,9 @@ class ContactNumberController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, ContactNumber $contactNumber)

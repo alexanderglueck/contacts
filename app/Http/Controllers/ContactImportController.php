@@ -12,9 +12,10 @@ use App\Models\ContactUrl;
 use App\Models\Country;
 use App\Models\Gender;
 use Auth;
-use Excel;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Collections\RowCollection;
+use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 use Session;
 
@@ -29,7 +30,7 @@ class ContactImportController extends Controller
     public function index()
     {
         return view('contact_import.index', [
-            'contactGroups' => ContactGroup::sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
     }
 
@@ -128,9 +129,11 @@ class ContactImportController extends Controller
             });
 
             Session::flash('alert-success', 'Kontakte wurden erfolgreich importiert!');
+
             return redirect()->route('import.index');
         } else {
             Session::flash('alert-danger', 'Kontakte konnten nicht importiert werden!');
+
             return redirect()->route('import.index');
         }
     }

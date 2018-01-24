@@ -14,9 +14,12 @@ class AddGenderToContactsTable extends Migration
     public function up()
     {
         Schema::table('contacts', function (Blueprint $table) {
-            $table->integer('gender_id')->unsigned();
+            $table->integer('gender_id')->unsigned()->nullable();
 
-            $table->foreign('gender_id')->references('id')->on('genders');
+            $table->foreign('gender_id')
+                ->references('id')->on('genders')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

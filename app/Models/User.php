@@ -62,16 +62,11 @@ class User extends Authenticatable
      */
     public function contacts()
     {
-        return $this->hasMany('App\Models\Contact');
+        return $this->hasMany(Contact::class, 'created_by');
     }
 
-    /**
-     * Defines the has-many relationship with the 2FA Backup Code model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function backupCodes()
+    public function contactGroups()
     {
-        return $this->hasMany('App\Models\TFABackupCode');
+        return $this->hasMany(ContactGroup::class, 'created_by');
     }
 }

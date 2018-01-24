@@ -12,10 +12,10 @@ use App\Models\ContactUrl;
 use App\Models\Country;
 use App\Models\Gender;
 use Auth;
-use Excel;
 use Illuminate\Http\Request;
 use JeroenDesloovere\VCard\VCard;
 // use League\Csv\Writer;
+use Maatwebsite\Excel\Excel;
 use Response;
 use SplTempFileObject;
 
@@ -31,7 +31,7 @@ class ContactExportController extends Controller
     public function index()
     {
         return view('contact_export.index', [
-            "contactGroups" => ContactGroup::sorted()->get()
+            "contactGroups" => Auth::user()->contactGroups()->sorted()->get()
         ]);
     }
 
@@ -97,7 +97,7 @@ class ContactExportController extends Controller
          * Excel
          */
 
-        $contacts = ContactGroup::find($request->contact_group_id)->contacts()->active()->sorted()->get();
+        $contacts = Auth::user()->contactGroups()->find($request->contact_group_id)->contacts()->active()->sorted()->get();
 
         Excel::create('contacts', function ($excel) use ($contacts) {
 

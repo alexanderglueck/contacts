@@ -1,12 +1,10 @@
 @if(count($contactDates)>0)
 
-    <ul>
+    <div class="list-group">
         @foreach($contactDates as $contactDate)
-            <li>
-                <strong><a href="{{ route('contact_dates.show', [$contact->slug, $contactDate->slug]) }}">{{ $contactDate->name }}</a></strong>
-            </li>
+            <a class="list-group-item list-group-item-action" href="{{ route('contact_dates.show', [$contact->slug, $contactDate->slug]) }}">{{ $contactDate->name }}</a>
         @endforeach
-    </ul>
+    </div>
 
 @else
     <p>Kein Datum verfügbar</p>

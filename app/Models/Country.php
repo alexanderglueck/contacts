@@ -13,7 +13,6 @@ class Country extends Model
      */
     public function contacts()
     {
-        return $this->hasMany('App\Models\Contact');
+        return $this->hasMany(Contact::class);
     }
-
 }

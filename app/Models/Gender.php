@@ -6,13 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gender extends Model
 {
+    const MALE = 1;
+    const FEMALE = 2;
+
     /**
      * Defines the has-many relationship with the Contact model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function contacts()
     {
-        return $this->hasMany('App\Models\Contact');
+        return $this->hasMany(Contact::class);
     }
 }

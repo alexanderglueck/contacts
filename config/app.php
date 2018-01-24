@@ -10,7 +10,6 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
-    |
     */
 
     'name' => env('APP_NAME', 'Laravel'),
@@ -167,6 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -177,6 +177,30 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Bugsnag
+         */
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+
+        /*
+         * Slug
+         */
+        Cviebrock\EloquentSluggable\ServiceProvider::class,
+
+        /*
+         * Breadcrumbs service provider
+         */
+        DaveJamesMiller\Breadcrumbs\BreadcrumbsServiceProvider::class,
+
+        /*
+         * Intervention Image
+         */
+        Intervention\Image\ImageServiceProvider::class,
+
+        /*
+         * Excel
+         */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -226,6 +250,11 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
+        'Navigation' => App\Helpers\Navigation::class,
+        'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

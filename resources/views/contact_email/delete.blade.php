@@ -3,19 +3,19 @@
 @section('title', 'E-Mail Adresse löschen')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="card card-default">
+
+
+                <div class="card-body">
+                    <div class="card-title">
                         <h5>E-Mail Adresse löschen</h5>
                     </div>
-
-                    <div class="ibox-content">
-                        @include('partials.contact_email.delete')
-                    </div>
-
+                    @include('partials.contact_email.delete')
                 </div>
+
             </div>
         </div>
     </div>

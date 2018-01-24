@@ -14,7 +14,7 @@ class AddNicknameToContacts extends Migration
     public function up()
     {
         Schema::table('contacts', function (Blueprint $table) {
-            $table->string('nickname')->nullable();
+            $table->string('nickname')->nullable()->default(null);
             $table->boolean('active')->default(true);
         });
     }

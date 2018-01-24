@@ -1,11 +1,9 @@
 @if(count($contactAddresses)>0)
-    <ul>
+    <div class="list-group">
         @foreach($contactAddresses as $contactAddresse)
-            <li>
-                <strong><a href="{{ route('contact_addresses.show', [$contact->slug, $contactAddresse->slug]) }}">{{ $contactAddresse->name }}</a></strong>
-            </li>
+            <a class="list-group-item list-group-item-action" href="{{ route('contact_addresses.show', [$contact->slug, $contactAddresse->slug]) }}">{{ $contactAddresse->name }}</a>
         @endforeach
-    </ul>
+    </div>
 
 @else
     <p>Keine Adresse verfügbar</p>

@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactGroup;
-use App\Models\Gender;
-use Auth;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller

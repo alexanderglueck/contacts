@@ -17,30 +17,6 @@ class ContactDate extends Model
         'updated_by'
     ];
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'name',
-                'reserved' => ['create', 'delete', 'edit']
-            ]
-        ];
-    }
 
     /**
      * Returns a string in d.m.Y or d.m. format depending on
@@ -79,6 +55,7 @@ class ContactDate extends Model
         } else {
             $title = ($year - $eventDate->format('Y')) . '. ' . $this->name;
         }
+
         return $title;
     }
 
@@ -89,6 +66,7 @@ class ContactDate extends Model
      *
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $endDate
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function datesInRange(
@@ -123,6 +101,7 @@ class ContactDate extends Model
      * @static
      *
      * @param \DateTime $date
+     *
      * @return mixed
      */
     public static function datesOnDate(\DateTime $date)
@@ -141,7 +120,31 @@ class ContactDate extends Model
      */
     public function contact()
     {
-        return $this->belongsTo('App\Models\Contact');
+        return $this->belongsTo(Contact::class);
     }
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'name',
+                'reserved' => ['create', 'delete', 'edit']
+            ]
+        ];
+    }
 }
