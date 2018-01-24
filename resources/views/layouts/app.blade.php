@@ -2,79 +2,207 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@if(View::hasSection('title'))
+            @yield('title') - {{ config('app.name', 'Contacts') }}
+        @else
+            {{ config('app.name', 'Contacts') }}
+        @endif</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('css')
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
+<div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="{{ url('/') }}">
+            {{ config('app.name', 'CRM') }}
+        </a>
 
-                    <!-- Collapsed Hamburger -->
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#app-navbar-collapse"
+                aria-controls="app-navbar-collapse"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+        <div class="collapse navbar-collapse" id="app-navbar-collapse">
+            <!-- Left Side Of Navbar -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle"
+                       data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false"
+                       id="contactsDropdown"
+                    >
+                        Contacts
                     </a>
-                </div>
 
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        &nbsp;
-                    </ul>
+                    <div class="dropdown-menu" aria-labelledby="contactsDropdown">
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <!-- Authentication Links -->
-                        @guest
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                        @else
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
+                        <a class="dropdown-item" href="{{ route('contacts.index') }}">
+                            Contacts
+                        </a>
 
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
+                        <a class="dropdown-item" href="{{ route('contacts.create') }}">
+                            Create contact
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('calendar.index') }}">Calendar</a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('map.index') }}">Map</a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('import.index') }}">
+                            Import
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('export.index') }}">
+                            Export
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('reports.inactive') }}">
+                            Inactive
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.male') }}">
+                            Male
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.female') }}">
+                            Female
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.wrong_male') }}">
+                            Wrong male
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.wrong_female') }}">
+                            Wrong female
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_email') }}">
+                            No email
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_date') }}">
+                            No date
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_address') }}">
+                            No address
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_number') }}">
+                            No number
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_url') }}">
+                            No website
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('reports.no_lat_lng') }}">
+                            No coordinates
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('contact_groups.index') }}">
+                            Contact groups
+                        </a>
+
+
+                        <a class="dropdown-item" href="{{ route('contact_groups.create') }}">
+                            Create contact group
+                        </a>
+
+                    </div>
+                </li>
+
+            </ul>
+
+            <!-- Right Side Of Navbar -->
+            <ul class="navbar-nav">
+                <!-- Authentication Links -->
+                @if (Auth::guest())
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{{ route('register') }}">Register</a>
+                    </li>
+                @else
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle"
+                           data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false"
+                           id="userDropdown"
+                        >
+                            {{ Auth::user()->name }}
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                               onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
+                                Logout
+                            </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+
+                        </div>
+                    </li>
+                @endif
+            </ul>
+        </div>
+
+    </nav>
+
+    <div class="container">
+        <!-- Content header -->
+        @include('partials.layout.alert')
+        {{--@include('partials.layout.headline')--}}
+
 
         @yield('content')
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}"></script>
+@yield('js-links')
+
+@yield('js')
+
 </body>
 </html>
+
