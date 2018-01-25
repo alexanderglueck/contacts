@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Notifications\Notifiable;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -44,7 +44,6 @@ class User extends Authenticatable
             ]
         ];
     }
-
 
     /**
      * The attributes that should be hidden for arrays.

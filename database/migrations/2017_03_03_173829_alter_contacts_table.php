@@ -13,7 +13,7 @@ class AlterContactsTable extends Migration
      */
     public function up()
     {
-        Schema::table('contacts',function(Blueprint $table) {
+        Schema::table('contacts', function (Blueprint $table) {
             $table->string('title')->nullable()->default(null);
             $table->string('title_after')->nullable()->default(null);
             $table->date('date_of_birth')->nullable()->default(null);
@@ -27,8 +27,6 @@ class AlterContactsTable extends Migration
             $table->string('custom_id')->nullable()->default(null);
 
             $table->integer('parent_id')->unsigned()->nullable()->default(null);
-
-
 
             $table->foreign('parent_id')
                 ->references('id')->on('contacts')
@@ -44,7 +42,7 @@ class AlterContactsTable extends Migration
      */
     public function down()
     {
-        Schema::table('contacts',function(Blueprint $table) {
+        Schema::table('contacts', function (Blueprint $table) {
             $table->dropColumn('company');
             $table->dropColumn('job');
             $table->dropColumn('department');

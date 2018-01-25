@@ -13,7 +13,7 @@ class AlterContactAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::table('contact_addresses',function(Blueprint $table) {
+        Schema::table('contact_addresses', function (Blueprint $table) {
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
         });
@@ -26,7 +26,7 @@ class AlterContactAddressesTable extends Migration
      */
     public function down()
     {
-        Schema::table('contact_addresses',function(Blueprint $table) {
+        Schema::table('contact_addresses', function (Blueprint $table) {
             $table->dropColumn('longitude');
             $table->dropColumn('latitude');
         });

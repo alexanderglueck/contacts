@@ -4,7 +4,6 @@
  * Home
  */
 
-
 /**
  * Home
  */
@@ -32,11 +31,10 @@ Breadcrumbs::register('register', function ($breadcrumbs) {
 /**
  * Auth: Password reset
  */
-Breadcrumbs::register('password.request', function($breadcrumbs) {
+Breadcrumbs::register('password.request', function ($breadcrumbs) {
 });
-Breadcrumbs::register('password.reset', function($breadcrumbs) {
+Breadcrumbs::register('password.reset', function ($breadcrumbs) {
 });
-
 
 /**
  * Calendar
@@ -278,7 +276,6 @@ Breadcrumbs::register('user_settings.edit', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push('Einstellungen', route('user_settings.edit'));
 });
-
 
 /**
  * Auth settings

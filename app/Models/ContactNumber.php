@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactNumber extends Model
 {
@@ -19,7 +19,7 @@ class ContactNumber extends Model
      */
     public function getFormattedNumberAttribute()
     {
-        return preg_replace("/[^0-9+]/", "", $this->number);
+        return preg_replace('/[^0-9+]/', '', $this->number);
     }
 
     /**
@@ -56,6 +56,4 @@ class ContactNumber extends Model
             ]
         ];
     }
-
-
 }

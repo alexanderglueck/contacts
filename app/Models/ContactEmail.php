@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactEmail extends Model
 {
@@ -45,6 +45,4 @@ class ContactEmail extends Model
             ]
         ];
     }
-
-
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Route;
+use Closure;
 use Session;
 
 class VerifyCorrectContact
@@ -46,10 +46,10 @@ class VerifyCorrectContact
              */
             if ($contact->id != $child->contact->id) {
                 Session::flash('alert-danger', 'Fehler! Operation nicht erlaubt!');
+
                 return redirect('home');
             }
         }
-
 
         return $next($request);
     }

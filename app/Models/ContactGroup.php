@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactGroup extends Model
 {
@@ -58,6 +58,4 @@ class ContactGroup extends Model
             ]
         ];
     }
-
-
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactAddress;
-use App\Models\Country;
 use Auth;
 use Session;
+use App\Models\Contact;
+use App\Models\Country;
 use Illuminate\Http\Request;
+use App\Models\ContactAddress;
 
 class ContactAddressController extends Controller
 {
@@ -73,9 +73,11 @@ class ContactAddressController extends Controller
 
         if ($contactAddress->save()) {
             Session::flash('alert-success', 'Adresse wurde erstellt!');
+
             return redirect()->route('contact_addresses.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Adresse konnte nicht erstellt werden!');
+
             return redirect()->route('contact_addresses.create', [$contact->slug]);
         }
     }
@@ -134,9 +136,11 @@ class ContactAddressController extends Controller
 
         if ($contactAddress->save()) {
             Session::flash('alert-success', 'Adresse wurde aktualisiert!');
+
             return redirect()->route('contact_addresses.show', [$contact->slug, $contactAddress->slug]);
         } else {
             Session::flash('alert-danger', 'Adresse konnte nicht aktualisiert werden!');
+
             return redirect()->route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]);
         }
     }
@@ -154,9 +158,11 @@ class ContactAddressController extends Controller
     {
         if ($contactAddress->delete()) {
             Session::flash('alert-success', 'Adresse wurde gelöscht!');
+
             return redirect()->route('contact_addresses.index', [$contact->slug]);
         } else {
             Session::flash('alert-danger', 'Adresse konnte nicht gelöscht werden!');
+
             return redirect()->route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]);
         }
     }

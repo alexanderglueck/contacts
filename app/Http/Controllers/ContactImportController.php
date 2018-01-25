@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Session;
+use App\Models\Gender;
 use App\Models\Contact;
-use App\Models\ContactAddress;
+use App\Models\Country;
+use App\Models\ContactUrl;
 use App\Models\ContactDate;
 use App\Models\ContactEmail;
-use App\Models\ContactGroup;
-use App\Models\ContactNumber;
-use App\Models\ContactUrl;
-use App\Models\Country;
-use App\Models\Gender;
-use Auth;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
-use Maatwebsite\Excel\Collections\RowCollection;
 use Maatwebsite\Excel\Excel;
+use App\Models\ContactNumber;
+use App\Models\ContactAddress;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
-use Session;
+use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 
 class ContactImportController extends Controller
 {
-
     private $contactMatching;
 
     /**
@@ -50,23 +47,18 @@ class ContactImportController extends Controller
             $fileNameOriginal = $request->file('import_file')->storePublicly('import');
 
             Excel::load(storage_path('app/') . $fileNameOriginal, function (LaravelExcelReader $reader) use ($request) {
-
                 $this->contactMatching = [];
 
                 // reader methods
                 $reader->each(function (LaravelExcelWorksheet $sheet) use ($request) {
-
                     switch ($sheet->getTitle()) {
-                        case "Kontakte":
+                        case 'Kontakte':
                             // Loop through all rows
                             $sheet->each(function ($row) use ($request) {
-
                                 $import = new Contact();
                                 $import->fill($row->toArray());
 
-
-                                $import->gender_id = Gender::where("gender", "=", $row->gender)->first()->id;
-
+                                $import->gender_id = Gender::where('gender', '=', $row->gender)->first()->id;
 
                                 $import->created_by = Auth::user()->id;
                                 $import->updated_by = Auth::user()->id;
@@ -79,35 +71,33 @@ class ContactImportController extends Controller
                                     $this->contactMatching[$row->id] = $importId;
 
                                     $import->contactGroups()->attach($importId, [
-                                        "contact_group_id" => $request->contact_group_id
+                                        'contact_group_id' => $request->contact_group_id
                                     ]);
-
                                 } else {
                                     // not saved
                                 }
                             });
                             break;
-                        case "Adressen":
-                        case "Datumsangaben":
-                        case "E-Mails":
-                        case "Nummern":
-                        case "Websiten":
+                        case 'Adressen':
+                        case 'Datumsangaben':
+                        case 'E-Mails':
+                        case 'Nummern':
+                        case 'Websiten':
                             $sheet->each(function ($row) use ($sheet) {
-
                                 $import = $this->getTypeFromName($sheet->getTitle());
 
-                                if ($sheet->getTitle() == "Datumsangaben") {
+                                if ($sheet->getTitle() == 'Datumsangaben') {
                                     if ($row->skip_year) {
-                                        $row["date"] = $row->date . "1900";
+                                        $row['date'] = $row->date . '1900';
                                     } else {
-                                        $row["skip_year"] = 0;
+                                        $row['skip_year'] = 0;
                                     }
                                 }
 
                                 $import->fill($row->toArray());
 
-                                if ($sheet->getTitle() == "Adressen") {
-                                    $import->country_id = Country::where("country", "=", $row->country)->first()->id;
+                                if ($sheet->getTitle() == 'Adressen') {
+                                    $import->country_id = Country::where('country', '=', $row->country)->first()->id;
                                 }
 
                                 $import->created_by = Auth::user()->id;
@@ -123,9 +113,7 @@ class ContactImportController extends Controller
                             break;
                         default:
                     }
-
                 });
-
             });
 
             Session::flash('alert-success', 'Kontakte wurden erfolgreich importiert!');
@@ -141,18 +129,16 @@ class ContactImportController extends Controller
     private function getTypeFromName($title)
     {
         switch ($title) {
-            case "Adressen":
+            case 'Adressen':
                 return new ContactAddress();
-            case "Datumsangaben":
+            case 'Datumsangaben':
                 return new ContactDate();
-            case "E-Mails":
+            case 'E-Mails':
                 return new ContactEmail();
-            case "Nummern":
+            case 'Nummern':
                 return new ContactNumber();
-            case "Websiten":
+            case 'Websiten':
                 return new ContactUrl();
         }
     }
-
-
 }

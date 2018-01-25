@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Models\ContactDate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class TodaysDates extends Notification
@@ -55,13 +54,11 @@ class TodaysDates extends Notification
             }
 
             foreach ($events as $event) {
-                $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName(date("Y")) . ' - ' . $event->formattedDate);
+                $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName(date('Y')) . ' - ' . $event->formattedDate);
             }
-
         } else {
             $mailMessage->line('Heute ist kein besonderes Ereignis.');
         }
-
 
         return $mailMessage;
     }

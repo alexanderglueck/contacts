@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactDate extends Model
 {
@@ -17,7 +17,6 @@ class ContactDate extends Model
         'updated_by'
     ];
 
-
     /**
      * Returns a string in d.m.Y or d.m. format depending on
      * the skip_year variable.
@@ -26,7 +25,7 @@ class ContactDate extends Model
      */
     public function getFormattedDateAttribute()
     {
-        $value = date_create_from_format("Y-m-d H:i:s", $this->date);
+        $value = date_create_from_format('Y-m-d H:i:s', $this->date);
 
         if ($this->skip_year) {
             return $value ? $value->format('d.m.') : '';
@@ -37,7 +36,7 @@ class ContactDate extends Model
 
     public function setDateAttribute($value)
     {
-        $this->attributes['date'] = date_create_from_format("d.m.Y", $value)
+        $this->attributes['date'] = date_create_from_format('d.m.Y', $value)
             ->format('Y-m-d 00:00:00');
     }
 
@@ -71,12 +70,11 @@ class ContactDate extends Model
      */
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
-    )
-    {
+    ) {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
 
-        return ContactDate::select("contact_dates.*")
+        return self::select('contact_dates.*')
             ->whereRaw(
                 "(
                     DATE_FORMAT(date, '%m%d') BETWEEN ? AND ?
@@ -106,10 +104,10 @@ class ContactDate extends Model
      */
     public static function datesOnDate(\DateTime $date)
     {
-        return ContactDate::select("contact_dates.*")
+        return self::select('contact_dates.*')
             ->join('contacts', 'contact_id', '=', 'contacts.id')
             ->where('active', 1)
-            ->whereRaw("DATE_FORMAT(date, '%m%d') = ?", [$date->format("md")])
+            ->whereRaw("DATE_FORMAT(date, '%m%d') = ?", [$date->format('md')])
             ->get();
     }
 

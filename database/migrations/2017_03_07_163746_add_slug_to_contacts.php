@@ -14,7 +14,7 @@ class AddSlugToContacts extends Migration
     public function up()
     {
         Schema::table('contacts', function (Blueprint $table) {
-           $table->string('slug');
+            $table->string('slug');
         });
     }
 

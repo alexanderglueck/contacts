@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Contact extends Model
 {
@@ -41,22 +41,22 @@ class Contact extends Model
     public function getFullnameAttribute()
     {
         $title = '';
-        if (trim($this->title) !== "") {
+        if (trim($this->title) !== '') {
             $title = $this->title . ' ';
         }
 
         $titleAfter = '';
-        if (trim($this->title_after) !== "") {
+        if (trim($this->title_after) !== '') {
             $titleAfter = ', ' . $this->title_after;
         }
 
         $nickname = '';
-        if (trim($this->nickname) !== "") {
+        if (trim($this->nickname) !== '') {
             $nickname = ' (' . $this->nickname . ')';
         }
 
         $company = '';
-        if (trim($this->company) !== "") {
+        if (trim($this->company) !== '') {
             $company = ' // ' . $this->company;
         }
 
@@ -70,7 +70,7 @@ class Contact extends Model
 
     public function setDateOfBirthAttribute($value)
     {
-        $this->attributes['date_of_birth'] = date_create_from_format("d.m.Y", $value)
+        $this->attributes['date_of_birth'] = date_create_from_format('d.m.Y', $value)
             ->format('Y-m-d');
     }
 
@@ -83,14 +83,13 @@ class Contact extends Model
     public function getFormattedDateOfBirthAttribute()
     {
         if ($this->date_of_birth) {
-            $value = date_create_from_format("Y-m-d", $this->date_of_birth);
+            $value = date_create_from_format('Y-m-d', $this->date_of_birth);
 
             return $value->format('d.m.Y');
         }
 
-        return "";
+        return '';
     }
-
 
     /**
      * Sorts by lastname and firstname
@@ -248,7 +247,6 @@ class Contact extends Model
         ];
     }
 
-
     /**
      * Get the indexable data array for the model.
      *
@@ -284,7 +282,6 @@ class Contact extends Model
                 'country' => Country::find($data['country_id'])->country,
             ];
         })->toArray();
-
 
         $array['gender'] = Gender::find($array['gender_id'])->gender;
 

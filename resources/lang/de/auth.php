@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Language Lines
@@ -12,7 +12,7 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    
+
     'failed' => 'Zu den angegeben Zugangsdaten konnte kein Eintrag gefunden werden.',
     'throttle' => 'Zu viele Anmeldeversuche. Bitte versuchen Sie es in :seconds Sekunden erneut.',
     'login' => [
@@ -29,5 +29,5 @@ return [
             ]
         ]
     ]
-    
+
 ];

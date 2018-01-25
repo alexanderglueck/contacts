@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-
     /**
      * Returns all the contacts that matched the search criteria.
      *
@@ -36,10 +35,10 @@ class SearchController extends Controller
                         ELSE CONCAT(" (",nickname, ")") 
                     END
                 )
-            ) LIKE ?', ["%" . $request->get('search') . "%"])->active()->get();
+            ) LIKE ?', ['%' . $request->get('search') . '%'])->active()->get();
 
         return view('contact.index', [
-            "contacts" => $contacts
+            'contacts' => $contacts
         ]);
     }
 }
