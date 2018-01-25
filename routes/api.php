@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => ['auth:api']], function () {
-
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -26,7 +25,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     });
 
     Route::get('/contacts/{contact}', function (Contact $contact) {
-        $contacts =  Contact::with('addresses', 'dates', 'numbers', 'urls', 'emails', 'contactGroups', 'gender')->where('contacts.id', '=', $contact->id)->get();
+        $contacts = Contact::with('addresses', 'dates', 'numbers', 'urls', 'emails', 'contactGroups', 'gender')->where('contacts.id', '=', $contact->id)->get();
+
         return $contacts[0];
 
         //return ["contact" => Contact::with('addresses', 'dates', 'numbers', 'urls', 'emails', 'contactGroups', 'gender')->where('contacts.id', '=', $contact->id)->get()];
@@ -43,5 +43,3 @@ Route::group(['middleware' => ['auth:api']], function () {
         return Image::make(storage_path('app/contact_images/') . $image)->response();
     });
 });
-
-

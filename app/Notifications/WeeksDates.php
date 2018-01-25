@@ -2,12 +2,11 @@
 
 namespace App\Notifications;
 
-use App\Models\ContactDate;
-use DateInterval;
 use DateTime;
+use DateInterval;
+use App\Models\ContactDate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class WeeksDates extends Notification
@@ -44,8 +43,8 @@ class WeeksDates extends Notification
     public function toMail($notifiable)
     {
         // Start and end day before the interval is added
-        $startDate = DateTime::createFromFormat('Ymd', date("Ymd"));
-        $endDate = DateTime::createFromFormat('Ymd', date("Ymd"));
+        $startDate = DateTime::createFromFormat('Ymd', date('Ymd'));
+        $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
 
         // Date Intervals
         $oneWeek = DateInterval::createFromDateString('1 week');
@@ -72,7 +71,7 @@ class WeeksDates extends Notification
         );
 
         // Reset end date (we added one week above)
-        $endDate = DateTime::createFromFormat('Ymd', date("Ymd"));
+        $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
 
         // Add the intervals to the dates
         $startDate->add($oneWeek);
@@ -92,7 +91,6 @@ class WeeksDates extends Notification
             $endDate,
             false
         );
-
 
         return $mailMessage;
     }
@@ -116,11 +114,11 @@ class WeeksDates extends Notification
             if (count($events) > 1) {
                 if ($thisWeek) {
                     $mailMessage->line('Diese Woche stehen diese Ereignisse bevor: ');
-                }else{
+                } else {
                     $mailMessage->line('Nächste Woche stehen diese Ereignisse bevor: ');
                 }
             } else {
-                if($thisWeek) {
+                if ($thisWeek) {
                     $mailMessage->line('Diese Woche steht dieses Ereignis bevor: ');
                 } else {
                     $mailMessage->line('Nächste Woche steht dieses Ereignis bevor: ');
@@ -128,7 +126,6 @@ class WeeksDates extends Notification
             }
 
             foreach ($events as $event) {
-
                 if ($fromYear < $toYear) {
 
                     /**
@@ -155,12 +152,11 @@ class WeeksDates extends Notification
                 } else {
                     $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName($toYear) . ' - ' . $event->formattedDate);
                 }
-
             }
         } else {
-            if($thisWeek) {
+            if ($thisWeek) {
                 $mailMessage->line('Diese Woche steht kein Ereignis bevor.');
-            }else {
+            } else {
                 $mailMessage->line('Nächste Woche steht kein Ereignis bevor.');
             }
         }

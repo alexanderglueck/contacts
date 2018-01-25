@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
 use Auth;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use PragmaRX\Google2FA\Google2FA;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -51,13 +51,12 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
-        if (trim($user->google2fa_secret) !== "") {
+        if (trim($user->google2fa_secret) !== '') {
             // logout
             Auth::logout();
 
             $request->session()->put('token-user-id', $user->id);
             $request->session()->put('token-remember', $request->has('remember'));
-
 
             return redirect()->route('login.token');
         }
@@ -65,7 +64,7 @@ class LoginController extends Controller
 
     public function token(Request $request)
     {
-        if (!$request->session()->has('token-user-id')) {
+        if ( ! $request->session()->has('token-user-id')) {
             Auth::logout();
 
             return redirect()->route('login');
@@ -76,13 +75,13 @@ class LoginController extends Controller
 
     public function check(Request $request, Google2FA $google2fa)
     {
-        if (!$request->session()->has('token-user-id')) {
+        if ( ! $request->session()->has('token-user-id')) {
             Auth::logout();
 
             return redirect()->route('login');
         }
 
-        $request["token"] = str_replace(" ", "", $request->token);
+        $request['token'] = str_replace(' ', '', $request->token);
 
         $this->validate($request, [
             'token' => 'integer|required|digits:6',
@@ -92,7 +91,7 @@ class LoginController extends Controller
 
         $user = User::find($request->session()->get('token-user-id'));
 
-        $remember = $request->session()->get("token-remember");
+        $remember = $request->session()->get('token-remember');
         $request->session()->remove('token-remember');
 
         // validate if the entered key is correct
@@ -104,6 +103,7 @@ class LoginController extends Controller
             Auth::loginUsingId($request->session()->get('token-user-id'), $remember);
 
             $request->session()->remove('token-user-id');
+
             return redirect()->route('home');
         }
 
@@ -111,14 +111,14 @@ class LoginController extends Controller
         // check if it was a backup code
         // this check should  be after the verifyKey,
         // to ensure that the user does not loose backup codes on accident
-        $keys = $user->backupCodes->pluck("value")->all();
+        $keys = $user->backupCodes->pluck('value')->all();
         if (in_array($secret, $keys)) {
-
-            $user->backupCodes()->where("value", $secret)->delete();
+            $user->backupCodes()->where('value', $secret)->delete();
 
             Auth::loginUsingId($request->session()->get('token-user-id'), $remember);
 
             $request->session()->remove('token-user-id');
+
             return redirect()->route('home');
         }
 

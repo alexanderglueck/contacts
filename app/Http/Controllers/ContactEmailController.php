@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactEmail;
-use App\Models\Contact;
 use Auth;
 use Session;
+use App\Models\Contact;
+use App\Models\ContactEmail;
 use Illuminate\Http\Request;
 
 class ContactEmailController extends Controller

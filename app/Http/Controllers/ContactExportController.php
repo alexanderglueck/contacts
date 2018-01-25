@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactAddress;
-use App\Models\ContactDate;
-use App\Models\ContactEmail;
-use App\Models\ContactGroup;
-use App\Models\ContactNumber;
-use App\Models\ContactUrl;
-use App\Models\Country;
-use App\Models\Gender;
 use Auth;
-use Illuminate\Http\Request;
-use JeroenDesloovere\VCard\VCard;
-// use League\Csv\Writer;
-use Maatwebsite\Excel\Excel;
 use Response;
+use App\Models\Gender;
 use SplTempFileObject;
+use App\Models\Contact;
+use App\Models\Country;
+// use League\Csv\Writer;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Excel;
+use JeroenDesloovere\VCard\VCard;
 
 class ContactExportController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *
@@ -31,13 +23,12 @@ class ContactExportController extends Controller
     public function index()
     {
         return view('contact_export.index', [
-            "contactGroups" => Auth::user()->contactGroups()->sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
     }
 
     public function export(Request $request)
     {
-
         $this->validate($request, [
             'contact_group_id' => 'required|integer|exists:contact_groups,id',
         ]);
@@ -96,7 +87,6 @@ class ContactExportController extends Controller
         /**
          * Excel
          */
-
         $contacts = Auth::user()->contactGroups()->find($request->contact_group_id)->contacts()->active()->sorted()->get();
 
         Excel::create('contacts', function ($excel) use ($contacts) {
@@ -106,23 +96,22 @@ class ContactExportController extends Controller
 
             // Our first sheet
             $excel->sheet('Kontakte', function ($sheet) use ($contacts) {
-
                 $tempContacts = [];
 
                 foreach ($contacts as $contact) {
                     $temp = [
-                        "id" => $contact->id,
-                        "lastname" => $contact->lastname,
-                        "firstname" => $contact->firstname,
-                        "company" => $contact->company,
-                        "job" => $contact->job,
-                        "department" => $contact->department,
-                        "title" => $contact->title,
-                        "title_after" => $contact->title_after,
-                        "salutation" => $contact->salutation,
-                        "gender" => $contact->gender->gender,
-                        "nickname" => $contact->nickname,
-                        "image" => $contact->image,
+                        'id' => $contact->id,
+                        'lastname' => $contact->lastname,
+                        'firstname' => $contact->firstname,
+                        'company' => $contact->company,
+                        'job' => $contact->job,
+                        'department' => $contact->department,
+                        'title' => $contact->title,
+                        'title_after' => $contact->title_after,
+                        'salutation' => $contact->salutation,
+                        'gender' => $contact->gender->gender,
+                        'nickname' => $contact->nickname,
+                        'image' => $contact->image,
                     ];
 
                     array_push($tempContacts, $temp);
@@ -136,19 +125,17 @@ class ContactExportController extends Controller
                 $tempAddresses = [];
 
                 foreach ($contacts as $contact) {
-
                     foreach ($contact->addresses as $address) {
-
                         $temp = [
-                            "contact_id" => $address->contact_id,
-                            "name" => $address->name,
-                            "street" => $address->street,
-                            "zip" => $address->zip,
-                            "city" => $address->city,
-                            "state" => $address->state,
-                            "country" => $address->country->country,
-                            "longitude" => $address->longitude,
-                            "latitude" => $address->latitude,
+                            'contact_id' => $address->contact_id,
+                            'name' => $address->name,
+                            'street' => $address->street,
+                            'zip' => $address->zip,
+                            'city' => $address->city,
+                            'state' => $address->state,
+                            'country' => $address->country->country,
+                            'longitude' => $address->longitude,
+                            'latitude' => $address->latitude,
                         ];
 
                         array_push($tempAddresses, $temp);
@@ -163,14 +150,12 @@ class ContactExportController extends Controller
                 $contactDates = [];
 
                 foreach ($contacts as $contact) {
-
                     foreach ($contact->dates as $date) {
-
                         $temp = [
-                            "contact_id" => $date->contact_id,
-                            "name" => $date->name,
-                            "date" => $date->formatted_date,
-                            "skip_year" => $date->skip_year,
+                            'contact_id' => $date->contact_id,
+                            'name' => $date->name,
+                            'date' => $date->formatted_date,
+                            'skip_year' => $date->skip_year,
                         ];
 
                         array_push($contactDates, $temp);
@@ -185,12 +170,11 @@ class ContactExportController extends Controller
                 $contactEmails = [];
 
                 foreach ($contacts as $contact) {
-
                     foreach ($contact->emails as $email) {
                         $temp = [
-                            "contact_id" => $email->contact_id,
-                            "name" => $email->name,
-                            "email" => $email->email,
+                            'contact_id' => $email->contact_id,
+                            'name' => $email->name,
+                            'email' => $email->email,
                         ];
 
                         array_push($contactEmails, $temp);
@@ -205,12 +189,11 @@ class ContactExportController extends Controller
                 $contactNumbers = [];
 
                 foreach ($contacts as $contact) {
-
                     foreach ($contact->numbers as $number) {
                         $temp = [
-                            "contact_id" => $number->contact_id,
-                            "name" => $number->name,
-                            "number" => $number->number,
+                            'contact_id' => $number->contact_id,
+                            'name' => $number->name,
+                            'number' => $number->number,
                         ];
 
                         array_push($contactNumbers, $temp);
@@ -225,15 +208,12 @@ class ContactExportController extends Controller
                 $contactWebsites = [];
 
                 foreach ($contacts as $contact) {
-
                     foreach ($contact->urls as $website) {
-
                         $temp = [
-                            "contact_id" => $website->contact_id,
-                            "name" => $website->name,
-                            "url" => $website->url,
+                            'contact_id' => $website->contact_id,
+                            'name' => $website->name,
+                            'url' => $website->url,
                         ];
-
 
                         array_push($contactWebsites, $temp);
                     }
@@ -241,9 +221,6 @@ class ContactExportController extends Controller
 
                 $sheet->fromArray($contactWebsites);
             });
-
         })->download('xlsx');
     }
-
-
 }

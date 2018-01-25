@@ -23,13 +23,8 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-
-
-
-
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Contact::class, function (Faker\Generator $faker) {
-
     return [
         'firstname' => $faker->firstName,
         'lastname' => $faker->lastName,
@@ -49,7 +44,6 @@ $factory->define(App\Models\Contact::class, function (Faker\Generator $faker) {
         'created_by' => 1,
         'updated_by' => 1
     ];
-
 });
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
@@ -84,7 +78,7 @@ $factory->define(App\Models\ContactDate::class, function (Faker\Generator $faker
     return [
         'contact_id' => $faker->randomElement($contacts),
         'name' => $faker->streetName,
-        'date' => $skipYear ? $faker->date("d.m.1900") : $faker->date("d.m.Y"),
+        'date' => $skipYear ? $faker->date('d.m.1900') : $faker->date('d.m.Y'),
         'skip_year' => $skipYear,
         'created_by' => 1,
         'updated_by' => 1
@@ -138,7 +132,6 @@ $factory->define(App\Models\ContactUrl::class, function (Faker\Generator $faker)
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\ContactGroup::class, function (Faker\Generator $faker) {
-
     return [
         'name' => $faker->word,
         'created_by' => 1,

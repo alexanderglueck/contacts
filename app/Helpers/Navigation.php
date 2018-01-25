@@ -18,15 +18,12 @@ class Navigation
                     return $output;
                 }
             } else {
-
                 foreach ($data as $key => $value) {
                     if (Route::currentRouteName() == $route && Route::current()->parameter($key)->slug == $value) {
                         return $output;
                     }
                 }
-
             }
         }
     }
-
 }

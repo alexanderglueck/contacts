@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactDate;
 use Auth;
 use Session;
+use App\Models\Contact;
+use App\Models\ContactDate;
 use Illuminate\Http\Request;
-use Validator;
 
 class ContactDateController extends Controller
 {

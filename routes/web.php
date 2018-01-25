@@ -69,7 +69,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('contacts/{contact}/image', 'ContactController@image')->name('contacts.image');
     Route::put('contacts/{contact}/image', 'ContactController@updateImage')->name('contacts.update_image');
 
-
     /**
      * Contact Addresses
      */
@@ -87,7 +86,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
         Route::get('contact-addresses/{contact}/{contactAddress}/delete', 'ContactAddressController@delete')->name('contact_addresses.delete');
         Route::delete('contact-addresses/{contact}/{contactAddress}', 'ContactAddressController@destroy')->name('contact_addresses.destroy');
     });
-
 
     /**
      * Contact Dates
@@ -169,7 +167,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('contact-groups/{contactGroup}/delete', 'ContactGroupController@delete')->name('contact_groups.delete');
     Route::delete('contact-groups/{contactGroup}', 'ContactGroupController@destroy')->name('contact_groups.destroy');
 
-
     /**
      * Calendar
      */
@@ -198,7 +195,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('auth-settings/check', 'AuthSettingController@check')->name('auth_settings.check');
     Route::delete('auth-settings', 'AuthSettingController@disable')->name('auth_settings.disable');
 
-  //  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
+    //  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
 
     /**
      * Search
@@ -231,10 +228,4 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('contact_images/{image}', function ($image) {
         return Image::make(storage_path('app/contact_images/') . $image)->response();
     })->name('images.contact');
-
-
 });
-
-
-
-

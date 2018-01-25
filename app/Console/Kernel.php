@@ -2,11 +2,11 @@
 
 namespace App\Console;
 
+use DateTime;
+use DateInterval;
+use App\Models\ContactDate;
 use App\Console\Commands\SendDailyEmail;
 use App\Console\Commands\SendWeeklyEmail;
-use App\Models\ContactDate;
-use DateInterval;
-use DateTime;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(SendDailyEmail::class)
-            ->dailyAt("06:00")
+            ->dailyAt('06:00')
             ->timezone('Europe/Vienna')
             ->when(function () {
                 // someone has birthday on this day
@@ -43,19 +43,18 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(SendWeeklyEmail::class)
             ->mondays()
-            ->at("06:00")
+            ->at('06:00')
             ->timezone('Europe/Vienna')
             ->when(function () {
 
                 // Start and end day before the interval is added
-                $startDate = DateTime::createFromFormat('Ymd', date("Ymd"));
-                $endDate = DateTime::createFromFormat('Ymd', date("Ymd"));
+                $startDate = DateTime::createFromFormat('Ymd', date('Ymd'));
+                $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
 
                 // Date Intervals
                 $oneWeek = DateInterval::createFromDateString('1 week');
                 $twoWeeks = DateInterval::createFromDateString('2 weeks');
                 $oneDay = DateInterval::createFromDateString('1 day');
-
 
                 // Add one week to get the events for this week
                 $endDate->add($oneWeek)->sub($oneDay);
@@ -63,7 +62,7 @@ class Kernel extends ConsoleKernel
                 $contactDatesThisWeek = ContactDate::datesInRange($startDate, $endDate);
 
                 // Reset $endDate because one week was added
-                $endDate = DateTime::createFromFormat('Ymd', date("Ymd"));
+                $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
 
                 // Add the intervals to the dates
                 $startDate->add($oneWeek);

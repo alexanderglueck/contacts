@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use PragmaRX\Google2FA\Google2FA;
 use Session;
+use Illuminate\Http\Request;
+use PragmaRX\Google2FA\Google2FA;
 
 class AuthSettingController extends Controller
 {
-
     private $validationRules = [
         'secret' => 'integer|required|digits:6',
     ];
@@ -59,7 +57,7 @@ class AuthSettingController extends Controller
     {
         // disable 2fa
         Auth::user()->google2fa_secret = null;
-        if (!Auth::user()->save()) {
+        if ( ! Auth::user()->save()) {
             // save failed, show error, keep codes
 
             return redirect()->route('auth_settings.edit');
@@ -94,42 +92,39 @@ class AuthSettingController extends Controller
      */
     public function check(Request $request, Google2FA $google2fa)
     {
-
         $requestData = $request->all();
 
-        $request["secret"] = str_replace(" ", "", $requestData["secret"]);
+        $request['secret'] = str_replace(' ', '', $requestData['secret']);
 
         $this->validate($request, $this->validationRules);
 
         $userSecret = $request->session()->get('google2fa_secret');
-        $secret = $requestData["secret"];
+        $secret = $requestData['secret'];
 
         // validate if the entered key is correct
         if ($google2fa->verifyKey($userSecret, $secret)) {
 
             // user aktiviert 2 fa
             Auth::user()->google2fa_secret = $userSecret;
-            if (!Auth::user()->save()) {
+            if ( ! Auth::user()->save()) {
                 // failed to save the secret
                 // show the image again
 
                 Session::flash('alert-danger', '2FA konnte nicht aktiviert werden!');
+
                 return redirect()->route('auth_settings.edit');
             }
 
             $request->session()->remove('google2fa_secret');
 
-
             // 10 backup codes werden generiert
             for ($i = 0; $i < 10; $i++) {
-
-                if (!Auth::user()->backupCodes()->create([
-                    "value" => random_int(100000, 999999)
+                if ( ! Auth::user()->backupCodes()->create([
+                    'value' => random_int(100000, 999999)
                 ])
                 ) {
                     $i--;
                 }
-
             }
 
             // backup codes weggespeichert, bei verwendung werden sie rausgelöscht
@@ -138,6 +133,7 @@ class AuthSettingController extends Controller
 
             // return true, continue login
             Session::flash('alert-success', '2FA wurde aktiviert!');
+
             return redirect()->route('auth_settings.edit');
         }
 
@@ -145,7 +141,7 @@ class AuthSettingController extends Controller
         // let the user enter the secret again instead of enabling the
         // 2fa
         Session::flash('alert-danger', 'Code nicht korrekt!');
-        return redirect()->route('auth_settings.edit');
 
+        return redirect()->route('auth_settings.edit');
     }
 }

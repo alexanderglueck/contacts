@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactNumber;
 use Auth;
-use Illuminate\Http\Request;
 use Session;
+use App\Models\Contact;
+use Illuminate\Http\Request;
+use App\Models\ContactNumber;
 
 class ContactNumberController extends Controller
 {
-
     private $validationRules = [
         'name' => 'required',
         'number' => 'required|regex:/^[0-9\s \-()+]*$/'

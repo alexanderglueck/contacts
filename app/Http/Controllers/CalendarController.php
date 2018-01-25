@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
-
     /**
      * Display a listing of the contact dates.
      *
@@ -39,10 +38,9 @@ class CalendarController extends Controller
          */
         $contactDates = ContactDate::datesInRange($fromRaw, $toRaw);
 
-        $events = array();
+        $events = [];
 
         foreach ($contactDates as $event) {
-
             $eventDate = date_create_from_format('Y-m-d H:i:s', $event->date);
 
             /**
@@ -74,7 +72,6 @@ class CalendarController extends Controller
                 $title = $event->getCalculatedName($fromYear) . PHP_EOL . $event->contact->fullname;
 
                 $start = $fromYear . '-' . $eventDate->format('m-d');
-
             } else {
                 $yearDifference = $toYear - $eventDate->format('Y');
                 $title = $event->getCalculatedName($toYear) . PHP_EOL . $event->contact->fullname;
@@ -100,6 +97,4 @@ class CalendarController extends Controller
 
         return response()->json($events);
     }
-
-
 }

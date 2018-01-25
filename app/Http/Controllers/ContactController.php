@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactGroup;
-use App\Events\ContactCreated;
+use Auth;
+use Session;
 use App\Models\Gender;
+use App\Models\Contact;
+use Illuminate\Http\Request;
+use App\Events\ContactCreated;
 use App\Rules\ValidIBANFormat;
 use Intervention\Image\Facades\Image;
-use Session;
-use Auth;
-use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-
     private $validationRules = [
         'salutation' => 'required',
         'title' => 'present',
@@ -74,7 +72,6 @@ class ContactController extends Controller
         $contact->updated_by = Auth::id();
 
         if ($contact->save()) {
-
             if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
                 $contact->contactGroups()->sync($request->contact_groups);
             } else {
@@ -239,9 +236,5 @@ class ContactController extends Controller
 
             return redirect()->route('contacts.image', $contact->slug);
         }
-
-
     }
-
-
 }

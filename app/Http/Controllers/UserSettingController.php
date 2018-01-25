@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Auth;
+use Session;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
-use Session;
 
 class UserSettingController extends Controller
 {
@@ -97,7 +97,6 @@ class UserSettingController extends Controller
 
     public function updateApiToken(Request $request)
     {
-
         Auth::user()->api_token = str_random(60);
         Auth::user()->save();
 

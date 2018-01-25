@@ -34,7 +34,6 @@ class CreateContactAddressesTable extends Migration
 
             $table->foreign('contact_id')->references('id')->on('contacts')->onDelete('cascade');
             $table->foreign('country_id')->references('id')->on('countries');
-
         });
     }
 

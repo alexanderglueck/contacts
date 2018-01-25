@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Notifications\TodaysDates;
 use App\Models\User;
 use Illuminate\Console\Command;
+use App\Notifications\TodaysDates;
 
 class SendDailyEmail extends Command
 {

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     'cache'      => [
 
@@ -61,7 +61,7 @@ return array(
         'creator'        => config('app.name'),
         'lastModifiedBy' => config('app.name'),
         'title'          => 'Spreadsheet',
-        'description'    => config('app.name'). ' export',
+        'description'    => config('app.name') . ' export',
         'subject'        => 'Spreadsheet export',
         'keywords'       => 'maatwebsite, excel, export',
         'category'       => 'Excel',
@@ -701,4 +701,4 @@ return array(
 
     ]
 
-);
+];

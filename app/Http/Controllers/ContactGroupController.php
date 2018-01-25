@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactGroup;
 use Auth;
-use Illuminate\Http\Request;
 use Session;
 use Validator;
+use App\Models\ContactGroup;
+use Illuminate\Http\Request;
 
 class ContactGroupController extends Controller
 {

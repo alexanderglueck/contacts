@@ -74,11 +74,9 @@ return [
     'is_not_private' => 'Is not private',
     'description' => 'Description',
 
-
     'products' => 'Products',
     'name' => 'Name',
     'price' => 'Price',
-
 
     /*
      * Buttons and titles

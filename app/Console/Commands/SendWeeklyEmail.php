@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Notifications\WeeksDates;
 use App\Models\User;
 use Illuminate\Console\Command;
+use App\Notifications\WeeksDates;
 
 class SendWeeklyEmail extends Command
 {
