@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 ### Added
 - Add authentication scaffold
+- Add contact management basics
+- Add some tests
+- Add TravisCI
+- Add StyleCI
 
 ### Changed
 - Move `User` class into `Models` directory
