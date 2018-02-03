@@ -10,7 +10,7 @@ use PragmaRX\Google2FA\Google2FA;
 class AuthSettingController extends Controller
 {
     private $validationRules = [
-        'secret' => 'integer|required|digits:6',
+        'secret' => 'required|digits:6',
     ];
 
     /**

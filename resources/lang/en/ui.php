@@ -78,6 +78,8 @@ return [
     'name' => 'Name',
     'price' => 'Price',
 
+    'logs' => 'Logs',
+
     /*
      * Buttons and titles
      */
