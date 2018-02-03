@@ -12,7 +12,7 @@
                         <h5>Kontaktlandkarte</h5>
                     </div>
 
-                    @if(strlen(env('GOOGLE_MAPS_GEOCODING_KEY'))>0)
+                    @if(strlen(config('contacts.googleMapsKey'))>0)
                         <div id="map"></div>
                     @else
                         <p>Google Maps API Key ist nicht gesetzt. Karte kann
@@ -34,15 +34,14 @@
 @endsection
 
 @section('js-links')
-    @if(strlen(env('GOOGLE_MAPS_GEOCODING_KEY'))>0)
-        <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_GEOCODING_KEY') }}"></script>
+    @if(strlen(config('contacts.googleMapsKey'))>0)
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('contacts.googleMapsKey') }}"></script>
         <script src="{{ url('/js/oms/oms.min.js') }}"></script>
     @endif
 @endsection
 
 @section('js')
-    @if(strlen(env('GOOGLE_MAPS_GEOCODING_KEY'))>0)
+    @if(strlen(config('contacts.googleMapsKey'))>0)
         <script>
             var map = null;
             var infoWindow = null;

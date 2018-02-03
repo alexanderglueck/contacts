@@ -22,13 +22,13 @@
 @endsection
 
 @section('js-links')
-    @if(strlen(env('GOOGLE_MAPS_GEOCODING_KEY'))>0)
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_GEOCODING_KEY')  }}"></script>
+    @if(strlen(config('contacts.googleMapsKey'))>0)
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ config('contacts.googleMapsKey')  }}"></script>
     @endif
 @endsection
 
 @section('js')
-    @if(strlen(env('GOOGLE_MAPS_GEOCODING_KEY'))>0)
+    @if(strlen(config('contacts.googleMapsKey'))>0)
         <script>
             $('#submitForm').submit(function (event) {
                 var $form = this;

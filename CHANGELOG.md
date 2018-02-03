@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Move `User` class into `Models` directory
+- Replace `env()` calls in views with `config()` calls
 
 ### Fixed
 - Fix dates stored on a leap year not being shown on non leap years (#1)
@@ -25,5 +26,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 0.0.1 - 2018-01-16
 ### Added
  - Initial commit
-
-
