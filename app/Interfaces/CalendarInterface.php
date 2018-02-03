@@ -1,20 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 03.02.2018
- * Time: 13:58
- */
 
 namespace App\Interfaces;
 
+use DateTimeInterface;
 
 interface CalendarInterface
 {
     public function getCalculatedName($year);
 
-    public function getCalendarEventUrl($contact);
+    public function getCalendarEventUrl();
 
-    public static function datesInRange(\DateTimeInterface $startDate, \DateTimeInterface $endDate);
-
+    public static function datesInRange(DateTimeInterface $startDate, DateTimeInterface $endDate);
 }

@@ -71,8 +71,7 @@ class ContactDate extends Model implements CalendarInterface
      */
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
-    )
-    {
+    ) {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
 
@@ -95,9 +94,9 @@ class ContactDate extends Model implements CalendarInterface
             ->get();
     }
 
-    public function getCalendarEventUrl($contact)
+    public function getCalendarEventUrl()
     {
-        return route('contact_dates.show', [$contact->contact->slug, $contact->slug]);
+        return route('contact_dates.show', [$this->contact->slug, $this->slug]);
     }
 
     /**
