@@ -12,3 +12,9 @@ yarn-error.log
 .env
 .phpstorm.meta.php
 _ide_helper.php
+
+# generated files
+/public/css/app.css
+/public/js/app.js
+/public/fonts/vendor
+/public/mix-manifest.json
