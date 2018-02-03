@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class ContactDate extends Model
+class ContactDate extends Model implements CalendarInterface
 {
     use Sluggable;
 
@@ -55,7 +56,7 @@ class ContactDate extends Model
             $title = ($year - $eventDate->format('Y')) . '. ' . $this->name;
         }
 
-        return $title;
+        return $title . PHP_EOL . $this->contact->fullname;
     }
 
     /**
@@ -70,7 +71,8 @@ class ContactDate extends Model
      */
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
-    ) {
+    )
+    {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
 
@@ -91,6 +93,11 @@ class ContactDate extends Model
             ->join('contacts', 'contact_id', '=', 'contacts.id')
             ->where('active', 1)
             ->get();
+    }
+
+    public function getCalendarEventUrl($contact)
+    {
+        return route('contact_dates.show', [$contact->contact->slug, $contact->slug]);
     }
 
     /**

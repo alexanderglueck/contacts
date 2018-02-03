@@ -18,7 +18,7 @@ return [
     'contact_groups' => 'Contact groups',
     'active' => 'Active',
     'inactive' => 'Inactive',
-    'date_of_birth' => 'Date of birth',
+    'date_of_birth' => 'Birthday',
     'iban' => 'IBAN',
     'vatin' => 'Vatin',
     'custom_id' => 'Custom ID',

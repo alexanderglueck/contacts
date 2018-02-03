@@ -11,29 +11,32 @@ class Form
             'fieldName' => $fieldName,
             'label' => $label,
             'required' => $required ? ' required ' : '',
-            'autofocus' => $autofocus ? ' autofocus ' : ''
+            'autofocus' => $autofocus ? ' autofocus ' : '',
+            'value' => null
         ]);
     }
 
-    public static function text($fieldName, $label, $required = false, $autofocus = false)
+    public static function text($fieldName, $label, $value = null, $required = false, $autofocus = false)
     {
         return view('components.text', [
             'type' => 'text',
             'fieldName' => $fieldName,
             'label' => $label,
             'required' => $required ? ' required ' : '',
-            'autofocus' => $autofocus ? ' autofocus ' : ''
+            'autofocus' => $autofocus ? ' autofocus ' : '',
+            'value' => $value
         ]);
     }
 
-    public static function email($fieldName, $label, $required = true, $autofocus = false)
+    public static function email($fieldName, $label, $value = null, $required = true, $autofocus = false)
     {
         return view('components.text', [
             'type' => 'email',
             'fieldName' => $fieldName,
             'label' => $label,
             'required' => $required ? ' required ' : '',
-            'autofocus' => $autofocus ? ' autofocus ' : ''
+            'autofocus' => $autofocus ? ' autofocus ' : '',
+            'value' => $value
         ]);
     }
 }

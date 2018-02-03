@@ -4,7 +4,12 @@
     </label>
 
     <div class="col-md-6">
-        <input id="{!! $fieldName !!}" type="{{ $type }}" class="form-control" name="{!! $fieldName !!}" value="{{ $type != 'password' ? old($fieldName) : '' }}" {{ $required }} {{ $autofocus }}>
+        <input id="{!! $fieldName !!}"
+               type="{{ $type }}"
+               class="form-control"
+               name="{!! $fieldName !!}"
+               value="{{ $type != 'password' ? old($fieldName, $value) : '' }}" {{ $required }} {{ $autofocus }}
+        >
 
         @if ($errors->has($fieldName))
             <span class="help-block">

@@ -24,7 +24,7 @@ class ContactController extends Controller
         'job' => 'present',
         'gender_id' => 'integer|exists:genders,id',
         'nickname' => 'present',
-        'date_of_birth' => 'required|date_format:d.m.Y',
+        'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
     ];
 
     /**

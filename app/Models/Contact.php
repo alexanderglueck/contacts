@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class Contact extends Model
+class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
 
@@ -70,6 +71,10 @@ class Contact extends Model
 
     public function setDateOfBirthAttribute($value)
     {
+        if ($value == null) {
+            return;
+        }
+
         $this->attributes['date_of_birth'] = date_create_from_format('d.m.Y', $value)
             ->format('Y-m-d');
     }
@@ -90,6 +95,49 @@ class Contact extends Model
 
         return '';
     }
+
+    public static function datesInRange(
+        \DateTimeInterface $startDate, \DateTimeInterface $endDate
+    )
+    {
+        $from = $startDate->format('md');
+        $to = $endDate->format('md');
+
+        return self::select('contacts.*')
+            ->whereRaw(
+                "(
+                    DATE_FORMAT(date_of_birth, '%m%d') BETWEEN ? AND ?
+                )",
+                [$from, $to]
+            )
+            ->where('active', 1)
+            ->whereNotNull('date_of_birth')
+            ->get();
+    }
+
+    public function getCalculatedName($year)
+    {
+        $eventDate = date_create_from_format('Y-m-d', $this->date_of_birth);
+        $yearDifference = $year - $eventDate->format('Y');
+
+        /**
+         * Only calculate the x. appearance of the event if it is not the first
+         * time and if the year is not hidden.
+         */
+        if ($yearDifference == 0) {
+            $title = trans('ui.date_of_birth');
+        } else {
+            $title = ($year - $eventDate->format('Y')) . '. ' . trans('ui.date_of_birth');
+        }
+
+        return $title . PHP_EOL . $this->fullname;
+    }
+
+    public function getCalendarEventUrl($contact)
+    {
+        return route('contacts.show', [$this->slug]);
+    }
+
 
     /**
      * Sorts by lastname and firstname
