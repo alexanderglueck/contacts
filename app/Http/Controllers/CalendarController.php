@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactDate;
+use DateTime;
 use Illuminate\Http\Request;
 
 class CalendarController extends Controller
@@ -22,6 +23,7 @@ class CalendarController extends Controller
      * start and end date range.
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function events(Request $request)
@@ -87,6 +89,8 @@ class CalendarController extends Controller
                 'url' => route('contact_dates.show', [$event->contact->slug, $event->slug])
             ];
 
+            $tempEvent = $this->handleLeapYear($tempEvent);
+
             /**
              * Only display the event if the requested date range is after the event creation.
              */
@@ -96,5 +100,26 @@ class CalendarController extends Controller
         }
 
         return response()->json($events);
+    }
+
+    private function handleLeapYear($tempEvent)
+    {
+        $dateTime = \DateTime::createFromFormat('Y-m-d', $tempEvent['start']);
+
+        if ($dateTime->format('md') == '0301' && $dateTime->format('Y-m-d') != $tempEvent['start']) {
+            if ( ! $this->validateDate($tempEvent['start'], 'Y-m-d')) {
+                $dateTime->sub(new \DateInterval('P1D'));
+                $tempEvent['start'] = $dateTime->format('Y-m-d');
+            }
+        }
+
+        return $tempEvent;
+    }
+
+    private function validateDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+
+        return $d && $d->format($format) == $date;
     }
 }
