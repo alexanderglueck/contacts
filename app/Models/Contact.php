@@ -137,7 +137,6 @@ class Contact extends Model implements CalendarInterface
         return route('contacts.show', [$this->slug]);
     }
 
-
     /**
      * Sorts by lastname and firstname
      *

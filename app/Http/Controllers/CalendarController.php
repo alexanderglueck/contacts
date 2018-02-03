@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
 use DateTime;
+use App\Models\Contact;
 use App\Models\ContactDate;
 use Illuminate\Http\Request;
 
