@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add two-factor auth
 - Add log viewer
 - Add `date_of_birth` field (#3)
+- Add map with available addresses on the contact addresses detail view
 
 ### Changed
 - Move `User` class into `Models` directory
