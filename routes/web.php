@@ -198,6 +198,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     //  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
 
     /**
+     * Log
+     */
+    Route::get('logs', 'LogEntryController@index')->name('logs.index');
+
+    /**
      * Search
      */
     Route::post('search', 'SearchController@search')->name('search.search');

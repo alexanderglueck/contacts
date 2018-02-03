@@ -11,9 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add some tests
 - Add TravisCI
 - Add StyleCI
+- Add login logging
+- Add two-factor auth
+- Add log viewer
+- Add `date_of_birth` field (#3)
 
 ### Changed
 - Move `User` class into `Models` directory
+
+### Fixed
+- Fix dates stored on a leap year not being shown on non leap years (#1)
 
 ## 0.0.1 - 2018-01-16
 ### Added

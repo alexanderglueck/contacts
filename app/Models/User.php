@@ -83,4 +83,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(TFABackupCode::class, 'user_id');
     }
+
+    /**
+     * Defines the has-many relationship with the Contact model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function logs()
+    {
+        return $this->hasMany(LogEntry::class, 'created_by')->orderByDesc('created_at');
+    }
 }

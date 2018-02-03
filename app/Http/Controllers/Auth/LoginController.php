@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Events\TwoFactorFailure;
+use App\Events\TwoFactorSuccess;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
@@ -46,7 +48,8 @@ class LoginController extends Controller
      * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  mixed $user
+     * @param  mixed                    $user
+     *
      * @return mixed
      */
     protected function authenticated(Request $request, User $user)
@@ -104,6 +107,8 @@ class LoginController extends Controller
 
             $request->session()->remove('token-user-id');
 
+            event(new TwoFactorSuccess(Auth::user()));
+
             return redirect()->route('home');
         }
 
@@ -119,8 +124,12 @@ class LoginController extends Controller
 
             $request->session()->remove('token-user-id');
 
+            event(new TwoFactorSuccess(Auth::user()));
+
             return redirect()->route('home');
         }
+
+        event(new TwoFactorFailure(User::find($request->session()->get('token-user-id'))));
 
         return redirect()->route('login.token');
     }
