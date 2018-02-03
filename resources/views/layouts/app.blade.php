@@ -35,6 +35,7 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
+
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle"
                        data-toggle="dropdown"
@@ -57,14 +58,6 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item" href="{{ route('calendar.index') }}">Calendar</a>
-
-                        <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item" href="{{ route('map.index') }}">Map</a>
-
-                        <div class="dropdown-divider"></div>
-
                         <a class="dropdown-item" href="{{ route('import.index') }}">
                             Import
                         </a>
@@ -74,8 +67,50 @@
                             Export
                         </a>
 
-                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('map.index') }}">Map</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('calendar.index') }}">Calendar</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle"
+                       data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false"
+                       id="contactGroupsDropdown"
+                    >
+                        Contact groups
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="contactGroupsDropdown">
+                        <a class="dropdown-item" href="{{ route('contact_groups.index') }}">
+                            Contact groups
+                        </a>
+
+                        <a class="dropdown-item" href="{{ route('contact_groups.create') }}">
+                            Create contact group
+                        </a>
+                    </div>
+                </li>
+
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle"
+                       data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false"
+                       id="reportsDropdown"
+                    >
+                        Reports
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="reportsDropdown">
                         <a class="dropdown-item" href="{{ route('reports.inactive') }}">
                             Inactive
                         </a>
@@ -129,21 +164,8 @@
                         <a class="dropdown-item" href="{{ route('reports.no_lat_lng') }}">
                             No coordinates
                         </a>
-
-                        <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item" href="{{ route('contact_groups.index') }}">
-                            Contact groups
-                        </a>
-
-
-                        <a class="dropdown-item" href="{{ route('contact_groups.create') }}">
-                            Create contact group
-                        </a>
-
                     </div>
                 </li>
-
             </ul>
 
             <!-- Right Side Of Navbar -->
