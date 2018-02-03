@@ -169,6 +169,12 @@
 
                         <div class="dropdown-menu" aria-labelledby="userDropdown">
 
+                            <a class="dropdown-item" href="{{ route('user_settings.edit') }}">
+                                Settings
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

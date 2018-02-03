@@ -84,7 +84,7 @@ class LoginController extends Controller
         $request['token'] = str_replace(' ', '', $request->token);
 
         $this->validate($request, [
-            'token' => 'integer|required|digits:6',
+            'token' => 'required|digits:6',
         ]);
 
         $secret = Input::get('token');
