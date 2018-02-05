@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\NotificationSetting;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
