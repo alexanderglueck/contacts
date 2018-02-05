@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\NotificationSetting;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -92,5 +93,19 @@ class User extends Authenticatable
     public function logs()
     {
         return $this->hasMany(LogEntry::class, 'created_by')->orderByDesc('created_at');
+    }
+
+    public function notificationSetting()
+    {
+        return $this->hasOne(NotificationSetting::class, 'user_id');
+    }
+
+    public function notificationSettings()
+    {
+        if ($this->notificationSetting == null) {
+            return new NotificationSetting();
+        }
+
+        return $this->notificationSetting;
     }
 }

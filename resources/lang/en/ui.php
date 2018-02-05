@@ -79,6 +79,12 @@ return [
     'price' => 'Price',
 
     'logs' => 'Logs',
+    'notification_settings' => 'Notification settings',
+    'update' => 'Update',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
 
     /*
      * Buttons and titles

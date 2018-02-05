@@ -198,6 +198,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     //  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
 
     /**
+     * Notification Settings
+     */
+    Route::get('settings/notifications', 'NotificationSettingController@edit')->name('notification_settings.edit');
+    Route::put('settings/notifications', 'NotificationSettingController@update')->name('notification_settings.update');
+
+    /**
      * Log
      */
     Route::get('logs', 'LogEntryController@index')->name('logs.index');

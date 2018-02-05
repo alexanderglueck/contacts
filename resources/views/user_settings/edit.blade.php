@@ -192,6 +192,20 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>{{ trans('ui.notification_settings') }}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <p>
+                            <a href="{{ route('notification_settings.edit') }}"
+                               class="btn btn-primary">
+                                {{ trans('ui.notification_settings') }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
