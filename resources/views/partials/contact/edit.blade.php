@@ -84,6 +84,8 @@
     </div>
 </div>
 
+{!! \App\Helpers\Form::textarea('first_met', trans('ui.first_met'), $contact->first_met) !!}
+
 <div class="form-group">
     <div class="col-md-8 col-md-offset-4">
         <button type="submit" class="btn btn-primary">

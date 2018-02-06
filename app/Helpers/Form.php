@@ -39,4 +39,15 @@ class Form
             'value' => $value
         ]);
     }
+
+    public static function textarea($fieldName, $label, $value = null, $required = false, $autofocus = false)
+    {
+        return view('components.textarea', [
+            'fieldName' => $fieldName,
+            'label' => $label,
+            'required' => $required ? ' required ' : '',
+            'autofocus' => $autofocus ? ' autofocus ' : '',
+            'value' => $value
+        ]);
+    }
 }

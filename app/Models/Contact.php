@@ -20,17 +20,21 @@ class Contact extends Model implements CalendarInterface
         'iban',
         'salutation',
         'gender_id',
-        'is_company',
         'company',
         'department',
         'job',
         'custom_id',
         'nickname',
-        'active'
+        'active',
+        'first_met'
     ];
 
     protected $attributes = [
         'active' => 1
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     /**
