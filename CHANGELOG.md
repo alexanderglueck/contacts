@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Move `User` class into `Models` directory
 - Replace `env()` calls in views with `config()` calls
+- Upgraded to Laravel 5.6
 
 ### Fixed
 - Fix dates stored on a leap year not being shown on non leap years (#1)

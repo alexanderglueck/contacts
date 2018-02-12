@@ -19,7 +19,7 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md  navbar-light navbar-laravel">
         <a class="navbar-brand" href="{{ route('home') }}">
             {{ config('app.name', 'CRM') }}
         </a>

@@ -1,3 +1,8 @@
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
 .container {
   margin-top: 70px;
   max-width: 960px;
@@ -11,11 +16,17 @@
   min-width: 220px;
 }
 
-.border-top { border-top: 1px solid #e5e5e5; }
-.border-bottom { border-bottom: 1px solid #e5e5e5; }
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
 
-.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
 
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
 
 .required:after {
   content: '*';
