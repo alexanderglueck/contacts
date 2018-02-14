@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Response;
 use App\Models\Gender;
 use SplTempFileObject;
@@ -10,7 +11,6 @@ use App\Models\Contact;
 use App\Models\Country;
 // use League\Csv\Writer;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
 use JeroenDesloovere\VCard\VCard;
 
 class ContactExportController extends Controller

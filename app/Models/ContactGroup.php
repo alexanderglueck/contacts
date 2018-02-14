@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\CreatedByScope;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
@@ -57,5 +58,17 @@ class ContactGroup extends Model
                 'reserved' => ['create', 'delete', 'edit']
             ]
         ];
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CreatedByScope());
     }
 }

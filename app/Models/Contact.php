@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Scopes\CreatedByScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -292,7 +293,7 @@ class Contact extends Model implements CalendarInterface
         return [
             'slug' => [
                 'source' => ['lastname', 'firstname', 'company'],
-                'reserved' => ['create', 'delete', 'edit', 'inactive', 'export']
+                'reserved' => ['create', 'export', 'import']
             ]
         ];
     }
@@ -338,5 +339,17 @@ class Contact extends Model implements CalendarInterface
         unset($array['generate_name']);
 
         return $array;
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CreatedByScope());
     }
 }

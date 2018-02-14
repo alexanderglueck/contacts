@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\CreatedByScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -147,8 +148,20 @@ class ContactDate extends Model implements CalendarInterface
         return [
             'slug' => [
                 'source' => 'name',
-                'reserved' => ['create', 'delete', 'edit']
+                'reserved' => ['create']
             ]
         ];
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CreatedByScope());
     }
 }

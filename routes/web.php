@@ -21,14 +21,14 @@ Route::post('login', 'Auth\LoginController@login')->name('login.check');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...Route::Route::Route::
-// Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-// Route::post('register', 'Auth\RegisterController@register');
-Route::get('register', function () {
+ Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+ Route::post('register', 'Auth\RegisterController@register');
+/*Route::get('register', function () {
     return Redirect::to(route('login'));
 })->name('register');
 Route::post('register', function () {
     return false;
-});
+});*/
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
