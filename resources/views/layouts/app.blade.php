@@ -186,6 +186,9 @@
                            aria-expanded="false"
                            id="userDropdown"
                         >
+                            @if(trim(Auth::user()->image) !== '')
+                                <img class="rounded" width="20" height="20" src="{{ asset('storage/' . Auth::user()->image) }}">
+                            @endif
                             {{ Auth::user()->name }}
                         </a>
 
