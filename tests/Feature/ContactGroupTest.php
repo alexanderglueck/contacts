@@ -40,7 +40,12 @@ class ContactGroupTest extends TestCase
     public function a_user_can_view_a_contact_group()
     {
         $user = factory(User::class)->create();
-        $contactGroup = factory(ContactGroup::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(ContactGroup::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $response = $this->actingAs($user)
             ->get(route('contact_groups.show', [$contactGroup->slug]));
@@ -53,7 +58,12 @@ class ContactGroupTest extends TestCase
     public function a_user_can_view_the_contact_group_delete_view()
     {
         $user = factory(User::class)->create();
-        $contactGroup = factory(ContactGroup::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(ContactGroup::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $response = $this->actingAs($user)
             ->get(route('contact_groups.delete', [$contactGroup->slug]));
@@ -68,7 +78,12 @@ class ContactGroupTest extends TestCase
         \Session::start();
 
         $user = factory(User::class)->create();
-        $contactGroup = factory(ContactGroup::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(ContactGroup::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $this->assertDatabaseHas('contact_groups', $contactGroup->toArray());
 
@@ -87,7 +102,12 @@ class ContactGroupTest extends TestCase
     public function a_user_can_view_the_contact_group_edit_view()
     {
         $user = factory(User::class)->create();
-        $contactGroup = factory(ContactGroup::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(ContactGroup::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $response = $this->actingAs($user)
             ->get(route('contact_groups.edit', [$contactGroup->slug]));
@@ -103,7 +123,12 @@ class ContactGroupTest extends TestCase
         \Session::start();
 
         $user = factory(User::class)->create();
-        $contactGroup = factory(ContactGroup::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(ContactGroup::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $check = $contactGroup->toArray();
 

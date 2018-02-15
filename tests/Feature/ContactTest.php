@@ -41,6 +41,9 @@ class ContactTest extends TestCase
     public function a_user_can_view_a_contact_created_by_him()
     {
         $user = factory(User::class)->create();
+
+        $this->be($user);
+
         $contact = factory(Contact::class)->create([
             'created_by' => $user->id
         ]);
@@ -56,6 +59,9 @@ class ContactTest extends TestCase
     public function a_user_can_not_view_a_contact_created_by_another_user()
     {
         $user = factory(User::class)->create();
+
+        $this->be($user);
+
         $contact = factory(Contact::class)->create([
             'created_by' => $user->id
         ]);
@@ -65,7 +71,7 @@ class ContactTest extends TestCase
         $response = $this->actingAs($viewer)
             ->get(route('contacts.show', [$contact->slug]));
 
-        $response->assertStatus(403);
+        $response->assertStatus(404);
         $this->assertAuthenticatedAs($viewer);
 
         $response = $this->actingAs($user)
@@ -79,7 +85,12 @@ class ContactTest extends TestCase
     public function a_user_can_view_the_contact_delete_view()
     {
         $user = factory(User::class)->create();
-        $contact = factory(Contact::class)->create();
+
+        $this->be($user);
+
+        $contact = factory(Contact::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $response = $this->actingAs($user)
             ->get(route('contacts.delete', [$contact->slug]));
@@ -94,7 +105,12 @@ class ContactTest extends TestCase
         \Session::start();
 
         $user = factory(User::class)->create();
-        $contact = factory(Contact::class)->create();
+
+        $this->be($user);
+
+        $contact = factory(Contact::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $this->assertDatabaseHas('contacts', $contact->toArray());
 
@@ -113,7 +129,12 @@ class ContactTest extends TestCase
     public function a_user_can_view_the_contact_edit_view()
     {
         $user = factory(User::class)->create();
-        $contact = factory(Contact::class)->create();
+
+        $this->be($user);
+
+        $contact = factory(Contact::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $response = $this->actingAs($user)
             ->get(route('contacts.edit', [$contact->slug]));
@@ -129,7 +150,12 @@ class ContactTest extends TestCase
         \Session::start();
 
         $user = factory(User::class)->create();
-        $contactGroup = factory(Contact::class)->create();
+
+        $this->be($user);
+
+        $contactGroup = factory(Contact::class)->create([
+            'created_by' => $user->id
+        ]);
 
         $check = [
             'id' => $contactGroup->id,
