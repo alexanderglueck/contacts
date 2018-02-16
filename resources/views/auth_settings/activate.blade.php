@@ -4,14 +4,14 @@
 
 @section('content')
 
-    <div class="wrapper wrapper-content">
-        <div class="row">
+    <div class="container">
+        <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>2FA Einstellungen</h5>
+                <div class="card">
+                    <div class="card-header">
+                        2FA Einstellungen
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
 
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('auth_settings.enable') }}">

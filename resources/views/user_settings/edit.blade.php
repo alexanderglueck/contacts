@@ -3,14 +3,14 @@
 @section('title', 'Benutzer bearbeiten')
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
+    <div class="container">
+        <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Benutzer bearbeiten</h5>
+                <div class="card">
+                    <div class="card-header">
+                        Benutzer bearbeiten
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
 
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('user_settings.update', [$user->slug]) }}">
@@ -89,11 +89,11 @@
                     </div>
                 </div>
 
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>2FA bearbeiten</h5>
+                <div class="card">
+                    <div class="card-header">
+                       2FA bearbeiten
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
                         <p>
                             <a href="{{ route('auth_settings.edit') }}"
                                class="btn btn-primary">
@@ -105,11 +105,11 @@
             </div>
 
             <div class="col-md-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Benutzerbild bearbeiten</h5>
+                <div class="card">
+                    <div class="card-header">
+                        Benutzerbild bearbeiten
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
 
                         <form class="form-horizontal" role="form" method="POST"
                               enctype="multipart/form-data"
@@ -149,11 +149,11 @@
                     </div>
                 </div>
 
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>API Token bearbeiten</h5>
+                <div class="card">
+                    <div class="card-header">
+                        API Token bearbeiten
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
 
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('user_settings.update_api_token', [$user->slug]) }}">
@@ -193,11 +193,11 @@
                     </div>
                 </div>
 
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>{{ trans('ui.notification_settings') }}</h5>
+                <div class="card">
+                    <div class="card-header">
+                        {{ trans('ui.notification_settings') }}
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
                         <p>
                             <a href="{{ route('notification_settings.edit') }}"
                                class="btn btn-primary">

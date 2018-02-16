@@ -4,22 +4,22 @@
 
 @section('content')
 
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="card card-default">
-
-
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>Websiten verwalten</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Websiten verwalten
                     </div>
-                    <p>
-                        <strong>Kontakt Websiten: </strong><br>
-                        <a href="{{  route('contact_urls.create', [$contact->slug]) }}">Website
-                            hinzufügen</a>
-                    </p>
+                    <div class="card-body">
+                        <p>
+                            <strong>Kontakt Websiten: </strong><br>
+                            <a href="{{  route('contact_urls.create', [$contact->slug]) }}">Website
+                                hinzufügen</a>
+                        </p>
 
-                    @include('partials.contact_url.index')
+                        @include('partials.contact_url.index')
+                    </div>
                 </div>
             </div>
         </div>

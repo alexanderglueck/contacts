@@ -4,19 +4,21 @@
 
 @section('content')
 
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="card card-default">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>Adresse bearbeiten</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Adresse bearbeiten
                     </div>
-                    <form class="form-horizontal" id="submitForm" role="form" method="POST" action="{{ route('contact_addresses.update', [$contact->slug, $contactAddress->slug]) }}">
-                        {{ method_field('PUT') }}
-                        @include('partials.contact_address.edit')
-                    </form>
-                </div>
+                    <div class="card-body">
+                        <form class="form-horizontal" id="submitForm" role="form" method="POST" action="{{ route('contact_addresses.update', [$contact->slug, $contactAddress->slug]) }}">
+                            {{ method_field('PUT') }}
+                            @include('partials.contact_address.edit')
+                        </form>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>

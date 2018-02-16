@@ -4,60 +4,62 @@
 
 @section('content')
 
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="card card-default">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>Kontakt Detailansicht</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Kontakt Detailansicht
                     </div>
+                    <div class="card-body">
+                        @if(strlen($contact->image)>0)
+                            <p>Aktuell: <img src="{{ url($contact->image) }}"/>
+                            </p>
+                        @endif
 
-                    @if(strlen($contact->image)>0)
-                        <p>Aktuell: <img src="{{ url($contact->image) }}"/></p>
-                    @endif
 
+                        <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
+                              action="{{ route('contacts.update_image', [$contact->slug]) }}">
+                            <input type="hidden" name="_method" value="PUT">
+                            {{ csrf_field() }}
 
-                    <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
-                          action="{{ route('contacts.update_image', [$contact->slug]) }}">
-                        <input type="hidden" name="_method" value="PUT">
-                        {{ csrf_field() }}
+                            <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
+                                <label for="image" class="col-md-4 form-control-label">Bild</label>
 
-                        <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
-                            <label for="image" class="col-md-4 form-control-label">Bild</label>
+                                <div class="col-md-6">
+                                    <div class="image-crop">
+                                        <img src="@if(strlen($contact->image)>0){{ url($contact->image) }}@endif">
+                                    </div>
+                                    <div class="img-preview img-preview-sm"></div>
+                                    <label title="Upload image file" for="inputImage" class="">
+                                        <input type="file" accept="image/*" name="file" id="inputImage" class="hide">
+                                        Upload new image
+                                    </label>
 
-                            <div class="col-md-6">
-                                <div class="image-crop">
-                                    <img src="@if(strlen($contact->image)>0){{ url($contact->image) }}@endif">
-                                </div>
-                                <div class="img-preview img-preview-sm"></div>
-                                <label title="Upload image file" for="inputImage" class="btn btn-primary">
-                                    <input type="file" accept="image/*" name="file" id="inputImage" class="hide">
-                                    Upload new image
-                                </label>
-
-                                @if ($errors->has('image'))
-                                    <span class="form-text">
+                                    @if ($errors->has('image'))
+                                        <span class="form-text">
                                             <strong>{{ $errors->first('image') }}</strong>
                                         </span>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                        <input type="hidden" id="image-x" name="image_x">
-                        <input type="hidden" id="image-y" name="image_y">
-                        <input type="hidden" id="image-width" name="image_width">
-                        <input type="hidden" id="image-height" name="image_height">
+                            <input type="hidden" id="image-x" name="image_x">
+                            <input type="hidden" id="image-y" name="image_y">
+                            <input type="hidden" id="image-width" name="image_width">
+                            <input type="hidden" id="image-height" name="image_height">
 
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Bild aktualisieren
-                                </button>
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Bild aktualisieren
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+
+                    </div>
 
                 </div>
-
             </div>
         </div>
     </div>
@@ -74,8 +76,6 @@
 @section('js')
 
     <script>
-
-
         $(document).ready(function () {
 
             var $image = $(".image-crop > img")
@@ -89,7 +89,6 @@
                     $("#image-y").val(data.y);
                     $("#image-width").val(data.width);
                     $("#image-height").val(data.height);
-
                 }
             });
 
@@ -119,9 +118,6 @@
             } else {
                 $inputImage.addClass("hide");
             }
-
         })
-
     </script>
-
 @endsection

@@ -4,14 +4,15 @@
 
 @section('content')
 
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
                 <div class="card card-default">
-                    <div class="card-body">
-                        <div class="card-title">
-                            <h5>Kontakte exportieren</h5>
-                        </div>
 
+                    <div class="card-header">
+                        Kontakte exportieren
+                    </div>
+                    <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('export.export') }}">
                             {{ csrf_field() }}
@@ -48,4 +49,5 @@
                 </div>
             </div>
         </div>
+    </div>
 @endsection

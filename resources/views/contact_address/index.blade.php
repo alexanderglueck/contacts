@@ -3,27 +3,27 @@
 @section('title', 'Adressen verwalten')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="card card-default">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card card-default">
 
 
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>Adressen verwalten</h5>
+                    <div class="card-header">
+                        Adressen verwalten
                     </div>
+                    <div class="card-body">
+                        <p>
+                            <strong>Kontakt Adressen: </strong><br>
+                            <a href="{{ route('contact_addresses.create', [$contact->slug]) }}">Adresse
+                                hinzufügen</a>
+                        </p>
 
-                    <p>
-                        <strong>Kontakt Adressen: </strong><br>
-                        <a href="{{ route('contact_addresses.create', [$contact->slug]) }}">Adresse
-                            hinzufügen</a>
-                    </p>
-
-                    @include('partials.contact_address.index')
+                        @include('partials.contact_address.index')
+                    </div>
                 </div>
 
                 @include('partials.contact_address.map')
-
             </div>
         </div>
     </div>
@@ -65,17 +65,17 @@
                 var bounds = new google.maps.LatLngBounds();
 
                 @foreach($contactAddresses as $contactAddress)
-                    @if (trim($contactAddress->latitude) !== '' && trim($contactAddress->longitude) !== '')
-                        marker = new google.maps.Marker({
-                            position: new google.maps.LatLng('{{ $contactAddress->latitude }}', '{{ $contactAddress->longitude }}'),
-                            map: map,
-                            title: '{{ $contactAddress->name }}'
-                        });
+                        @if (trim($contactAddress->latitude) !== '' && trim($contactAddress->longitude) !== '')
+                    marker = new google.maps.Marker({
+                    position: new google.maps.LatLng('{{ $contactAddress->latitude }}', '{{ $contactAddress->longitude }}'),
+                    map: map,
+                    title: '{{ $contactAddress->name }}'
+                });
 
-                        oms.addMarker(marker);
-                        markers.push(marker);
-                        bounds.extend(marker.getPosition());
-                    @endif
+                oms.addMarker(marker);
+                markers.push(marker);
+                bounds.extend(marker.getPosition());
+                @endif
                 @endforeach
 
                 map.fitBounds(bounds);

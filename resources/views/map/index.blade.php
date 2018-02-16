@@ -4,21 +4,22 @@
 
 @section('content')
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-default">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>Kontaktlandkarte</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Kontaktlandkarte
                     </div>
+                    <div class="card-body">
+                        @if(strlen(config('contacts.googleMapsKey'))>0)
+                            <div id="map"></div>
+                        @else
+                            <p>Google Maps API Key ist nicht gesetzt. Karte kann
+                                nicht geladen werden.</p>
+                        @endif
 
-                    @if(strlen(config('contacts.googleMapsKey'))>0)
-                        <div id="map"></div>
-                    @else
-                        <p>Google Maps API Key ist nicht gesetzt. Karte kann
-                            nicht geladen werden.</p>
-                    @endif
-
+                    </div>
                 </div>
             </div>
         </div>

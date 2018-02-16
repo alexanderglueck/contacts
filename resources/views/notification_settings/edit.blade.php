@@ -3,14 +3,14 @@
 @section('title', trans('ui.notification_settings'))
 
 @section('content')
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>{{ trans('ui.notification_settings') }}</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        {{ trans('ui.notification_settings') }}
                     </div>
-                    <div class="ibox-content">
+                    <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('notification_settings.update') }}">
                             {{ method_field('PUT') }}
                             {{ csrf_field() }}

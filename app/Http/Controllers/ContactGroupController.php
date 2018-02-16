@@ -83,7 +83,7 @@ class ContactGroupController extends Controller
     {
         return view('contact_group.show', [
             'contactGroup' => $contactGroup,
-            'contacts' => $contactGroup->contacts
+            'contacts' => $contactGroup->contacts()->paginate(10)
         ]);
     }
 

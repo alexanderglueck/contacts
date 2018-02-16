@@ -222,14 +222,14 @@
 
     </nav>
 
-    <div class="container">
+    <main class="py-4">
         <!-- Content header -->
         @include('partials.layout.alert')
         {{--@include('partials.layout.headline')--}}
 
 
         @yield('content')
-    </div>
+    </main>
 </div>
 
 <!-- Scripts -->
