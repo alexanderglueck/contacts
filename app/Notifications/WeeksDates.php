@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Contact;
 use DateTime;
 use DateInterval;
 use App\Models\ContactDate;

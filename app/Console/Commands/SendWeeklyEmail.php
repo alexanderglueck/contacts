@@ -43,9 +43,11 @@ class SendWeeklyEmail extends Command
     public function handle()
     {
         foreach (User::all() as $user) {
-            if ($user->notificationSettings()->send_weekly) {
-                $user->notify($this->upcomingDates);
+            if ( ! $user->notificationSettings()->send_weekly) {
+                continue;
             }
+
+            $user->notify($this->upcomingDates);
         }
     }
 }

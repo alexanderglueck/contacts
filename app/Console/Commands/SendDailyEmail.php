@@ -43,9 +43,11 @@ class SendDailyEmail extends Command
     public function handle()
     {
         foreach (User::all() as $user) {
-            if ($user->notificationSettings()->send_daily) {
-                $user->notify($this->todaysDates);
+            if ( ! $user->notificationSettings()->send_daily) {
+                continue;
             }
+
+            $user->notify($this->todaysDates);
         }
     }
 }
