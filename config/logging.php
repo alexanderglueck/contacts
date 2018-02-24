@@ -32,13 +32,17 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single', 'bugsnag'],
         ],
 
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
+        ],
+
+        'bugsnag' => [
+            'driver' => 'bugsnag',
         ],
 
         'daily' => [
