@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Setup;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class InstallController extends Controller
 {
@@ -13,14 +12,6 @@ class InstallController extends Controller
             return abort(404);
         }
 
-        if (DB::connection()->getDatabaseName()) {
-            dd("working " . DB::connection()->getDatabaseName());
-        } else {
-            dd("dsldfsdf");
-        }
-
-        return view('setup.install.index', [
-
-        ]);
+        return view('setup.install.index');
     }
 }
