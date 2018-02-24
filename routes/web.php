@@ -40,6 +40,11 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('login/token', 'Auth\LoginController@token')->name('login.token');
 Route::post('login/token', 'Auth\LoginController@check')->name('login.token.check');
 
+/**
+ * Install
+ */
+Route::get('install', 'Setup\InstallController@index')->name('install');
+
 Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
