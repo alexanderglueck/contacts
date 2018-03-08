@@ -28,7 +28,9 @@ class Contact extends Model implements CalendarInterface
         'nickname',
         'active',
         'first_met',
-        'note'
+        'note',
+        'died_at',
+        'died_from'
     ];
 
     protected $attributes = [
@@ -75,6 +77,11 @@ class Contact extends Model implements CalendarInterface
             $company;
     }
 
+    public function getIsAliveAttribute()
+    {
+        return trim($this->died_at) === '';
+    }
+
     public function setDateOfBirthAttribute($value)
     {
         if ($value == null) {
@@ -82,6 +89,16 @@ class Contact extends Model implements CalendarInterface
         }
 
         $this->attributes['date_of_birth'] = date_create_from_format('d.m.Y', $value)
+            ->format('Y-m-d');
+    }
+
+    public function setDiedAtAttribute($value)
+    {
+        if ($value == null) {
+            return;
+        }
+
+        $this->attributes['died_at'] = date_create_from_format('d.m.Y', $value)
             ->format('Y-m-d');
     }
 
@@ -95,6 +112,22 @@ class Contact extends Model implements CalendarInterface
     {
         if ($this->date_of_birth) {
             $value = date_create_from_format('Y-m-d', $this->date_of_birth);
+
+            return $value->format('d.m.Y');
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns a string in d.m.Y or d.m. format depending
+     *
+     * @return string A d.m.Y formatted date
+     */
+    public function getFormattedDiedAtAttribute()
+    {
+        if ($this->died_at) {
+            $value = date_create_from_format('Y-m-d', $this->died_at);
 
             return $value->format('d.m.Y');
         }
@@ -177,6 +210,30 @@ class Contact extends Model implements CalendarInterface
     public function scopeNotActive($query)
     {
         return $query->where('active', 0);
+    }
+
+    /**
+     * Only return alive contacts
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeAlive($query)
+    {
+        return $query->whereNull('died_at');
+    }
+
+    /**
+     * Only return dead contacts
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeDead($query)
+    {
+        return $query->whereNotNull('died_at');
     }
 
     /**

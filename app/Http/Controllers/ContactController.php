@@ -25,6 +25,7 @@ class ContactController extends Controller
         'gender_id' => 'integer|exists:genders,id',
         'nickname' => 'present',
         'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
+        'died_at' => 'nullable|sometimes|date_format:d.m.Y',
     ];
 
     /**

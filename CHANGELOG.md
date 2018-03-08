@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add notification settings
 - Add `first_met` field to contact
 - Add `note` field to contact
+- Add `died_from` field to contact
+- Add `died_at` field to contact
 - Add image upload for the user
 
 ### Changed

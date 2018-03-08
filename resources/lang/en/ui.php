@@ -83,7 +83,8 @@ return [
     'update' => 'Update',
     'first_met' => 'First met',
     'note' => 'Note',
-    '' => '',
+    'died_at' => 'Died at',
+    'died_from' => 'Died from',
     '' => '',
 
     /*

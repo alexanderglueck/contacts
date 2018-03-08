@@ -88,6 +88,10 @@
 
 {!! \App\Helpers\Form::textarea('note', trans('ui.note'), $contact->note) !!}
 
+{!! \App\Helpers\Form::text('died_at', trans('ui.died_at'), $contact->formatted_died_at) !!}
+
+{!! \App\Helpers\Form::text('died_from', trans('ui.died_from'), $contact->died_from) !!}
+
 <div class="form-group">
     <div class="col-md-8 col-md-offset-4">
         <button type="submit" class="btn btn-primary">
