@@ -82,7 +82,7 @@ return [
     'notification_settings' => 'Notification settings',
     'update' => 'Update',
     'first_met' => 'First met',
-    '' => '',
+    'note' => 'Note',
     '' => '',
     '' => '',
 

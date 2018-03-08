@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add map with available addresses on the contact addresses detail view
 - Add notification settings
 - Add `first_met` field to contact
+- Add `note` field to contact
 - Add image upload for the user
 
 ### Changed

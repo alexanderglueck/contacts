@@ -78,19 +78,20 @@
 
         @if ($errors->has('active'))
             <span class="form-text">
-                    <strong>{{ $errors->first('active') }}</strong>
-                </span>
+                <strong>{{ $errors->first('active') }}</strong>
+            </span>
         @endif
     </div>
 </div>
 
 {!! \App\Helpers\Form::textarea('first_met', trans('ui.first_met'), $contact->first_met) !!}
 
+{!! \App\Helpers\Form::textarea('note', trans('ui.note'), $contact->note) !!}
+
 <div class="form-group">
     <div class="col-md-8 col-md-offset-4">
         <button type="submit" class="btn btn-primary">
             {{ isset($createButtonText) ? $createButtonText : trans('ui.create_contact') }}
         </button>
-
     </div>
 </div>

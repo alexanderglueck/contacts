@@ -27,7 +27,8 @@ class Contact extends Model implements CalendarInterface
         'custom_id',
         'nickname',
         'active',
-        'first_met'
+        'first_met',
+        'note'
     ];
 
     protected $attributes = [
