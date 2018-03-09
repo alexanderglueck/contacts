@@ -244,4 +244,18 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('contact_images/{image}', function ($image) {
         return Image::make(storage_path('app/contact_images/') . $image)->response();
     })->name('images.contact');
+
+    /**
+     * Announcements
+     */
+    Route::get('announcements', 'AnnouncementController@index')->name('announcements.index');
+    Route::get('announcements/create', 'AnnouncementController@create')->name('announcements.create');
+    Route::post('announcements', 'AnnouncementController@store')->name('announcements.store');
+    Route::get('announcements/{announcement}', 'AnnouncementController@show')->name('announcements.show');
+    Route::get('announcements/{announcement}/edit', 'AnnouncementController@edit')->name('announcements.edit');
+    Route::put('announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
+    Route::get('announcements/{announcement}/delete', 'AnnouncementController@delete')->name('announcements.delete');
+    Route::delete('announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
+
+
 });

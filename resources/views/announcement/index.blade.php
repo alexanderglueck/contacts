@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Kontakte verwalten')
+@section('title', trans('ui.announcements'))
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
-
                     <div class="card-header">
-                        Kontakte verwalten
+                        {{ trans('ui.announcements') }}
                     </div>
                     <div class="card-body">
-                        <p><strong>Kontakte: </strong><br>
-                            <a href="{{ route('contacts.create') }}">Kontakt
-                                hinzufügen</a>
+                        <p>
+                            <a href="{{ route('announcements.create') }}">
+                               {{ trans('ui.create_announcement') }}
+                            </a>
                         </p>
 
-                        @include('partials.contact.index')
+                        @include('partials.announcement.index')
                     </div>
                 </div>
             </div>

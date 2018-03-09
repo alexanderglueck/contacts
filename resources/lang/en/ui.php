@@ -85,7 +85,9 @@ return [
     'note' => 'Note',
     'died_at' => 'Died at',
     'died_from' => 'Died from',
-    '' => '',
+    'announcements' => 'Announcements',
+    'no_announcements' => 'No announcements yet',
+    'body' => 'Text',
 
     /*
      * Buttons and titles
@@ -112,4 +114,7 @@ return [
     'create_link_list' => 'Create link list',
     'edit_link_list' => 'Edit link list',
     'delete_link_list' => 'Delete link list',
+    'create_announcement' => 'Create announcement',
+    'edit_announcement' => 'Edit announcement',
+    'delete_announcement' => 'Delete announcement',
 ];
