@@ -2,8 +2,8 @@
 
 namespace App\Admin;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Announcement extends Model
 {

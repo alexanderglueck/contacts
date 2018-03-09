@@ -256,6 +256,4 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::put('announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
     Route::get('announcements/{announcement}/delete', 'AnnouncementController@delete')->name('announcements.delete');
     Route::delete('announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
-
-
 });
