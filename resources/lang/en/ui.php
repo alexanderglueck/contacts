@@ -88,6 +88,7 @@ return [
     'announcements' => 'Announcements',
     'no_announcements' => 'No announcements yet',
     'body' => 'Text',
+    'nationality' => 'Nationality',
 
     /*
      * Buttons and titles

@@ -6,6 +6,7 @@ use Auth;
 use Session;
 use App\Models\Gender;
 use App\Models\Contact;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Events\ContactCreated;
 use App\Rules\ValidIBANFormat;
@@ -26,6 +27,7 @@ class ContactController extends Controller
         'nickname' => 'present',
         'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
         'died_at' => 'nullable|sometimes|date_format:d.m.Y',
+        'country_id' => 'nullable|sometimes|exists:countries,id',
     ];
 
     /**
@@ -50,7 +52,8 @@ class ContactController extends Controller
         return view('contact.create', [
             'contact' => new Contact,
             'genders' => Gender::all(),
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
+            'countries' => Country::all()
         ]);
     }
 
@@ -121,7 +124,8 @@ class ContactController extends Controller
             'createButtonText' => 'Kontakt bearbeiten',
             'contact' => $contact,
             'genders' => Gender::all(),
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
+            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
+            'countries' => Country::all()
         ]);
     }
 

@@ -30,7 +30,8 @@ class Contact extends Model implements CalendarInterface
         'first_met',
         'note',
         'died_at',
-        'died_from'
+        'died_from',
+        'nationality_id'
     ];
 
     protected $attributes = [

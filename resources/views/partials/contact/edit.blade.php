@@ -36,8 +36,8 @@
 
         @if ($errors->has('gender'))
             <span class="form-text">
-                    <strong>{{ $errors->first('gender') }}</strong>
-                </span>
+                <strong>{{ $errors->first('gender') }}</strong>
+            </span>
         @endif
     </div>
 </div>
@@ -91,6 +91,25 @@
 {!! \App\Helpers\Form::text('died_at', trans('ui.died_at'), $contact->formatted_died_at) !!}
 
 {!! \App\Helpers\Form::text('died_from', trans('ui.died_from'), $contact->died_from) !!}
+
+<div class="form-group{{ $errors->has('nationality_id') ? ' has-danger' : '' }}">
+    <label for="nationality_id" class="col-md-4 form-control-label">{{ trans('ui.nationality') }}</label>
+
+    <div class="col-md-6">
+        <select name="nationality_id" id="nationality_id" class="form-control">
+            <option></option>
+            @foreach($countries as $country)
+                <option {{ old('nationality_id', $contact->nationality_id) === $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->country}}</option>
+            @endforeach
+        </select>
+
+        @if ($errors->has('nationality_id'))
+            <span class="form-text">
+                <strong>{{ $errors->first('nationality_id') }}</strong>
+            </span>
+        @endif
+    </div>
+</div>
 
 <div class="form-group">
     <div class="col-md-8 col-md-offset-4">

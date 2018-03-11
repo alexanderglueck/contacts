@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `died_at` field to contact
 - Add image upload for the user
 - Add (markdown) announcements
+- Add `nationality_id` field to contact
 
 ### Changed
 - Move `User` class into `Models` directory
