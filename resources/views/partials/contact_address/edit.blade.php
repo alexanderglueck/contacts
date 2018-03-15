@@ -1,5 +1,5 @@
 
-    {{ csrf_field() }}
+    @csrf
 
 
     <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">

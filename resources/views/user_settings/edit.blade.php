@@ -15,7 +15,7 @@
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('user_settings.update', [$user->slug]) }}">
                             <input type="hidden" name="_method" value="PUT">
-                            {{ csrf_field() }}
+                            @csrf
 
 
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
@@ -115,7 +115,7 @@
                               enctype="multipart/form-data"
                               action="{{ route('user_settings.update_image', [$user->slug]) }}">
                             <input type="hidden" name="_method" value="PUT">
-                            {{ csrf_field() }}
+                            @csrf
 
 
                             <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
@@ -158,7 +158,7 @@
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('user_settings.update_api_token', [$user->slug]) }}">
                             <input type="hidden" name="_method" value="PUT">
-                            {{ csrf_field() }}
+                            @csrf
 
 
                             <div class="form-group{{ $errors->has('api_token') ? ' has-error' : '' }}">

@@ -13,7 +13,7 @@
                     </div>
                     <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('comments.update', [$contact->slug, $comment->id]) }}">
-                            {{ csrf_field() }}
+                            @csrf
                             {{ method_field('PUT') }}
 
                             {!! \App\Helpers\Form::textarea('comment', trans('ui.comment'), $comment->comment) !!}
@@ -35,7 +35,7 @@
                     </div>
                     <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('comments.destroy', [$contact->slug, $comment->id]) }}">
-                            {{ csrf_field() }}
+                            @csrf
                             {{ method_field('DELETE') }}
 
                             <div class="form-group">

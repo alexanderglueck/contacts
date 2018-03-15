@@ -1,4 +1,4 @@
-{{ csrf_field() }}
+@csrf
 
 {!! \App\Helpers\Form::text('title', trans('ui.title'), $announcement->title) !!}
 

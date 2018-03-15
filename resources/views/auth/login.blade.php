@@ -8,7 +8,7 @@
                     <div class="panel-heading">@lang('auth.login.title')</div>
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
-                            {{ csrf_field() }}
+                            @csrf
 
                             {!! \App\Helpers\Form::email('email', trans('auth.login.fields.email'), null, true, true) !!}
 

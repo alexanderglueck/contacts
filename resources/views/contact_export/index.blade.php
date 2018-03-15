@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('export.export') }}">
-                            {{ csrf_field() }}
+                            @csrf
 
                             <div class="form-group{{ $errors->has('contact_group_id') ? ' has-danger' : '' }}">
                                 <label for="parent_id" class="col-md-4 form-control-label">

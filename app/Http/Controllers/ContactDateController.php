@@ -73,11 +73,11 @@ class ContactDateController extends Controller
         $contactDate->updated_by = Auth::id();
 
         if ($contactDate->save()) {
-            Session::flash('alert-success', 'Datum wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_date.created'));
 
             return redirect()->route('contact_dates.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Datum konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_date.not_created'));
 
             return redirect()->route('contact_dates.create', [$contact->slug]);
         }
@@ -145,11 +145,11 @@ class ContactDateController extends Controller
         $contactDate->updated_by = Auth::id();
 
         if ($contactDate->save()) {
-            Session::flash('alert-success', 'Datum wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_date.updated'));
 
             return redirect()->route('contact_dates.show', [$contact->slug, $contactDate->slug]);
         } else {
-            Session::flash('alert-danger', 'Datum konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_date.not_updated'));
 
             return redirect()->route('contact_dates.edit', [$contact->slug, $contactDate->slug]);
         }
@@ -167,11 +167,11 @@ class ContactDateController extends Controller
     public function destroy(Contact $contact, ContactDate $contactDate)
     {
         if ($contactDate->delete()) {
-            Session::flash('alert-success', 'Datum wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_date.deleted'));
 
             return redirect()->route('contact_dates.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Datum konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_date.not_deleted'));
 
             return redirect()->route('contact_dates.delete', [$contact->slug, $contactDate->slug]);
         }

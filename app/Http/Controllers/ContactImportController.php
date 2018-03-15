@@ -11,9 +11,9 @@ use App\Models\ContactUrl;
 use App\Models\ContactDate;
 use App\Models\ContactEmail;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
 use App\Models\ContactNumber;
 use App\Models\ContactAddress;
+use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 

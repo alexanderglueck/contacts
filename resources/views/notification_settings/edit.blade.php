@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('notification_settings.update') }}">
                             {{ method_field('PUT') }}
-                            {{ csrf_field() }}
+                            @csrf
 
                             <div class="form-check">
                                 <input class="form-check-input" {{ $settings->send_daily ? ' checked ' : '' }} type="checkbox" value="1" id="send_daily" name="send_daily">

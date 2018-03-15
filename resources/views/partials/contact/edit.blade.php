@@ -1,4 +1,4 @@
-{{ csrf_field() }}
+@csrf
 
 {!! \App\Helpers\Form::text('salutation', trans('ui.salutation'), $contact->salutation, true, true) !!}
 

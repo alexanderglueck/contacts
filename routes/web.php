@@ -264,5 +264,4 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('comments/{contact}/{comment}/edit', 'CommentController@edit')->name('comments.edit');
     Route::put('comments/{contact}/{comment}', 'CommentController@update')->name('comments.update');
     Route::delete('comments/{contact}/{comment}', 'CommentController@destroy')->name('comments.destroy');
-
 });

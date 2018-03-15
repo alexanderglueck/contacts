@@ -64,11 +64,11 @@ class ContactUrlController extends Controller
         $contactUrl->updated_by = Auth::id();
 
         if ($contactUrl->save()) {
-            Session::flash('alert-success', 'Website wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_url.created'));
 
             return redirect()->route('contact_urls.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Website konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_url.not_created'));
 
             return redirect()->route('contact_urls.create', [$contact->slug]);
         }
@@ -124,11 +124,11 @@ class ContactUrlController extends Controller
         $contactUrl->updated_by = Auth::id();
 
         if ($contactUrl->save()) {
-            Session::flash('alert-success', 'Website wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_url.updated'));
 
             return redirect()->route('contact_urls.show', [$contact->slug, $contactUrl->slug]);
         } else {
-            Session::flash('alert-danger', 'Website konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_url.not_updated'));
 
             return redirect()->route('contact_urls.edit', [$contact->slug, $contactUrl->slug]);
         }
@@ -146,11 +146,11 @@ class ContactUrlController extends Controller
     public function destroy(Contact $contact, ContactUrl $contactUrl)
     {
         if ($contactUrl->delete()) {
-            Session::flash('alert-success', 'Website wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_url.deleted'));
 
             return redirect()->route('contact_urls.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Website konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_url.not_deleted'));
 
             return redirect()->route('contact_urls.delete', [$contact->slug, $contactUrl->slug]);
         }

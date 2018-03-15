@@ -8,7 +8,7 @@
                 <div class="panel-heading">@lang('auth.login.title')</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('login.token.check') }}">
-                        {{ csrf_field() }}
+                        @csrf
 
                         <div class="form-group{{ $errors->has('token') ? ' has-error' : '' }}">
                             <label for="token" class="col-md-4 control-label">Token</label>

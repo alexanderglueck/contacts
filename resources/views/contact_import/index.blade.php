@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
                               action="{{ route('import.import') }}">
-                            {{ csrf_field() }}
+                            @csrf
 
                             <div class="form-group{{ $errors->has('contact_group_id') ? ' has-danger' : '' }}">
                                 <label for="parent_id"

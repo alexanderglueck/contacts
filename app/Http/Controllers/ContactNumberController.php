@@ -64,11 +64,11 @@ class ContactNumberController extends Controller
         $contactNumber->updated_by = Auth::id();
 
         if ($contactNumber->save()) {
-            Session::flash('alert-success', 'Nummer wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_number.created'));
 
             return redirect()->route('contact_numbers.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Nummer konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_number.not_created'));
 
             return redirect()->route('contact_numbers.create', [$contact->slug]);
         }
@@ -124,11 +124,11 @@ class ContactNumberController extends Controller
         $contactNumber->updated_by = Auth::id();
 
         if ($contactNumber->save()) {
-            Session::flash('alert-success', 'Nummer wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_number.updated'));
 
             return redirect()->route('contact_numbers.show', [$contact->slug, $contactNumber->slug]);
         } else {
-            Session::flash('alert-danger', 'Nummer konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_number.not_updated'));
 
             return redirect()->route('contact_numbers.edit', [$contact->slug, $contactNumber->slug]);
         }
@@ -146,11 +146,11 @@ class ContactNumberController extends Controller
     public function destroy(Contact $contact, ContactNumber $contactNumber)
     {
         if ($contactNumber->delete()) {
-            Session::flash('alert-success', 'Nummer wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_number.deleted'));
 
             return redirect()->route('contact_numbers.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Nummer konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_number.not_deleted'));
 
             return redirect()->route('contact_numbers.delete', [$contact->slug, $contactNumber->slug]);
         }

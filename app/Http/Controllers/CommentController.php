@@ -16,7 +16,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param Contact                   $contact
      *
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Contact $contact)
     {
@@ -47,7 +47,7 @@ class CommentController extends Controller
      * @param Contact              $contact
      * @param  \App\Models\Comment $comment
      *
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, Comment $comment)
     {
@@ -63,7 +63,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param  \App\Models\Comment      $comment
      *
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, Comment $comment)
     {
@@ -90,7 +90,8 @@ class CommentController extends Controller
      * @param Contact              $contact
      * @param  \App\Models\Comment $comment
      *
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Contact $contact, Comment $comment)
     {

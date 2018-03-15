@@ -12,7 +12,7 @@
                     </div>
                     <div class="card-body">
                         <form method="post" action="{{ route('auth_settings.check') }}">
-                            {{ csrf_field() }}
+                            @csrf
 
                             <p>
                                 Um 2-Factor-Authentication zu aktivieren musst

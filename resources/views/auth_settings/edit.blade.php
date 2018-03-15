@@ -18,7 +18,7 @@
                         </ol>
 
                         <form method="post" action="{{ route('auth_settings.disable') }}">
-                            {{ csrf_field() }}
+                            @csrf
                             <input type="hidden" name="_method" value="DELETE">
 
                             <input type="submit" value="deactivate"/>

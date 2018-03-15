@@ -62,11 +62,11 @@ class ContactGroupController extends Controller
         $contact->updated_by = Auth::id();
 
         if ($contact->save()) {
-            Session::flash('alert-success', 'Kontaktgruppe wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_group.created'));
 
             return redirect()->route('contact_groups.index');
         } else {
-            Session::flash('alert-danger', 'Kontaktgruppe konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_group.not_created'));
 
             return redirect()->route('contact_groups.create');
         }
@@ -125,11 +125,11 @@ class ContactGroupController extends Controller
         $contactGroup->updated_by = Auth::id();
 
         if ($contactGroup->save()) {
-            Session::flash('alert-success', 'Kontaktgruppe wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_group.updated'));
 
             return redirect()->route('contact_groups.show', [$contactGroup->slug]);
         } else {
-            Session::flash('alert-danger', 'Kontaktgruppe konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_group.not_updated'));
 
             return redirect()->route('contact_groups.edit', [$contactGroup->slug]);
         }
@@ -146,11 +146,11 @@ class ContactGroupController extends Controller
     public function destroy(ContactGroup $contactGroup)
     {
         if ($contactGroup->delete()) {
-            Session::flash('alert-success', 'Kontaktgruppe wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_group.deleted'));
 
             return redirect()->route('contact_groups.index');
         } else {
-            Session::flash('alert-danger', 'Kontaktgruppe konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_group.not_deleted'));
 
             return redirect()->route('contact_groups.delete', $contactGroup->slug);
         }

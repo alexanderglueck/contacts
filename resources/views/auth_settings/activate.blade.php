@@ -15,7 +15,7 @@
 
                         <form class="form-horizontal" role="form" method="POST"
                               action="{{ route('auth_settings.enable') }}">
-                            {{ csrf_field() }}
+                            @csrf
 
                             <p>Um 2FA zu aktivieren, klicken Sie auf den Button.</p>
 

@@ -64,11 +64,11 @@ class ContactEmailController extends Controller
         $contactEmail->updated_by = Auth::id();
 
         if ($contactEmail->save()) {
-            Session::flash('alert-success', 'E-Mail Adresse wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_email.created'));
 
             return redirect()->route('contact_emails.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'E-Mail Adresse konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_email.not_created'));
 
             return redirect()->route('contact_emails.create', [$contact->slug]);
         }
@@ -124,11 +124,11 @@ class ContactEmailController extends Controller
         $contactEmail->updated_by = Auth::id();
 
         if ($contactEmail->save()) {
-            Session::flash('alert-success', 'E-Mail wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_email.updated'));
 
             return redirect()->route('contact_emails.show', [$contact->slug, $contactEmail->slug]);
         } else {
-            Session::flash('alert-danger', 'E-Mail Adresse konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_email.not_updated'));
 
             return redirect()->route('contact_emails.edit', [$contact->slug, $contactEmail->slug]);
         }
@@ -146,11 +146,11 @@ class ContactEmailController extends Controller
     public function destroy(Contact $contact, ContactEmail $contactEmail)
     {
         if ($contactEmail->delete()) {
-            Session::flash('alert-success', 'E-Mail wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_email.deleted'));
 
             return redirect()->route('contact_emails.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'E-Mail Adresse konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_email.not_deleted'));
 
             return redirect()->route('contact_emails.delete', [$contact->slug, $contactEmail->slug]);
         }

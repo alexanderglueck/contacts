@@ -24,6 +24,7 @@ class ContactAddressController extends Controller
      * Display a listing of the resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact)
@@ -38,6 +39,7 @@ class ContactAddressController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Contact $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact)
@@ -53,7 +55,8 @@ class ContactAddressController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact      $contact
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Contact $contact)
@@ -72,11 +75,11 @@ class ContactAddressController extends Controller
         $contactAddress->updated_by = Auth::id();
 
         if ($contactAddress->save()) {
-            Session::flash('alert-success', 'Adresse wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact_address.created'));
 
             return redirect()->route('contact_addresses.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Adresse konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_address.not_created'));
 
             return redirect()->route('contact_addresses.create', [$contact->slug]);
         }
@@ -85,8 +88,9 @@ class ContactAddressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact        $contact
      * @param  \App\Models\ContactAddress $contactAddress
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactAddress $contactAddress)
@@ -100,8 +104,9 @@ class ContactAddressController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact        $contact
      * @param  \App\Models\ContactAddress $contactAddress
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactAddress $contactAddress)
@@ -117,9 +122,10 @@ class ContactAddressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact $contact
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Contact        $contact
      * @param  \App\Models\ContactAddress $contactAddress
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, ContactAddress $contactAddress)
@@ -135,11 +141,11 @@ class ContactAddressController extends Controller
         $contactAddress->updated_by = Auth::id();
 
         if ($contactAddress->save()) {
-            Session::flash('alert-success', 'Adresse wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact_address.updated'));
 
             return redirect()->route('contact_addresses.show', [$contact->slug, $contactAddress->slug]);
         } else {
-            Session::flash('alert-danger', 'Adresse konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_address.not_updated'));
 
             return redirect()->route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]);
         }
@@ -157,11 +163,11 @@ class ContactAddressController extends Controller
     public function destroy(Contact $contact, ContactAddress $contactAddress)
     {
         if ($contactAddress->delete()) {
-            Session::flash('alert-success', 'Adresse wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact_address.deleted'));
 
             return redirect()->route('contact_addresses.index', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Adresse konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact_address.not_deleted'));
 
             return redirect()->route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]);
         }
@@ -170,8 +176,9 @@ class ContactAddressController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param  \App\Models\Contact        $contact
      * @param  \App\Models\ContactAddress $contactAddress
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, ContactAddress $contactAddress)

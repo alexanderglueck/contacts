@@ -21,7 +21,7 @@
                         <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data"
                               action="{{ route('contacts.update_image', [$contact->slug]) }}">
                             <input type="hidden" name="_method" value="PUT">
-                            {{ csrf_field() }}
+                            @csrf
 
                             <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
                                 <label for="image" class="col-md-4 form-control-label">Bild</label>

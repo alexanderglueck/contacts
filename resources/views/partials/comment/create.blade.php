@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         <form class="form-horizontal" role="form" method="POST" action="{{ route('comments.store', [$contact->slug]) }}">
-            {{ csrf_field() }}
+            @csrf
 
             {!! \App\Helpers\Form::textarea('comment', trans('ui.comment'), $comment->comment, true, false) !!}
 

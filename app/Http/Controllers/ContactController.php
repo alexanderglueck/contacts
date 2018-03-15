@@ -85,11 +85,11 @@ class ContactController extends Controller
 
             event(new ContactCreated($contact));
 
-            Session::flash('alert-success', 'Kontakt wurde erstellt!');
+            Session::flash('alert-success', trans('flash_message.contact.created'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Kontakt konnte nicht erstellt werden!');
+            Session::flash('alert-danger', trans('flash_message.contact.not_created'));
 
             return redirect()->route('contacts.create');
         }
@@ -156,11 +156,11 @@ class ContactController extends Controller
         }
 
         if ($contact->save()) {
-            Session::flash('alert-success', 'Kontakt wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.contact.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', 'Kontakt konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
 
             return redirect()->route('contacts.edit', [$contact->slug]);
         }
@@ -176,12 +176,18 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
+        if ($contact->image) {
+            if (file_exists(storage_path('app/') . $contact->image)) {
+                unlink(storage_path('app/') . $contact->image);
+            }
+        }
+
         if ($contact->delete()) {
-            Session::flash('alert-success', 'Kontakt wurde gelöscht!');
+            Session::flash('alert-success', trans('flash_message.contact.deleted'));
 
             return redirect()->route('contacts.index');
         } else {
-            Session::flash('alert-danger', 'Kontakt konnte nicht gelöscht werden!');
+            Session::flash('alert-danger', trans('flash_message.contact.not_deleted'));
 
             return redirect()->route('contacts.delete', [$contact->slug]);
         }
@@ -235,12 +241,12 @@ class ContactController extends Controller
             $contact->image = $fileNameOriginal;
 
             if ($contact->save()) {
-                Session::flash('alert-success', 'Kontaktbild wurde aktualisiert!');
+                Session::flash('alert-success', trans('flash_message.contact.updated'));
 
                 return redirect()->route('contacts.show', $contact->slug);
             }
         } else {
-            Session::flash('alert-danger', 'Kontaktbild konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
 
             return redirect()->route('contacts.image', $contact->slug);
         }
