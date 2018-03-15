@@ -256,4 +256,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::put('announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
     Route::get('announcements/{announcement}/delete', 'AnnouncementController@delete')->name('announcements.delete');
     Route::delete('announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
+
+    /**
+     * Comments
+     */
+    Route::post('comments/{contact}', 'CommentController@store')->name('comments.store');
+    Route::get('comments/{contact}/{comment}/edit', 'CommentController@edit')->name('comments.edit');
+    Route::put('comments/{contact}/{comment}', 'CommentController@update')->name('comments.update');
+    Route::delete('comments/{contact}/{comment}', 'CommentController@destroy')->name('comments.destroy');
+
 });

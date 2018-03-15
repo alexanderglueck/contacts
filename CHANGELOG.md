@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add image upload for the user
 - Add (markdown) announcements
 - Add `nationality_id` field to contact
+- Add comments to contacts
 
 ### Changed
 - Move `User` class into `Models` directory

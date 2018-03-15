@@ -65,7 +65,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Defines the has-many relationship with the Contact model
+     * Defines the has-many relationship with the ContactGroup model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -75,7 +75,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Defines the has-many relationship with the Contact model
+     * Defines the has-many relationship with the TFABackupCode model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -85,13 +85,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Defines the has-many relationship with the Contact model
+     * Defines the has-many relationship with the LogEntry model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function logs()
     {
         return $this->hasMany(LogEntry::class, 'created_by')->orderByDesc('created_at');
+    }
+
+    /**
+     * Defines the has-many relationship with the Comment model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'created_by')->orderBy('created_at', 'asc');
     }
 
     public function notificationSetting()

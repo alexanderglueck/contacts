@@ -89,6 +89,9 @@ return [
     'no_announcements' => 'No announcements yet',
     'body' => 'Text',
     'nationality' => 'Nationality',
+    'comment' => 'Comment',
+    'comments' => 'Comments',
+    'no_comments' => 'No comments',
 
     /*
      * Buttons and titles
@@ -118,4 +121,7 @@ return [
     'create_announcement' => 'Create announcement',
     'edit_announcement' => 'Edit announcement',
     'delete_announcement' => 'Delete announcement',
+    'create_comment' => 'Create comment',
+    'edit_comment' => 'Edit comment',
+    'delete_comment' => 'Delete comment',
 ];

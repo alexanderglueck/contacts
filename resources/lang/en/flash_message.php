@@ -22,4 +22,13 @@ return [
     'announcement.deleted' => 'Announcement was deleted successfully!',
     'announcement.not_deleted' => 'Announcement could not be deleted!',
 
+    /**
+     * Comment
+     */
+    'comment.created' => 'Comment was created successfully!',
+    'comment.not_created' => 'Comment could not be created!',
+    'comment.updated' => 'Comment was updated successfully!',
+    'comment.not_updated' => 'Comment could not be updated!',
+    'comment.deleted' => 'Comment was deleted successfully!',
+    'comment.not_deleted' => 'Comment could not be deleted!',
 ];

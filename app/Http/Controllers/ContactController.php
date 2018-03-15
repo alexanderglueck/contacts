@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use Session;
 use App\Models\Gender;
+use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Country;
 use Illuminate\Http\Request;
@@ -107,7 +108,9 @@ class ContactController extends Controller
         $this->authorize('view', $contact);
 
         return view('contact.show', [
-            'contact' => $contact
+            'contact' => $contact,
+            'comments' => $contact->comments,
+            'comment' => new Comment()
         ]);
     }
 

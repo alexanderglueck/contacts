@@ -333,6 +333,16 @@ class Contact extends Model implements CalendarInterface
     }
 
     /**
+     * Defines the has-many relationship with the Comment model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
      * Get the route key for the model.
      *
      * @return string
