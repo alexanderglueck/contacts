@@ -33,7 +33,6 @@ class ChangeForeignKeys extends Migration
             });
         }
 
-
         Schema::table('notification_settings', function (Blueprint $table) {
             $table->dropForeign('notification_settings_user_id_foreign');
 
