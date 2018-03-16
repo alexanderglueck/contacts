@@ -102,6 +102,21 @@
                         </p>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        {{ trans('ui.delete_account') }}
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <a href="{{ route('user_settings.delete') }}"
+                               class="btn btn-danger">
+                                {{ trans('ui.delete_account') }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
             </div>
 
             <div class="col-md-6">

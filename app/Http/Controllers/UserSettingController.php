@@ -45,11 +45,11 @@ class UserSettingController extends Controller
         }
 
         if (Auth::user()->save()) {
-            Session::flash('alert-success', 'Benutzer wurde aktualisiert!');
+            Session::flash('alert-success', trans('flash_message.user_setting.updated'));
 
             return redirect()->route('user_settings.edit');
         } else {
-            Session::flash('alert-danger', 'Benutzer konnte nicht aktualisiert werden!');
+            Session::flash('alert-danger', trans('flash_message.user_setting.not_updated'));
 
             return redirect()->route('user_settings.edit');
         }
@@ -84,15 +84,15 @@ class UserSettingController extends Controller
             Auth::user()->image = str_replace('public/', '', $file);
 
             if (Auth::user()->save()) {
-                Session::flash('alert-success', 'Benutzer wurde aktualisiert!');
+                Session::flash('alert-success', trans('flash_message.user_setting.updated'));
 
                 return redirect()->route('user_settings.edit');
             }
-        } else {
-            Session::flash('alert-danger', 'Benutzer konnte nicht aktualisiert werden! ');
-
-            return redirect()->route('user_settings.edit');
         }
+
+        Session::flash('alert-danger', trans('flash_message.user_setting.not_updated'));
+
+        return redirect()->route('user_settings.edit');
     }
 
     public function updateApiToken(Request $request)
@@ -101,5 +101,47 @@ class UserSettingController extends Controller
         Auth::user()->save();
 
         return redirect()->route('user_settings.edit');
+    }
+
+    /**
+     * Show the delete account form
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete()
+    {
+        return view('user_settings.delete');
+    }
+
+    /**
+     * Delete the users account
+     *
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function destroy()
+    {
+        $user = User::find(Auth::id());
+
+        if ($user->image) {
+            if (file_exists(storage_path('app/public/') . $user->image)) {
+                unlink(storage_path('app/public/') . $user->image);
+            }
+
+            $user->image = null;
+            $user->save();
+        }
+
+        if ($user->delete()) {
+            Auth::logout();
+
+            Session::flash('alert-success', trans('flash_message.user_setting.deleted'));
+
+            return redirect()->route('login');
+        } else {
+            Session::flash('alert-danger', trans('flash_message.user_setting.not_deleted'));
+
+            return redirect()->route('user_settings.delete');
+        }
     }
 }

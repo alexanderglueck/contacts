@@ -92,6 +92,7 @@ return [
     'comment' => 'Comment',
     'comments' => 'Comments',
     'no_comments' => 'No comments',
+    'delete_account' => 'Delete account',
 
     /*
      * Buttons and titles

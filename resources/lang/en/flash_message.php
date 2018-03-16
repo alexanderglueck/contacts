@@ -110,4 +110,14 @@ return [
         'deleted' => 'Contact group was deleted successfully!',
         'not_deleted' => 'Contact group could not be deleted!',
     ],
+
+    /**
+     * User Settings
+     */
+    'user_setting' => [
+        'updated' => 'User was updated successfully!',
+        'not_updated' => 'User could not be updated!',
+        'deleted' => 'User was deleted successfully!',
+        'not_deleted' => 'User could not be deleted!',
+    ],
 ];

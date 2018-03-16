@@ -203,6 +203,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     //  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
 
     /**
+     * Delete Account
+     */
+    Route::get('delete-account', 'UserSettingController@delete')->name('user_settings.delete');
+    Route::delete('delete-account', 'UserSettingController@destroy')->name('user_settings.destroy');
+
+    /**
      * Notification Settings
      */
     Route::get('settings/notifications', 'NotificationSettingController@edit')->name('notification_settings.edit');
