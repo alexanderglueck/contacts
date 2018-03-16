@@ -30,7 +30,7 @@
     <div class="col-md-6">
         <select name="gender_id" id="gender_id" class="form-control">
             @foreach($genders as $gender)
-                <option {{ old('gender_id', $contact->gender_id) === $gender->id ? 'selected' : '' }} value="{{$gender->id}}">{{ trans('ui.gender.' . $gender->gender) }}</option>
+                <option {{ old('gender_id', $contact->gender_id) == $gender->id ? 'selected' : '' }} value="{{$gender->id}}">{{ trans('ui.gender.' . $gender->gender) }}</option>
             @endforeach
         </select>
 
@@ -99,7 +99,7 @@
         <select name="nationality_id" id="nationality_id" class="form-control">
             <option></option>
             @foreach($countries as $country)
-                <option {{ old('nationality_id', $contact->nationality_id) === $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->country}}</option>
+                <option {{ old('nationality_id', $contact->nationality_id) == $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->country}}</option>
             @endforeach
         </select>
 

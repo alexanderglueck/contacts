@@ -24,7 +24,7 @@
                 <option value="">Keine Kontaktgruppe</option>
                 @foreach($contactGroups as $group)
                     @if($group->id !== $contactGroup->id)
-                        <option {{ old('parent_id', $contactGroup->parent_id) === $group->id ? 'selected' : '' }} value="{{$group->id}}">{{$group->name}}</option>
+                        <option {{ old('parent_id', $contactGroup->parent_id) == $group->id ? 'selected' : '' }} value="{{$group->id}}">{{$group->name}}</option>
                     @endif
                 @endforeach
             </select>

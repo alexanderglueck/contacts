@@ -28,7 +28,7 @@ class ContactController extends Controller
         'nickname' => 'present',
         'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
         'died_at' => 'nullable|sometimes|date_format:d.m.Y',
-        'country_id' => 'nullable|sometimes|exists:countries,id',
+        'nationality_id' => 'nullable|sometimes|exists:countries,id',
     ];
 
     /**

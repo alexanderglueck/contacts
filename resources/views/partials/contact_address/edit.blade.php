@@ -79,7 +79,7 @@
         <div class="col-md-6">
             <select name="country_id" id="country_id" class="form-control" required>
                 @foreach($countries as $country)
-                    <option {{ old('country_id', $contactAddress->country_id) === $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->country}}</option>
+                    <option {{ old('country_id', $contactAddress->country_id) == $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->country}}</option>
                 @endforeach
             </select>
 
