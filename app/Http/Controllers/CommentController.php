@@ -26,6 +26,11 @@ class CommentController extends Controller
 
         $comment = new Comment();
         $comment->fill($request->all());
+
+        if ($request->has('parent_id')) {
+            $comment->parent_id = $request->parent_id;
+        }
+
         $comment->contact_id = $contact->id;
         $comment->created_by = Auth::id();
         $comment->save();

@@ -136,6 +136,11 @@ class Contact extends Model implements CalendarInterface
         return '';
     }
 
+    public function getThreadedComments()
+    {
+        return $this->comments()->with('owner')->get()->threaded();
+    }
+
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
     ) {

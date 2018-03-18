@@ -36,8 +36,6 @@
 
                 @include('partials.comment.index')
 
-                @include('partials.comment.create')
-
             </div>
         </div>
     </div>

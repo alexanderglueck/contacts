@@ -109,8 +109,8 @@ class ContactController extends Controller
 
         return view('contact.show', [
             'contact' => $contact,
-            'comments' => $contact->comments,
-            'comment' => new Comment()
+            'comments' => $contact->getThreadedComments(),
+            'newComment' => new Comment()
         ]);
     }
 
