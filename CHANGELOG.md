@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `nationality_id` field to contact
 - Add threaded comments to contacts
 - Add option to delete account
+- Add gift ideas to contact
 
 ### Changed
 - Move `User` class into `Models` directory

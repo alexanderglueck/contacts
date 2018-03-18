@@ -93,6 +93,11 @@ return [
     'comments' => 'Comments',
     'no_comments' => 'No comments',
     'delete_account' => 'Delete account',
+    'gift_ideas' => 'Gift ideas',
+    'no_gift_ideas' => 'No gift ideas',
+    'manage_gift_ideas' => 'Manage gift ideas',
+    'due_at' => 'Due at',
+    'gift_idea' => 'Gift idea',
 
     /*
      * Buttons and titles
@@ -125,4 +130,7 @@ return [
     'create_comment' => 'Create comment',
     'edit_comment' => 'Edit comment',
     'delete_comment' => 'Delete comment',
+    'create_gift_idea' => 'Create gift idea',
+    'edit_gift_idea' => 'Edit gift idea',
+    'delete_gift_idea' => 'Delete gift idea',
 ];

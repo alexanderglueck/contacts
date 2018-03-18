@@ -12,5 +12,6 @@
                 <strong>E-Mails</strong>: @include('partials.contact.additional.emails', ['emails' => $contact->emails])<br>
                 <strong>Nummern</strong>: @include('partials.contact.additional.numbers', ['numbers' => $contact->numbers])<br>
                 <strong>Websiten</strong>: @include('partials.contact.additional.urls', ['urls' => $contact->urls])<br>
+                <strong>{{ trans('ui.gift_ideas') }}</strong>: @include('partials.contact.additional.gift_ideas', ['giftIdeas' => $contact->giftIdeas])<br>
             </li>
     </ul>

@@ -120,4 +120,16 @@ return [
         'deleted' => 'User was deleted successfully!',
         'not_deleted' => 'User could not be deleted!',
     ],
+
+    /**
+     * Gift Ideas
+     */
+    'gift_idea' => [
+        'created' => 'Gift idea was created successfully!',
+        'not_created' => 'Gift idea could not be created!',
+        'updated' => 'Gift idea was updated successfully!',
+        'not_updated' => 'Gift idea could not be updated!',
+        'deleted' => 'Gift idea was deleted successfully!',
+        'not_deleted' => 'Gift idea could not be deleted!',
+    ],
 ];

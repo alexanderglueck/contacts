@@ -78,7 +78,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Contact Addresses
      */
     Route::get('contact-addresses', function () {
-        return redirect('/contacts');
+        return redirect()->route('contacts.index');
     });
     Route::get('contact-addresses/{contact}', 'ContactAddressController@index')->name('contact_addresses.index');
     Route::get('contact-addresses/{contact}/create', 'ContactAddressController@create')->name('contact_addresses.create');
@@ -96,7 +96,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Contact Dates
      */
     Route::get('contact-dates', function () {
-        return redirect('/contacts');
+        return redirect()->route('contacts.index');
     });
     Route::get('contact-dates/{contact}', 'ContactDateController@index')->name('contact_dates.index');
     Route::get('contact-dates/{contact}/create', 'ContactDateController@create')->name('contact_dates.create');
@@ -113,7 +113,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Contact Emails
      */
     Route::get('contact-emails', function () {
-        return redirect('/contacts');
+        return redirect()->route('contacts.index');
     });
     Route::get('contact-emails/{contact}', 'ContactEmailController@index')->name('contact_emails.index');
     Route::get('contact-emails/{contact}/create', 'ContactEmailController@create')->name('contact_emails.create');
@@ -130,7 +130,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Contact Numbers
      */
     Route::get('contact-numbers', function () {
-        return redirect('/contacts');
+        return redirect()->route('contacts.index');
     });
     Route::get('contact-numbers/{contact}', 'ContactNumberController@index')->name('contact_numbers.index');
     Route::get('contact-numbers/{contact}/create', 'ContactNumberController@create')->name('contact_numbers.create');
@@ -147,7 +147,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
      * Contact Urls
      */
     Route::get('contact-urls', function () {
-        return redirect('/contacts');
+        return redirect()->route('contacts.index');
     });
     Route::get('contact-urls/{contact}', 'ContactUrlController@index')->name('contact_urls.index');
     Route::get('contact-urls/{contact}/create', 'ContactUrlController@create')->name('contact_urls.create');
@@ -270,4 +270,22 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('comments/{contact}/{comment}/edit', 'CommentController@edit')->name('comments.edit');
     Route::put('comments/{contact}/{comment}', 'CommentController@update')->name('comments.update');
     Route::delete('comments/{contact}/{comment}', 'CommentController@destroy')->name('comments.destroy');
+
+    /**
+     * Gift Ideas
+     */
+    Route::get('gift-ideas', function () {
+        return redirect()->route('contacts.index');
+    });
+    Route::get('gift-ideas/{contact}', 'GiftIdeaController@index')->name('gift_ideas.index');
+    Route::get('gift-ideas/{contact}/create', 'GiftIdeaController@create')->name('gift_ideas.create');
+    Route::post('gift-ideas/{contact}', 'GiftIdeaController@store')->name('gift_ideas.store');
+
+    Route::group(['middleware' => ['verify_contact']], function () {
+        Route::get('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@show')->name('gift_ideas.show');
+        Route::get('gift-ideas/{contact}/{giftIdea}/edit', 'GiftIdeaController@edit')->name('gift_ideas.edit');
+        Route::put('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@update')->name('gift_ideas.update');
+        Route::get('gift-ideas/{contact}/{giftIdea}/delete', 'GiftIdeaController@delete')->name('gift_ideas.delete');
+        Route::delete('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@destroy')->name('gift_ideas.destroy');
+    });
 });

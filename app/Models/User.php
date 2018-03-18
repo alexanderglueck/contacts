@@ -109,6 +109,11 @@ class User extends Authenticatable
         return $this->hasOne(NotificationSetting::class, 'user_id');
     }
 
+    public function giftIdeas()
+    {
+        return $this->hasMany(GiftIdea::class, 'created_by');
+    }
+
     public function notificationSettings()
     {
         if ($this->notificationSetting == null) {
