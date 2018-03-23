@@ -101,5 +101,4 @@ class TeamMemberController extends Controller
 
         return redirect(route('teams.members.show', $invite->team));
     }
-
 }
