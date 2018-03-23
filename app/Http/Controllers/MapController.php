@@ -63,7 +63,7 @@ class MapController extends Controller
                     '<br />' . PHP_EOL .
                     "<a href='" . route('contacts.show', $contactAddress->contact->slug) . "'>" .
                     trans('ui.view_contact') .
-                    "</a></p>"
+                    '</a></p>'
             ];
 
             $markers[] = $tempArray;
