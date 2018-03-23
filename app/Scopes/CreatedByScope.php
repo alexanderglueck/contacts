@@ -19,6 +19,6 @@ class CreatedByScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-       // $builder->where($model->getTable() . '.created_by', '=', Auth::user()->id);
+        // $builder->where($model->getTable() . '.created_by', '=', Auth::user()->id);
     }
 }

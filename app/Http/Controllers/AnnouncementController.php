@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin\Announcement;
 use Illuminate\Http\Request;
+use App\Models\Admin\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 

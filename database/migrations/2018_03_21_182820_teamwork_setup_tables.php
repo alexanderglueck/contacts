@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class TeamworkSetupTables extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -71,7 +70,7 @@ class TeamworkSetupTables extends Migration
             'contact_groups'
         ];
 
-        foreach($tables as $tableName) {
+        foreach ($tables as $tableName) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->unsignedInteger('team_id')->nullable();
 
@@ -96,7 +95,7 @@ class TeamworkSetupTables extends Migration
             'contact_groups'
         ];
 
-        foreach($tables as $tableName) {
+        foreach ($tables as $tableName) {
             Schema::table($tableName, function (Blueprint $table) use ($tableName) {
                 $table->dropForeign($tableName . '_team_id_foreign');
 

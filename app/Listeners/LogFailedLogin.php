@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\LogEntry;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 
 class LogFailedLogin

@@ -7,7 +7,6 @@ use Mpociot\Teamwork\Facades\Teamwork;
 
 class AuthController extends Controller
 {
-
     /**
      * Accept the given invite
      *
@@ -32,5 +31,4 @@ class AuthController extends Controller
             return redirect()->to('login');
         }
     }
-
 }
