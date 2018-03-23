@@ -100,6 +100,10 @@ return [
     'gift_idea' => 'Gift idea',
     'calendar' => 'Calendar',
     'view_calendar' => 'View calendar',
+    'view_contact' => 'View contact',
+    'map' => 'Map',
+    'view_map' => 'View map',
+    'no_maps_key' => 'Google Maps API key is not set. Map not available',
 
     /*
      * Buttons and titles

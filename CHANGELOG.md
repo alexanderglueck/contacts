@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded to Laravel 5.6
 - Translated calendar
 - Upgraded fullcalendar to the latest version (3.9)
+- Translated map
 
 ### Fixed
 - Fix dates stored on a leap year not being shown on non leap years (#1)

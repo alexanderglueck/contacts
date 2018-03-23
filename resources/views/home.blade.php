@@ -34,9 +34,9 @@
                         </p>
 
                         <p>
-                            <strong>Kontaktlandkarte: </strong><br>
+                            <strong>{{ trans('ui.map') }}: </strong><br>
                             <a href="{{ route('map.index') }}">
-                                Kontaktlandkarte ansehen
+                                {{ trans('ui.view_map') }}
                             </a>
                         </p>
                     </div>

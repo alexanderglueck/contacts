@@ -71,7 +71,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('map.index') }}">Map</a>
+                    <a class="nav-link" href="{{ route('map.index') }}">
+                        {{ trans('ui.map') }}
+                    </a>
                 </li>
 
                 <li class="nav-item">

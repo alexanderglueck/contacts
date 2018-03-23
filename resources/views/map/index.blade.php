@@ -1,24 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Kontaktlandkarte')
+@section('title', trans('ui.map'))
 
 @section('content')
-
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
-                        Kontaktlandkarte
+                        {{ trans('ui.map') }}
                     </div>
                     <div class="card-body">
                         @if(strlen(config('contacts.googleMapsKey'))>0)
                             <div id="map"></div>
                         @else
-                            <p>Google Maps API Key ist nicht gesetzt. Karte kann
-                                nicht geladen werden.</p>
+                            <p>
+                                {{ trans('ui.no_maps_key') }}
+                            </p>
                         @endif
-
                     </div>
                 </div>
             </div>
@@ -55,7 +54,6 @@
                     zoom: 7,
                     center: {lat: 47.516231, lng: 13.250072},
                     streetViewControl: false,
-
                 });
 
                 infoWindow = new google.maps.InfoWindow();

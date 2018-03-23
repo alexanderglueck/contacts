@@ -17,7 +17,7 @@ class PageTest extends TestCase
             ->get(route('map.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontaktlandkarte');
+        $response->assertSee(trans('ui.map'));
     }
 
     /** @test */
