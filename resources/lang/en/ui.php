@@ -98,6 +98,8 @@ return [
     'manage_gift_ideas' => 'Manage gift ideas',
     'due_at' => 'Due at',
     'gift_idea' => 'Gift idea',
+    'calendar' => 'Calendar',
+    'view_calendar' => 'View calendar',
 
     /*
      * Buttons and titles

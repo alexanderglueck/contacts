@@ -75,7 +75,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('calendar.index') }}">Calendar</a>
+                    <a class="nav-link" href="{{ route('calendar.index') }}">
+                        {{ trans('ui.calendar') }}
+                    </a>
                 </li>
 
                 <li class="nav-item dropdown">

@@ -12,20 +12,32 @@
                     </div>
 
                     <div class="card-body">
-                        <p><strong>Kontakte: </strong><br>
-                            <a href="{{ route('contacts.index') }}">Kontakte verwalten</a>
+                        <p>
+                            <strong>Kontakte: </strong><br>
+                            <a href="{{ route('contacts.index') }}">
+                                Kontakte verwalten
+                            </a>
                         </p>
 
-                        <p><strong>Kontaktgruppen: </strong><br>
-                            <a href="{{ route('contact_groups.index') }}">Kontaktgruppen verwalten</a>
+                        <p>
+                            <strong>Kontaktgruppen: </strong><br>
+                            <a href="{{ route('contact_groups.index') }}">
+                                Kontaktgruppen verwalten
+                            </a>
                         </p>
 
-                        <p><strong>Kalender: </strong><br>
-                            <a href="{{ route('calendar.index') }}">Kalender ansehen</a>
+                        <p>
+                            <strong>{{ trans('ui.calendar') }}: </strong><br>
+                            <a href="{{ route('calendar.index') }}">
+                                {{ trans('ui.view_calendar') }}
+                            </a>
                         </p>
 
-                        <p><strong>Kontaktlandkarte: </strong><br>
-                            <a href="{{ route('map.index') }}">Kontaktlandkarte ansehen</a>
+                        <p>
+                            <strong>Kontaktlandkarte: </strong><br>
+                            <a href="{{ route('map.index') }}">
+                                Kontaktlandkarte ansehen
+                            </a>
                         </p>
                     </div>
                 </div>

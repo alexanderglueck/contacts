@@ -1,15 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Kalender')
+@section('title', trans('ui.calendar'))
 
 @section('content')
-
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
-                        Kalender
+                        {{ trans('ui.calendar') }}
                     </div>
                     <div class="card-body">
                         <div id="calendar"></div>
@@ -21,14 +20,13 @@
 @endsection
 
 @section('css')
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css"/>
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.print.css" media="print"/>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css" media="print"/>
 @endsection
 
 @section('js-links')
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/locale/de-at.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
 @endsection
 
 @section('js')
@@ -36,7 +34,7 @@
         $(document).ready(function () {
             $('#calendar').fullCalendar({
                 header: {
-                    left: 'month,listMonth',
+                    left: 'basicWeek,month,listMonth',
                     center: 'title',
                     right: 'today prev,next'
                 },
@@ -46,5 +44,4 @@
             });
         });
     </script>
-
 @endsection

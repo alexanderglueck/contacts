@@ -27,7 +27,7 @@ class PageTest extends TestCase
             ->get(route('calendar.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kalender');
+        $response->assertSee(trans('ui.calendar'));
     }
 
     /** @test */
