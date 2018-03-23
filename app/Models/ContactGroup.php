@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Scopes\CreatedByScope;
 use Illuminate\Database\Eloquent\Model;
+use Mpociot\Teamwork\Traits\UsedByTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactGroup extends Model
 {
     use Sluggable;
+    use UsedByTeams;
 
     protected $fillable = ['name', 'parent_id', 'created_by', 'updated_by'];
 
@@ -58,17 +59,5 @@ class ContactGroup extends Model
                 'reserved' => ['create', 'delete', 'edit']
             ]
         ];
-    }
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CreatedByScope());
     }
 }

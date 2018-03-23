@@ -20,7 +20,7 @@ class ContactPolicy
      */
     public function view(User $user, Contact $contact)
     {
-        return $user->id == $contact->created_by;
+        return $user->currentTeam->id == $contact->team_id;
     }
 
     /**

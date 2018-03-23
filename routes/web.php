@@ -21,8 +21,8 @@ Route::post('login', 'Auth\LoginController@login')->name('login.check');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...Route::Route::Route::
- Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
- Route::post('register', 'Auth\RegisterController@register');
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
 /*Route::get('register', function () {
     return Redirect::to(route('login'));
 })->name('register');
@@ -287,5 +287,25 @@ Route::group(['middleware' => ['web', 'auth']], function () {
         Route::put('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@update')->name('gift_ideas.update');
         Route::get('gift-ideas/{contact}/{giftIdea}/delete', 'GiftIdeaController@delete')->name('gift_ideas.delete');
         Route::delete('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@destroy')->name('gift_ideas.destroy');
+    });
+
+    /**
+     * Teamwork
+     */
+    Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function () {
+        Route::get('/', 'TeamController@index')->name('teams.index');
+        Route::get('create', 'TeamController@create')->name('teams.create');
+        Route::post('teams', 'TeamController@store')->name('teams.store');
+        Route::get('edit/{id}', 'TeamController@edit')->name('teams.edit');
+        Route::put('edit/{id}', 'TeamController@update')->name('teams.update');
+        Route::delete('destroy/{id}', 'TeamController@destroy')->name('teams.destroy');
+        Route::get('switch/{id}', 'TeamController@switchTeam')->name('teams.switch');
+
+        Route::get('members/{id}', 'TeamMemberController@show')->name('teams.members.show');
+        Route::get('members/resend/{invite_id}', 'TeamMemberController@resendInvite')->name('teams.members.resend_invite');
+        Route::post('members/{id}', 'TeamMemberController@invite')->name('teams.members.invite');
+        Route::delete('members/{id}/{user_id}', 'TeamMemberController@destroy')->name('teams.members.destroy');
+
+        Route::get('accept/{token}', 'AuthController@acceptInvite')->name('teams.accept_invite');
     });
 });

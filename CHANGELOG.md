@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add threaded comments to contacts
 - Add option to delete account
 - Add gift ideas to contact
+- Add teams
+  - A user can join multiple teams
+  - Contacts/Contact Groups/Announcements are seperated by team
 
 ### Changed
 - Move `User` class into `Models` directory
@@ -35,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix dates stored on a leap year not being shown on non leap years (#1)
+- Fixed bugsnag logging not working
+- Fixed some down-migrations
+- Fixed foreign key issues
 
 ## 0.0.1 - 2018-01-16
 ### Added

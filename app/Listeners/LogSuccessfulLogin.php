@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\LogEntry;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 
 class LogSuccessfulLogin
@@ -38,7 +37,5 @@ class LogSuccessfulLogin
         $logEntry->updated_by = $event->user->id;
         $logEntry->ip_address = Request::ip();
         $logEntry->save();
-
-        Log::error('LogSuccessfulLogin');
     }
 }

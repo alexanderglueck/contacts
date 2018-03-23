@@ -30,6 +30,10 @@ class CreateBackupCodesTable extends Migration
      */
     public function down()
     {
+        Schema::table('tfa_backup_codes', function (Blueprint $table) {
+            //$table->dropForeign('tfa_backup_codes_user_id_foreign');
+        });
+
         Schema::dropIfExists('tfa_backup_codes');
     }
 }

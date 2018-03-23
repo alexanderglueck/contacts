@@ -37,7 +37,5 @@ class LogFailedLogin
         $logEntry->event = 'auth.failed';
         $logEntry->ip_address = Request::ip();
         $logEntry->save();
-
-        Log::error('LogFailedLogin');
     }
 }

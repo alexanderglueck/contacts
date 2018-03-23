@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -66,7 +67,10 @@ class ContactTest extends TestCase
             'created_by' => $user->id
         ]);
 
-        $viewer = factory(User::class)->create();
+        $anotherTeam = factory(Team::class)->create();
+        $viewer = factory(User::class)->create([
+            'current_team_id' => $anotherTeam->id
+        ]);
 
         $response = $this->actingAs($viewer)
             ->get(route('contacts.show', [$contact->slug]));

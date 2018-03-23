@@ -152,6 +152,11 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
+         * Bugsnag
+         */
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
@@ -161,29 +166,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /*
-         * Bugsnag
+         * Teamwork
          */
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-
-        /*
-         * Slug
-         */
-        Cviebrock\EloquentSluggable\ServiceProvider::class,
-
-        /*
-         * Breadcrumbs service provider
-         */
-        DaveJamesMiller\Breadcrumbs\BreadcrumbsServiceProvider::class,
-
-        /*
-         * Intervention Image
-         */
-        Intervention\Image\ImageServiceProvider::class,
-
-        /*
-         * Excel
-         */
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Mpociot\Teamwork\TeamworkServiceProvider::class,
     ],
 
     /*
@@ -235,9 +220,6 @@ return [
 
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Navigation' => App\Helpers\Navigation::class,
-        'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::class,
-        'Image' => Intervention\Image\Facades\Image::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

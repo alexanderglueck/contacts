@@ -56,12 +56,13 @@ class ContactGroupController extends Controller
 
         $validator->validate();
 
-        $contact = new ContactGroup();
-        $contact->fill($request->all());
-        $contact->created_by = Auth::id();
-        $contact->updated_by = Auth::id();
+        $contactGroup = new ContactGroup();
+        $contactGroup->fill($request->all());
+        $contactGroup->created_by = Auth::id();
+        $contactGroup->updated_by = Auth::id();
+        $contactGroup->team_id = Auth::user()->currentTeam->id;
 
-        if ($contact->save()) {
+        if ($contactGroup->save()) {
             Session::flash('alert-success', trans('flash_message.contact_group.created'));
 
             return redirect()->route('contact_groups.index');

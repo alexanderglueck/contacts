@@ -56,6 +56,6 @@ class ContactUrl extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CreatedByScope());
+     //   static::addGlobalScope(new CreatedByScope());
     }
 }

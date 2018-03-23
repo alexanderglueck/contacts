@@ -26,6 +26,7 @@ class AddUniqueColumnsToBackupCodes extends Migration
     public function down()
     {
         Schema::table('tfa_backup_codes', function (Blueprint $table) {
+            $table->dropForeign('tfa_backup_codes_user_id_foreign');
             $table->dropUnique('tfa_backup_codes_user_id_value_unique');
         });
     }

@@ -30,7 +30,7 @@ class AddNationalityToContacts extends Migration
         Schema::table('contacts', function (Blueprint $table) {
             $table->dropForeign('contacts_nationality_id_foreign');
 
-            $table->dropColumn('nationality');
+            $table->dropColumn('nationality_id');
         });
     }
 }

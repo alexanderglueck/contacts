@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
+use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -10,6 +11,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use Sluggable;
+    use UserHasTeams;
 
     /**
      * The attributes that are mass assignable.

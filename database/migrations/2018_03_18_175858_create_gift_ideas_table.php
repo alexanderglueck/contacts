@@ -45,7 +45,7 @@ class CreateGiftIdeasTable extends Migration
      */
     public function down()
     {
-        Schema::create('gift_ideas', function (Blueprint $table) {
+        Schema::table('gift_ideas', function (Blueprint $table) {
             $table->dropForeign('gift_ideas_contact_id_foreign');
             $table->dropForeign('gift_ideas_created_by_foreign');
             $table->dropForeign('gift_ideas_updated_by_foreign');

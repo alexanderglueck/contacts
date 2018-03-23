@@ -179,6 +179,30 @@
                         <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                 @else
+                    @if(count(Auth::user()->teams)> 1)
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               aria-haspopup="true"
+                               aria-expanded="false"
+                               id="teamSwitchDropdown"
+                            >
+                                {{ Auth::user()->currentTeam->name }}
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="teamSwitchDropdown">
+                                @foreach(Auth::user()->teams as $team)
+                                    @if($team->id != Auth::user()->currentTeam->id)
+                                        <a class="dropdown-item" href="{{ route('teams.switch', $team->id) }}">
+                                            {{ $team->name }}
+                                        </a>
+                                    @endif
+                                @endforeach
+
+                            </div>
+                        </li>
+                    @endif
+
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle"
                            data-toggle="dropdown"

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Admin\Announcement;
+use App\Models\Admin\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -52,6 +52,7 @@ class AnnouncementController extends Controller
         $announcement = new Announcement();
         $announcement->fill($request->all());
         $announcement->user_id = Auth::id();
+        $announcement->team_id = Auth::user()->currentTeam->id;
 
         if ($announcement->save()) {
             Session::flash('alert-success', trans('flash_message.announcement.created'));
@@ -67,7 +68,7 @@ class AnnouncementController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Admin\Announcement $announcement
+     * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
@@ -81,7 +82,7 @@ class AnnouncementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Admin\Announcement $announcement
+     * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
@@ -97,7 +98,7 @@ class AnnouncementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Admin\Announcement  $announcement
+     * @param  \App\Models\Admin\Announcement  $announcement
      *
      * @return \Illuminate\Http\Response
      */
@@ -121,7 +122,7 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Admin\Announcement $announcement
+     * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
@@ -141,7 +142,7 @@ class AnnouncementController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Admin\Announcement $announcement
+     * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */

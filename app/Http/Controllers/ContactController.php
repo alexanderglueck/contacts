@@ -39,7 +39,7 @@ class ContactController extends Controller
     public function index()
     {
         return view('contact.index', [
-            'contacts' => Auth::user()->contacts()->sorted()->active()->paginate(10)
+            'contacts' => Auth::user()->currentTeam->contacts()->sorted()->active()->paginate(10)
         ]);
     }
 
@@ -75,6 +75,7 @@ class ContactController extends Controller
         $contact->fill($request->all());
         $contact->created_by = Auth::id();
         $contact->updated_by = Auth::id();
+        $contact->team_id = Auth::user()->currentTeam->id;
 
         if ($contact->save()) {
             if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
