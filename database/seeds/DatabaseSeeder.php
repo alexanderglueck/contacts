@@ -19,6 +19,5 @@ class DatabaseSeeder extends Seeder
         $this->call(GendersTableSeeder::class);
         $this->call(ContactsTableSeeder::class);
         $this->call(ContactAddressesSeeder::class);
-
     }
 }

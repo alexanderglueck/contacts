@@ -15,7 +15,6 @@ class Role extends BaseRole
     {
         $currentUsers = $this->users;
 
-
         foreach ($currentUsers as $user) {
             /** @var $user User */
             $user->removeRole($this->id);
@@ -26,7 +25,6 @@ class Role extends BaseRole
                 User::find($user)->assignRole($this->id);
             }
         }
-
     }
 
     /**

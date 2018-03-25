@@ -88,6 +88,5 @@ class PermissionsTableSeeder extends Seeder
                 ]);
             }
         }
-
     }
 }
