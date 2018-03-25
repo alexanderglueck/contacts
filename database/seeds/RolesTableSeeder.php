@@ -14,16 +14,19 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        Auth::loginUsingId(1);
+        $user = User::firstOrFail();
+
+        auth()->login($user);
+
+        $team = $user->currentTeam;
 
         $role = Role::create([
             'name' => 'admin',
-            'team_id' => 1
+            'guard_name' => 'web',
+            'team_id' => $team->id
         ]);
 
         $role->syncPermissions(Permission::all());
-
-        $user = User::find(1);
 
         $user->assignRole($role);
     }

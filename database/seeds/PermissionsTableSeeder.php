@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -80,6 +81,10 @@ class PermissionsTableSeeder extends Seeder
                 'users'
             ]
         ];
+
+        $user = User::firstOrFail();
+
+        auth()->login($user);
 
         foreach ($permissions as $action => $entities) {
             foreach ($entities as $entity) {

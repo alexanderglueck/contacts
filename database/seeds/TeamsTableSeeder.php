@@ -13,7 +13,7 @@ class TeamsTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::find(1);
+        $user = User::firstOrFail();
 
         $team = Team::create([
             'owner_id' => $user->id,
