@@ -25,10 +25,23 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\Team::class, function (Faker\Generator $faker) {
-    static $password;
-
     return [
         'name' => $faker->name,
+    ];
+});
+
+$factory->define(App\Models\Role::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'team_id' => factory(\App\Models\Team::class),
+        'guard_name' => 'web'
+    ];
+});
+
+$factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'guard_name' => 'web'
     ];
 });
 

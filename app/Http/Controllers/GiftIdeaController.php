@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 
 class GiftIdeaController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'name' => 'required',
         'due_at' => 'nullable|sometimes|date|date_format:d.m.Y',
@@ -26,6 +28,8 @@ class GiftIdeaController extends Controller
      */
     public function index(Contact $contact)
     {
+        $this->can('edit');
+
         return view('gift_idea.index', [
             'contact' => $contact,
             'giftIdeas' => $contact->giftIdeas
@@ -41,6 +45,8 @@ class GiftIdeaController extends Controller
      */
     public function create(Contact $contact)
     {
+        $this->can('edit');
+
         return view('gift_idea.create', [
             'contact' => $contact,
             'giftIdea' => new GiftIdea()
@@ -86,6 +92,8 @@ class GiftIdeaController extends Controller
      */
     public function show(Contact $contact, GiftIdea $giftIdea)
     {
+        $this->can('edit');
+
         return view('gift_idea.show', [
             'contact' => $contact,
             'giftIdea' => $giftIdea
@@ -146,6 +154,8 @@ class GiftIdeaController extends Controller
      */
     public function destroy(Contact $contact, GiftIdea $giftIdea)
     {
+        $this->can('edit');
+
         if ($giftIdea->delete()) {
             Session::flash('alert-success', trans('flash_message.gift_idea.deleted'));
 
@@ -167,6 +177,8 @@ class GiftIdeaController extends Controller
      */
     public function delete(Contact $contact, GiftIdea $giftIdea)
     {
+        $this->can('edit');
+
         return view('gift_idea.delete', [
             'contact' => $contact,
             'giftIdea' => $giftIdea

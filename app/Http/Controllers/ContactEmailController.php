@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ContactEmailController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'name' => 'required',
         'email' => 'required|email'
@@ -24,6 +26,8 @@ class ContactEmailController extends Controller
      */
     public function index(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_email.index', [
             'contact' => $contact,
             'contactEmails' => $contact->emails
@@ -39,6 +43,8 @@ class ContactEmailController extends Controller
      */
     public function create(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_email.create', [
             'contact' => $contact,
             'contactEmail' => new ContactEmail()
@@ -55,6 +61,8 @@ class ContactEmailController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $contactEmail = new ContactEmail();
@@ -84,6 +92,8 @@ class ContactEmailController extends Controller
      */
     public function show(Contact $contact, ContactEmail $contactEmail)
     {
+        $this->can('edit');
+
         return view('contact_email.show', [
             'contact' => $contact,
             'contactEmail' => $contactEmail
@@ -100,6 +110,8 @@ class ContactEmailController extends Controller
      */
     public function edit(Contact $contact, ContactEmail $contactEmail)
     {
+        $this->can('edit');
+
         return view('contact_email.edit', [
             'contact' => $contact,
             'contactEmail' => $contactEmail,
@@ -118,6 +130,8 @@ class ContactEmailController extends Controller
      */
     public function update(Request $request, Contact $contact, ContactEmail $contactEmail)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $contactEmail->fill($request->all());
@@ -145,6 +159,8 @@ class ContactEmailController extends Controller
      */
     public function destroy(Contact $contact, ContactEmail $contactEmail)
     {
+        $this->can('edit');
+
         if ($contactEmail->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_email.deleted'));
 
@@ -166,6 +182,8 @@ class ContactEmailController extends Controller
      */
     public function delete(Contact $contact, ContactEmail $contactEmail)
     {
+        $this->can('edit');
+
         return view('contact_email.delete', [
             'contact' => $contact,
             'contactEmail' => $contactEmail

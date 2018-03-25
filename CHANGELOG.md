@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add role management
 - Add permissions to roles
 - Add roles to users
+- Add permission checks
 
 ### Changed
 - Move `User` class into `Models` directory

@@ -15,6 +15,8 @@ use Intervention\Image\Facades\Image;
 
 class ContactController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'salutation' => 'required',
         'title' => 'present',
@@ -38,6 +40,8 @@ class ContactController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('contact.index', [
             'contacts' => Auth::user()->currentTeam->contacts()->sorted()->active()->paginate(10)
         ]);
@@ -50,6 +54,8 @@ class ContactController extends Controller
      */
     public function create()
     {
+        $this->can('create');
+
         return view('contact.create', [
             'contact' => new Contact,
             'genders' => Gender::all(),
@@ -67,6 +73,8 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
+        $this->can('create');
+
         $this->validate($request, array_merge($this->validationRules, [
             'iban' => new ValidIBANFormat
         ]));
@@ -106,6 +114,8 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
+        $this->can('view');
+
         $this->authorize('view', $contact);
 
         return view('contact.show', [
@@ -124,6 +134,8 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact.edit', [
             'createButtonText' => 'Kontakt bearbeiten',
             'contact' => $contact,
@@ -143,6 +155,8 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         $this->validate($request, array_merge($this->validationRules, [
             'iban' => new ValidIBANFormat
         ]));
@@ -177,6 +191,8 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
+        $this->can('delete');
+
         if ($contact->image) {
             if (file_exists(storage_path('app/') . $contact->image)) {
                 unlink(storage_path('app/') . $contact->image);
@@ -203,6 +219,8 @@ class ContactController extends Controller
      */
     public function delete(Contact $contact)
     {
+        $this->can('delete');
+
         return view('contact.delete', [
             'contact' => $contact
         ]);
@@ -210,6 +228,8 @@ class ContactController extends Controller
 
     public function image(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact.image', [
             'contact' => $contact
         ]);
@@ -217,6 +237,8 @@ class ContactController extends Controller
 
     public function updateImage(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         $this->validate($request, [
             'file' => 'required|mimes:jpeg,png'
         ]);
@@ -246,10 +268,10 @@ class ContactController extends Controller
 
                 return redirect()->route('contacts.show', $contact->slug);
             }
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
-
-            return redirect()->route('contacts.image', $contact->slug);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
+
+        return redirect()->route('contacts.image', $contact->slug);
     }
 }

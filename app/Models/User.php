@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Mpociot\Teamwork\Traits\UserHasTeams;
@@ -125,5 +127,21 @@ class User extends Authenticatable
         }
 
         return $this->notificationSetting;
+    }
+
+    /**
+     * A model may have multiple roles.
+     */
+    public function roles(): MorphToMany
+    {
+        return $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            'model_id',
+            'role_id'
+        )
+            ->join('teams', 'teams.id', '=', 'roles.team_id')
+            ->where('roles.team_id', Auth::user()->currentTeam->id);
     }
 }

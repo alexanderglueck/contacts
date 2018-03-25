@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Session;
 
 class AnnouncementController extends Controller
 {
+    protected $accessEntity = 'announcements';
+
     private $validationRules = [
         'title' => 'required',
         'body' => 'required'
@@ -21,6 +23,8 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('announcement.index', [
             'announcements' => Announcement::paginate(10)
         ]);
@@ -33,6 +37,8 @@ class AnnouncementController extends Controller
      */
     public function create()
     {
+        $this->can('create');
+
         return view('announcement.create', [
             'announcement' => new Announcement
         ]);
@@ -47,6 +53,8 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
+        $this->can('create');
+
         $this->validate($request, $this->validationRules);
 
         $announcement = new Announcement();
@@ -74,6 +82,8 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
+        $this->can('view');
+
         return view('announcement.show', [
             'announcement' => $announcement
         ]);
@@ -88,6 +98,8 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement)
     {
+        $this->can('edit');
+
         return view('announcement.edit', [
             'announcement' => $announcement,
             'createButtonText' => trans('ui.edit_announcement'),
@@ -97,13 +109,15 @@ class AnnouncementController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Admin\Announcement  $announcement
+     * @param  \Illuminate\Http\Request       $request
+     * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Announcement $announcement)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $announcement->fill($request->all());
@@ -128,6 +142,8 @@ class AnnouncementController extends Controller
      */
     public function destroy(Announcement $announcement)
     {
+        $this->can('delete');
+
         if ($announcement->delete()) {
             Session::flash('alert-success', trans('flash_message.announcement.deleted'));
 
@@ -148,6 +164,8 @@ class AnnouncementController extends Controller
      */
     public function delete(Announcement $announcement)
     {
+        $this->can('delete');
+
         return view('announcement.delete', [
             'announcement' => $announcement
         ]);

@@ -7,6 +7,8 @@ use App\Models\ContactAddress;
 
 class MapController extends Controller
 {
+    protected $accessEntity = 'map';
+
     /**
      * Display all the geocoded contacts on a map.
      *
@@ -14,11 +16,15 @@ class MapController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('map.index', []);
     }
 
     public function contacts(Request $request)
     {
+        $this->can('view');
+
         $this->validate($request, [
             'bounds' => 'required|string'
         ]);

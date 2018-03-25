@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 
 class CommentController extends Controller
 {
+    protected $accessEntity = 'comments';
+
     /**
      * Store a newly created resource in storage.
      *
@@ -20,6 +22,8 @@ class CommentController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('create');
+
         $this->validate($request, [
             'comment' => 'required'
         ]);
@@ -56,6 +60,8 @@ class CommentController extends Controller
      */
     public function edit(Contact $contact, Comment $comment)
     {
+        $this->can('edit');
+
         return view('comment.edit', [
             'contact' => $contact,
             'comment' => $comment
@@ -66,12 +72,15 @@ class CommentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     * @param Contact                   $contact
      * @param  \App\Models\Comment      $comment
      *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Contact $contact, Comment $comment)
     {
+        $this->can('edit');
+
         $this->validate($request, [
             'comment' => 'required'
         ]);
@@ -100,6 +109,8 @@ class CommentController extends Controller
      */
     public function destroy(Contact $contact, Comment $comment)
     {
+        $this->can('delete');
+
         if ($comment->delete()) {
             Session::flash('alert-success', trans('flash_message.comment.deleted'));
 

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ContactGroupController extends Controller
 {
+    protected $accessEntity = 'contactGroups';
+
     private $validationRules = [
         'name' => 'required',
     ];
@@ -21,6 +23,8 @@ class ContactGroupController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('contact_group.index', [
             'contactGroups' => Auth::user()->contactGroups()->sorted()->paginate(10)
         ]);
@@ -33,6 +37,8 @@ class ContactGroupController extends Controller
      */
     public function create()
     {
+        $this->can('create');
+
         return view('contact_group.create', [
             'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
             'contactGroup' => new ContactGroup()
@@ -49,6 +55,8 @@ class ContactGroupController extends Controller
      */
     public function store(Request $request)
     {
+        $this->can('create');
+
         $validator = Validator::make($request->all(), $this->validationRules);
         $validator->sometimes('parent_id', 'exists:contact_groups,id', function ($input) {
             return strlen($input->parent_id) > 0;
@@ -82,6 +90,8 @@ class ContactGroupController extends Controller
      */
     public function show(ContactGroup $contactGroup)
     {
+        $this->can('view');
+
         return view('contact_group.show', [
             'contactGroup' => $contactGroup,
             'contacts' => $contactGroup->contacts()->paginate(10)
@@ -97,6 +107,8 @@ class ContactGroupController extends Controller
      */
     public function edit(ContactGroup $contactGroup)
     {
+        $this->can('edit');
+
         return view('contact_group.edit', [
             'contactGroup' => $contactGroup,
             'contactGroups' => ContactGroup::sorted()->get(),
@@ -115,6 +127,8 @@ class ContactGroupController extends Controller
      */
     public function update(Request $request, ContactGroup $contactGroup)
     {
+        $this->can('edit');
+
         $validator = Validator::make($request->all(), $this->validationRules);
         $validator->sometimes('parent_id', 'exists:contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
             return strlen($input->parent_id) > 0;
@@ -146,6 +160,8 @@ class ContactGroupController extends Controller
      */
     public function destroy(ContactGroup $contactGroup)
     {
+        $this->can('delete');
+
         if ($contactGroup->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_group.deleted'));
 

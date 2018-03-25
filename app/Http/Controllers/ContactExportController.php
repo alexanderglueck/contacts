@@ -15,6 +15,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ContactExportController extends Controller
 {
+    protected $accessEntity = 'export';
+
     /**
      * Display a listing of the resource.
      *
@@ -22,6 +24,8 @@ class ContactExportController extends Controller
      */
     public function index()
     {
+        $this->can('create');
+
         return view('contact_export.index', [
             'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
@@ -29,6 +33,8 @@ class ContactExportController extends Controller
 
     public function export(Request $request)
     {
+        $this->can('edit');
+
         $this->validate($request, [
             'contact_group_id' => 'required|integer|exists:contact_groups,id',
         ]);

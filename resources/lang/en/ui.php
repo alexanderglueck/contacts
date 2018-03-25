@@ -110,6 +110,7 @@ return [
     'switch_team' => 'Switch team',
     'permissions' => 'Permissions',
     'users' => 'Users',
+    'access_denied' => 'Access denied',
 
     /*
      * Buttons and titles

@@ -11,6 +11,8 @@ use App\Models\ContactAddress;
 
 class ContactAddressController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'name' => 'required',
         'street' => 'required',
@@ -29,6 +31,8 @@ class ContactAddressController extends Controller
      */
     public function index(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_address.index', [
             'contact' => $contact,
             'contactAddresses' => $contact->addresses
@@ -44,6 +48,8 @@ class ContactAddressController extends Controller
      */
     public function create(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_address.create', [
             'contact' => $contact,
             'countries' => Country::all(),
@@ -61,6 +67,8 @@ class ContactAddressController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         if (strlen($request->latitude) > 0 && strlen($request->longitude) > 0) {
             $this->validationRules['latitude'] = 'required|numeric';
             $this->validationRules['longitude'] = 'required|numeric';
@@ -95,6 +103,8 @@ class ContactAddressController extends Controller
      */
     public function show(Contact $contact, ContactAddress $contactAddress)
     {
+        $this->can('edit');
+
         return view('contact_address.show', [
             'contact' => $contact,
             'contactAddress' => $contactAddress
@@ -111,6 +121,8 @@ class ContactAddressController extends Controller
      */
     public function edit(Contact $contact, ContactAddress $contactAddress)
     {
+        $this->can('edit');
+
         return view('contact_address.edit', [
             'createButtonText' => 'Adresse bearbeiten',
             'contact' => $contact,
@@ -130,6 +142,8 @@ class ContactAddressController extends Controller
      */
     public function update(Request $request, Contact $contact, ContactAddress $contactAddress)
     {
+        $this->can('edit');
+
         if (strlen($request->latitude) > 0 && strlen($request->longitude) > 0) {
             $this->validationRules['latitude'] = 'required|numeric';
             $this->validationRules['longitude'] = 'required|numeric';
@@ -162,6 +176,8 @@ class ContactAddressController extends Controller
      */
     public function destroy(Contact $contact, ContactAddress $contactAddress)
     {
+        $this->can('edit');
+
         if ($contactAddress->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_address.deleted'));
 
@@ -183,6 +199,8 @@ class ContactAddressController extends Controller
      */
     public function delete(Contact $contact, ContactAddress $contactAddress)
     {
+        $this->can('edit');
+
         return view('contact_address.delete', [
             'contact' => $contact,
             'contactAddress' => $contactAddress

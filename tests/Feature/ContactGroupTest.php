@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Role;
+use App\Models\Team;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\ContactGroup;
@@ -18,11 +21,33 @@ class ContactGroupTest extends TestCase
 
         $this->withoutMiddleware();
 
+        /** @var User $user */
         $user = factory(User::class)->create();
         $contactGroup = factory(ContactGroup::class)->make([
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
+
+        $this->be($user);
+
+        $team = factory(Team::class)->create([
+            'owner_id' => $user->id
+        ]);
+
+        $role = factory(Role::class)->create([
+            'team_id' => $team->id,
+            'name' => 'admin'
+        ]);
+
+        $permission = factory(Permission::class)->create([
+            'name' => 'create contactGroups'
+        ]);
+
+        $role->givePermissionTo($permission);
+
+        $user->attachTeam($team);
+
+        $user->assignRole('admin');
 
         $this->assertDatabaseMissing('contact_groups', $contactGroup->toArray());
 

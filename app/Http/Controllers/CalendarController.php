@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
+    protected $accessEntity = 'calendar';
+
     /**
      * Display a listing of the contact dates.
      *
@@ -16,6 +18,8 @@ class CalendarController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('calendar.index', []);
     }
 
@@ -29,6 +33,8 @@ class CalendarController extends Controller
      */
     public function events(Request $request)
     {
+        $this->can('view');
+
         $fromRaw = date_create_from_format('Y-m-d', $request->input('start'));
         $toRaw = date_create_from_format('Y-m-d', $request->input('end'));
         $fromYear = $fromRaw->format('Y');

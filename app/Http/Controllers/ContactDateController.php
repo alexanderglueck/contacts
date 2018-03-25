@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ContactDateController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'name' => 'required',
         'date' => 'required|date_format:d.m.',
@@ -25,6 +27,8 @@ class ContactDateController extends Controller
      */
     public function index(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_date.index', [
             'contact' => $contact,
             'contactDates' => $contact->dates
@@ -40,6 +44,8 @@ class ContactDateController extends Controller
      */
     public function create(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_date.create', [
             'contact' => $contact,
             'contactDate' => new ContactDate()
@@ -56,6 +62,8 @@ class ContactDateController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         $requestData = $request->all();
 
         if ($request->skip_year) {
@@ -93,6 +101,8 @@ class ContactDateController extends Controller
      */
     public function show(Contact $contact, ContactDate $contactDate)
     {
+        $this->can('edit');
+
         return view('contact_date.show', [
             'contact' => $contact,
             'contactDate' => $contactDate
@@ -109,6 +119,8 @@ class ContactDateController extends Controller
      */
     public function edit(Contact $contact, ContactDate $contactDate)
     {
+        $this->can('edit');
+
         return view('contact_date.edit', [
             'contact' => $contact,
             'contactDate' => $contactDate,
@@ -127,6 +139,8 @@ class ContactDateController extends Controller
      */
     public function update(Request $request, Contact $contact, ContactDate $contactDate)
     {
+        $this->can('edit');
+
         $requestData = $request->all();
 
         if ($request->skip_year) {
@@ -166,6 +180,8 @@ class ContactDateController extends Controller
      */
     public function destroy(Contact $contact, ContactDate $contactDate)
     {
+        $this->can('edit');
+
         if ($contactDate->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_date.deleted'));
 
@@ -187,6 +203,8 @@ class ContactDateController extends Controller
      */
     public function delete(Contact $contact, ContactDate $contactDate)
     {
+        $this->can('edit');
+
         return view('contact_date.delete', [
             'contact' => $contact,
             'contactDate' => $contactDate

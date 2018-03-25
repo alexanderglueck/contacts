@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ContactUrlController extends Controller
 {
+    protected $accessEntity = 'contacts';
+
     private $validationRules = [
         'name' => 'required',
         'url' => 'required|url'
@@ -24,6 +26,8 @@ class ContactUrlController extends Controller
      */
     public function index(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_url.index', [
             'contact' => $contact,
             'contactUrls' => $contact->urls
@@ -39,6 +43,8 @@ class ContactUrlController extends Controller
      */
     public function create(Contact $contact)
     {
+        $this->can('edit');
+
         return view('contact_url.create', [
             'contact' => $contact,
             'contactUrl' => new ContactUrl()
@@ -55,6 +61,8 @@ class ContactUrlController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $contactUrl = new ContactUrl();
@@ -84,6 +92,8 @@ class ContactUrlController extends Controller
      */
     public function show(Contact $contact, ContactUrl $contactUrl)
     {
+        $this->can('edit');
+
         return view('contact_url.show', [
             'contact' => $contact,
             'contactUrl' => $contactUrl
@@ -100,6 +110,8 @@ class ContactUrlController extends Controller
      */
     public function edit(Contact $contact, ContactUrl $contactUrl)
     {
+        $this->can('edit');
+
         return view('contact_url.edit', [
             'contact' => $contact,
             'contactUrl' => $contactUrl,
@@ -118,6 +130,8 @@ class ContactUrlController extends Controller
      */
     public function update(Request $request, Contact $contact, ContactUrl $contactUrl)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $contactUrl->fill($request->all());
@@ -145,6 +159,8 @@ class ContactUrlController extends Controller
      */
     public function destroy(Contact $contact, ContactUrl $contactUrl)
     {
+        $this->can('edit');
+
         if ($contactUrl->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_url.deleted'));
 
@@ -166,6 +182,8 @@ class ContactUrlController extends Controller
      */
     public function delete(Contact $contact, ContactUrl $contactUrl)
     {
+        $this->can('edit');
+
         return view('contact_url.delete', [
             'contact' => $contact,
             'contactUrl' => $contactUrl

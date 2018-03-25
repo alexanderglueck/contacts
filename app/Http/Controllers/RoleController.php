@@ -14,6 +14,8 @@ class RoleController extends Controller
         'name' => 'required',
     ];
 
+    protected $accessEntity = 'roles';
+
     /**
      * Display a listing of the resource.
      *
@@ -21,6 +23,8 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $this->can('view');
+
         return view('role.index', [
             'roles' => Role::paginate(10)
         ]);
@@ -33,6 +37,8 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->can('create');
+
         return view('role.create', [
             'permissions' => Permission::all(),
             'users' => Auth::user()->currentTeam->users,
@@ -49,6 +55,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->can('create');
+
         $this->validate($request, $this->validationRules);
 
         $role = new Role();
@@ -79,6 +87,8 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        $this->can('view');
+
         return view('role.show', [
             'role' => $role
         ]);
@@ -93,6 +103,8 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        $this->can('edit');
+
         return view('role.edit', [
             'role' => $role,
             'createButtonText' => trans('ui.edit_role'),
@@ -111,6 +123,8 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
 
         $role->fill($request->except(['users', 'permissions']));
@@ -136,9 +150,12 @@ class RoleController extends Controller
      * @param  \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Role $role)
     {
+        $this->can('delete');
+
         if ($role->delete()) {
             Session::flash('alert-success', trans('flash_message.role.deleted'));
 
@@ -159,6 +176,8 @@ class RoleController extends Controller
      */
     public function delete(Role $role)
     {
+        $this->can('delete');
+
         return view('role.delete', [
             'role' => $role
         ]);

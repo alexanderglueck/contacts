@@ -19,6 +19,8 @@ use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 
 class ContactImportController extends Controller
 {
+    protected $accessEntity = 'import';
+
     private $contactMatching;
 
     /**
@@ -26,6 +28,8 @@ class ContactImportController extends Controller
      */
     public function index()
     {
+        $this->can('create');
+
         return view('contact_import.index', [
             'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
         ]);
@@ -38,6 +42,8 @@ class ContactImportController extends Controller
      */
     public function import(Request $request)
     {
+        $this->can('create');
+
         $this->validate($request, [
             'contact_group_id' => 'required|integer|exists:contact_groups,id',
             'import_file' => 'required|file|mimes:xlsx'
