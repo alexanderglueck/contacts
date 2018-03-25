@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -66,21 +69,35 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user = User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
 
+    /**
+     * @param Request $request
+     * @param User    $user
+     */
+    protected function registered(Request $request, $user)
+    {
         $team = Team::make([
-            'name' => $data['name']
+            'name' => $user['name'],
+            'owner_id' => $user->id
         ]);
 
-        $team->owner_id = $user->id;
         $team->save();
 
         $user->attachTeam($team);
 
-        return $user;
+        $role = Role::create([
+            'name' => 'admin',
+            'team_id' => $team->id
+        ]);
+
+        $role->syncPermissions(Permission::all());
+
+        $user->assignRole($role);
     }
 }

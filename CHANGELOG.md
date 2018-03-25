@@ -30,7 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add teams
   - A user can join multiple teams
   - Contacts/Contact Groups/Announcements are seperated by team
-- Add permissions and roles
+- Add role management
+- Add permissions to roles
+- Add roles to users
 
 ### Changed
 - Move `User` class into `Models` directory

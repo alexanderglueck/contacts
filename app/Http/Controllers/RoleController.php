@@ -6,6 +6,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -33,6 +34,8 @@ class RoleController extends Controller
     public function create()
     {
         return view('role.create', [
+            'permissions' => Permission::all(),
+            'users' => Auth::user()->currentTeam->users,
             'role' => new Role
         ]);
     }
@@ -49,10 +52,14 @@ class RoleController extends Controller
         $this->validate($request, $this->validationRules);
 
         $role = new Role();
-        $role->fill($request->all());
+        $role->fill($request->except(['permissions', 'users']));
         $role->team_id = Auth::user()->currentTeam->id;
 
         if ($role->save()) {
+            $role->syncPermissions($request->permissions);
+
+            $role->syncUsers($request->users);
+
             Session::flash('alert-success', trans('flash_message.role.created'));
 
             return redirect()->route('roles.show', [$role->slug]);
@@ -89,6 +96,8 @@ class RoleController extends Controller
         return view('role.edit', [
             'role' => $role,
             'createButtonText' => trans('ui.edit_role'),
+            'users' => Auth::user()->currentTeam->users,
+            'permissions' => Permission::all()
         ]);
     }
 
@@ -104,7 +113,11 @@ class RoleController extends Controller
     {
         $this->validate($request, $this->validationRules);
 
-        $role->fill($request->all());
+        $role->fill($request->except(['users', 'permissions']));
+
+        $role->syncPermissions($request->permissions);
+
+        $role->syncUsers($request->users);
 
         if ($role->save()) {
             Session::flash('alert-success', trans('flash_message.role.updated'));

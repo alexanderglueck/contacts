@@ -106,6 +106,10 @@ return [
     'no_maps_key' => 'Google Maps API key is not set. Map not available',
     'roles' => 'Roles',
     'no_roles' => 'No roles',
+    'teams' => 'Teams',
+    'switch_team' => 'Switch team',
+    'permissions' => 'Permissions',
+    'users' => 'Users',
 
     /*
      * Buttons and titles

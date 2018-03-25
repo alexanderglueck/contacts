@@ -191,7 +191,7 @@
                                aria-expanded="false"
                                id="teamSwitchDropdown"
                             >
-                                {{ Auth::user()->currentTeam->name }}
+                                {{ trans('ui.switch_team') }}
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="teamSwitchDropdown">
@@ -228,6 +228,16 @@
 
                             <a class="dropdown-item" href="{{ route('logs.index') }}">
                                 {{ trans('ui.logs') }}
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item" href="{{ route('teams.index') }}">
+                                {{ trans('ui.teams') }}
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('roles.index') }}">
+                                {{ trans('ui.roles') }}
                             </a>
 
                             <div class="dropdown-divider"></div>

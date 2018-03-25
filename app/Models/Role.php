@@ -11,6 +11,24 @@ class Role extends BaseRole
     use Sluggable;
     use UsedByTeams;
 
+    public function syncUsers($users)
+    {
+        $currentUsers = $this->users;
+
+
+        foreach ($currentUsers as $user) {
+            /** @var $user User */
+            $user->removeRole($this->id);
+        }
+
+        if (is_array($users)) {
+            foreach ($users as $user) {
+                User::find($user)->assignRole($this->id);
+            }
+        }
+
+    }
+
     /**
      * Get the route key for the model.
      *
