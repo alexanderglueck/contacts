@@ -132,4 +132,16 @@ return [
         'deleted' => 'Gift idea was deleted successfully!',
         'not_deleted' => 'Gift idea could not be deleted!',
     ],
+
+    /**
+     * Roles
+     */
+    'role' => [
+        'created' => 'Role was created successfully!',
+        'not_created' => 'Role could not be created!',
+        'updated' => 'Role was updated successfully!',
+        'not_updated' => 'Role could not be updated!',
+        'deleted' => 'Role was deleted successfully!',
+        'not_deleted' => 'Role could not be deleted!',
+    ],
 ];

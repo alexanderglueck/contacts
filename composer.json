@@ -19,7 +19,8 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^2.1",
         "mpociot/teamwork": "^5.1",
-        "pragmarx/google2fa": "^2.0"
+        "pragmarx/google2fa": "^2.0",
+        "spatie/laravel-permission": "^2.9"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

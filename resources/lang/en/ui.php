@@ -104,6 +104,12 @@ return [
     'map' => 'Map',
     'view_map' => 'View map',
     'no_maps_key' => 'Google Maps API key is not set. Map not available',
+    'roles' => 'Roles',
+    'no_roles' => 'No roles',
+    'teams' => 'Teams',
+    'switch_team' => 'Switch team',
+    'permissions' => 'Permissions',
+    'users' => 'Users',
 
     /*
      * Buttons and titles
@@ -139,4 +145,7 @@ return [
     'create_gift_idea' => 'Create gift idea',
     'edit_gift_idea' => 'Edit gift idea',
     'delete_gift_idea' => 'Delete gift idea',
+    'create_role' => 'Create role',
+    'edit_role' => 'Edit role',
+    'delete_role' => 'Delete role',
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -12,6 +13,7 @@ class User extends Authenticatable
     use Notifiable;
     use Sluggable;
     use UserHasTeams;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
