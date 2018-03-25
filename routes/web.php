@@ -308,4 +308,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
         Route::get('accept/{token}', 'AuthController@acceptInvite')->name('teams.accept_invite');
     });
+
+    Route::get('roles', 'RoleController@index')->name('roles.index');
+    Route::get('roles/create', 'RoleController@create')->name('roles.create');
+    Route::post('roles', 'RoleController@store')->name('roles.store');
+    Route::get('roles/{role}', 'RoleController@show')->name('roles.show');
+    Route::get('roles/{role}/edit', 'RoleController@edit')->name('roles.edit');
+    Route::put('roles/{role}', 'RoleController@update')->name('roles.update');
+    Route::get('roles/{role}/delete', 'RoleController@delete')->name('roles.delete');
+    Route::delete('roles/{role}', 'RoleController@destroy')->name('roles.destroy');
 });
