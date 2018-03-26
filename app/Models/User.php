@@ -140,8 +140,6 @@ class User extends Authenticatable
             config('permission.table_names.model_has_roles'),
             'model_id',
             'role_id'
-        )
-            ->join('teams', 'teams.id', '=', 'roles.team_id')
-            ->where('roles.team_id', Auth::user()->currentTeam->id);
+        )->where('roles.team_id', Auth::user()->currentTeam->id);
     }
 }

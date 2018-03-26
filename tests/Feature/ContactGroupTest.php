@@ -2,11 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Role;
-use App\Models\Team;
-use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\ContactGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -21,38 +17,16 @@ class ContactGroupTest extends TestCase
 
         $this->withoutMiddleware();
 
-        /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = $this->createUser('create contactGroups');
+
         $contactGroup = factory(ContactGroup::class)->make([
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
 
-        $this->be($user);
-
-        $team = factory(Team::class)->create([
-            'owner_id' => $user->id
-        ]);
-
-        $role = factory(Role::class)->create([
-            'team_id' => $team->id,
-            'name' => 'admin'
-        ]);
-
-        $permission = factory(Permission::class)->create([
-            'name' => 'create contactGroups'
-        ]);
-
-        $role->givePermissionTo($permission);
-
-        $user->attachTeam($team);
-
-        $user->assignRole('admin');
-
         $this->assertDatabaseMissing('contact_groups', $contactGroup->toArray());
 
         $response = $this
-            ->actingAs($user)
             ->post(route('contact_groups.store'), $contactGroup->toArray());
 
         $response->assertStatus(302);
@@ -64,7 +38,7 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_view_a_contact_group()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('view contactGroups');
 
         $this->be($user);
 
@@ -82,7 +56,7 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_view_the_contact_group_delete_view()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('delete contactGroups');
 
         $this->be($user);
 
@@ -102,7 +76,7 @@ class ContactGroupTest extends TestCase
     {
         \Session::start();
 
-        $user = factory(User::class)->create();
+        $user = $this->createUser('delete contactGroups');
 
         $this->be($user);
 
@@ -126,7 +100,7 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_view_the_contact_group_edit_view()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('edit contactGroups');
 
         $this->be($user);
 
@@ -147,7 +121,7 @@ class ContactGroupTest extends TestCase
     {
         \Session::start();
 
-        $user = factory(User::class)->create();
+        $user = $this->createUser('edit contactGroups');
 
         $this->be($user);
 

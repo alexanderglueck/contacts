@@ -19,7 +19,7 @@ class ContactTest extends TestCase
 
         $this->withoutMiddleware();
 
-        $user = factory(User::class)->create();
+        $user = $this->createUser('create contacts');
         $contact = factory(Contact::class)->make([
             'created_by' => $user->id,
             'updated_by' => $user->id
@@ -41,7 +41,7 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_view_a_contact_created_by_him()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('view contacts');
 
         $this->be($user);
 
@@ -59,7 +59,7 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_not_view_a_contact_created_by_another_user()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('view contacts');
 
         $this->be($user);
 
@@ -88,7 +88,7 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_view_the_contact_delete_view()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('delete contacts');
 
         $this->be($user);
 
@@ -108,7 +108,7 @@ class ContactTest extends TestCase
     {
         \Session::start();
 
-        $user = factory(User::class)->create();
+        $user = $this->createUser('delete contacts');
 
         $this->be($user);
 
@@ -132,7 +132,7 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_view_the_contact_edit_view()
     {
-        $user = factory(User::class)->create();
+        $user = $this->createUser('edit contacts');
 
         $this->be($user);
 
@@ -153,7 +153,7 @@ class ContactTest extends TestCase
     {
         \Session::start();
 
-        $user = factory(User::class)->create();
+        $user = $this->createUser('edit contacts');
 
         $this->be($user);
 
