@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ContactEmailController extends Controller
 {
-    protected $accessEntity = 'contacts';
+    protected $accessEntity = 'emails';
 
     private $validationRules = [
         'name' => 'required',
@@ -26,7 +26,7 @@ class ContactEmailController extends Controller
      */
     public function index(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_email.index', [
             'contact' => $contact,
@@ -43,7 +43,7 @@ class ContactEmailController extends Controller
      */
     public function create(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         return view('contact_email.create', [
             'contact' => $contact,
@@ -61,7 +61,7 @@ class ContactEmailController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         $this->validate($request, $this->validationRules);
 
@@ -92,7 +92,7 @@ class ContactEmailController extends Controller
      */
     public function show(Contact $contact, ContactEmail $contactEmail)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_email.show', [
             'contact' => $contact,
@@ -159,7 +159,7 @@ class ContactEmailController extends Controller
      */
     public function destroy(Contact $contact, ContactEmail $contactEmail)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         if ($contactEmail->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_email.deleted'));
@@ -182,7 +182,7 @@ class ContactEmailController extends Controller
      */
     public function delete(Contact $contact, ContactEmail $contactEmail)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         return view('contact_email.delete', [
             'contact' => $contact,

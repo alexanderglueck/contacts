@@ -10,7 +10,7 @@ use App\Models\ContactNumber;
 
 class ContactNumberController extends Controller
 {
-    protected $accessEntity = 'contacts';
+    protected $accessEntity = 'numbers';
 
     private $validationRules = [
         'name' => 'required',
@@ -26,7 +26,7 @@ class ContactNumberController extends Controller
      */
     public function index(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_number.index', [
             'contact' => $contact,
@@ -43,7 +43,7 @@ class ContactNumberController extends Controller
      */
     public function create(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         return view('contact_number.create', [
             'contact' => $contact,
@@ -61,7 +61,7 @@ class ContactNumberController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         $this->validate($request, $this->validationRules);
 
@@ -92,7 +92,7 @@ class ContactNumberController extends Controller
      */
     public function show(Contact $contact, ContactNumber $contactNumber)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_number.show', [
             'contact' => $contact,
@@ -159,7 +159,7 @@ class ContactNumberController extends Controller
      */
     public function destroy(Contact $contact, ContactNumber $contactNumber)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         if ($contactNumber->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_number.deleted'));
@@ -182,7 +182,7 @@ class ContactNumberController extends Controller
      */
     public function delete(Contact $contact, ContactNumber $contactNumber)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         return view('contact_number.delete', [
             'contact' => $contact,

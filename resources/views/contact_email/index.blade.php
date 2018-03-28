@@ -13,9 +13,12 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>Kontakt E-Mail Adressen: </strong><br>
-                            <a href="{{ route('contact_emails.create', [$contact->slug]) }}">E-Mail
-                                Adresse hinzufügen</a>
+                            <strong>Kontakt E-Mail Adressen: </strong>
+                            @if (Auth::user()->hasPermissionTo('create emails'))
+                                <br>
+                                <a href="{{ route('contact_emails.create', [$contact->slug]) }}">E-Mail
+                                    Adresse hinzufügen</a>
+                            @endif
                         </p>
                         @include('partials.contact_email.index')
                     </div>

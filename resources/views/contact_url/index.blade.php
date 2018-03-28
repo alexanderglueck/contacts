@@ -13,9 +13,12 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>Kontakt Websiten: </strong><br>
-                            <a href="{{  route('contact_urls.create', [$contact->slug]) }}">Website
-                                hinzufügen</a>
+                            <strong>Kontakt Websiten: </strong>
+                            @if (Auth::user()->hasPermissionTo('create urls'))
+                                <br>
+                                <a href="{{  route('contact_urls.create', [$contact->slug]) }}">Website
+                                    hinzufügen</a>
+                            @endif
                         </p>
 
                         @include('partials.contact_url.index')

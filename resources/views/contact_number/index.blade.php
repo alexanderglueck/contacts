@@ -13,9 +13,12 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>Kontakt Nummern: </strong><br>
-                            <a href="{{ route('contact_numbers.create', [$contact->slug]) }}">Nummer
-                                hinzufügen</a>
+                            <strong>Kontakt Nummern: </strong>
+                            @if (Auth::user()->hasPermissionTo('create numbers'))
+                                <br>
+                                <a href="{{ route('contact_numbers.create', [$contact->slug]) }}">Nummer
+                                    hinzufügen</a>
+                            @endif
                         </p>
 
                         @include('partials.contact_number.index')

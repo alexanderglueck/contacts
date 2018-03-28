@@ -1,29 +1,34 @@
 @extends('layouts.app')
 
-@section('title', 'Adressen verwalten')
+@section('title', trans('ui.manage_addresses'))
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
-
-
                     <div class="card-header">
-                        Adressen verwalten
+                        {{ trans('ui.manage_addresses') }}
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>Kontakt Adressen: </strong><br>
-                            <a href="{{ route('contact_addresses.create', [$contact->slug]) }}">Adresse
-                                hinzufügen</a>
+                            <strong>
+                                {{ trans('ui.addresses') }}: </strong>
+                            @if (Auth::user()->hasPermissionTo('create addresses'))
+                                <br>
+                                <a href="{{ route('contact_addresses.create', [$contact->slug]) }}">
+                                    {{ trans('ui.create_address') }}
+                                </a>
+                            @endif
                         </p>
 
                         @include('partials.contact_address.index')
                     </div>
                 </div>
 
-                @include('partials.contact_address.map')
+                @if (Auth::user()->hasPermissionTo('view map'))
+                    @include('partials.contact_address.map')
+                @endif
             </div>
         </div>
     </div>

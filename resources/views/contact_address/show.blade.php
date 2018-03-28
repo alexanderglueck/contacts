@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Adresse:  {{ $contactAddress->name }}
+    {{trans('ui.address')}}:  {{ $contactAddress->name }}
 @endsection
 
 @section('content')
@@ -11,15 +11,20 @@
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
-                        Adresse Detailansicht
+                        {{ trans('ui.address_detail') }}
                     </div>
                     <div class="card-body">
-                        <p>
-                            <a href="{{ route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]) }}">Bearbeiten</a>
-                        </p>
-                        <p>
-                            <a href="{{ route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]) }}">Löschen</a>
-                        </p>
+                        @if (Auth::user()->hasPermissionTo('edit addresses'))
+                            <p>
+                                <a href="{{ route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]) }}">Bearbeiten</a>
+                            </p>
+                        @endif
+
+                        @if (Auth::user()->hasPermissionTo('delete addresses'))
+                            <p>
+                                <a href="{{ route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]) }}">Löschen</a>
+                            </p>
+                        @endif
 
                         @include('partials.contact_address.show')
                     </div>

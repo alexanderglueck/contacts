@@ -111,12 +111,24 @@ return [
     'permissions' => 'Permissions',
     'users' => 'Users',
     'access_denied' => 'Access denied',
+    'no_permissions_ask_admin' => 'It looks like you do not have any permissions. Ask your admin to upgrade your account.',
+    'dashboard' => 'Dashboard',
+    'manage_contacts' => 'Manage contacts',
+    'contacts' => 'Contacts',
+    'manage_contact_groups' => 'Manage contact groups',
+    'contact_detail' => 'Detail view',
+    'image' => 'Image',
+    'manage_addresses' => 'Manage addresses',
+    'addresses' => 'Addresses',
+    'address' => 'Address',
+    'address_detail' => 'Detail view',
 
     /*
      * Buttons and titles
      */
     'create_contact' => 'Create contact',
     'edit_contact' => 'Edit contact',
+    'delete_contact' => 'Delete contact',
     'create_email_account' => 'Create e-mail account',
     'edit_email_account' => 'Edit e-mail account',
     'create_email_account_address' => 'Create e-mail account address',
@@ -149,4 +161,5 @@ return [
     'create_role' => 'Create role',
     'edit_role' => 'Edit role',
     'delete_role' => 'Delete role',
+    'create_address' => 'Create address',
 ];

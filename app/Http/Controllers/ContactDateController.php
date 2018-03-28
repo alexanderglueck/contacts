@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ContactDateController extends Controller
 {
-    protected $accessEntity = 'contacts';
+    protected $accessEntity = 'dates';
 
     private $validationRules = [
         'name' => 'required',
@@ -27,7 +27,7 @@ class ContactDateController extends Controller
      */
     public function index(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_date.index', [
             'contact' => $contact,
@@ -44,7 +44,7 @@ class ContactDateController extends Controller
      */
     public function create(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         return view('contact_date.create', [
             'contact' => $contact,
@@ -62,7 +62,7 @@ class ContactDateController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         $requestData = $request->all();
 
@@ -101,7 +101,7 @@ class ContactDateController extends Controller
      */
     public function show(Contact $contact, ContactDate $contactDate)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_date.show', [
             'contact' => $contact,
@@ -180,7 +180,7 @@ class ContactDateController extends Controller
      */
     public function destroy(Contact $contact, ContactDate $contactDate)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         if ($contactDate->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_date.deleted'));
@@ -203,7 +203,7 @@ class ContactDateController extends Controller
      */
     public function delete(Contact $contact, ContactDate $contactDate)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         return view('contact_date.delete', [
             'contact' => $contact,

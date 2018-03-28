@@ -246,6 +246,6 @@ class PageTest extends TestCase
             ->get(route('contacts.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontakte verwalten');
+        $response->assertSee(trans('ui.manage_contacts'));
     }
 }
