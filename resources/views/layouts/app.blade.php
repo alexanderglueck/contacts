@@ -21,7 +21,7 @@
 <div id="app">
     <nav class="navbar navbar-expand-md  navbar-light navbar-laravel">
         <a class="navbar-brand" href="{{ route('home') }}">
-            {{ config('app.name', 'CRM') }}
+            {{ config('app.name', 'Contacts') }}
         </a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#app-navbar-collapse"
@@ -35,7 +35,12 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-
+                @if (Auth::user()->hasAnyPermission([
+                    'view contacts',
+                    'create contacts',
+                    'create import',
+                    'create export'
+                ]))
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle"
                        data-toggle="dropdown"
@@ -47,41 +52,55 @@
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="contactsDropdown">
-
+                        @if (Auth::user()->hasPermissionTo('view contacts'))
                         <a class="dropdown-item" href="{{ route('contacts.index') }}">
                             Contacts
                         </a>
+                        @endif
 
+                        @if (Auth::user()->hasPermissionTo('create contacts'))
                         <a class="dropdown-item" href="{{ route('contacts.create') }}">
                             Create contact
                         </a>
+                        @endif
 
+                        @if (Auth::user()->hasAnyPermission(['create import', 'create export']))
                         <div class="dropdown-divider"></div>
+                        @endif
 
+                        @if (Auth::user()->hasPermissionTo('create import'))
                         <a class="dropdown-item" href="{{ route('import.index') }}">
                             Import
                         </a>
+                        @endif
 
-
+                        @if (Auth::user()->hasPermissionTo('create export'))
                         <a class="dropdown-item" href="{{ route('export.index') }}">
                             Export
                         </a>
+                        @endif
 
                     </div>
                 </li>
+                @endif
 
+                @if (Auth::user()->hasPermissionTo('view map'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('map.index') }}">
                         {{ trans('ui.map') }}
                     </a>
                 </li>
+                @endif
 
+                @if (Auth::user()->hasPermissionTo('view calendar'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('calendar.index') }}">
                         {{ trans('ui.calendar') }}
                     </a>
                 </li>
+                @endif
 
+                @if (Auth::user()->hasPermissionTo('view contactGroups'))
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle"
                        data-toggle="dropdown"
@@ -102,8 +121,9 @@
                         </a>
                     </div>
                 </li>
+                @endif
 
-
+                @if (Auth::user()->hasPermissionTo('view reports'))
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle"
                        data-toggle="dropdown"
@@ -170,6 +190,7 @@
                         </a>
                     </div>
                 </li>
+                @endif
             </ul>
 
             <!-- Right Side Of Navbar -->
@@ -236,9 +257,11 @@
                                 {{ trans('ui.teams') }}
                             </a>
 
+                            @if (Auth::user()->hasPermissionTo('view roles'))
                             <a class="dropdown-item" href="{{ route('roles.index') }}">
                                 {{ trans('ui.roles') }}
                             </a>
+                            @endif
 
                             <div class="dropdown-divider"></div>
 

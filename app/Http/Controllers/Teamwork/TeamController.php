@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Teamwork;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Mpociot\Teamwork\Exceptions\UserNotInTeamException;
+use Spatie\Permission\PermissionRegistrar;
 
 class TeamController extends Controller
 {
@@ -70,6 +71,8 @@ class TeamController extends Controller
         } catch (UserNotInTeamException $e) {
             abort(403);
         }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect(route('teams.index'));
     }
