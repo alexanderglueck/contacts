@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Teamwork;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Mpociot\Teamwork\Exceptions\UserNotInTeamException;
 use Spatie\Permission\PermissionRegistrar;
+use Mpociot\Teamwork\Exceptions\UserNotInTeamException;
 
 class TeamController extends Controller
 {
