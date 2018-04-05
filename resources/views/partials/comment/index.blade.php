@@ -9,8 +9,10 @@
             <p>{{ trans('ui.no_comments') }}</p>
         @endif
 
-        <hr>
+        @if (Auth::user()->hasPermissionTo('create comments'))
+            <hr>
 
-        @include('partials.comment.create')
+            @include('partials.comment.create')
+        @endif
     </div>
 </div>

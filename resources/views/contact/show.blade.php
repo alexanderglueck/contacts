@@ -11,18 +11,32 @@
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
-                        Kontakt Detailansicht
+                        {{ trans('ui.contact_detail') }}
                     </div>
                     <div class="card-body">
-                        <p>
-                            <a href="{{ route('contacts.edit', [$contact->slug]) }}">Bearbeiten</a>
-                        </p>
-                        <p>
-                            <a href="{{ route('contacts.delete', [$contact->slug]) }}">Löschen</a>
-                        </p>
-                        <p>
-                            <a href="{{ route('contacts.image', [$contact->slug]) }}">Bild</a>
-                        </p>
+                        @if (Auth::user()->hasPermissionTo('edit contacts'))
+                            <p>
+                                <a href="{{ route('contacts.edit', [$contact->slug]) }}">
+                                    {{ trans('ui.edit_contact') }}
+                                </a>
+                            </p>
+                        @endif
+
+                        @if (Auth::user()->hasPermissionTo('delete contacts'))
+                            <p>
+                                <a href="{{ route('contacts.delete', [$contact->slug]) }}">
+                                    {{ trans('ui.delete_contact') }}
+                                </a>
+                            </p>
+                        @endif
+
+                        @if (Auth::user()->hasPermissionTo('edit contacts'))
+                            <p>
+                                <a href="{{ route('contacts.image', [$contact->slug]) }}">
+                                    {{ trans('ui.image') }}
+                                </a>
+                            </p>
+                        @endif
 
                         @include('partials.contact.show')
                     </div>
@@ -30,13 +44,14 @@
                 </div>
             </div>
         </div>
+        @if (Auth::user()->hasPermissionTo('view comments'))
+            <div class="row justify-content-center">
+                <div class="col-md-12">
 
-        <div class="row justify-content-center">
-            <div class="col-md-12">
+                    @include('partials.comment.index')
 
-                @include('partials.comment.index')
-
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 @endsection

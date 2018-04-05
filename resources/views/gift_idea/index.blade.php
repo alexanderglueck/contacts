@@ -12,10 +12,14 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>{{ trans('ui.gift_ideas') }}: </strong><br>
-                            <a href="{{ route('gift_ideas.create', [$contact->slug]) }}">
-                                {{ trans('ui.create_gift_idea') }}
-                            </a>
+                            <strong>{{ trans('ui.gift_ideas') }}: </strong>
+
+                            @if (Auth::user()->hasPermissionTo('create giftIdeas'))
+                                <br>
+                                <a href="{{ route('gift_ideas.create', [$contact->slug]) }}">
+                                    {{ trans('ui.create_gift_idea') }}
+                                </a>
+                            @endif
                         </p>
 
                         @include('partials.gift_idea.index')

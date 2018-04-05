@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 
 class GiftIdeaController extends Controller
 {
-    protected $accessEntity = 'contacts';
+    protected $accessEntity = 'giftIdeas';
 
     private $validationRules = [
         'name' => 'required',
@@ -28,7 +28,7 @@ class GiftIdeaController extends Controller
      */
     public function index(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('gift_idea.index', [
             'contact' => $contact,
@@ -45,7 +45,7 @@ class GiftIdeaController extends Controller
      */
     public function create(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         return view('gift_idea.create', [
             'contact' => $contact,
@@ -63,6 +63,8 @@ class GiftIdeaController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
+        $this->can('create');
+
         $this->validate($request, $this->validationRules);
 
         $giftIdea = new GiftIdea();
@@ -92,7 +94,7 @@ class GiftIdeaController extends Controller
      */
     public function show(Contact $contact, GiftIdea $giftIdea)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('gift_idea.show', [
             'contact' => $contact,
@@ -110,6 +112,8 @@ class GiftIdeaController extends Controller
      */
     public function edit(Contact $contact, GiftIdea $giftIdea)
     {
+        $this->can('edit');
+
         return view('gift_idea.edit', [
             'contact' => $contact,
             'giftIdea' => $giftIdea,
@@ -128,6 +132,8 @@ class GiftIdeaController extends Controller
      */
     public function update(Request $request, Contact $contact, GiftIdea $giftIdea)
     {
+        $this->can('edit');
+
         $this->validate($request, $this->validationRules);
         $giftIdea->fill($request->all());
         $giftIdea->updated_by = Auth::id();
@@ -154,7 +160,7 @@ class GiftIdeaController extends Controller
      */
     public function destroy(Contact $contact, GiftIdea $giftIdea)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         if ($giftIdea->delete()) {
             Session::flash('alert-success', trans('flash_message.gift_idea.deleted'));
@@ -177,7 +183,7 @@ class GiftIdeaController extends Controller
      */
     public function delete(Contact $contact, GiftIdea $giftIdea)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         return view('gift_idea.delete', [
             'contact' => $contact,

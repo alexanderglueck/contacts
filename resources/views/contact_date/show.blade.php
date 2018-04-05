@@ -14,12 +14,17 @@
                         Datum Detailansicht
                     </div>
                     <div class="card-body">
-                        <p>
-                            <a href="{{ route('contact_dates.edit', [$contact->slug, $contactDate->slug]) }}">Bearbeiten</a>
-                        </p>
-                        <p>
-                            <a href="{{ route('contact_dates.delete', [$contact->slug, $contactDate->slug]) }}">Löschen</a>
-                        </p>
+                        @if (Auth::user()->hasPermissionTo('edit dates'))
+                            <p>
+                                <a href="{{ route('contact_dates.edit', [$contact->slug, $contactDate->slug]) }}">Bearbeiten</a>
+                            </p>
+                        @endif
+
+                        @if (Auth::user()->hasPermissionTo('delete dates'))
+                            <p>
+                                <a href="{{ route('contact_dates.delete', [$contact->slug, $contactDate->slug]) }}">Löschen</a>
+                            </p>
+                        @endif
 
                         @include('partials.contact_date.show')
                     </div>

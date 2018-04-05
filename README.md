@@ -16,8 +16,8 @@ Afterwards migrate and seed the database.
 ```bash
 git clone git@github.com:alexanderglueck/contacts.git
 cd contacts && composer install && npm install
-php artisan migrate
-php artisan db:seed
+php artisan migrate --seed
+npm run prod
 ```
 
 ## Security

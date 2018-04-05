@@ -12,9 +12,12 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong>Kontakt Datumsangaben: </strong><br>
-                            <a href="{{ route('contact_dates.create', [$contact->slug]) }}">Datum
-                                hinzufügen</a>
+                            <strong>Kontakt Datumsangaben: </strong>
+                            @if (Auth::user()->hasPermissionTo('create dates'))
+                                <br>
+                                <a href="{{ route('contact_dates.create', [$contact->slug]) }}">Datum
+                                    hinzufügen</a>
+                            @endif
                         </p>
 
                         @include('partials.contact_date.index')

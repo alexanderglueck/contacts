@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ContactUrlController extends Controller
 {
-    protected $accessEntity = 'contacts';
+    protected $accessEntity = 'urls';
 
     private $validationRules = [
         'name' => 'required',
@@ -26,7 +26,7 @@ class ContactUrlController extends Controller
      */
     public function index(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_url.index', [
             'contact' => $contact,
@@ -43,7 +43,7 @@ class ContactUrlController extends Controller
      */
     public function create(Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         return view('contact_url.create', [
             'contact' => $contact,
@@ -61,7 +61,7 @@ class ContactUrlController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
-        $this->can('edit');
+        $this->can('create');
 
         $this->validate($request, $this->validationRules);
 
@@ -92,7 +92,7 @@ class ContactUrlController extends Controller
      */
     public function show(Contact $contact, ContactUrl $contactUrl)
     {
-        $this->can('edit');
+        $this->can('view');
 
         return view('contact_url.show', [
             'contact' => $contact,
@@ -159,7 +159,7 @@ class ContactUrlController extends Controller
      */
     public function destroy(Contact $contact, ContactUrl $contactUrl)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         if ($contactUrl->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_url.deleted'));
@@ -182,7 +182,7 @@ class ContactUrlController extends Controller
      */
     public function delete(Contact $contact, ContactUrl $contactUrl)
     {
-        $this->can('edit');
+        $this->can('delete');
 
         return view('contact_url.delete', [
             'contact' => $contact,

@@ -15,5 +15,5 @@
     {{ $contacts->links() }}
 
 @else
-    <p>Keine Kontakte verfügbar</p>
+    <p>{{ trans('ui.no_contacts') }}</p>
 @endif

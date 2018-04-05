@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kontakte verwalten')
+@section('title', trans('ui.manage_contacts'))
 
 @section('content')
     <div class="container">
@@ -9,12 +9,20 @@
                 <div class="card card-default">
 
                     <div class="card-header">
-                        Kontakte verwalten
+                        {{ trans('ui.manage_contacts') }}
                     </div>
                     <div class="card-body">
-                        <p><strong>Kontakte: </strong><br>
-                            <a href="{{ route('contacts.create') }}">Kontakt
-                                hinzufügen</a>
+                        <p>
+                            <strong>
+                                {{ trans('ui.contacts') }}:
+                            </strong>
+
+                            @if (Auth::user()->hasPermissionTo('create contacts'))
+                                <br>
+                                <a href="{{ route('contacts.create') }}">
+                                    {{ trans('ui.create_contact') }}
+                                </a>
+                            @endif
                         </p>
 
                         @include('partials.contact.index')
