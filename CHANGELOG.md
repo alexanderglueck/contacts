@@ -5,9 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [0.2.0]
 ### Changed
 - Only show menu entries the user has access to
 - Only show links to CRUD options the user has access to
+- Update installation instructions within the README
+- Update composer and npm dependencies
 
 ## [0.1.0] - 2018-03-26
 ### Added
@@ -58,5 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
  - Initial commit
 
-[0.1.0]: https://github.com/alexanderglueck/contacts/compare/0.1.0...0.0.1
+
+[0.2.0]: https://github.com/alexanderglueck/contacts/compare/0.1.0...0.2.0
+[0.1.0]: https://github.com/alexanderglueck/contacts/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/alexanderglueck/contacts/releases/tag/0.0.1
