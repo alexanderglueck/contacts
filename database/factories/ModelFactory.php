@@ -160,3 +160,14 @@ $factory->define(App\Models\ContactGroup::class, function (Faker\Generator $fake
         'updated_by' => 1
     ];
 });
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Admin\Announcement::class, function (Faker\Generator $faker) {
+    $user = factory(App\Models\User::class)->create();
+
+    return [
+        'user_id' => $user->id,
+        'title' => $faker->sentence,
+        'body' => $faker->paragraph(30)
+    ];
+});
