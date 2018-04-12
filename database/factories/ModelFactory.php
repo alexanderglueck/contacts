@@ -20,7 +20,9 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
-        'current_team_id' => factory(\App\Models\Team::class)
+        'current_team_id' => function () {
+            return factory(\App\Models\Team::class);
+        }
     ];
 });
 
@@ -33,7 +35,9 @@ $factory->define(App\Models\Team::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Role::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'team_id' => factory(\App\Models\Team::class),
+        'team_id' => function () {
+            return factory(\App\Models\Team::class);
+        },
         'guard_name' => 'web'
     ];
 });
@@ -163,10 +167,10 @@ $factory->define(App\Models\ContactGroup::class, function (Faker\Generator $fake
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Admin\Announcement::class, function (Faker\Generator $faker) {
-    $user = factory(App\Models\User::class)->create();
-
     return [
-        'user_id' => $user->id,
+        'user_id' => function () {
+            return (factory(App\Models\User::class)->create())->id;
+        },
         'title' => $faker->sentence,
         'body' => $faker->paragraph(30)
     ];

@@ -13,15 +13,15 @@ abstract class TestCase extends BaseTestCase
     public function createUser($permission = '')
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = create(User::class);
 
-        $team = factory(Team::class)->create([
+        $team = create(Team::class, [
             'owner_id' => $user->id
         ]);
 
         $user->attachTeam($team);
 
-        $this->be($user, 'web');
+        $this->be($user);
 
         $user->givePermissionTo($permission);
 

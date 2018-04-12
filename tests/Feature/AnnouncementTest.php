@@ -15,20 +15,15 @@ class AnnouncementTest extends TestCase
     /** @test */
     public function a_user_can_create_an_announcement()
     {
-        \Session::start();
-
-        $this->withoutMiddleware();
-
         $user = $this->createUser('create announcements');
 
-        $announcement = factory(Announcement::class)->make([
+        $announcement = make(Announcement::class, [
             'user_id' => $user->id
         ]);
 
         $parameters = $announcement->toArray();
 
         $response = $this
-            ->actingAs($user)
             ->post(route('announcements.store'), $parameters);
 
         $response->assertStatus(302);
@@ -42,13 +37,11 @@ class AnnouncementTest extends TestCase
     {
         $user = $this->createUser('view announcements');
 
-        $this->be($user);
-
-        $announcement = factory(Announcement::class)->create([
+        $announcement = make(Announcement::class, [
             'user_id' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->get(route('announcements.show', [$announcement->slug]));
 
         $response->assertStatus(200);
@@ -60,14 +53,12 @@ class AnnouncementTest extends TestCase
     {
         $user = $this->createUser('view announcements');
 
-        $this->be($user);
-
-        $announcement = factory(Announcement::class)->create([
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
-        $anotherTeam = factory(Team::class)->create();
-        $viewer = factory(User::class)->create([
+        $anotherTeam = create(Team::class);
+        $viewer = create(User::class, [
             'current_team_id' => $anotherTeam->id
         ]);
 
@@ -89,13 +80,11 @@ class AnnouncementTest extends TestCase
     {
         $user = $this->createUser('delete announcements');
 
-        $this->be($user);
-
-        $announcement = factory(Announcement::class)->create([
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->get(route('announcements.delete', [$announcement->slug]));
 
         $response->assertStatus(200);
@@ -105,22 +94,16 @@ class AnnouncementTest extends TestCase
     /** @test */
     public function a_user_can_delete_an_announcement()
     {
-        \Session::start();
-
         $user = $this->createUser('delete announcements');
 
-        $this->be($user);
-
-        $announcement = factory(Announcement::class)->create([
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
         $this->assertDatabaseHas('announcements', $announcement->toArray());
 
-        $response = $this->actingAs($user)
-            ->delete(route('announcements.destroy', [$announcement->slug]), [
-                '_token' => csrf_token()
-            ]);
+        $response = $this
+            ->delete(route('announcements.destroy', [$announcement->slug]));
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
@@ -135,7 +118,7 @@ class AnnouncementTest extends TestCase
 
         $this->be($user);
 
-        $announcement = factory(Announcement::class)->create([
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
@@ -156,7 +139,7 @@ class AnnouncementTest extends TestCase
 
         $this->be($user);
 
-        $announcement = factory(Announcement::class)->create([
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 

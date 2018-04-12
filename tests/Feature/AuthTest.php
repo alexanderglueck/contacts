@@ -22,14 +22,11 @@ class AuthTest extends TestCase
     /** @test */
     public function a_guest_can_login_with_correct_credentials()
     {
-        \Session::start();
-
-        $user = factory(User::class)->create();
+        $user = create(User::class);
 
         $response = $this->post(route('login.check'), [
             'email' => $user->email,
-            'password' => 'secret',
-            '_token' => csrf_token()
+            'password' => 'secret'
         ]);
 
         $response->assertSessionMissing('errors');
@@ -39,14 +36,11 @@ class AuthTest extends TestCase
     /** @test */
     public function a_guest_cannot_login_with_incorrect_credentials()
     {
-        \Session::start();
-
-        $user = factory(User::class)->create();
+        $user = create(User::class);
 
         $response = $this->post(route('login.check'), [
             'email' => $user->email,
-            'password' => 'invalid',
-            '_token' => csrf_token()
+            'password' => 'invalid'
         ]);
 
         $response->assertSessionHasErrors();
@@ -56,14 +50,10 @@ class AuthTest extends TestCase
     /** @test */
     public function a_user_can_logout()
     {
-        \Session::start();
-
-        $user = factory(User::class)->create();
+        $user = create(User::class);
 
         $response = $this->actingAs($user)
-            ->post(route('logout'), [
-                '_token' => csrf_token()
-            ]);
+            ->post(route('logout'));
 
         $response->assertStatus(302);
         $this->assertGuest();
