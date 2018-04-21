@@ -13,7 +13,7 @@ class StoreComment extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create comments');;
+        return $this->user()->can('create comments');
     }
 
     /**

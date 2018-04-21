@@ -6,17 +6,12 @@ use App\Models\Admin\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Announcement\StoreAnnouncement;
-use App\Http\Requests\Announcement\UpdateAnnouncement;
 use App\Http\Requests\Announcement\DeleteAnnouncement;
+use App\Http\Requests\Announcement\UpdateAnnouncement;
 
 class AnnouncementController extends Controller
 {
     protected $accessEntity = 'announcements';
-
-    private $validationRules = [
-        'title' => 'required',
-        'body' => 'required'
-    ];
 
     /**
      * Display a listing of the resource.

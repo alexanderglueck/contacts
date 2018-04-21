@@ -7,8 +7,8 @@ use App\Models\Comment;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Comment\StoreComment;
-use App\Http\Requests\Comment\UpdateComment;
 use App\Http\Requests\Comment\DeleteComment;
+use App\Http\Requests\Comment\UpdateComment;
 
 class CommentController extends Controller
 {
