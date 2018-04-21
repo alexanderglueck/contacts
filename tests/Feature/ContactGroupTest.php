@@ -13,13 +13,9 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_create_a_contact_group()
     {
-        \Session::start();
-
-        $this->withoutMiddleware();
-
         $user = $this->createUser('create contactGroups');
 
-        $contactGroup = factory(ContactGroup::class)->make([
+        $contactGroup = make(ContactGroup::class, [
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
@@ -40,13 +36,11 @@ class ContactGroupTest extends TestCase
     {
         $user = $this->createUser('view contactGroups');
 
-        $this->be($user);
-
-        $contactGroup = factory(ContactGroup::class)->create([
+        $contactGroup = create(ContactGroup::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->get(route('contact_groups.show', [$contactGroup->slug]));
 
         $response->assertStatus(200);
@@ -58,13 +52,11 @@ class ContactGroupTest extends TestCase
     {
         $user = $this->createUser('delete contactGroups');
 
-        $this->be($user);
-
-        $contactGroup = factory(ContactGroup::class)->create([
+        $contactGroup = create(ContactGroup::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->get(route('contact_groups.delete', [$contactGroup->slug]));
 
         $response->assertStatus(200);
@@ -74,19 +66,15 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_delete_a_contact_group()
     {
-        \Session::start();
-
         $user = $this->createUser('delete contactGroups');
 
-        $this->be($user);
-
-        $contactGroup = factory(ContactGroup::class)->create([
+        $contactGroup = create(ContactGroup::class, [
             'created_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('contact_groups', $contactGroup->toArray());
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->delete(route('contact_groups.destroy', [$contactGroup->slug]), [
                 '_token' => csrf_token()
             ]);
@@ -102,13 +90,11 @@ class ContactGroupTest extends TestCase
     {
         $user = $this->createUser('edit contactGroups');
 
-        $this->be($user);
-
-        $contactGroup = factory(ContactGroup::class)->create([
+        $contactGroup = create(ContactGroup::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->get(route('contact_groups.edit', [$contactGroup->slug]));
 
         $response->assertStatus(200);
@@ -119,13 +105,9 @@ class ContactGroupTest extends TestCase
     /** @test */
     public function a_user_can_update_a_contact_group()
     {
-        \Session::start();
-
         $user = $this->createUser('edit contactGroups');
 
-        $this->be($user);
-
-        $contactGroup = factory(ContactGroup::class)->create([
+        $contactGroup = create(ContactGroup::class, [
             'created_by' => $user->id
         ]);
 
@@ -139,7 +121,7 @@ class ContactGroupTest extends TestCase
         unset($contactGroup->updated_at);
         unset($contactGroup->updated_by);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->put(route('contact_groups.update', [$contactGroup->slug]),
                 array_merge($contactGroup2->toArray(),
                     ['_token' => csrf_token()]

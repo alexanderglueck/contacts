@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Admin\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Announcement\StoreAnnouncement;
+use App\Http\Requests\Announcement\UpdateAnnouncement;
+use App\Http\Requests\Announcement\DeleteAnnouncement;
 
 class AnnouncementController extends Controller
 {
@@ -47,30 +49,26 @@ class AnnouncementController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param StoreAnnouncement $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreAnnouncement $request)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $announcement = new Announcement();
         $announcement->fill($request->all());
         $announcement->user_id = Auth::id();
         $announcement->team_id = Auth::user()->currentTeam->id;
 
-        if ($announcement->save()) {
-            Session::flash('alert-success', trans('flash_message.announcement.created'));
-
-            return redirect()->route('announcements.show', [$announcement->slug]);
-        } else {
+        if ( ! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));
 
             return redirect()->route('announcements.create');
         }
+
+        Session::flash('alert-success', trans('flash_message.announcement.created'));
+
+        return redirect()->route('announcements.show', [$announcement->slug]);
     }
 
     /**
@@ -109,50 +107,46 @@ class AnnouncementController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request       $request
+     * @param UpdateAnnouncement              $request
      * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Announcement $announcement)
+    public function update(UpdateAnnouncement $request, Announcement $announcement)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $announcement->fill($request->all());
 
-        if ($announcement->save()) {
-            Session::flash('alert-success', trans('flash_message.announcement.updated'));
-
-            return redirect()->route('announcements.show', [$announcement->slug]);
-        } else {
+        if ( ! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_updated'));
 
             return redirect()->route('announcements.edit', [$announcement->slug]);
         }
+
+        Session::flash('alert-success', trans('flash_message.announcement.updated'));
+
+        return redirect()->route('announcements.show', [$announcement->slug]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param DeleteAnnouncement              $request
      * @param  \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
-    public function destroy(Announcement $announcement)
+    public function destroy(DeleteAnnouncement $request, Announcement $announcement)
     {
-        $this->can('delete');
-
-        if ($announcement->delete()) {
-            Session::flash('alert-success', trans('flash_message.announcement.deleted'));
-
-            return redirect()->route('announcements.index');
-        } else {
+        if ( ! $announcement->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
 
             return redirect()->route('announcements.delete', [$announcement->slug]);
         }
+
+        Session::flash('alert-success', trans('flash_message.announcement.deleted'));
+
+        return redirect()->route('announcements.index');
     }
 
     /**

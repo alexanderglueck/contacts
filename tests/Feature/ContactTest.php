@@ -15,12 +15,9 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_create_a_contact()
     {
-        \Session::start();
-
-        $this->withoutMiddleware();
-
         $user = $this->createUser('create contacts');
-        $contact = factory(Contact::class)->make([
+
+        $contact = make(Contact::class, [
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
@@ -29,7 +26,6 @@ class ContactTest extends TestCase
         $parameters['date_of_birth'] = $contact->formatted_date_of_birth;
 
         $response = $this
-            ->actingAs($user)
             ->post(route('contacts.store'), $parameters);
 
         $response->assertStatus(302);
@@ -43,14 +39,11 @@ class ContactTest extends TestCase
     {
         $user = $this->createUser('view contacts');
 
-        $this->be($user);
-
-        $contact = factory(Contact::class)->create([
+        $contact = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
-            ->get(route('contacts.show', [$contact->slug]));
+        $response = $this->get(route('contacts.show', [$contact->slug]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -61,14 +54,12 @@ class ContactTest extends TestCase
     {
         $user = $this->createUser('view contacts');
 
-        $this->be($user);
-
-        $contact = factory(Contact::class)->create([
+        $contact = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
-        $anotherTeam = factory(Team::class)->create();
-        $viewer = factory(User::class)->create([
+        $anotherTeam = create(Team::class);
+        $viewer = create(User::class, [
             'current_team_id' => $anotherTeam->id
         ]);
 
@@ -90,14 +81,11 @@ class ContactTest extends TestCase
     {
         $user = $this->createUser('delete contacts');
 
-        $this->be($user);
-
-        $contact = factory(Contact::class)->create([
+        $contact = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
-            ->get(route('contacts.delete', [$contact->slug]));
+        $response = $this->get(route('contacts.delete', [$contact->slug]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -106,19 +94,15 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_delete_a_contact()
     {
-        \Session::start();
-
         $user = $this->createUser('delete contacts');
 
-        $this->be($user);
-
-        $contact = factory(Contact::class)->create([
+        $contact = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('contacts', $contact->toArray());
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->delete(route('contacts.destroy', [$contact->slug]), [
                 '_token' => csrf_token()
             ]);
@@ -134,14 +118,11 @@ class ContactTest extends TestCase
     {
         $user = $this->createUser('edit contacts');
 
-        $this->be($user);
-
-        $contact = factory(Contact::class)->create([
+        $contact = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
-        $response = $this->actingAs($user)
-            ->get(route('contacts.edit', [$contact->slug]));
+        $response = $this->get(route('contacts.edit', [$contact->slug]));
 
         $response->assertStatus(200);
         $response->assertSee('Kontakt bearbeiten');
@@ -151,13 +132,9 @@ class ContactTest extends TestCase
     /** @test */
     public function a_user_can_update_a_contact()
     {
-        \Session::start();
-
         $user = $this->createUser('edit contacts');
 
-        $this->be($user);
-
-        $contactGroup = factory(Contact::class)->create([
+        $contactGroup = create(Contact::class, [
             'created_by' => $user->id
         ]);
 
@@ -178,7 +155,7 @@ class ContactTest extends TestCase
         unset($parameters['updated_by']);
         unset($contactGroup2['updated_by']);
 
-        $response = $this->actingAs($user)
+        $response = $this
             ->put(route('contacts.update', [$contactGroup->slug]),
                 array_merge($parameters,
                     ['_token' => csrf_token()]

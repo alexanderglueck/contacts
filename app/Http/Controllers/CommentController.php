@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Models\Comment;
 use App\Models\Contact;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Comment\StoreComment;
+use App\Http\Requests\Comment\UpdateComment;
+use App\Http\Requests\Comment\DeleteComment;
 
 class CommentController extends Controller
 {
@@ -15,19 +17,13 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param Contact                   $contact
+     * @param StoreComment $request
+     * @param Contact      $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(StoreComment $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, [
-            'comment' => 'required'
-        ]);
-
         $comment = new Comment();
         $comment->fill($request->all());
 
@@ -53,8 +49,8 @@ class CommentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Contact              $contact
-     * @param  \App\Models\Comment $comment
+     * @param Contact $contact
+     * @param Comment $comment
      *
      * @return \Illuminate\Http\Response
      */
@@ -71,20 +67,14 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param Contact                   $contact
-     * @param  \App\Models\Comment      $comment
+     * @param UpdateComment $request
+     * @param Contact       $contact
+     * @param Comment       $comment
      *
-     * @return \Illuminate\Http\Response
+     * @return \Response
      */
-    public function update(Request $request, Contact $contact, Comment $comment)
+    public function update(UpdateComment $request, Contact $contact, Comment $comment)
     {
-        $this->can('edit');
-
-        $this->validate($request, [
-            'comment' => 'required'
-        ]);
-
         $comment->comment = $request->comment;
 
         if ($comment->save()) {
@@ -101,16 +91,15 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Contact              $contact
-     * @param  \App\Models\Comment $comment
+     * @param DeleteComment $request
+     * @param Contact       $contact
+     * @param Comment       $comment
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, Comment $comment)
+    public function destroy(DeleteComment $request, Contact $contact, Comment $comment)
     {
-        $this->can('delete');
-
         if ($comment->delete()) {
             Session::flash('alert-success', trans('flash_message.comment.deleted'));
 
