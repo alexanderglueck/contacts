@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Scopes\CreatedByScope;
+use App\Traits\RecordsActivity;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Mpociot\Teamwork\Traits\UsedByTeams;
@@ -13,6 +14,7 @@ class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
     use UsedByTeams;
+    use RecordsActivity;
 
     protected $fillable = [
         'firstname',

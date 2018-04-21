@@ -2,5 +2,9 @@
 
 return [
     'installed' => env('CONTACTS_INSTALLED', false),
-    'googleMapsKey' => env('GOOGLE_MAPS_GEOCODING_KEY', '')
+    'googleMapsKey' => env('GOOGLE_MAPS_GEOCODING_KEY', ''),
+    'pagination' => [
+        'default' => 20,
+        'activities' => 20
+    ]
 ];

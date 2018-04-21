@@ -80,6 +80,14 @@
                         </a>
                         @endif
 
+                        @if (Auth::user()->hasPermissionTo('view activities'))
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item" href="{{ route('activities.index') }}">
+                                Activity log
+                            </a>
+                        @endif
+
                     </div>
                 </li>
                 @endif

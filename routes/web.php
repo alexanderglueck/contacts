@@ -290,6 +290,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     });
 
     /**
+     * Activities
+     */
+    Route::get('activities', 'ActivityController@index')->name('activities.index');
+
+    /**
      * Teamwork
      */
     Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function () {

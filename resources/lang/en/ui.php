@@ -117,11 +117,15 @@ return [
     'contacts' => 'Contacts',
     'manage_contact_groups' => 'Manage contact groups',
     'contact_detail' => 'Detail view',
+    'no_contacts' => 'No contacts',
     'image' => 'Image',
     'manage_addresses' => 'Manage addresses',
     'addresses' => 'Addresses',
     'address' => 'Address',
     'address_detail' => 'Detail view',
+    'activities' => 'Activities',
+    'activity' => 'Activity',
+    'no_activities' => 'No activities',
 
     /*
      * Buttons and titles

@@ -10,7 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function createUser($permission = '')
+    public function createUser($permission = [])
     {
         /** @var User $user */
         $user = factory(User::class)->create();

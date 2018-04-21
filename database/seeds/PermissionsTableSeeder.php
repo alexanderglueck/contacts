@@ -29,7 +29,8 @@ class PermissionsTableSeeder extends Seeder
                 'dates',
                 'addresses',
                 'roles',
-                'users'
+                'users',
+                'activities'
             ],
             'create' => [
                 'contacts',
