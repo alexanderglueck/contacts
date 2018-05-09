@@ -212,29 +212,40 @@
                         <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                 @else
-                    @if(count(Auth::user()->teams)> 1)
-                        <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               aria-haspopup="true"
-                               aria-expanded="false"
-                               id="teamSwitchDropdown"
-                            >
-                                {{ trans('ui.switch_team') }}
-                            </a>
+                    @impersonating
+                    <li class="nav-item ">
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('impersonation-form').submit();">Stop impersonating</a>
+                    </li>
+                    <form id="impersonation-form" action="{{ route('user.impersonate') }}" method="post">
+                        @csrf
+                        {{ method_field('delete') }}
+                    </form>
 
-                            <div class="dropdown-menu" aria-labelledby="teamSwitchDropdown">
-                                @foreach(Auth::user()->teams as $team)
-                                    @if($team->id != Auth::user()->currentTeam->id)
-                                        <a class="dropdown-item" href="{{ route('teams.switch', $team->id) }}">
-                                            {{ $team->name }}
-                                        </a>
-                                    @endif
-                                @endforeach
+                    @else
+                        @if(count(Auth::user()->teams)> 1)
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle"
+                                   data-toggle="dropdown"
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
+                                   id="teamSwitchDropdown"
+                                >
+                                    {{ trans('ui.switch_team') }}
+                                </a>
 
-                            </div>
-                        </li>
-                    @endif
+                                <div class="dropdown-menu" aria-labelledby="teamSwitchDropdown">
+                                    @foreach(Auth::user()->teams as $team)
+                                        @if($team->id != Auth::user()->currentTeam->id)
+                                            <a class="dropdown-item" href="{{ route('teams.switch', $team->id) }}">
+                                                {{ $team->name }}
+                                            </a>
+                                        @endif
+                                    @endforeach
+
+                                </div>
+                            </li>
+                        @endif
+                    @endimpersonating
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle"

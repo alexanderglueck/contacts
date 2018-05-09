@@ -322,4 +322,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::put('roles/{role}', 'RoleController@update')->name('roles.update');
     Route::get('roles/{role}/delete', 'RoleController@delete')->name('roles.delete');
     Route::delete('roles/{role}', 'RoleController@destroy')->name('roles.destroy');
+
+    Route::post('impersonate', 'ImpersonateController@store')->name('user.impersonate');
+    Route::delete('impersonate', 'ImpersonateController@destroy');
 });

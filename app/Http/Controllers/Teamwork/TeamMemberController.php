@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Teamwork;
 
 use Illuminate\Http\Request;
 use Mpociot\Teamwork\TeamInvite;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Mpociot\Teamwork\Facades\Teamwork;
 
@@ -24,6 +24,10 @@ class TeamMemberController extends Controller
      */
     public function show($id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($id);
 
@@ -41,6 +45,10 @@ class TeamMemberController extends Controller
      */
     public function destroy($team_id, $user_id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($team_id);
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
@@ -66,6 +74,10 @@ class TeamMemberController extends Controller
      */
     public function invite(Request $request, $team_id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($team_id);
 
@@ -94,6 +106,10 @@ class TeamMemberController extends Controller
      */
     public function resendInvite($invite_id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $invite = TeamInvite::findOrFail($invite_id);
         Mail::send('teamwork.emails.invite', ['team' => $invite->team, 'invite' => $invite], function ($m) use ($invite) {
             $m->to($invite->email)->subject('Invitation to join team ' . $invite->team->name);

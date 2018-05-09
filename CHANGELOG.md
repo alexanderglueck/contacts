@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 ## Added
 - Add activity log (created contact, updated contact)
+- Add user impersonation
 
 ## [0.2.0]
 ### Changed

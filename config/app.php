@@ -166,6 +166,11 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /*
+         * Custom Blade Directives
+         */
+        App\Providers\BladeServiceProvider::class,
+
+        /*
          * Teamwork
          */
         Mpociot\Teamwork\TeamworkServiceProvider::class,

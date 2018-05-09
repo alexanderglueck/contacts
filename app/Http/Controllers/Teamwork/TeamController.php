@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Teamwork;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Spatie\Permission\PermissionRegistrar;
 use Mpociot\Teamwork\Exceptions\UserNotInTeamException;
 
@@ -21,6 +21,10 @@ class TeamController extends Controller
      */
     public function index()
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         return view('teamwork.index')
             ->with('teams', auth()->user()->teams);
     }
@@ -32,6 +36,10 @@ class TeamController extends Controller
      */
     public function create()
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         return view('teamwork.create');
     }
 
@@ -44,6 +52,10 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
 
         $team = $teamModel::create([
@@ -64,6 +76,10 @@ class TeamController extends Controller
      */
     public function switchTeam($id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($id);
         try {
@@ -86,6 +102,10 @@ class TeamController extends Controller
      */
     public function edit($id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($id);
 
@@ -106,6 +126,10 @@ class TeamController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
 
         $team = $teamModel::findOrFail($id);
@@ -124,6 +148,10 @@ class TeamController extends Controller
      */
     public function destroy($id)
     {
+        if ($this->isImpersonating()) {
+            return redirect()->route('home');
+        }
+
         $teamModel = config('teamwork.team_model');
 
         $team = $teamModel::findOrFail($id);
