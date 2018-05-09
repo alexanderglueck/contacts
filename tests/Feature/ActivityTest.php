@@ -111,7 +111,8 @@ class ActivityTest extends TestCase
         $user = $this->createUser('view activities');
 
         $contact = factory(Contact::class)->create([
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'lastname' => 'Doe'
         ]);
 
         $response = $this->get(route('activities.index'));
