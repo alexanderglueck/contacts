@@ -19,7 +19,8 @@ class Controller extends BaseController
         abort_unless(Auth::user()->can($right . ' ' . $this->accessEntity), 403, trans('ui.access_denied'));
     }
 
-    protected function isImpersonating() {
+    protected function isImpersonating()
+    {
         return session()->has('impersonate');
     }
 }
