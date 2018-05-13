@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapTenantRoutes();
     }
 
     /**
@@ -51,7 +51,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('web', 'bindings')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
     }
@@ -69,5 +69,12 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapTenantRoutes()
+    {
+        Route::middleware('web', 'auth', 'tenant')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/tenant.php'));
     }
 }

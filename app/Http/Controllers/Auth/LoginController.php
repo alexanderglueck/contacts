@@ -63,6 +63,8 @@ class LoginController extends Controller
 
             return redirect()->route('login.token');
         }
+
+        session()->put('tenant', $user->currentTeam->uuid);
     }
 
     public function token(Request $request)

@@ -26,6 +26,19 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Failed' => [
             'App\Listeners\LogFailedLogin',
         ],
+
+        'App\Events\Tenant\TenantIdentified' => [
+            'App\Listeners\Tenant\RegisterTenant',
+            'App\Listeners\Tenant\UseTenantFilesystem',
+        ],
+
+        'App\Events\Tenant\TenantWasCreated' => [
+            'App\Listeners\Tenant\CreateTenantDatabase',
+        ],
+
+        'App\Events\Tenant\TenantDatabaseWasCreated' => [
+            'App\Listeners\Tenant\SetUpTenantDatabase',
+        ],
     ];
 
     /**

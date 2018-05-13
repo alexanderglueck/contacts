@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use App\Scopes\CreatedByScope;
 use App\Traits\RecordsActivity;
+use App\Tenant\Traits\ForTenants;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Mpociot\Teamwork\Traits\UsedByTeams;
@@ -13,8 +14,9 @@ use Cviebrock\EloquentSluggable\Sluggable;
 class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
-    use UsedByTeams;
+   // use UsedByTeams;
     use RecordsActivity;
+    use ForTenants;
 
     protected $fillable = [
         'firstname',
@@ -440,4 +442,6 @@ class Contact extends Model implements CalendarInterface
 
         static::addGlobalScope(new CreatedByScope());
     }
+
+
 }

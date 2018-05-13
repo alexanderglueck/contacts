@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Scopes\CreatedByScope;
+use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactUrl extends Model
 {
     use Sluggable;
+    use ForTenants;
 
     protected $fillable = ['name', 'url', 'created_by', 'updated_by'];
 

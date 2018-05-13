@@ -18,6 +18,10 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('slug');
+            $table->string('image')->nullable();
+            $table->string('api_token', 60)->unique()->nullable();
+            $table->string('google2fa_secret', 64)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

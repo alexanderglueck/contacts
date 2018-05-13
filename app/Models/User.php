@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +13,6 @@ class User extends Authenticatable
 {
     use Notifiable;
     use Sluggable;
-    use UserHasTeams;
     use HasRoles;
 
     /**
@@ -129,17 +127,35 @@ class User extends Authenticatable
         return $this->notificationSetting;
     }
 
-    /**
-     * A model may have multiple roles.
-     */
-    public function roles(): MorphToMany
+    public function permissions(): MorphToMany
     {
         return $this->morphToMany(
-            config('permission.models.role'),
+            config('permission.models.permission'),
             'model',
-            config('permission.table_names.model_has_roles'),
+            config('database.connections.tenant.database') . '.' . config('permission.table_names.model_has_permissions'),
             'model_id',
-            'role_id'
-        )->where('roles.team_id', Auth::user()->currentTeam->id);
+            'permission_id'
+        );
+    }
+
+    public function isOwnerOfTeam($team)
+    {
+        return $team->owner_id == $this->id;
+    }
+
+    public function switchTeam($team)
+    {
+        $this->current_team_id = $team->id;
+        $this->save();
+    }
+
+    public function currentTeam()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, config('contacts.tenant.system') . '.team_user');
     }
 }

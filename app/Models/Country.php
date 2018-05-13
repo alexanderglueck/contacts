@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Tenant\Traits\ForSystem;
+use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
+    use ForSystem;
+
     /**
      * Defines the has-many relationship with the Contact model
      *

@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Mpociot\Teamwork\Traits\UsedByTeams;
+use App\Tenant\Traits\ForTenants;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\Permission\Models\Role as BaseRole;
 
 class Role extends BaseRole
 {
     use Sluggable;
-    use UsedByTeams;
+    use ForTenants;
 
     public function syncUsers($users)
     {

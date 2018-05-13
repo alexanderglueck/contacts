@@ -164,16 +164,12 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TenantServiceProvider::class,
 
         /*
          * Custom Blade Directives
          */
         App\Providers\BladeServiceProvider::class,
-
-        /*
-         * Teamwork
-         */
-        Mpociot\Teamwork\TeamworkServiceProvider::class,
     ],
 
     /*

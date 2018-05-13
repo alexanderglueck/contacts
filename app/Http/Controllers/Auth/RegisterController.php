@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
+use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -89,7 +90,11 @@ class RegisterController extends Controller
 
         $team->save();
 
-        $user->attachTeam($team);
+        session()->put('tenant', $team->uuid);
+
+        event(new TenantWasCreated($team));
+
+        $user->teams()->attach($team->id);
 
         $role = Role::create([
             'name' => 'admin',

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Teamwork;
 
 use Illuminate\Http\Request;
-use Mpociot\Teamwork\TeamInvite;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
-use Mpociot\Teamwork\Facades\Teamwork;
 
 class TeamMemberController extends Controller
 {

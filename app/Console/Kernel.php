@@ -2,12 +2,16 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Install;
 use DateTime;
 use DateInterval;
 use App\Models\ContactDate;
+use App\Console\Commands\Tenant\Seed;
+use App\Console\Commands\Tenant\Migrate;
 use App\Console\Commands\SendDailyEmail;
 use App\Console\Commands\SendWeeklyEmail;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\Tenant\MigrateRollback;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -19,7 +23,11 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         SendWeeklyEmail::class,
-        SendDailyEmail::class
+        SendDailyEmail::class,
+        Migrate::class,
+        MigrateRollback::class,
+        Seed::class,
+        Install::class
     ];
 
     /**

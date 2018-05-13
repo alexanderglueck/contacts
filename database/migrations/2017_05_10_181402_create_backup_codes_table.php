@@ -19,7 +19,13 @@ class CreateBackupCodesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('value');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->unique(['user_id', 'value'], 'tfa_backup_codes_user_id_value_unique');
         });
     }
 
@@ -31,7 +37,8 @@ class CreateBackupCodesTable extends Migration
     public function down()
     {
         Schema::table('tfa_backup_codes', function (Blueprint $table) {
-            //$table->dropForeign('tfa_backup_codes_user_id_foreign');
+            $table->dropForeign('tfa_backup_codes_user_id_foreign');
+            $table->dropUnique('tfa_backup_codes_user_id_value_unique');
         });
 
         Schema::dropIfExists('tfa_backup_codes');

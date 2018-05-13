@@ -19,7 +19,7 @@ abstract class TestCase extends BaseTestCase
             'owner_id' => $user->id
         ]);
 
-        $user->attachTeam($team);
+        $user->teams()->attach($team->id);
 
         $this->be($user);
 

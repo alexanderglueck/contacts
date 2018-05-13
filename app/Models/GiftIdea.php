@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 
 class GiftIdea extends Model
 {
+    use ForTenants;
+
     protected $fillable = [
         'contact_id',
         'name',

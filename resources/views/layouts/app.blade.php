@@ -2,18 +2,22 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@if(View::hasSection('title'))
-            @yield('title') - {{ config('app.name', 'Contacts') }}
+    <title>
+        @if(View::hasSection('title'))
+            @yield('title') - {{ optional(request()->tenant())->name ?: config('app.name', 'Contacts') }}
         @else
-            {{ config('app.name', 'Contacts') }}
-        @endif</title>
+            {{ optional(request()->tenant())->name ?: config('app.name', 'Contacts') }}
+        @endif
+    </title>
 
     <!-- Styles -->
+    <link href="{{ asset('css/vendor.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @yield('css')
 </head>
@@ -21,7 +25,7 @@
 <div id="app">
     <nav class="navbar navbar-expand-md  navbar-light navbar-laravel">
         <a class="navbar-brand" href="{{ route('home') }}">
-            {{ config('app.name', 'Contacts') }}
+            {{ optional(request()->tenant())->name ?:  config('app.name', 'Contacts') }}
         </a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#app-navbar-collapse"

@@ -83,14 +83,13 @@ class PermissionsTableSeeder extends Seeder
             ]
         ];
 
-        $user = User::firstOrFail();
-
-        auth()->login($user);
-
         foreach ($permissions as $action => $entities) {
             foreach ($entities as $entity) {
-                Permission::create([
-                    'name' => $action . ' ' . $entity
+                DB::table('permissions')->insert([
+                    'name' => $action . ' ' . $entity,
+                    'guard_name' => 'web',
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
                 ]);
             }
         }
