@@ -7,7 +7,6 @@ use App\Tenant\Traits\Console\FetchesTenants;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 use App\Tenant\Traits\Console\AcceptsMultipleTenants;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
-use Symfony\Component\Console\Input\InputOption;
 
 class Seed extends SeedCommand
 {

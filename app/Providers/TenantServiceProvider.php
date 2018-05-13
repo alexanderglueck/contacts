@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use App\Console\Commands\Tenant\Migrate;
-use App\Console\Commands\Tenant\MigrateRollback;
-use App\Console\Commands\Tenant\Seed;
-use App\Tenant\Cache\TenantCacheManager;
-use App\Tenant\Database\DatabaseManager;
 use App\Tenant\Manager;
 use Illuminate\Http\Request;
+use App\Console\Commands\Tenant\Seed;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use App\Console\Commands\Tenant\Migrate;
+use App\Tenant\Cache\TenantCacheManager;
+use App\Tenant\Database\DatabaseManager;
+use App\Console\Commands\Tenant\MigrateRollback;
 
 class TenantServiceProvider extends ServiceProvider
 {
@@ -25,17 +25,13 @@ class TenantServiceProvider extends ServiceProvider
             return new Manager();
         });
 
-        // route helper
         Request::macro('tenant', function () {
             return app(Manager::class)->getTenant();
         });
 
-        // blade if
         Blade::if('tenant', function () {
             return app(Manager::class)->hasTenant();
         });
-
-
     }
 
     /**

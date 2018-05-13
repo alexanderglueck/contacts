@@ -1,6 +1,5 @@
 <?php
 
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 /**
@@ -14,7 +13,6 @@ Route::post('contacts/export', 'ContactExportController@export')->name('export.e
  */
 Route::get('contacts/import', 'ContactImportController@index')->name('import.index');
 Route::post('contacts/import', 'ContactImportController@import')->name('import.import');
-
 
 /**
  * Contacts

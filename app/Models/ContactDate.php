@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Scopes\CreatedByScope;
-use App\Interfaces\CalendarInterface;
 use App\Tenant\Traits\ForTenants;
+use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 

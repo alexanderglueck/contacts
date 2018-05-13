@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Collections\CommentCollection;
 use App\Tenant\Traits\ForTenants;
+use App\Collections\CommentCollection;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model

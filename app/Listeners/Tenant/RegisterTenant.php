@@ -2,11 +2,9 @@
 
 namespace App\Listeners\Tenant;
 
+use App\Tenant\Manager;
 use App\Events\Tenant\TenantIdentified;
 use App\Tenant\Database\DatabaseManager;
-use App\Tenant\Manager;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RegisterTenant
 {

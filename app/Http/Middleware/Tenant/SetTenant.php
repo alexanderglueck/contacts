@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware\Tenant;
 
-use App\Events\Tenant\TenantIdentified;
-use App\Models\Team;
 use Closure;
+use App\Models\Team;
+use App\Events\Tenant\TenantIdentified;
 
 class SetTenant
 {

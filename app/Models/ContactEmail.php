@@ -12,7 +12,6 @@ class ContactEmail extends Model
     use Sluggable;
     use ForTenants;
 
-
     protected $fillable = ['name', 'email', 'created_by', 'updated_by'];
 
     /**

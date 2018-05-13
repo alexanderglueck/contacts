@@ -2,11 +2,9 @@
 
 namespace App\Listeners\Tenant;
 
-use App\Events\Tenant\TenantIdentified;
 use App\Tenant\Models\Tenant;
+use App\Events\Tenant\TenantIdentified;
 use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UseTenantFilesystem
 {
@@ -18,11 +16,10 @@ class UseTenantFilesystem
     /**
      * Create the event listener.
      *
-     * @return void
+     * @param Factory $filesystem
      */
     public function __construct(Factory $filesystem)
     {
-
         $this->filesystem = $filesystem;
     }
 
@@ -58,6 +55,6 @@ class UseTenantFilesystem
 
     protected function getCreationMethod()
     {
-        return "create" . ucfirst(config('filesystems.default')) . "Driver";
+        return 'create' . ucfirst(config('filesystems.default')) . 'Driver';
     }
 }

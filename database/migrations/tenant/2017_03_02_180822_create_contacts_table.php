@@ -41,7 +41,6 @@ class CreateContactsTable extends Migration
 
             $table->unsignedInteger('nationality_id')->nullable();
 
-
             $table->boolean('active')->default(true);
 
             $table->string('image')->nullable();

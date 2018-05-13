@@ -2,11 +2,9 @@
 
 namespace App\Listeners\Tenant;
 
-use App\Events\Tenant\TenantDatabaseWasCreated;
 use App\Events\Tenant\TenantWasCreated;
 use App\Tenant\Database\DatabaseCreator;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\Tenant\TenantDatabaseWasCreated;
 
 class CreateTenantDatabase
 {
@@ -22,7 +20,6 @@ class CreateTenantDatabase
      */
     public function __construct(DatabaseCreator $databaseCreator)
     {
-        //
         $this->databaseCreator = $databaseCreator;
     }
 

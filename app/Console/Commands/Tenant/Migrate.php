@@ -53,7 +53,6 @@ class Migrate extends MigrateCommand
 
         $this->input->setOption('database', 'tenant');
 
-
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();

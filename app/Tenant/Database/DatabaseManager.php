@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 13.05.2018
- * Time: 11:42
- */
 
 namespace App\Tenant\Database;
-
 
 use App\Tenant\Models\Tenant;
 use Illuminate\Database\DatabaseManager as BaseDatabaseManager;
@@ -18,7 +11,6 @@ class DatabaseManager
      * @var BaseDatabaseManager
      */
     protected $db;
-
 
     /**
      * DatabaseManager constructor.
@@ -42,7 +34,6 @@ class DatabaseManager
     {
         $this->db->reconnect(config('database.default'));
     }
-
 
     public function purge()
     {

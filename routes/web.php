@@ -1,14 +1,12 @@
 <?php
 
-Route::get('/', function() {
+Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('home');
     }
 
     return view('welcome');
 });
-
-
 
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -39,4 +37,3 @@ Route::post('login/token', 'Auth\LoginController@check')->name('login.token.chec
  * Install
  */
 Route::get('install', 'Setup\InstallController@index')->name('install');
-

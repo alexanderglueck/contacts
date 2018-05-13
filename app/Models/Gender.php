@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Tenant\Traits\ForSystem;
-use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 
 class Gender extends Model

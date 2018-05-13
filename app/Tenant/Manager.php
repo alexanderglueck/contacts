@@ -1,19 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 13.05.2018
- * Time: 11:12
- */
 
 namespace App\Tenant;
-
 
 use App\Tenant\Models\Tenant;
 
 class Manager
 {
-
     protected $tenant;
 
     public function setTenant(Tenant $tenant)
@@ -33,5 +25,4 @@ class Manager
     {
         return isset($this->tenant);
     }
-
 }

@@ -3,18 +3,15 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Scopes\CreatedByScope;
 use App\Traits\RecordsActivity;
 use App\Tenant\Traits\ForTenants;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
-use Mpociot\Teamwork\Traits\UsedByTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
-   // use UsedByTeams;
     use RecordsActivity;
     use ForTenants;
 
@@ -430,18 +427,4 @@ class Contact extends Model implements CalendarInterface
 
         return $array;
     }
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CreatedByScope());
-    }
-
-
 }
