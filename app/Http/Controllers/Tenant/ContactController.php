@@ -169,11 +169,11 @@ class ContactController extends Controller
         }
 
         if ($contact->save()) {
-            Session::flash('alert-success', trans('flash_message.contact.updated'));
+            flashSuccess(trans('flash_message.contact.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
+            flashError(trans('flash_message.contact.not_updated'));
 
             return redirect()->route('contacts.edit', [$contact->slug]);
         }

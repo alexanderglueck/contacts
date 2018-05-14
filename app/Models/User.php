@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasConfirmationTokens;
 use App\Tenant\Traits\ForSystem;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +16,7 @@ class User extends Authenticatable
     use Sluggable;
     use HasRoles;
     use ForSystem;
+    use HasConfirmationTokens;
 
     /**
      * The attributes that are mass assignable.

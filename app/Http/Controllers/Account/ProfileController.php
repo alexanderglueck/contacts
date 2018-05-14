@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Account;
 
-use App\Http\Requests\Account\ProfileUpdateRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Account\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -15,7 +15,11 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request)
     {
-        $request->user()->update($request->only('name', 'email'));
+        if ($request->user()->update($request->only('name', 'email'))) {
+            Session::flash('alert-success', trans('flash_message.contact.updated'));
+        } else {
+            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
+        }
 
         return back();
     }
