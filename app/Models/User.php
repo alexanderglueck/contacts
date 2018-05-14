@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Tenant\Traits\ForSystem;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -13,6 +14,7 @@ class User extends Authenticatable
     use Notifiable;
     use Sluggable;
     use HasRoles;
+    use ForSystem;
 
     /**
      * The attributes that are mass assignable.
