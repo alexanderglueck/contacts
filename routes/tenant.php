@@ -145,6 +145,10 @@ Route::get('settings', 'UserSettingController@edit')->name('user_settings.edit')
 Route::put('settings', 'UserSettingController@update')->name('user_settings.update');
 Route::put('settings/image', 'UserSettingController@updateImage')->name('user_settings.update_image');
 Route::put('settings/api-token', 'UserSettingController@updateApiToken')->name('user_settings.update_api_token');
+Route::get('settings/profile', 'Account\ProfileController@show')->name('user_settings.profile.show');
+Route::put('settings/profile', 'Account\ProfileController@update')->name('user_settings.profile.update');
+Route::get('settings/password', 'Account\PasswordController@show')->name('user_settings.password.show');
+Route::put('settings/password', 'Account\PasswordController@update')->name('user_settings.password.update');
 
 /**
  * 2FA Settings
