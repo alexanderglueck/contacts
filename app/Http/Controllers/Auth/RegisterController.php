@@ -33,7 +33,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -104,5 +104,11 @@ class RegisterController extends Controller
         $role->syncPermissions(Permission::all());
 
         $user->assignRole($role);
+
+        $this->guard()->logout();
+
+        flashSuccess('Please check your email for an activation link.');
+
+        return redirect($this->redirectPath());
     }
 }
