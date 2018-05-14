@@ -84,7 +84,6 @@ class ContactController extends Controller
         $contact->fill($request->all());
         $contact->created_by = Auth::id();
         $contact->updated_by = Auth::id();
-        $contact->team_id = Auth::user()->currentTeam->id;
 
         if ($contact->save()) {
             if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
@@ -116,8 +115,6 @@ class ContactController extends Controller
     public function show(Contact $contact)
     {
         $this->can('view');
-
-        $this->authorize('view', $contact);
 
         return view('contact.show', [
             'contact' => $contact,
