@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Teamwork;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
 use Spatie\Permission\PermissionRegistrar;
-use Mpociot\Teamwork\Exceptions\UserNotInTeamException;
 
 class TeamController extends Controller
 {
@@ -63,11 +63,11 @@ class TeamController extends Controller
             'name' => $request->name,
             'owner_id' => $request->user()->getKey()
         ]);
-        $request->user()->attachTeam($team);
+        $request->user()->teams()->attach($team->id);
 
-        event(new TenantWasCreated($team));
+        event(new TenantWasCreated($team, $request->user()));
 
-        return redirect()->route('teams.switch', [$team->id]);
+        return redirect()->route('teams.index');
     }
 
     /**
@@ -90,7 +90,7 @@ class TeamController extends Controller
             auth()->user()->switchTeam($team);
 
             session()->put('tenant', $team->uuid);
-        } catch (UserNotInTeamException $e) {
+        } catch (Exception $e) {
             abort(403);
         }
 

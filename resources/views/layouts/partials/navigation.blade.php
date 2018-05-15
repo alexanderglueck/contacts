@@ -216,9 +216,15 @@
                             <div class="dropdown-menu" aria-labelledby="teamSwitchDropdown">
                                 @foreach(Auth::user()->teams as $team)
                                     @if($team->id != Auth::user()->currentTeam->id)
-                                        <a class="dropdown-item" href="{{ route('teams.switch', $team->id) }}">
-                                            {{ $team->name }}
-                                        </a>
+                                        @if ($team->created)
+                                            <a class="dropdown-item" href="{{ route('teams.switch', $team->id) }}">
+                                                {{ $team->name }}
+                                            </a>
+                                        @else
+                                            <a class="dropdown-item disabled" href="#">
+                                                {{ $team->name }}
+                                            </a>
+                                        @endif
                                     @endif
                                 @endforeach
 

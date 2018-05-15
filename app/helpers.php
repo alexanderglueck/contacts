@@ -5,7 +5,7 @@
  */
 function flash($message = null, $level = 'info')
 {
-    session()->put('alert-' . $level, $message);
+    session()->flash('alert-' . $level, $message);
 }
 
 function flashSuccess($message = null)

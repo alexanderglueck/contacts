@@ -54,6 +54,14 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
+        if ( ! $user->isActivated()) {
+            $this->guard()->logout();
+
+            flashError('Your account is not activated.');
+
+            return back();
+        }
+
         if (trim($user->google2fa_secret) !== '') {
             // logout
             Auth::logout();

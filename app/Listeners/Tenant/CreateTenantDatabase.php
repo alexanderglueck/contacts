@@ -4,9 +4,10 @@ namespace App\Listeners\Tenant;
 
 use App\Events\Tenant\TenantWasCreated;
 use App\Tenant\Database\DatabaseCreator;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\Tenant\TenantDatabaseWasCreated;
 
-class CreateTenantDatabase
+class CreateTenantDatabase implements ShouldQueue
 {
     /**
      * @var DatabaseCreator
@@ -37,6 +38,6 @@ class CreateTenantDatabase
             throw new \Exception('Database failed to be created.');
         }
 
-        event(new TenantDatabaseWasCreated($event->tenant));
+        event(new TenantDatabaseWasCreated($event->tenant, $event->user));
     }
 }

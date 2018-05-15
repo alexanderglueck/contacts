@@ -37,3 +37,13 @@ Route::post('login/token', 'Auth\LoginController@check')->name('login.token.chec
  * Install
  */
 Route::get('install', 'Setup\InstallController@index')->name('install');
+
+/**
+ * Account activation
+ */
+Route::group(['middleware' => ['guest']], function () {
+    Route::get('activation/resend', 'Auth\ActivationResendController@index')->name('activation.resend');
+    Route::post('activation/resend', 'Auth\ActivationResendController@store')->name('activation.resend.store');
+    Route::get('activation/{token}', 'Auth\ActivationController@activate')->name('activation.activate');
+});
+

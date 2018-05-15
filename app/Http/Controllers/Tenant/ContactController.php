@@ -9,7 +9,6 @@ use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Country;
 use Illuminate\Http\Request;
-use App\Events\ContactCreated;
 use App\Rules\ValidIBANFormat;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
@@ -91,8 +90,6 @@ class ContactController extends Controller
             } else {
                 $contact->contactGroups()->sync([]);
             }
-
-            event(new ContactCreated($contact));
 
             Session::flash('alert-success', trans('flash_message.contact.created'));
 

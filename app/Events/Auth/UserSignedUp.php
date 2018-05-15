@@ -1,20 +1,14 @@
 <?php
 
-namespace App\Events\Tenant;
+namespace App\Events\Auth;
 
 use App\Models\User;
-use App\Tenant\Models\Tenant;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class TenantWasCreated
+class UserSignedUp
 {
     use Dispatchable, SerializesModels;
-
-    /**
-     * @var Tenant
-     */
-    public $tenant;
 
     /**
      * @var User
@@ -24,12 +18,10 @@ class TenantWasCreated
     /**
      * Create a new event instance.
      *
-     * @param Tenant $tenant
-     * @param User   $user
+     * @param User $user
      */
-    public function __construct(Tenant $tenant, User $user)
+    public function __construct(User $user)
     {
-        $this->tenant = $tenant;
         $this->user = $user;
     }
 }

@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('image')->nullable();
             $table->string('api_token', 60)->unique()->nullable();
             $table->string('google2fa_secret', 64)->nullable();
+            $table->boolean('activated')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -12,9 +12,15 @@ class Team extends Model implements Tenant
     use IsTenant;
     use ForSystem;
 
+    protected $casts = [
+        'created' => 'boolean',
+    ];
+
     protected $fillable = [
         'name',
-        'uuid'
+        'uuid',
+        'created',
+        'owner_id'
     ];
 
     public function contacts()

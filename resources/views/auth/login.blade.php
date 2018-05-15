@@ -33,6 +33,10 @@
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
                                         @lang('auth.login.actions.password.reset')
                                     </a>
+
+                                    <a class="btn btn-link" href="{{ route('activation.resend') }}">
+                                        Resend activation email
+                                    </a>
                                 </div>
                             </div>
                         </form>

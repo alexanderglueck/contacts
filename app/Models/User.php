@@ -24,7 +24,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'activated'
+    ];
+
+    protected $casts = [
+        'activated' => 'boolean'
     ];
 
     /**
@@ -160,5 +164,15 @@ class User extends Authenticatable
     public function teams()
     {
         return $this->belongsToMany(Team::class, config('contacts.tenant.system') . '.team_user');
+    }
+
+    public function isActivated()
+    {
+        return $this->activated;
+    }
+
+    public function isNotActivated()
+    {
+        return ! $this->activated;
     }
 }

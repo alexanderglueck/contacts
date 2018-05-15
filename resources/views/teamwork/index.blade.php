@@ -33,9 +33,11 @@
                                         </td>
                                         <td>
                                             @if(is_null(auth()->user()->currentTeam) || auth()->user()->currentTeam->getKey() !== $team->getKey())
-                                                <a href="{{route('teams.switch', $team)}}" class="btn btn-sm btn-default">
-                                                    <i class="fa fa-sign-in"></i> Switch
-                                                </a>
+                                                @if($team->created)
+                                                    <a href="{{route('teams.switch', $team)}}" class="btn btn-sm btn-default">
+                                                        <i class="fa fa-sign-in"></i> Switch
+                                                    </a>
+                                                @endif
                                             @else
                                                 <span class="label label-default">Current team</span>
                                             @endif

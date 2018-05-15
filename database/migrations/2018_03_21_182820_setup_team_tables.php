@@ -21,6 +21,7 @@ class SetupTeamTables extends Migration
             $table->unsignedInteger('owner_id')->nullable();
             $table->string('name');
             $table->uuid('uuid');
+            $table->boolean('created')->default(false);
             $table->timestamps();
         });
 
