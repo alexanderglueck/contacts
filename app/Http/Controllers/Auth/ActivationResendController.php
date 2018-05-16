@@ -18,7 +18,6 @@ class ActivationResendController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-
         if ($user && ! $user->isActivated()) {
             event(new UserRequestedActivationEmail($user));
         }

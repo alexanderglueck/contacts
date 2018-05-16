@@ -2,7 +2,6 @@
 
 namespace App\Models\Traits;
 
-
 trait HasSubscriptions
 {
     public function hasSubscription($subscription = 'main')

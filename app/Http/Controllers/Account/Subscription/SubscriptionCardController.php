@@ -11,4 +11,8 @@ class SubscriptionCardController extends Controller
     {
         return view('user_settings.subscription.card.index');
     }
+
+    public function store(Request $request)
+    {
+    }
 }

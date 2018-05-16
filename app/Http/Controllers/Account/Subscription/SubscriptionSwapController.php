@@ -11,4 +11,8 @@ class SubscriptionSwapController extends Controller
     {
         return view('user_settings.subscription.swap.index');
     }
+
+    public function store(Request $request)
+    {
+    }
 }

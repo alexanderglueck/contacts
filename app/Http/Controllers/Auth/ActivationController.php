@@ -19,7 +19,6 @@ class ActivationController extends Controller
         $this->middleware(['confirmation_token.expired:/']);
     }
 
-
     public function activate(ConfirmationToken $token, Request $request)
     {
         $token->user->update([
