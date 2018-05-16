@@ -17,6 +17,22 @@ class BladeServiceProvider extends ServiceProvider
         Blade::if('impersonating', function () {
             return auth()->check() && session()->has('impersonate');
         });
+
+        Blade::if('subscribed', function () {
+            return auth()->check() && auth()->user()->hasSubscription();
+        });
+
+        Blade::if('notsubscribed', function () {
+            return ( ! auth()->check()) || auth()->user()->hasNoSubscription();
+        });
+
+        Blade::if('subscriptioncancelled', function () {
+            return auth()->check() && auth()->user()->hasCancelled();
+        });
+
+        Blade::if('subscriptionnotcancelled', function () {
+            return auth()->user()->hasNotCancelled();
+        });
     }
 
     /**

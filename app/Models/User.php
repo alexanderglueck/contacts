@@ -5,6 +5,7 @@ namespace App\Models;
 use Laravel\Cashier\Billable;
 use App\Tenant\Traits\ForSystem;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use ForSystem;
     use HasConfirmationTokens;
     use Billable;
+    use HasSubscriptions;
 
     /**
      * The attributes that are mass assignable.

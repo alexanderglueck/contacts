@@ -145,10 +145,55 @@ Route::get('settings', 'UserSettingController@edit')->name('user_settings.edit')
 Route::put('settings', 'UserSettingController@update')->name('user_settings.update');
 Route::put('settings/image', 'UserSettingController@updateImage')->name('user_settings.update_image');
 Route::put('settings/api-token', 'UserSettingController@updateApiToken')->name('user_settings.update_api_token');
-Route::get('settings/profile', 'Account\ProfileController@show')->name('user_settings.profile.show');
-Route::put('settings/profile', 'Account\ProfileController@update')->name('user_settings.profile.update');
-Route::get('settings/password', 'Account\PasswordController@show')->name('user_settings.password.show');
-Route::put('settings/password', 'Account\PasswordController@update')->name('user_settings.password.update');
+
+Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 'settings'], function () {
+    /**
+     * Profile
+     */
+    Route::get('profile', 'ProfileController@show')->name('profile.show');
+    Route::put('profile', 'ProfileController@update')->name('profile.update');
+
+    /**
+     * Change password
+     */
+    Route::get('password', 'PasswordController@show')->name('password.show');
+    Route::put('password', 'PasswordController@update')->name('password.update');
+
+    /**
+     * Subscriptions
+     */
+    Route::group(['prefix' => 'subscription', 'namespace' => 'Subscription'], function () {
+        /**
+         * Cancel
+         */
+        Route::group(['middleware' => 'subscription.notcancelled'], function () {
+            Route::get('/cancel', 'SubscriptionCancelController@index')->name('subscription.cancel.index');
+            Route::post('/cancel', 'SubscriptionCancelController@store')->name('subscription.cancel.store');
+        });
+
+        /**
+         * Resume
+         */
+        Route::group(['middleware' => 'subscription.cancelled'], function () {
+            Route::get('/resume', 'SubscriptionResumeController@index')->name('subscription.resume.index');
+            Route::post('/resume', 'SubscriptionResumeController@store')->name('subscription.resume.store');
+        });
+
+        /**
+         * Swap
+         */
+        Route::group(['middleware' => 'subscription.notcancelled'], function () {
+            Route::get('/swap', 'SubscriptionSwapController@index')->name('subscription.swap.index');
+        });
+
+        /**
+         * Card
+         */
+        Route::group(['middleware' => 'subscription.customer'], function () {
+            Route::get('/card', 'SubscriptionCardController@index')->name('subscription.card.index');
+        });
+    });
+});
 
 /**
  * 2FA Settings

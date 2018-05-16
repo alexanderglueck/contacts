@@ -11,3 +11,37 @@
         Change password
     </a>
 </div>
+
+<hr>
+
+@subscribed
+<div class="nav flex-column nav-pills">
+    @subscriptionnotcancelled
+    <a class="nav-link {{ return_if(on_page('*/subscription/swap'), ' active') }}"
+       href="{{ route('user_settings.subscription.swap.index') }}"
+    >
+        Change plan
+    </a>
+
+    <a class="nav-link {{ return_if(on_page('*/subscription/cancel'), ' active') }}"
+       href="{{ route('user_settings.subscription.cancel.index') }}"
+    >
+        Cancel subscription
+    </a>
+    @endsubscriptionnotcancelled
+
+    @subscriptioncancelled
+    <a class="nav-link {{ return_if(on_page('*/subscription/resume'), ' active') }}"
+       href="{{ route('user_settings.subscription.resume.index') }}"
+    >
+        Resume subscription
+    </a>
+    @endsubscriptioncancelled
+
+    <a class="nav-link {{ return_if(on_page('*/subscription/card'), ' active') }}"
+       href="{{ route('user_settings.subscription.card.index') }}"
+    >
+        Update card
+    </a>
+</div>
+@endsubscribed

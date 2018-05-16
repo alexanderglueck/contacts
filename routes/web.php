@@ -58,7 +58,7 @@ Route::group(['as' => 'plans.'], function () {
 /**
  * Subscription
  */
-Route::group(['as' => 'subscription.', 'middleware' => ['auth.register']], function () {
+Route::group(['as' => 'subscription.', 'middleware' => ['auth.register', 'subscription.inactive']], function () {
     Route::get('subscription', 'Subscription\SubscriptionController@index')->name('index');
     Route::post('subscription', 'Subscription\SubscriptionController@store')->name('store');
 });
