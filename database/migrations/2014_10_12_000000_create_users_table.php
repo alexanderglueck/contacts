@@ -23,6 +23,11 @@ class CreateUsersTable extends Migration
             $table->string('api_token', 60)->unique()->nullable();
             $table->string('google2fa_secret', 64)->nullable();
             $table->boolean('activated')->default(false);
+            $table->unsignedInteger('current_team_id')->nullable();
+            $table->string('stripe_id')->nullable();
+            $table->string('card_brand')->nullable();
+            $table->string('card_last_four')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

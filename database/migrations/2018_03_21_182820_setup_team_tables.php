@@ -12,10 +12,6 @@ class SetupTeamTables extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('current_team_id')->nullable();
-        });
-
         Schema::create('teams', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('owner_id')->nullable();

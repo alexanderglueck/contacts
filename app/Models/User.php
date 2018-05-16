@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasConfirmationTokens;
+use Laravel\Cashier\Billable;
 use App\Tenant\Traits\ForSystem;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\Traits\HasConfirmationTokens;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use HasRoles;
     use ForSystem;
     use HasConfirmationTokens;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.

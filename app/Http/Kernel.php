@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verify_contact' => \App\Http\Middleware\VerifyCorrectContact::class,
         'confirmation_token.expired' => \App\Http\Middleware\ChecksExpiredConfirmationTokens::class,
+        'auth.register' => \App\Http\Middleware\AuthenticateRegister::class,
     ];
 }

@@ -25,18 +25,26 @@
 
 <body class="gray-bg">
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">{{ config('app.name') }}</h5>
+    <h5 class="my-0 font-weight-normal">{{ config('app.name') }}</h5>
+    <nav class="my-2 my-md-0 mr-md-3 mr-md-auto ">
+    <a class="p-2 text-dark" href="{{ route('plans.index') }}">
+        Plans
+    </a>
+    </nav>
     <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="{{ route('login') }}">
             Sign in
         </a>
+        @if(config('contacts.signup_enabled'))
+            <a class="btn btn-outline-primary" href="{{ route('register') }}">
+                Sign up
+            </a>
+        @endif
     </nav>
-    @if(config('contacts.signup_enabled'))
-        <a class="btn btn-outline-primary" href="{{ route('register') }}">
-            Sign up
-        </a>
-    @endif
+
 </div>
+
+@include('partials.layout.alert')
 
 @yield('content')
 

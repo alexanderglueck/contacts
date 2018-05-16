@@ -165,6 +165,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TenantServiceProvider::class,
+        App\Providers\StripeServiceProvider::class,
 
         /*
          * Custom Blade Directives

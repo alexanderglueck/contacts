@@ -47,3 +47,18 @@ Route::group(['middleware' => ['guest']], function () {
     Route::get('activation/{token}', 'Auth\ActivationController@activate')->name('activation.activate');
 });
 
+/**
+ * Plans
+ */
+Route::group(['as' => 'plans.'], function () {
+    Route::get('plans/', 'Subscription\PlanController@index')->name('index');
+    Route::get('plans/teams', 'Subscription\PlanTeamController@index')->name('teams.index');
+});
+
+/**
+ * Subscription
+ */
+Route::group(['as' => 'subscription.', 'middleware' => ['auth.register']], function () {
+    Route::get('subscription', 'Subscription\SubscriptionController@index')->name('index');
+    Route::post('subscription', 'Subscription\SubscriptionController@store')->name('store');
+});
