@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Question\Question;
 
 class Install extends Command
@@ -42,14 +43,13 @@ class Install extends Command
 
         $this->createEnvFile();
 
-        if (strlen(config('app.key')) === 0) {
-            $this->call('key:generate');
-            $this->line('Secret key properly generated.');
-        }
+        $this->copyEnvFile();
 
-        $credentials = $this->requestDatabaseCredentials();
+        $credentials = $this->requestCredentials();
 
         $this->updateEnvironmentFile($credentials);
+
+        $this->call('cache:clear');
 
         if ($this->confirm('Do you want to migrate the database?', false)) {
             $this->migrateDatabaseWithFreshCredentials($credentials);
@@ -78,6 +78,10 @@ class Install extends Command
         $envFile = $this->laravel->environmentFilePath();
 
         foreach ($updatedValues as $key => $value) {
+            if ($key === 'password' && $value == 'null') {
+                $value = '';
+            }
+
             file_put_contents($envFile, preg_replace(
                 "/{$key}=(.*)/",
                 "{$key}={$value}",
@@ -102,8 +106,22 @@ class Install extends Command
                 config(["database.connections.mysql.{$configKey}" => '']);
                 continue;
             }
+
+            if (in_array($configKey, ['contacts_tenant_prefix'])) {
+                continue;
+            }
+
             config(["database.connections.mysql.{$configKey}" => $value]);
         }
+
+        config(['contacts.tenant.system' => $credentials['DB_DATABASE']]);
+        config(['permission.table_names.permissions' => $credentials['DB_DATABASE'] . '.permissions']);
+
+        $this->reconnectToDatabase();
+
+        $this->call('cache:clear');
+        $this->call('config:clear');
+
         $this->call('migrate');
     }
 
@@ -112,10 +130,11 @@ class Install extends Command
      *
      * @return array
      */
-    protected function requestDatabaseCredentials()
+    protected function requestCredentials()
     {
         return [
-            'DB_DATABASE' => $this->ask('Database name'),
+            'DB_DATABASE' => $this->ask('System database name', 'contacts_main'),
+            'DB_HOST' => $this->ask('Database host', '127.0.0.1'),
             'DB_PORT' => $this->ask('Database port', 3306),
             'DB_USERNAME' => $this->ask('Database user'),
             'DB_PASSWORD' => $this->askHiddenWithDefault('Database password (leave blank for no password)'),
@@ -158,5 +177,20 @@ class Install extends Command
     protected function seedDatabase()
     {
         $this->call('db:seed');
+    }
+
+    public function copyEnvFile(): void
+    {
+        if (strlen(config('app.key')) === 0) {
+            $this->call('key:generate');
+            $this->line('Secret key properly generated.');
+        }
+    }
+
+    protected function reconnectToDatabase(): void
+    {
+        DB::disconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
     }
 }

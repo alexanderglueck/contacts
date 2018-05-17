@@ -8,17 +8,29 @@
 
 ## Install
 
-> To run this project, you must have PHP 7 installed as a prerequisite. 
+> To run this project, you must have PHP \>7 and MySQL \> 10.1.25 (MariaDB) installed as prerequisites. 
 
-Begin by cloning this repository to your machine, and installing all Composer & NPM dependencies.
-Afterwards migrate and seed the database. 
+1. Create a mysql database for contacts (you will be asked for this database 
+during the installation)
+    ```mysql
+    CREATE DATABASE your_database_name_here;
+    ```
 
-```bash
-git clone git@github.com:alexanderglueck/contacts.git
-cd contacts && composer install && npm install
-php artisan contacts:install
-npm run prod
-```
+2. Continue by cloning this repository to your machine, and installing all Composer & NPM dependencies.
+    ```bash
+    git clone git@github.com:alexanderglueck/contacts.git
+    cd contacts && composer install && npm install
+    ``` 
+ 
+3. Then run the contacts installer. 
+    ```bash
+    php artisan contacts:install
+    ```
+
+4. Finally compile the JavaScript and CSS assets
+    ```bash
+    npm run prod
+    ```
 
 ## Security
 
