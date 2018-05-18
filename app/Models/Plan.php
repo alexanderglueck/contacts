@@ -30,8 +30,18 @@ class Plan extends Model
         return $builder->where('teams_enabled', true);
     }
 
+    public function scopeExcept(Builder $builder, $id)
+    {
+        return $builder->where('id', '!=', $id);
+    }
+
     public function isForTeams()
     {
         return $this->teams_enabled;
+    }
+
+    public function isNotForTeams()
+    {
+        return ! $this->isForTeams();
     }
 }
