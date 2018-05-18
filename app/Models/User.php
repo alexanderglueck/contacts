@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Laravel\Cashier\Billable;
 use App\Tenant\Traits\ForSystem;
+use Laravel\Cashier\Subscription;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
@@ -178,5 +179,22 @@ class User extends Authenticatable
     public function isNotActivated()
     {
         return ! $this->activated;
+    }
+
+    public function plan()
+    {
+        return $this->plans->first();
+    }
+
+    public function getPlanAttribute()
+    {
+        return $this->plan();
+    }
+
+    public function plans()
+    {
+        return $this->hasManyThrough(
+            Plan::class, Subscription::class, 'user_id', 'gateway_id', 'id', 'stripe_plan')
+            ->orderBy('subscriptions.created_at', 'desc');
     }
 }

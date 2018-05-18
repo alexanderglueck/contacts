@@ -91,7 +91,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                       2FA bearbeiten
+                        2FA bearbeiten
                     </div>
                     <div class="card-body">
                         <p>
@@ -218,6 +218,17 @@
                                class="btn btn-primary">
                                 {{ trans('ui.notification_settings') }}
                             </a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        Plan
+                    </div>
+                    <div class="card-body">
+                        <p>
+
                         </p>
                     </div>
                 </div>

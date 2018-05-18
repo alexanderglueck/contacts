@@ -19,6 +19,12 @@ class SetupTeamTables extends Migration
             $table->uuid('uuid');
             $table->boolean('created')->default(false);
             $table->timestamps();
+
+            $table->foreign('owner_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
 
         Schema::create('team_user', function (Blueprint $table) {

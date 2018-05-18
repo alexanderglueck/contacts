@@ -57,6 +57,10 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
+        $this->validate($request, [
+            'name' => 'required'
+        ]);
+
         $teamModel = config('teamwork.team_model');
 
         $team = $teamModel::create([
