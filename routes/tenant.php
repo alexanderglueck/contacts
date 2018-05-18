@@ -191,6 +191,7 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
          */
         Route::group(['middleware' => 'subscription.customer'], function () {
             Route::get('/card', 'SubscriptionCardController@index')->name('subscription.card.index');
+            Route::post('/card', 'SubscriptionCardController@store')->name('subscription.card.store');
         });
     });
 });
