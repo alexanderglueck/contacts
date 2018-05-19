@@ -25,7 +25,6 @@ class SetTenant
         }
 
         if ( ! auth()->user()->teams->contains('id', $tenant->id)) {
-
             if (auth()->user()->currentTeam->id != $tenant->id) {
                 session()->put('tenant', auth()->user()->currentTeam->uuid);
 
