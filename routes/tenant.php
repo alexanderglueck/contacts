@@ -160,6 +160,12 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::put('password', 'PasswordController@update')->name('password.update');
 
     /**
+     * Change password
+     */
+    Route::get('deactivate', 'DeactivateController@index')->name('deactivate.index');
+    Route::post('deactivate', 'DeactivateController@store')->name('deactivate.store');
+
+    /**
      * Subscriptions
      */
     Route::group([

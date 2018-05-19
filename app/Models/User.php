@@ -10,6 +10,7 @@ use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -22,6 +23,7 @@ class User extends Authenticatable
     use HasConfirmationTokens;
     use Billable;
     use HasSubscriptions;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

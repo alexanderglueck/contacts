@@ -10,6 +10,10 @@
     <a class="nav-link {{ return_if(on_page('*/password'), ' active') }}" href="{{ route('user_settings.password.show') }}">
         Change password
     </a>
+
+    <a class="nav-link {{ return_if(on_page('*/deactivate'), ' active') }}" href="{{ route('user_settings.deactivate.index') }}">
+        Deactivate
+    </a>
 </div>
 
 @subscribed
