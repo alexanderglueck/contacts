@@ -62,3 +62,8 @@ Route::group(['as' => 'subscription.', 'middleware' => ['auth.register', 'subscr
     Route::get('subscription', 'Subscription\SubscriptionController@index')->name('index');
     Route::post('subscription', 'Subscription\SubscriptionController@store')->name('store');
 });
+
+/**
+ * Subscription
+ */
+Route::post('/webhooks/stripe', 'Webhooks\StripeWebhookController@handleWebhook');
