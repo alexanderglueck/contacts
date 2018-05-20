@@ -68,7 +68,6 @@ class ContactGroupController extends Controller
         $contactGroup->fill($request->all());
         $contactGroup->created_by = Auth::id();
         $contactGroup->updated_by = Auth::id();
-        $contactGroup->team_id = Auth::user()->currentTeam->id;
 
         if ($contactGroup->save()) {
             Session::flash('alert-success', trans('flash_message.contact_group.created'));

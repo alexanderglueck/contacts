@@ -50,33 +50,6 @@ class ContactTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_not_view_a_contact_created_by_another_user()
-    {
-        $user = $this->createUser('view contacts');
-
-        $contact = create(Contact::class, [
-            'created_by' => $user->id
-        ]);
-
-        $anotherTeam = create(Team::class);
-        $viewer = create(User::class, [
-            'current_team_id' => $anotherTeam->id
-        ]);
-
-        $response = $this->actingAs($viewer)
-            ->get(route('contacts.show', [$contact->slug]));
-
-        $response->assertStatus(404);
-        $this->assertAuthenticatedAs($viewer);
-
-        $response = $this->actingAs($user)
-            ->get(route('contacts.show', [$contact->slug]));
-
-        $response->assertStatus(200);
-        $this->assertAuthenticatedAs($user);
-    }
-
-    /** @test */
     public function a_user_can_view_the_contact_delete_view()
     {
         $user = $this->createUser('delete contacts');

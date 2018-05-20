@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Tenant\Models\Tenant;
 use App\Tenant\Traits\IsTenant;
-use App\Tenant\Traits\ForSystem;
 use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model implements Tenant
 {
     use IsTenant;
-    use ForSystem;
+
+    protected $connection = 'system';
 
     protected $casts = [
         'created' => 'boolean',

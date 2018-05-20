@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForSystem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Plan extends Model
 {
-    use ForSystem;
+    protected $connection = 'system';
 
     protected $casts = [
         'teams_enabled' => 'boolean',

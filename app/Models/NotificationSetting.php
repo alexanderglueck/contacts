@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationSetting extends Model
 {
-    use ForTenants;
+    protected $connection = 'tenant';
 
     protected $casts = [
         'send_daily' => 'boolean',

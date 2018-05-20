@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Laravel\Cashier\Billable;
-use App\Tenant\Traits\ForSystem;
 use Laravel\Cashier\Subscription;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
+use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,11 +19,13 @@ class User extends Authenticatable
     use Notifiable;
     use Sluggable;
     use HasRoles;
-    use ForSystem;
     use HasConfirmationTokens;
     use Billable;
     use HasSubscriptions;
     use SoftDeletes;
+    use UserHasTeams;
+
+    protected $connection = 'system';
 
     /**
      * The attributes that are mass assignable.
@@ -161,16 +163,6 @@ class User extends Authenticatable
     {
         $this->current_team_id = $team->id;
         $this->save();
-    }
-
-    public function currentTeam()
-    {
-        return $this->belongsTo(Team::class);
-    }
-
-    public function teams()
-    {
-        return $this->belongsToMany(Team::class, config('contacts.tenant.system') . '.team_user');
     }
 
     public function isActivated()

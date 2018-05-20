@@ -103,7 +103,7 @@ class Install extends Command
         foreach ($credentials as $key => $value) {
             $configKey = strtolower(str_replace('DB_', '', $key));
             if ($configKey === 'password' && $value == 'null') {
-                config(["database.connections.mysql.{$configKey}" => '']);
+                config(["database.connections.system.{$configKey}" => '']);
                 continue;
             }
 
@@ -111,7 +111,7 @@ class Install extends Command
                 continue;
             }
 
-            config(["database.connections.mysql.{$configKey}" => $value]);
+            config(["database.connections.system.{$configKey}" => $value]);
         }
 
         config(['contacts.tenant.system' => $credentials['DB_DATABASE']]);
@@ -189,8 +189,8 @@ class Install extends Command
 
     protected function reconnectToDatabase(): void
     {
-        DB::disconnect('mysql');
-        DB::purge('mysql');
-        DB::reconnect('mysql');
+        DB::disconnect('system');
+        DB::purge('system');
+        DB::reconnect('system');
     }
 }

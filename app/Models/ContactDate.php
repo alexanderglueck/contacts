@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Scopes\CreatedByScope;
-use App\Tenant\Traits\ForTenants;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -11,7 +10,8 @@ use Cviebrock\EloquentSluggable\Sluggable;
 class ContactDate extends Model implements CalendarInterface
 {
     use Sluggable;
-    use ForTenants;
+
+    protected $connection = 'tenant';
 
     protected $fillable = [
         'name',

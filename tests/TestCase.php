@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Events\Tenant\TenantIdentified;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -24,25 +23,16 @@ abstract class TestCase extends BaseTestCase
             'owner_id' => $user->id
         ]);
 
-        $user->teams()->attach($team->id);
-        $user->update([
-            'current_team_id' => $team->id
-        ]);
+        $user->attachTeam($team->id);
 
         session()->put('tenant', $team->uuid);
 
-       // DB::disconnect('tenant');
-       // DB::purge('tenant');
-       // DB::disconnect('testing');
-       // DB::purge('testing');
-      //  DB::reconnect('testing');
-      //  DB::setDefaultConnection('testing');
+
+        $this->be($user);
 
         event(new TenantWasCreated($team, $user));
 
         event(new TenantIdentified($team));
-
-        $this->be($user);
 
         $this->session([
             'tenant' => $team->uuid

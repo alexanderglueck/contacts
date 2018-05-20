@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactGroup extends Model
 {
     use Sluggable;
-    use ForTenants;
+
+    protected $connection = 'tenant';
 
     protected $fillable = ['name', 'parent_id', 'created_by', 'updated_by'];
 

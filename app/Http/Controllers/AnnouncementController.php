@@ -53,7 +53,6 @@ class AnnouncementController extends Controller
         $announcement = new Announcement();
         $announcement->fill($request->all());
         $announcement->user_id = Auth::id();
-        $announcement->team_id = Auth::user()->currentTeam->id;
 
         if ( ! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));

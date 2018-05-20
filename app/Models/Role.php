@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForTenants;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\Permission\Models\Role as BaseRole;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -11,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends BaseRole
 {
     use Sluggable;
-    use ForTenants;
+
+    protected $connection = 'tenant';
 
     public function syncUsers($users)
     {

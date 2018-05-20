@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForSystem;
 use Illuminate\Database\Eloquent\Model;
 
 class ConfirmationToken extends Model
 {
-    use ForSystem;
+    protected $connection = 'system';
 
     public $timestamps = false;
 

@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Tenant\Traits\ForSystem;
 use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
-    use ForSystem;
+    protected $connection = 'system';
 
     /**
      * Defines the has-many relationship with the Contact model
