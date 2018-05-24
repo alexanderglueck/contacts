@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\Team;
 use App\Models\User;
+use Laravel\Cashier\Subscription;
 use App\Events\Tenant\TenantIdentified;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -21,6 +22,10 @@ abstract class TestCase extends BaseTestCase
 
         $team = create(Team::class, [
             'owner_id' => $user->id
+        ]);
+
+        create(Subscription::class, [
+            'user_id' => $user->id
         ]);
 
         $user->attachTeam($team->id);

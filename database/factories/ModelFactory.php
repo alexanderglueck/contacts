@@ -33,6 +33,17 @@ $factory->define(App\Models\Team::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(\Laravel\Cashier\Subscription::class, function (Faker\Generator $faker) {
+    return [
+        'name' => 'main',
+        'stripe_id' => $faker->word,
+        'stripe_plan' => $faker->word,
+        'quantity' => 1,
+        'trial_ends_at' => null,
+        'ends_at' => null
+    ];
+});
+
 $factory->define(App\Models\Role::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
