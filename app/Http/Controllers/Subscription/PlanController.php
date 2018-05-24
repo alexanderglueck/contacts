@@ -10,9 +10,11 @@ class PlanController extends Controller
     public function index()
     {
         $plans = Plan::active()->forUsers()->get();
+        $teamPlans = Plan::active()->forTeams()->get();
 
         return view('subscription.plans.index', [
-            'plans' => $plans
+            'plans' => $plans,
+            'teamPlans' => $teamPlans
         ]);
     }
 }
