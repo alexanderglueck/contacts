@@ -1,10 +1,14 @@
 # Contacts _(contacts)_
 
-[![Master Build Status](https://travis-ci.org/alexanderglueck/contacts.svg?branch=master)](https://travis-ci.org/alexanderglueck/contacts)
-[![StyleCI](https://styleci.io/repos/117006875/shield?branch=master)](https://styleci.io/repos/117006875)
-
+[![Master Build Status][travis-image]][travis-url]
+[![StyleCI][styleci-image]][styleci-url]
 
 > A simple contact management system to keep track of your friends and family. 
+
+Contacts allows you to manage your contacts by managing their 
+ - addresses
+ - phone numbers
+ - birthdays
 
 ## Install
 
@@ -31,6 +35,12 @@ during the installation)
     ```bash
     npm run prod
     ```
+    
+5. Run contacts
+    ```bash
+    php artisan queue:listen
+    php artisan serve
+    ```
 
 ## Security
 
@@ -41,7 +51,7 @@ Please do not open an issue describing the vulnerability.
 
 ## Maintainers
 
-[@alexanderglueck](https://github.com/alexanderglueck)
+[@alexanderglueck][maintainer-alexanderglueck]
 
 ## Contribute
 
@@ -50,3 +60,11 @@ Feel free to dive in! Open an issue or submit PRs.
 ## License
 
 See [LICENSE.md](LICENSE.md)
+
+[travis-image]: https://travis-ci.org/alexanderglueck/contacts.svg?branch=master
+[travis-url]: https://travis-ci.org/alexanderglueck/contacts
+
+[styleci-image]: https://styleci.io/repos/117006875/shield?branch=master
+[styleci-url]: https://styleci.io/repos/117006875
+
+[maintainer-alexanderglueck]: https://github.com/alexanderglueck

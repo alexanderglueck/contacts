@@ -29,11 +29,16 @@ class Role extends BaseRole
         }
     }
 
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(
             config('permission.models.permission'),
-            auth()->user()->currentTeam->tenantConnection->database . '.' . config('permission.table_names.role_has_permissions')
+            $this->team->tenantConnection->database . '.' . config('permission.table_names.role_has_permissions')
         );
     }
 

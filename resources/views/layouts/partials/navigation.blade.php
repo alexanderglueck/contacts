@@ -14,6 +14,7 @@
     <div class="collapse navbar-collapse" id="app-navbar-collapse">
         <!-- Left Side Of Navbar -->
         <ul class="navbar-nav mr-auto">
+            @subscribed
             @if (Auth::user()->hasAnyPermission([
                 'view contacts',
                 'create contacts',
@@ -178,6 +179,13 @@
                     </div>
                 </li>
             @endif
+            @else
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('plans.index') }}">
+                        Plans
+                    </a>
+                </li>
+            @endsubscribed
         </ul>
 
         <!-- Right Side Of Navbar -->
