@@ -45,7 +45,7 @@ class ContactImportController extends Controller
         $this->can('create');
 
         $this->validate($request, [
-            'contact_group_id' => 'required|integer|exists:contact_groups,id',
+            'contact_group_id' => 'required|integer|exists:tenant.contact_groups,id',
             'import_file' => 'required|file|mimes:xlsx'
         ]);
 
