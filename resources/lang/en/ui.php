@@ -128,6 +128,24 @@ return [
     'no_activities' => 'No activities',
 
     /*
+     * Subscription, Plans and Billing
+     */
+    'plan' => 'Plan',
+    'coupon' => 'Coupon',
+    'pay' => 'Pay',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
+    /*
      * Buttons and titles
      */
     'create_contact' => 'Create contact',

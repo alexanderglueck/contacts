@@ -26,7 +26,23 @@ return [
             'default' => 'Login',
             'password' => [
                 'request' => 'Forgot password?'
+            ],
+            'activation' => [
+                'resend' => 'Resend activation email'
             ]
+        ]
+    ],
+    'register' => [
+        'title' => 'Register',
+        'fields' => [
+            'name' => 'Name',
+            'email' => 'Email address',
+            'password' => 'Password',
+            'password_confirm' => 'Confirm password',
+            'terms_of_service' => 'I accept the <a href=":tos_url">terms of service</a>',
+        ],
+        'actions' => [
+            'default' => 'Register',
         ]
     ]
 

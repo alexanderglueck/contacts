@@ -5,13 +5,17 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Registrieren</div>
+                    <div class="panel-heading">
+                        {{ trans('auth.register.title') }}
+                    </div>
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('register') }}">
                             @csrf
 
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                                <label for="name" class="col-md-4 control-label">Name</label>
+                                <label for="name" class="col-md-4 control-label">
+                                    {{ trans('auth.register.fields.name') }}
+                                </label>
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
@@ -25,8 +29,9 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="email" class="col-md-4 control-label">E-Mail
-                                    Adresse</label>
+                                <label for="email" class="col-md-4 control-label">
+                                    {{ trans('auth.register.fields.email') }}
+                                </label>
 
                                 <div class="col-md-6">
                                     <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
@@ -40,7 +45,9 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password" class="col-md-4 control-label">Passwort</label>
+                                <label for="password" class="col-md-4 control-label">
+                                    {{ trans('auth.register.fields.password') }}
+                                </label>
 
                                 <div class="col-md-6">
                                     <input id="password" type="password" class="form-control" name="password" required>
@@ -54,8 +61,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="password-confirm" class="col-md-4 control-label">Passwort
-                                    wiederholen</label>
+                                <label for="password-confirm" class="col-md-4 control-label">
+                                    {{ trans('auth.register.fields.password_confirm') }}
+                                </label>
 
                                 <div class="col-md-6">
                                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
@@ -67,10 +75,7 @@
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" required name="terms">
-                                            I accept the
-                                            <a href="#" target="_blank">
-                                                terms of service
-                                            </a>
+                                            {!!  trans('auth.register.fields.terms_of_service', ['tos_url' => '#']) !!}
                                         </label>
                                     </div>
 
@@ -85,7 +90,7 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button type="submit" class="btn btn-primary">
-                                        Registrieren
+                                        {{ trans('auth.register.actions.default') }}
                                     </button>
                                 </div>
                             </div>
