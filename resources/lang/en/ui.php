@@ -133,8 +133,15 @@ return [
     'plan' => 'Plan',
     'coupon' => 'Coupon',
     'pay' => 'Pay',
-    '' => '',
-    '' => '',
+    'plans' => [
+        'title' => 'Plans',
+        'personal' => 'Personal',
+        'team' => 'Team',
+        'actions' => [
+            'join' => 'Join now'
+        ]
+    ],
+    'profile' => 'Profile',
     '' => '',
     '' => '',
     '' => '',

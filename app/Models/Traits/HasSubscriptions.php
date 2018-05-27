@@ -31,22 +31,22 @@ trait HasSubscriptions
         return ! $this->hasSubscription($subscription);
     }
 
-    public function hasCancelled(): bool
+    public function hasCancelled()
     {
         return optional($this->subscription('main'))->cancelled();
     }
 
-    public function hasNotCancelled(): bool
+    public function hasNotCancelled()
     {
         return ! $this->hasCancelled();
     }
 
-    public function isCustomer(): bool
+    public function isCustomer()
     {
         return $this->hasStripeId();
     }
 
-    public function hasTeamSubscription(): bool
+    public function hasTeamSubscription()
     {
         foreach ($this->plans as $plan) {
             if ($plan->isForTeams()) {

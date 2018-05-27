@@ -1,8 +1,4 @@
 <div class="nav flex-column nav-pills">
-    <a class="nav-link " href="{{ route('user_settings.edit') }}">
-        Settings
-    </a>
-
     <a class="nav-link {{ return_if(on_page('*/profile'), ' active') }}" href="{{ route('user_settings.profile.show') }}">
         Profile
     </a>
@@ -11,8 +7,28 @@
         Change password
     </a>
 
+    <a class="nav-link {{ return_if(on_page('*/image'), ' active') }}" href="{{ route('user_settings.image.show') }}">
+        Profile image
+    </a>
+
+    <a class="nav-link {{ return_if(on_page('*/notifications'), ' active') }}" href="{{ route('user_settings.notifications.show') }}">
+        {{ trans('ui.notification_settings') }}
+    </a>
+
+    <a class="nav-link {{ return_if(on_page('*/two-factor*'), ' active') }}" href="{{ route('user_settings.two_factor.edit') }}">
+        Two-Factor authentication
+    </a>
+
+    <a class="nav-link {{ return_if(on_page('*/api-token'), ' active') }}" href="{{ route('user_settings.api_token.show') }}">
+        API Token
+    </a>
+
     <a class="nav-link {{ return_if(on_page('*/deactivate'), ' active') }}" href="{{ route('user_settings.deactivate.index') }}">
         Deactivate
+    </a>
+
+    <a class="nav-link {{ return_if(on_page('*/delete-account'), ' active') }}" href="{{ route('user_settings.delete.show') }}">
+        {{ trans('ui.delete_account') }}
     </a>
 </div>
 

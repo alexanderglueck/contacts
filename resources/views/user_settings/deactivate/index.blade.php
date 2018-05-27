@@ -1,24 +1,29 @@
 @extends('user_settings.layout.default')
 
 @section('user_settings.content')
-    <div class="panel panel-default">
-        <form action="{{ route('user_settings.deactivate.store') }}" method="post">
-            @csrf
+    <div class="card">
+        <div class="card-header">
+            Deactivate
+        </div>
+        <div class="card-body">
+            <form action="{{ route('user_settings.deactivate.store') }}" method="post">
+                @csrf
 
-            @subscriptionnotcancelled
-            <p>This will also cancel your subscription</p>
-            @endsubscriptionnotcancelled
+                @subscriptionnotcancelled
+                <p>This will also cancel your subscription</p>
+                @endsubscriptionnotcancelled
 
-            {!! \App\Helpers\Form::password('current_password', 'current password', true, true) !!}
+                {!! \App\Helpers\Form::password('current_password', 'current password', true, true) !!}
 
-            <div class="form-group">
-                <div class="col-md-8 col-md-offset-4">
-                    <button type="submit" class="btn btn-primary">
-                        {{ trans('ui.deactivate_account') }}
-                    </button>
+                <div class="form-group">
+                    <div class="col-md-8 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary">
+                            {{ trans('ui.deactivate_account') }}
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-        </form>
+            </form>
+        </div>
     </div>
 @endsection

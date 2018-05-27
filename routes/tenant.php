@@ -2,7 +2,7 @@
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => 'subscription.active'], function() {
+Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Export
      */
@@ -226,11 +226,6 @@ Route::group(['middleware' => 'subscription.active'], function() {
 /**
  * User Settings
  */
-Route::get('settings', 'UserSettingController@edit')->name('user_settings.edit');
-Route::put('settings', 'UserSettingController@update')->name('user_settings.update');
-Route::put('settings/image', 'UserSettingController@updateImage')->name('user_settings.update_image');
-Route::put('settings/api-token', 'UserSettingController@updateApiToken')->name('user_settings.update_api_token');
-
 Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 'settings'], function () {
     /**
      * Profile
@@ -245,10 +240,46 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::put('password', 'PasswordController@update')->name('password.update');
 
     /**
+     * Profile image
+     */
+    Route::get('profile/image', 'ProfileImageController@show')->name('image.show');
+    Route::put('profile/image', 'ProfileImageController@update')->name('image.update');
+
+    /**
+     * 2FA Settings
+     */
+    Route::get('two-factor', 'TwoFactorController@edit')->name('two_factor.edit');
+    Route::post('two-factor', 'TwoFactorController@enable')->name('two_factor.enable');
+    Route::post('two-factor/check', 'TwoFactorController@check')->name('two_factor.check');
+    Route::delete('two-factor', 'TwoFactorController@disable')->name('two_factor.destroy');
+
+//  Route::post('auth-settings', 'TwoFactorController@check')->name('auth_settings.check');
+
+    /**
+     * Notification Settings
+     */
+    Route::get('notifications', 'NotificationSettingController@show')->name('notifications.show');
+    Route::put('notifications', 'NotificationSettingController@update')->name('notifications.update');
+
+    /**
+     * API token
+     */
+    Route::get('api-token', 'ApiTokenController@show')->name('api_token.show');
+    Route::put('api-token', 'ApiTokenController@update')->name('api_token.update');
+
+
+    /**
      * Deactivate account
      */
     Route::get('deactivate', 'DeactivateController@index')->name('deactivate.index');
     Route::post('deactivate', 'DeactivateController@store')->name('deactivate.store');
+
+    /**
+     * Delete Account
+     */
+    Route::get('delete-account', 'DeleteController@show')->name('delete.show');
+    Route::delete('delete-account', 'DeleteController@destroy')->name('delete.destroy');
+
 
     /**
      * Subscriptions
@@ -291,28 +322,6 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
         });
     });
 });
-
-/**
- * 2FA Settings
- */
-Route::get('auth-settings', 'AuthSettingController@edit')->name('auth_settings.edit');
-Route::post('auth-settings', 'AuthSettingController@enable')->name('auth_settings.enable');
-Route::post('auth-settings/check', 'AuthSettingController@check')->name('auth_settings.check');
-Route::delete('auth-settings', 'AuthSettingController@disable')->name('auth_settings.disable');
-
-//  Route::post('auth-settings', 'AuthSettingController@check')->name('auth_settings.check');
-
-/**
- * Delete Account
- */
-Route::get('delete-account', 'UserSettingController@delete')->name('user_settings.delete');
-Route::delete('delete-account', 'UserSettingController@destroy')->name('user_settings.destroy');
-
-/**
- * Notification Settings
- */
-Route::get('settings/notifications', 'NotificationSettingController@edit')->name('notification_settings.edit');
-Route::put('settings/notifications', 'NotificationSettingController@update')->name('notification_settings.update');
 
 /**
  * Log

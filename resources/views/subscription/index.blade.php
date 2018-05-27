@@ -12,9 +12,8 @@
                         @csrf
 
                         <div class="form-group{{ $errors->has('plan') ? ' has-danger' : '' }}">
-                            <label for="plan" class="col-md-4 form-control-label">
+                            <label for="plan" class="col-md-4 form-control-label required">
                                 {{ trans('ui.plan') }}
-                                <span class="required">*</span>
                             </label>
 
                             <div class="col-md-6">
@@ -37,12 +36,12 @@
                             </div>
                         </div>
 
-                        {!! \App\Helpers\Form::text('coupon', 'coupon') !!}
+                        {!! \App\Helpers\Form::text('coupon', trans('ui.coupon')) !!}
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" id="pay" class="btn btn-primary">
-                                    Pay
+                                    {{ trans('ui.pay') }}
                                 </button>
                             </div>
                         </div>
@@ -51,11 +50,13 @@
             </div>
         </div>
     </div>
+@endsection
 
+@section('js-links')
+    <script src="https://checkout.stripe.com/checkout.js"></script>
 @endsection
 
 @section('js')
-    <script src="https://checkout.stripe.com/checkout.js"></script>
     <script>
         let handler = StripeCheckout.configure({
             key: '{{ config('services.stripe.key') }}',

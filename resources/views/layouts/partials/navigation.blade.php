@@ -256,8 +256,8 @@
 
                         <div class="dropdown-menu" aria-labelledby="userDropdown">
 
-                            <a class="dropdown-item" href="{{ route('user_settings.edit') }}">
-                                Settings
+                            <a class="dropdown-item" href="{{ route('user_settings.profile.show') }}">
+                                {{ trans('ui.settings') }}
                             </a>
 
                             <a class="dropdown-item" href="{{ route('logs.index') }}">

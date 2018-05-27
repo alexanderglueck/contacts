@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Account;
 
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\NotificationSetting;
+use App\Http\Controllers\Controller;
 
 class NotificationSettingController extends Controller
 {
-    public function edit()
+    public function show()
     {
-        return view('notification_settings.edit', [
+        return view('user_settings.notifications.edit', [
             'user' => Auth::user(),
             'settings' => Auth::user()->notificationSettings()
         ]);
@@ -31,6 +32,6 @@ class NotificationSettingController extends Controller
         $notificationSettings->user_id = Auth::id();
         $notificationSettings->save();
 
-        return redirect()->route('notification_settings.edit');
+        return redirect()->route('user_settings.notifications.show');
     }
 }

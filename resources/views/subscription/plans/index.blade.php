@@ -1,9 +1,17 @@
 @extends('layouts.public')
 
+@section('title')
+    @lang('ui.plans.title')
+@endsection
+
 @section('content')
     <div class="container">
-        <h1 class="display-4 text-center">Plans</h1>
-        <h2 class="">Personal</h2>
+        <h1 class="display-4 text-center">
+            @lang('ui.plans.title')
+        </h1>
+        <h2 class="">
+            @lang('ui.plans.personal')
+        </h2>
         <div class="card-deck mb-3 text-center">
             @foreach($plans as $plan)
                 <div class="card mb-4 box-shadow">
@@ -21,14 +29,16 @@
                         </ul>
                         <a type="button" class="btn btn-lg btn-block btn-primary"
                            href="{{ route('subscription.index') }}?plan={{$plan->slug}}">
-                            Join now
+                            @lang('ui.plans.actions.join')
                         </a>
                     </div>
                 </div>
             @endforeach
         </div>
 
-        <h2 class="">Team</h2>
+        <h2 class="">
+            @lang('ui.plans.team')
+        </h2>
         <div class="card-deck mb-3 text-center">
             @foreach($teamPlans as $plan)
                 <div class="card mb-4 box-shadow">
@@ -48,12 +58,11 @@
                         </ul>
                         <a type="button" class="btn btn-lg btn-block btn-primary"
                            href="{{ route('subscription.index') }}?plan={{$plan->slug}}">
-                            Join now
+                            @lang('ui.plans.actions.join')
                         </a>
                     </div>
                 </div>
             @endforeach
         </div>
-
     </div>
 @endsection

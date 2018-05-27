@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Account;
 
 use Auth;
 use Session;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
+use App\Http\Controllers\Controller;
 
-class AuthSettingController extends Controller
+class TwoFactorController extends Controller
 {
     private $validationRules = [
         'secret' => 'required|digits:6',
@@ -34,7 +35,7 @@ class AuthSettingController extends Controller
                     $request->session()->get('google2fa_secret')
                 );
 
-                return view('auth_settings.image', [
+                return view('user_settings.two_factor.image', [
                     'image' => $google2fa_url
                 ]);
             }
@@ -42,12 +43,12 @@ class AuthSettingController extends Controller
             // 2FA is not enabled
             // and no session key was found
             // show the default enable button
-            return view('auth_settings.activate');
+            return view('user_settings.two_factor.activate');
         }
 
         // The user already has 2fa enabled.
         // show backup codes and the disable button
-        return view('auth_settings.edit', [
+        return view('user_settings.two_factor.edit', [
             'user' => Auth::user(),
             'backupCodes' => Auth::user()->backupCodes
         ]);
@@ -60,13 +61,13 @@ class AuthSettingController extends Controller
         if ( ! Auth::user()->save()) {
             // save failed, show error, keep codes
 
-            return redirect()->route('auth_settings.edit');
+            return redirect()->route('user_settings.two_factor.edit');
         }
 
         // delete backup codes
         Auth::user()->backupCodes()->delete();
 
-        return redirect()->route('auth_settings.edit');
+        return redirect()->route('user_settings.two_factor.edit');
     }
 
     /**
@@ -79,7 +80,7 @@ class AuthSettingController extends Controller
     {
         $request->session()->put('google2fa_secret', $google2fa->generateSecretKey(64));
 
-        return redirect()->route('auth_settings.edit');
+        return redirect()->route('user_settings.two_factor.edit');
     }
 
     /**
@@ -112,7 +113,7 @@ class AuthSettingController extends Controller
 
                 Session::flash('alert-danger', '2FA konnte nicht aktiviert werden!');
 
-                return redirect()->route('auth_settings.edit');
+                return redirect()->route('user_settings.two_factor.edit');
             }
 
             $request->session()->remove('google2fa_secret');
@@ -134,7 +135,7 @@ class AuthSettingController extends Controller
             // return true, continue login
             Session::flash('alert-success', '2FA wurde aktiviert!');
 
-            return redirect()->route('auth_settings.edit');
+            return redirect()->route('user_settings.two_factor.edit');
         }
 
         // entered secret was not correct
@@ -142,6 +143,6 @@ class AuthSettingController extends Controller
         // 2fa
         Session::flash('alert-danger', 'Code nicht korrekt!');
 
-        return redirect()->route('auth_settings.edit');
+        return redirect()->route('user_settings.two_factor.edit');
     }
 }
