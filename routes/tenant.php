@@ -220,7 +220,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
      * Activities
      */
     Route::get('activities', 'ActivityController@index')->name('activities.index');
-
 });
 
 /**
@@ -253,7 +252,7 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::post('two-factor/check', 'TwoFactorController@check')->name('two_factor.check');
     Route::delete('two-factor', 'TwoFactorController@disable')->name('two_factor.destroy');
 
-//  Route::post('auth-settings', 'TwoFactorController@check')->name('auth_settings.check');
+    //  Route::post('auth-settings', 'TwoFactorController@check')->name('auth_settings.check');
 
     /**
      * Notification Settings
@@ -267,7 +266,6 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::get('api-token', 'ApiTokenController@show')->name('api_token.show');
     Route::put('api-token', 'ApiTokenController@update')->name('api_token.update');
 
-
     /**
      * Deactivate account
      */
@@ -279,7 +277,6 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
      */
     Route::get('delete-account', 'DeleteController@show')->name('delete.show');
     Route::delete('delete-account', 'DeleteController@destroy')->name('delete.destroy');
-
 
     /**
      * Subscriptions
@@ -360,4 +357,3 @@ Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function () {
 
     Route::get('accept/{token}', 'AuthController@acceptInvite')->name('teams.accept_invite');
 });
-

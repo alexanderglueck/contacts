@@ -39,15 +39,10 @@ class DeleteController extends Controller
             Session::flash('alert-success', trans('flash_message.user_setting.deleted'));
 
             return redirect()->route('login');
-        } else {
-            Session::flash('alert-danger', trans('flash_message.user_setting.not_deleted'));
-
-            return redirect()->route('user_settings.delete');
         }
 
+        Session::flash('alert-danger', trans('flash_message.user_setting.not_deleted'));
 
-        flashSuccess('Your account has been deactivated');
-
-        return redirect()->route('home');
+        return redirect()->route('user_settings.delete');
     }
 }
