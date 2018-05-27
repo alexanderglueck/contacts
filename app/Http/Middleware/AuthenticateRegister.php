@@ -17,7 +17,7 @@ class AuthenticateRegister
     public function handle($request, Closure $next)
     {
         if ( ! auth()->check()) {
-            session()->put('url.intended', $request->url());
+            session()->put('url.intended', $request->fullUrl());
 
             return redirect(route('register'));
         }
