@@ -33,44 +33,50 @@
 </div>
 
 @subscribed
-    @notpiggybacksubscription
-        <hr>
-        <div class="nav flex-column nav-pills">
-            @subscriptionnotcancelled
-            <a class="nav-link {{ return_if(on_page('*/subscription/swap'), ' active') }}"
-               href="{{ route('user_settings.subscription.swap.index') }}"
-            >
-                Change plan
-            </a>
+@notpiggybacksubscription
+<hr>
+<div class="nav flex-column nav-pills">
+    @subscriptionnotcancelled
+    <a class="nav-link {{ return_if(on_page('*/subscription/swap'), ' active') }}"
+       href="{{ route('user_settings.subscription.swap.index') }}"
+    >
+        Change plan
+    </a>
 
-            <a class="nav-link {{ return_if(on_page('*/subscription/cancel'), ' active') }}"
-               href="{{ route('user_settings.subscription.cancel.index') }}"
-            >
-                Cancel subscription
-            </a>
-            @endsubscriptionnotcancelled
+    <a class="nav-link {{ return_if(on_page('*/subscription/cancel'), ' active') }}"
+       href="{{ route('user_settings.subscription.cancel.index') }}"
+    >
+        Cancel subscription
+    </a>
+    @endsubscriptionnotcancelled
 
-            @subscriptioncancelled
-            <a class="nav-link {{ return_if(on_page('*/subscription/resume'), ' active') }}"
-               href="{{ route('user_settings.subscription.resume.index') }}"
-            >
-                Resume subscription
-            </a>
-            @endsubscriptioncancelled
+    @subscriptioncancelled
+    <a class="nav-link {{ return_if(on_page('*/subscription/resume'), ' active') }}"
+       href="{{ route('user_settings.subscription.resume.index') }}"
+    >
+        Resume subscription
+    </a>
+    @endsubscriptioncancelled
 
-            <a class="nav-link {{ return_if(on_page('*/subscription/card'), ' active') }}"
-               href="{{ route('user_settings.subscription.card.index') }}"
-            >
-                Update card
-            </a>
+    <a class="nav-link {{ return_if(on_page('*/subscription/card'), ' active') }}"
+       href="{{ route('user_settings.subscription.card.index') }}"
+    >
+        Update card
+    </a>
 
-            @teamsubscription
-            <a class="nav-link {{ return_if(on_page('*/subscription/team'), ' active') }}"
-               href="{{ route('user_settings.subscription.card.index') }}"
-            >
-                Manage team
-            </a>
-            @endteamsubscription
-        </div>
-    @endnotpiggybacksubscription
+    @teamsubscription
+    <a class="nav-link {{ return_if(on_page('*/subscription/team'), ' active') }}"
+       href="{{ route('teams.index') }}"
+    >
+        Manage team
+    </a>
+    @endteamsubscription
+
+    <a class="nav-link {{ return_if(on_page('*/subscription/invoices'), ' active') }}"
+       href="{{ route('user_settings.subscription.invoices.index') }}"
+    >
+        Invoices
+    </a>
+</div>
+@endnotpiggybacksubscription
 @endsubscribed

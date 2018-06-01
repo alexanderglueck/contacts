@@ -318,6 +318,14 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
             Route::get('/card', 'SubscriptionCardController@index')->name('subscription.card.index');
             Route::post('/card', 'SubscriptionCardController@store')->name('subscription.card.store');
         });
+
+        /**
+         * Invoices
+         */
+        Route::group(['middleware' => 'subscription.customer'], function () {
+            Route::get('/invoices', 'SubscriptionInvoiceController@index')->name('subscription.invoices.index');
+            Route::get('/invoices/{invoice}', 'SubscriptionInvoiceController@show')->name('subscription.invoices.show');
+        });
     });
 });
 
