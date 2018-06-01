@@ -49,4 +49,20 @@ class ProfileImageController extends Controller
 
         return redirect()->route('user_settings.image.show');
     }
+
+    public function destroy()
+    {
+        if (Auth::user()->hasImage()) {
+            if (file_exists(storage_path('app/public/') . Auth::user()->image)) {
+                unlink(storage_path('app/public/') . Auth::user()->image);
+            }
+        }
+
+        Auth::user()->image = null;
+        Auth::user()->save();
+
+        flashSuccess(trans('flash_message.user_setting.updated'));
+
+        return redirect()->route('user_settings.image.show');
+    }
 }

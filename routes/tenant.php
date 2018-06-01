@@ -243,6 +243,7 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
      */
     Route::get('profile/image', 'ProfileImageController@show')->name('image.show');
     Route::put('profile/image', 'ProfileImageController@update')->name('image.update');
+    Route::delete('profile/image', 'ProfileImageController@destroy')->name('image.destroy');
 
     /**
      * 2FA Settings

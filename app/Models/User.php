@@ -191,4 +191,9 @@ class User extends Authenticatable
             Plan::class, Subscription::class, 'user_id', 'gateway_id', 'id', 'stripe_plan')
             ->orderBy('subscriptions.created_at', 'desc');
     }
+
+    public function hasImage()
+    {
+        return trim($this->image) !== '';
+    }
 }
