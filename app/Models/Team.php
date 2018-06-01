@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Tenant\Models\Tenant;
 use App\Tenant\Traits\IsTenant;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model implements Tenant
 {
@@ -41,6 +41,6 @@ class Team extends Model implements Tenant
 
     public function invites()
     {
-        return $this->hasMany( Config::get('teamwork.invite_model'), 'team_id', 'id');
+        return $this->hasMany(Config::get('teamwork.invite_model'), 'team_id', 'id');
     }
 }

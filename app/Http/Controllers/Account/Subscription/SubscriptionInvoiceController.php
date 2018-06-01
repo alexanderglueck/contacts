@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Account\Subscription;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionInvoiceController extends Controller
 {
