@@ -12,6 +12,7 @@
                     </div>
 
                     <div class="card-body">
+                        @subscribed
                         @if ( ! Auth::user()->hasAnyPermission([
                             'view contacts',
                             'view contactGroups',
@@ -66,6 +67,14 @@
                                 </a>
                             </p>
                         @endif
+                        @else
+                            <p>
+                                You do not have an active subscription. <br>
+                                <a class="btn btn-primary" href="{{ route('plans.index') }}">
+                                    View the available plans
+                                </a>
+                            </p>
+                            @endsubscribed
                     </div>
                 </div>
             </div>

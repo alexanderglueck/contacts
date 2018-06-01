@@ -1,24 +1,54 @@
 # Contacts _(contacts)_
 
-[![Master Build Status](https://travis-ci.org/alexanderglueck/contacts.svg?branch=master)](https://travis-ci.org/alexanderglueck/contacts)
-[![StyleCI](https://styleci.io/repos/117006875/shield?branch=master)](https://styleci.io/repos/117006875)
-
+[![Master Build Status][travis-image]][travis-url]
+[![StyleCI][styleci-image]][styleci-url]
 
 > A simple contact management system to keep track of your friends and family. 
 
+Contacts allows you to manage your contacts by managing their 
+ - addresses
+ - phone numbers
+ - birthdays
+
 ## Install
 
-> To run this project, you must have PHP 7 installed as a prerequisite. 
+> To run this project, you must have PHP \>7.1.3 and MySQL \> 10.1.25 (MariaDB) installed as prerequisites. 
 
-Begin by cloning this repository to your machine, and installing all Composer & NPM dependencies.
-Afterwards migrate and seed the database. 
+1. Create a mysql database for contacts (you will be asked for this database 
+during the installation)
+    ```mysql
+    CREATE DATABASE your_database_name_here;
+    ```
 
-```bash
-git clone git@github.com:alexanderglueck/contacts.git
-cd contacts && composer install && npm install
-php artisan contacts:install
-npm run prod
-```
+2. Continue by cloning this repository to your machine, and installing all Composer & NPM dependencies.
+    ```bash
+    git clone git@github.com:alexanderglueck/contacts.git
+    cd contacts && composer install && npm install
+    ``` 
+ 
+3. Then run the contacts installer. 
+    ```bash
+    php artisan contacts:install
+    ```
+
+4. Finally compile the JavaScript and CSS assets
+    ```bash
+    npm run prod
+    ```
+    
+5. Run contacts
+    ```bash
+    # Run this on one terminal
+    php artisan queue:listen
+    # Run this on another terminal
+    php artisan serve
+    ```
+
+## Setup
+### Stripe
+In order for contacts to work you need Stripe API tokens. 
+Sign up for [Stripe] and enter your tokens into the `STRIPE_TOKEN` and 
+`STRIPE_KEY` fields in your `.env` file. 
 
 ## Security
 
@@ -29,7 +59,7 @@ Please do not open an issue describing the vulnerability.
 
 ## Maintainers
 
-[@alexanderglueck](https://github.com/alexanderglueck)
+[@alexanderglueck][maintainer-alexanderglueck]
 
 ## Contribute
 
@@ -38,3 +68,13 @@ Feel free to dive in! Open an issue or submit PRs.
 ## License
 
 See [LICENSE.md](LICENSE.md)
+
+[travis-image]: https://travis-ci.org/alexanderglueck/contacts.svg?branch=master
+[travis-url]: https://travis-ci.org/alexanderglueck/contacts
+
+[styleci-image]: https://styleci.io/repos/117006875/shield?branch=master
+[styleci-url]: https://styleci.io/repos/117006875
+
+[maintainer-alexanderglueck]: https://github.com/alexanderglueck
+
+[Stripe]: https://stripe.com

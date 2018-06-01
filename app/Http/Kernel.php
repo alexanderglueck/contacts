@@ -64,5 +64,14 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verify_contact' => \App\Http\Middleware\VerifyCorrectContact::class,
+        'confirmation_token.expired' => \App\Http\Middleware\ChecksExpiredConfirmationTokens::class,
+        'auth.register' => \App\Http\Middleware\AuthenticateRegister::class,
+        'subscription.active' => \App\Http\Middleware\Subscription\RedirectIfNotActive::class,
+        'subscription.notcancelled' => \App\Http\Middleware\Subscription\RedirectIfCancelled::class,
+        'subscription.cancelled' => \App\Http\Middleware\Subscription\RedirectIfNotCancelled::class,
+        'subscription.customer' => \App\Http\Middleware\Subscription\RedirectIfNotCustomer::class,
+        'subscription.inactive' => \App\Http\Middleware\Subscription\RedirectIfNotInactive::class,
+        'subscription.team' => \App\Http\Middleware\Subscription\RedirectIfNoTeamPlan::class,
+        'subscription.owner' => \App\Http\Middleware\Subscription\RedirectIfPiggybackSubscription::class,
     ];
 }

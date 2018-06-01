@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\Permission;
 use Illuminate\Http\Request;
+use App\Events\Auth\UserSignedUp;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Events\Tenant\TenantWasCreated;
@@ -33,7 +32,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -58,6 +57,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'terms' => 'required'
         ]);
     }
 
@@ -83,26 +83,28 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
+        $this->guard()->logout();
+
         $team = Team::make([
-            'name' => $user['name'],
-            'owner_id' => $user->id
+            'name' => $user['name']
         ]);
 
+        $team->owner_id = $user->id;
         $team->save();
 
         session()->put('tenant', $team->uuid);
 
-        event(new TenantWasCreated($team));
-
         $user->teams()->attach($team->id);
 
-        $role = Role::create([
-            'name' => 'admin',
-            'team_id' => $team->id
-        ]);
+        $user->current_team_id = $team->id;
+        $user->save();
 
-        $role->syncPermissions(Permission::all());
+        event(new TenantWasCreated($team, $user));
 
-        $user->assignRole($role);
+        event(new UserSignedUp($user));
+
+        flashSuccess('Please check your email for an activation link.');
+
+        return redirect($this->redirectPath());
     }
 }

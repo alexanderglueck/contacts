@@ -14,7 +14,7 @@ class ImpersonateController extends Controller
         $this->can('impersonate');
 
         $this->validate($request, [
-            'userId' => 'required|exists:users,id'
+            'userId' => 'required|exists:system.users,id'
         ]);
 
         abort_unless(auth()->user()->currentTeam->hasUser(

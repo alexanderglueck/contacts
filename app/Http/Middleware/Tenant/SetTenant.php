@@ -25,9 +25,20 @@ class SetTenant
         }
 
         if ( ! auth()->user()->teams->contains('id', $tenant->id)) {
+            if (auth()->user()->currentTeam->id != $tenant->id) {
+                session()->put('tenant', auth()->user()->currentTeam->uuid);
+
+                return $this->allowThrough($next, $request, auth()->user()->currentTeam);
+            }
+
             return redirect()->route('home');
         }
 
+        return $this->allowThrough($next, $request, $tenant);
+    }
+
+    protected function allowThrough($next, $request, $tenant)
+    {
         event(new TenantIdentified($tenant));
 
         return $next($request);

@@ -9,7 +9,6 @@ use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Country;
 use Illuminate\Http\Request;
-use App\Events\ContactCreated;
 use App\Rules\ValidIBANFormat;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
@@ -27,11 +26,11 @@ class ContactController extends Controller
         'company' => 'present',
         'department' => 'present',
         'job' => 'present',
-        'gender_id' => 'integer|exists:genders,id',
+        'gender_id' => 'integer|exists:system.genders,id',
         'nickname' => 'present',
         'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
         'died_at' => 'nullable|sometimes|date_format:d.m.Y',
-        'nationality_id' => 'nullable|sometimes|exists:countries,id',
+        'nationality_id' => 'nullable|sometimes|exists:system.countries,id',
     ];
 
     /**
@@ -84,7 +83,6 @@ class ContactController extends Controller
         $contact->fill($request->all());
         $contact->created_by = Auth::id();
         $contact->updated_by = Auth::id();
-        $contact->team_id = Auth::user()->currentTeam->id;
 
         if ($contact->save()) {
             if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
@@ -92,8 +90,6 @@ class ContactController extends Controller
             } else {
                 $contact->contactGroups()->sync([]);
             }
-
-            event(new ContactCreated($contact));
 
             Session::flash('alert-success', trans('flash_message.contact.created'));
 
@@ -116,8 +112,6 @@ class ContactController extends Controller
     public function show(Contact $contact)
     {
         $this->can('view');
-
-        $this->authorize('view', $contact);
 
         return view('contact.show', [
             'contact' => $contact,
@@ -172,11 +166,11 @@ class ContactController extends Controller
         }
 
         if ($contact->save()) {
-            Session::flash('alert-success', trans('flash_message.contact.updated'));
+            flashSuccess(trans('flash_message.contact.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
         } else {
-            Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
+            flashError(trans('flash_message.contact.not_updated'));
 
             return redirect()->route('contacts.edit', [$contact->slug]);
         }

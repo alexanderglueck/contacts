@@ -31,7 +31,11 @@
                                     </button>
 
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        @lang('auth.login.actions.password.reset')
+                                        @lang('auth.login.actions.password.request')
+                                    </a>
+
+                                    <a class="btn btn-link" href="{{ route('activation.resend') }}">
+                                        @lang('auth.login.actions.activation.resend')
                                     </a>
                                 </div>
                             </div>

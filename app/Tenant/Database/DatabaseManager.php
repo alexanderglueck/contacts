@@ -14,6 +14,8 @@ class DatabaseManager
 
     /**
      * DatabaseManager constructor.
+     *
+     * @param BaseDatabaseManager $db
      */
     public function __construct(BaseDatabaseManager $db)
     {
@@ -43,7 +45,7 @@ class DatabaseManager
     protected function getTenantConnection($tenant)
     {
         return array_merge(
-            config()->get($this->getConfigConnectionPaht()),
+            config()->get($this->getConfigConnectionPath()),
             $tenant->tenantConnection->only('database')
         );
     }
@@ -53,7 +55,7 @@ class DatabaseManager
         return config('database.default');
     }
 
-    protected function getConfigConnectionPaht()
+    protected function getConfigConnectionPath()
     {
         return sprintf('database.connections.%s', $this->getDefaultConnectionName());
     }

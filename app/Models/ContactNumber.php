@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Scopes\CreatedByScope;
-use App\Tenant\Traits\ForTenants;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactNumber extends Model
 {
     use Sluggable;
-    use ForTenants;
+
+    protected $connection = 'tenant';
 
     protected $fillable = ['name', 'number', 'created_by', 'updated_by'];
 

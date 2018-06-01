@@ -22,6 +22,12 @@ class AuthController extends Controller
         }
 
         if (auth()->check()) {
+            $team = $invite->team;
+            $owner = $team->owner;
+
+            // increase the quantity because a new user joined
+            $owner->subscription('main')->incrementQuantity();
+
             Teamwork::acceptInvite($invite);
 
             return redirect()->route('teams.index');

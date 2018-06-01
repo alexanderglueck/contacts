@@ -25,7 +25,9 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="DB_CONNECTION" value="testing"/>
-        <env name="CONTACTS_TENANT_PREFIX" value="contact_testing_"/>
+        <env name="DB_DATABASE" value="contacts_main"/>
+        <env name="DB_TEST_DATABASE" value="contacts_main"/>
+        <env name="CONTACTS_TENANT_PREFIX" value="ct_"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>

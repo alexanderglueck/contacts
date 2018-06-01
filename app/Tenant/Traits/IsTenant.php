@@ -3,8 +3,8 @@
 namespace App\Tenant\Traits;
 
 use Webpatser\Uuid\Uuid;
-use App\TenantConnection;
 use App\Tenant\Models\Tenant;
+use App\Models\TenantConnection;
 
 trait IsTenant
 {

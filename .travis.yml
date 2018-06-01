@@ -6,7 +6,7 @@ php:
 
 before_script:
   - cp .env.travis .env
-  - mysql -e 'create database homestead_test;'
+  - mysql -e 'create database contacts_main;'
   - composer install --no-interaction
   - php artisan key:generate
   - php artisan migrate --seed
@@ -14,3 +14,7 @@ before_script:
 cache:
   directories:
     - vendor
+
+notifications:
+  email:
+    on_failure: change

@@ -37,3 +37,33 @@ Route::post('login/token', 'Auth\LoginController@check')->name('login.token.chec
  * Install
  */
 Route::get('install', 'Setup\InstallController@index')->name('install');
+
+/**
+ * Account activation
+ */
+Route::group(['middleware' => ['guest']], function () {
+    Route::get('activation/resend', 'Auth\ActivationResendController@index')->name('activation.resend');
+    Route::post('activation/resend', 'Auth\ActivationResendController@store')->name('activation.resend.store');
+    Route::get('activation/{token}', 'Auth\ActivationController@activate')->name('activation.activate');
+});
+
+/**
+ * Plans
+ */
+Route::group(['as' => 'plans.'], function () {
+    Route::get('plans/', 'Subscription\PlanController@index')->name('index');
+    Route::get('plans/teams', 'Subscription\PlanTeamController@index')->name('teams.index');
+});
+
+/**
+ * Subscription
+ */
+Route::group(['as' => 'subscription.', 'middleware' => ['auth.register', 'subscription.inactive']], function () {
+    Route::get('subscription', 'Subscription\SubscriptionController@index')->name('index');
+    Route::post('subscription', 'Subscription\SubscriptionController@store')->name('store');
+});
+
+/**
+ * Subscription
+ */
+Route::post('/webhooks/stripe', 'Webhooks\StripeWebhookController@handleWebhook');

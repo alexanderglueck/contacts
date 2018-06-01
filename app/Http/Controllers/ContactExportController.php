@@ -2,15 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Response;
-use App\Models\Gender;
-use SplTempFileObject;
-use App\Models\Contact;
-use App\Models\Country;
+use App\Models\ContactGroup;
 use Illuminate\Http\Request;
-// use League\Csv\Writer;
-use JeroenDesloovere\VCard\VCard;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ContactExportController extends Controller
@@ -27,16 +20,16 @@ class ContactExportController extends Controller
         $this->can('create');
 
         return view('contact_export.index', [
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
+            'contactGroups' => ContactGroup::sorted()->get()
         ]);
     }
 
     public function export(Request $request)
     {
-        $this->can('edit');
+        $this->can('create');
 
         $this->validate($request, [
-            'contact_group_id' => 'required|integer|exists:contact_groups,id',
+            'contact_group_id' => 'required|integer|exists:tenant.contact_groups,id',
         ]);
 
         /**
@@ -93,7 +86,7 @@ class ContactExportController extends Controller
         /**
          * Excel
          */
-        $contacts = Auth::user()->contactGroups()->find($request->contact_group_id)->contacts()->active()->sorted()->get();
+        $contacts = ContactGroup::find($request->contact_group_id)->contacts()->active()->sorted()->get();
 
         Excel::create('contacts', function ($excel) use ($contacts) {
 

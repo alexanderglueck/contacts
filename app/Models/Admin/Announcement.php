@@ -3,13 +3,13 @@
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
-use Mpociot\Teamwork\Traits\UsedByTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Announcement extends Model
 {
     use Sluggable;
-    use UsedByTeams;
+
+    protected $connection = 'tenant';
 
     protected $fillable = [
         'title',

@@ -165,6 +165,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TenantServiceProvider::class,
+        App\Providers\StripeServiceProvider::class,
+        Mpociot\Teamwork\TeamworkServiceProvider::class,
 
         /*
          * Custom Blade Directives

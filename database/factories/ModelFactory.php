@@ -22,13 +22,25 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
         'current_team_id' => function () {
             return factory(\App\Models\Team::class);
-        }
+        },
+        'activated' => true
     ];
 });
 
 $factory->define(App\Models\Team::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
+    ];
+});
+
+$factory->define(\Laravel\Cashier\Subscription::class, function (Faker\Generator $faker) {
+    return [
+        'name' => 'main',
+        'stripe_id' => $faker->word,
+        'stripe_plan' => $faker->word,
+        'quantity' => 1,
+        'trial_ends_at' => null,
+        'ends_at' => null
     ];
 });
 
@@ -42,7 +54,7 @@ $factory->define(App\Models\Role::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(\Spatie\Permission\Models\Permission::class, function (Faker\Generator $faker) {
+$factory->define(\App\Models\Permission::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'guard_name' => 'web'

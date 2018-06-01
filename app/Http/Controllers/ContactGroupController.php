@@ -58,7 +58,7 @@ class ContactGroupController extends Controller
         $this->can('create');
 
         $validator = Validator::make($request->all(), $this->validationRules);
-        $validator->sometimes('parent_id', 'exists:contact_groups,id', function ($input) {
+        $validator->sometimes('parent_id', 'exists:tenant.contact_groups,id', function ($input) {
             return strlen($input->parent_id) > 0;
         });
 
@@ -68,7 +68,6 @@ class ContactGroupController extends Controller
         $contactGroup->fill($request->all());
         $contactGroup->created_by = Auth::id();
         $contactGroup->updated_by = Auth::id();
-        $contactGroup->team_id = Auth::user()->currentTeam->id;
 
         if ($contactGroup->save()) {
             Session::flash('alert-success', trans('flash_message.contact_group.created'));
@@ -130,7 +129,7 @@ class ContactGroupController extends Controller
         $this->can('edit');
 
         $validator = Validator::make($request->all(), $this->validationRules);
-        $validator->sometimes('parent_id', 'exists:contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
+        $validator->sometimes('parent_id', 'exists:tenant.contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
             return strlen($input->parent_id) > 0;
         });
 

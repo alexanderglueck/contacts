@@ -49,33 +49,6 @@ class AnnouncementTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_not_view_an_announcement_created_by_another_team()
-    {
-        $user = $this->createUser('view announcements');
-
-        $announcement = create(Announcement::class, [
-            'user_id' => $user->id
-        ]);
-
-        $anotherTeam = create(Team::class);
-        $viewer = create(User::class, [
-            'current_team_id' => $anotherTeam->id
-        ]);
-
-        $response = $this->actingAs($viewer)
-            ->get(route('announcements.show', [$announcement->slug]));
-
-        $response->assertStatus(404);
-        $this->assertAuthenticatedAs($viewer);
-
-        $response = $this->actingAs($user)
-            ->get(route('announcements.show', [$announcement->slug]));
-
-        $response->assertStatus(200);
-        $this->assertAuthenticatedAs($user);
-    }
-
-    /** @test */
     public function a_user_can_view_the_announcement_delete_view()
     {
         $user = $this->createUser('delete announcements');

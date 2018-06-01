@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Traits\RecordsActivity;
-use App\Tenant\Traits\ForTenants;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -13,7 +12,8 @@ class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
     use RecordsActivity;
-    use ForTenants;
+
+    protected $connection = 'tenant';
 
     protected $fillable = [
         'firstname',

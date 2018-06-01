@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Subscription;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
+use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\Traits\HasConfirmationTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -13,6 +19,13 @@ class User extends Authenticatable
     use Notifiable;
     use Sluggable;
     use HasRoles;
+    use HasConfirmationTokens;
+    use Billable;
+    use HasSubscriptions;
+    use SoftDeletes;
+    use UserHasTeams;
+
+    protected $connection = 'system';
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +33,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'activated', 'current_team_id'
+    ];
+
+    protected $casts = [
+        'activated' => 'boolean'
     ];
 
     /**
@@ -148,13 +165,35 @@ class User extends Authenticatable
         $this->save();
     }
 
-    public function currentTeam()
+    public function isActivated()
     {
-        return $this->belongsTo(Team::class);
+        return $this->activated;
     }
 
-    public function teams()
+    public function isNotActivated()
     {
-        return $this->belongsToMany(Team::class, config('contacts.tenant.system') . '.team_user');
+        return ! $this->activated;
+    }
+
+    public function plan()
+    {
+        return $this->plans->first();
+    }
+
+    public function getPlanAttribute()
+    {
+        return $this->plan();
+    }
+
+    public function plans()
+    {
+        return $this->hasManyThrough(
+            Plan::class, Subscription::class, 'user_id', 'gateway_id', 'id', 'stripe_plan')
+            ->orderBy('subscriptions.created_at', 'desc');
+    }
+
+    public function hasImage()
+    {
+        return trim($this->image) !== '';
     }
 }

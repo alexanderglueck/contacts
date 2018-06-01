@@ -128,6 +128,31 @@ return [
     'no_activities' => 'No activities',
 
     /*
+     * Subscription, Plans and Billing
+     */
+    'plan' => 'Plan',
+    'coupon' => 'Coupon',
+    'pay' => 'Pay',
+    'plans' => [
+        'title' => 'Plans',
+        'personal' => 'Personal',
+        'team' => 'Team',
+        'actions' => [
+            'join' => 'Join now'
+        ]
+    ],
+    'profile' => 'Profile',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
+    /*
      * Buttons and titles
      */
     'create_contact' => 'Create contact',
