@@ -1,51 +1,53 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Subscription
-                </div>
-                <div class="panel-body">
-                    <form class="form-horizontal" id="payment-form" action="{{ route('subscription.store') }}" method="POST">
-                        @csrf
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Subscription
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" id="payment-form" action="{{ route('subscription.store') }}" method="POST">
+                            @csrf
 
-                        <div class="form-group{{ $errors->has('plan') ? ' has-danger' : '' }}">
-                            <label for="plan" class="col-md-4 form-control-label required">
-                                {{ trans('ui.plan') }}
-                            </label>
+                            <div class="form-group{{ $errors->has('plan') ? ' has-danger' : '' }}">
+                                <label for="plan" class="col-md-4 form-control-label required">
+                                    {{ trans('ui.plan') }}
+                                </label>
 
-                            <div class="col-md-6">
-                                <select name="plan" id="plan" class="form-control">
-                                    @foreach($plans as $plan)
-                                        <option value="{{ $plan->gateway_id }}"
-                                                {{ return_if(request('plan') == $plan->slug || old('plan') == $plan->gateway_id, ' selected ') }}
-                                        >
-                                            {{ $plan->name }}
-                                            (€ {{ $plan->price / 100 }} )
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="col-md-6">
+                                    <select name="plan" id="plan" class="form-control">
+                                        @foreach($plans as $plan)
+                                            <option value="{{ $plan->gateway_id }}"
+                                                    {{ return_if(request('plan') == $plan->slug || old('plan') == $plan->gateway_id, ' selected ') }}
+                                            >
+                                                {{ $plan->name }}
+                                                (€ {{ $plan->price / 100 }} )
+                                            </option>
+                                        @endforeach
+                                    </select>
 
-                                @if ($errors->has('plan'))
-                                    <span class="form-text">
+                                    @if ($errors->has('plan'))
+                                        <span class="form-text">
                                         <strong>{{ $errors->first('plan') }}</strong>
                                     </span>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
-                        </div>
 
-                        {!! \App\Helpers\Form::text('coupon', trans('ui.coupon')) !!}
+                            {!! \App\Helpers\Form::text('coupon', trans('ui.coupon')) !!}
 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" id="pay" class="btn btn-primary">
-                                    {{ trans('ui.pay') }}
-                                </button>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <button type="submit" id="pay" class="btn btn-primary">
+                                        {{ trans('ui.pay') }}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
