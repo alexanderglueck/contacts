@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Teamwork;
 
 use Illuminate\Http\Request;
+use Mpociot\Teamwork\TeamInvite;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Mpociot\Teamwork\Facades\Teamwork;
 
 class TeamMemberController extends Controller
 {
@@ -59,7 +61,13 @@ class TeamMemberController extends Controller
             abort(403);
         }
 
+        // Decrease the quantity because a user is being removed
+        $team->owner->subscription('main')->decrementQuantity();
+
         $user->detachTeam($team);
+
+        $user->current_team_id = $user->teams()->first()->id;
+        $user->save();
 
         return redirect(route('teams.index'));
     }
