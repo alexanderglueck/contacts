@@ -9,9 +9,13 @@ class DatabaseCreator
 {
     public function create(Tenant $tenant)
     {
-        return DB::statement(sprintf('CREATE DATABASE `%s`',
-            $this->getTenantDatabaseName($tenant)
-        ));
+        try {
+            return DB::connection('system')->statement(sprintf('CREATE DATABASE `%s`',
+                $this->getTenantDatabaseName($tenant)
+            ));
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 
     private function getTenantDatabaseName(Tenant $tenant)
