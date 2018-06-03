@@ -179,6 +179,14 @@
                     </div>
                 </li>
             @endif
+
+            <li class="nav-item">
+                <form action="{{ route('search.search') }}" method="post">
+                    @csrf
+                    <input type="text" name="search">
+                </form>
+            </li>
+
             @else
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('plans.index') }}">

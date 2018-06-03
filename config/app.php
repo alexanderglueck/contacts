@@ -168,6 +168,8 @@ return [
         App\Providers\StripeServiceProvider::class,
         Mpociot\Teamwork\TeamworkServiceProvider::class,
 
+        Elasticquent\ElasticquentServiceProvider::class,
+
         /*
          * Custom Blade Directives
          */
@@ -223,6 +225,7 @@ return [
 
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Navigation' => App\Helpers\Navigation::class,
+        'Es' => Elasticquent\ElasticquentElasticsearchFacade::class,
     ],
 
 ];
