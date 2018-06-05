@@ -3,15 +3,14 @@
 namespace App\Listeners\Tenant;
 
 use App\Models\Role;
-use App\Models\Team;
 use App\Models\User;
 use App\Models\Permission;
-use App\Tenant\Database\DatabaseManager;
 use App\Tenant\Models\Tenant;
 use App\Events\Auth\UserSignedUp;
-use Illuminate\Support\Facades\Artisan;
 use App\Events\Tenant\TenantWasCreated;
+use Illuminate\Support\Facades\Artisan;
 use App\Tenant\Database\DatabaseCreator;
+use App\Tenant\Database\DatabaseManager;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CreateTenantDatabase implements ShouldQueue

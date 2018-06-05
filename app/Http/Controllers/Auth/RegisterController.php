@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Events\Auth\UserSignedUp;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Events\Tenant\TenantWasCreated;
