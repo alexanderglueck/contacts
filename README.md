@@ -31,9 +31,10 @@ during the installation)
     php artisan contacts:install
     ```
 
-4. Finally compile the JavaScript and CSS assets
+4. Finally compile the JavaScript and CSS assets and symlink the storage directory
     ```bash
     npm run prod
+    php artisan storage:link
     ```
     
 5. Run contacts
