@@ -19,6 +19,6 @@ class ApiTokenController extends Controller
         Auth::user()->api_token = str_random(60);
         Auth::user()->save();
 
-        return redirect()->route('user_settings.edit');
+        return redirect()->route('user_settings.api_token.show');
     }
 }
