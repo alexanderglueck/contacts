@@ -19,6 +19,7 @@ class Seed extends SeedCommand
      * @var string
      */
     protected $description = 'Seeds tenant databases';
+
     /**
      * @var DatabaseManager
      */
@@ -33,6 +34,7 @@ class Seed extends SeedCommand
     public function __construct(Resolver $resolver, DatabaseManager $db)
     {
         parent::__construct($resolver);
+
         $this->setName('tenants:seed');
 
         $this->specifyParameters();
@@ -51,9 +53,17 @@ class Seed extends SeedCommand
             return;
         }
 
+        /*
+         * Required for the parent::handle() call.
+         * Uses the tenant database connection to seed the database.
+         * Set the class option to specify the tenant seeder entry point.
+         */
         $this->input->setOption('database', 'tenant');
         $this->input->setOption('class', 'TenantDatabaseSeeder');
 
+        /*
+         * Iterate over every (specified) tenant and seed the database
+         */
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();

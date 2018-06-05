@@ -19,6 +19,7 @@ class MigrateRollback extends RollbackCommand
      * @var string
      */
     protected $description = 'Rollback migrations for tenants';
+
     /**
      * @var DatabaseManager
      */
@@ -33,6 +34,7 @@ class MigrateRollback extends RollbackCommand
     public function __construct(Migrator $migrator, DatabaseManager $db)
     {
         parent::__construct($migrator);
+
         $this->setName('tenants:rollback');
 
         $this->specifyParameters();
@@ -51,8 +53,15 @@ class MigrateRollback extends RollbackCommand
             return;
         }
 
+        /*
+         * Required for the parent::handle() call.
+         * Uses the tenant database connection to rollback the migrations
+         */
         $this->input->setOption('database', 'tenant');
 
+        /*
+         * Iterate over every (specified) tenant and rollback the migrations
+         */
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();

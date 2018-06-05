@@ -19,6 +19,7 @@ class Migrate extends MigrateCommand
      * @var string
      */
     protected $description = 'Run migrations for tenants';
+
     /**
      * @var DatabaseManager
      */
@@ -33,6 +34,7 @@ class Migrate extends MigrateCommand
     public function __construct(Migrator $migrator, DatabaseManager $db)
     {
         parent::__construct($migrator);
+
         $this->setName('tenants:migrate');
 
         $this->specifyParameters();
@@ -51,8 +53,15 @@ class Migrate extends MigrateCommand
             return;
         }
 
+        /*
+         * Required for the parent::handle() call.
+         * Uses the tenant database connection for the migrations
+         */
         $this->input->setOption('database', 'tenant');
 
+        /*
+         * Iterate over every (specified) tenant and migrate the database
+         */
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();
