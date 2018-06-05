@@ -4,6 +4,7 @@ namespace App\Http\Middleware\Tenant;
 
 use Closure;
 use App\Models\Team;
+use Illuminate\Http\Request;
 use App\Events\Tenant\TenantIdentified;
 
 class SetTenant
@@ -11,34 +12,46 @@ class SetTenant
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param  Request $request
+     * @param  Closure $next
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
+        /*
+         * Try to find a tenant that matches the UUID stored in the session
+         */
         $tenant = $this->resolveTenant(session('tenant'));
 
         if ( ! $tenant) {
-            return $next($request);
+            /*
+             * If no matching tenant could be found redirect to the select tenant
+             * page
+             */
+            return redirect()->route('tenant.index');
         }
 
         if ( ! auth()->user()->teams->contains('id', $tenant->id)) {
-            if (auth()->user()->currentTeam->id != $tenant->id) {
-                session()->put('tenant', auth()->user()->currentTeam->uuid);
-
-                return $this->allowThrough($next, $request, auth()->user()->currentTeam);
-            }
-
-            return redirect()->route('home');
+            /*
+             * The users team was deleted or the user was kicked out
+             * of the team. Redirect to the select tenant page
+             */
+            return redirect()->route('tenant.index');
         }
 
-        return $this->allowThrough($next, $request, $tenant);
-    }
+        if ( ! auth()->user()->currentTeam) {
+            /*
+             * The user does not have a team assigned. Redirect to select tenant
+             * page to prevent issues on other pages
+             */
+            return redirect()->route('tenant.index');
+        }
 
-    protected function allowThrough($next, $request, $tenant)
-    {
+        /*
+         * The tenant exists, the user has access to the tenant and has a
+         * tenant set as current tenant
+         */
         event(new TenantIdentified($tenant));
 
         return $next($request);

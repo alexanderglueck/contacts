@@ -16,12 +16,6 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 // Registration Routes...Route::Route::Route::
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
-/*Route::get('register', function () {
-    return Redirect::to(route('login'));
-})->name('register');
-Route::post('register', function () {
-    return false;
-});*/
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -64,6 +58,15 @@ Route::group(['as' => 'subscription.', 'middleware' => ['auth.register', 'subscr
 });
 
 /**
- * Subscription
+ * Stripe webhook
  */
 Route::post('/webhooks/stripe', 'Webhooks\StripeWebhookController@handleWebhook');
+
+/**
+ * Tenant selection dashboard
+ */
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('select', 'TenantSelectionController@index')->name('tenant.index');
+    Route::post('select', 'TenantSelectionController@store')->name('tenant.store');
+});
+
