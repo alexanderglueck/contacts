@@ -80,28 +80,35 @@ class RegisterController extends Controller
     /**
      * @param Request $request
      * @param User    $user
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     protected function registered(Request $request, $user)
     {
+        /*
+         * Do not immediately sign-in the user
+         */
         $this->guard()->logout();
 
-        $team = Team::make([
-            'name' => $user['name']
+        /*
+         * Create a new team
+         */
+        $team = Team::create([
+            'name' => $user['name'],
+            'owner_id' => $user->id
         ]);
 
-        $team->owner_id = $user->id;
-        $team->save();
+        /*
+         * Attach the user with the team.
+         * This adds the user as a team member and sets the current_team_id to
+         * the given team
+         */
+        $user->attachTeam($team);
 
-        session()->put('tenant', $team->uuid);
-
-        $user->teams()->attach($team->id);
-
-        $user->current_team_id = $team->id;
-        $user->save();
-
+        /*
+         * This starts all processes that should run when a tenant is created
+         */
         event(new TenantWasCreated($team, $user));
-
-        event(new UserSignedUp($user));
 
         flashSuccess('Please check your email for an activation link.');
 

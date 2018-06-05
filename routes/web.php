@@ -65,7 +65,7 @@ Route::post('/webhooks/stripe', 'Webhooks\StripeWebhookController@handleWebhook'
 /**
  * Tenant selection dashboard
  */
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('select', 'TenantSelectionController@index')->name('tenant.index');
     Route::post('select', 'TenantSelectionController@store')->name('tenant.store');
 });

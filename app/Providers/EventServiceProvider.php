@@ -36,14 +36,6 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Tenant\CreateTenantDatabase',
         ],
 
-        'App\Events\Tenant\TenantDatabaseWasCreated' => [
-            'App\Listeners\Tenant\SetUpTenantDatabase',
-        ],
-
-        'App\Events\Tenant\TenantWasSetUp' => [
-            'App\Listeners\Tenant\FinishTenantSetup',
-        ],
-
         'App\Events\Auth\UserSignedUp' => [
             'App\Listeners\Auth\SendActivationEmail',
         ],
