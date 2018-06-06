@@ -97,6 +97,11 @@ class CreateTenantDatabase implements ShouldQueue
         }
     }
 
+    /**
+     * @param Tenant $tenant
+     *
+     * @return bool
+     */
     protected function migrate(Tenant $tenant)
     {
         $migration = Artisan::call('tenants:migrate', [
@@ -104,6 +109,20 @@ class CreateTenantDatabase implements ShouldQueue
         ]);
 
         return $migration === 0;
+    }
+
+    /**
+     * @param Tenant $tenant
+     *
+     * @return bool
+     */
+    protected function seed(Tenant $tenant)
+    {
+        $seeding = Artisan::call('tenants:seed', [
+            '--tenants' => [$tenant->id]
+        ]);
+
+        return $seeding === 0;
     }
 
     /**
@@ -120,14 +139,5 @@ class CreateTenantDatabase implements ShouldQueue
         $role->syncPermissions(Permission::all());
 
         $user->assignRole($role);
-    }
-
-    protected function seed(Tenant $tenant)
-    {
-        $seeding = Artisan::call('tenants:seed', [
-            '--tenants' => [$tenant->id]
-        ]);
-
-        return $seeding === 0;
     }
 }

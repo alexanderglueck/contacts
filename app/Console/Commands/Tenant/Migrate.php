@@ -65,7 +65,7 @@ class Migrate extends MigrateCommand
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
             /*
              * Purge the tenant connection (connection could already be
-             * established (eg. using artisan queue:work)
+             * established (eg. using artisan queue:work))
              */
             $this->db->purge();
 

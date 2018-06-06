@@ -63,6 +63,12 @@ class MigrateRollback extends RollbackCommand
          * Iterate over every (specified) tenant and rollback the migrations
          */
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
+            /*
+             * Purge the tenant connection (connection could already be
+             * established (eg. using artisan queue:work))
+             */
+            $this->db->purge();
+
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();
 
