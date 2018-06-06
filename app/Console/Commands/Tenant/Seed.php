@@ -65,6 +65,15 @@ class Seed extends SeedCommand
          * Iterate over every (specified) tenant and seed the database
          */
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
+            /*
+             * Purge the tenant connection (connection could already be
+             * established (eg. using artisan queue:work)
+             */
+            $this->db->purge();
+
+            /*
+             * Create a new tenant connection
+             */
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();
 
