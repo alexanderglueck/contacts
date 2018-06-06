@@ -27,7 +27,7 @@ class LogSuccessfulLogin
     public function handle($event)
     {
         $logEntry = new LogEntry();
-        if ($event->user->google2fa_secret != null) {
+        if ($event->user->hasTwoFactorAuthentication()) {
             $logEntry->event = 'auth.2fa_step';
         } else {
             $logEntry->event = 'auth.succeeded';

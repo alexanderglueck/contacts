@@ -188,12 +188,22 @@ class User extends Authenticatable
     public function plans()
     {
         return $this->hasManyThrough(
-            Plan::class, Subscription::class, 'user_id', 'gateway_id', 'id', 'stripe_plan')
-            ->orderBy('subscriptions.created_at', 'desc');
+            Plan::class,
+            Subscription::class,
+            'user_id',
+            'gateway_id',
+            'id',
+            'stripe_plan'
+        )->orderBy('subscriptions.created_at', 'desc');
     }
 
     public function hasImage()
     {
         return trim($this->image) !== '';
+    }
+
+    public function hasTwoFactorAuthentication()
+    {
+        return trim($this->google2fa_secret) !== '';
     }
 }

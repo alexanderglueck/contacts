@@ -62,7 +62,7 @@ class LoginController extends Controller
             return back();
         }
 
-        if (trim($user->google2fa_secret) !== '') {
+        if ($user->hasTwoFactorAuthentication()) {
             // logout
             Auth::logout();
 

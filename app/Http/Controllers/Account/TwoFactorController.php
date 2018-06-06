@@ -22,7 +22,7 @@ class TwoFactorController extends Controller
     public function edit(Request $request, Google2FA $google2fa)
     {
         // Check if 2FA is already enabled
-        if (Auth::user()->google2fa_secret == null) {
+        if ( ! Auth::user()->hasTwoFactorAuthentication()) {
 
             // Check if the user got redirected back from the enable route
             // (google2fa_secret session key available)
