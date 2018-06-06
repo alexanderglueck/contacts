@@ -45,18 +45,6 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
-        ],
-
-        'testing' => [
-            'driver' => 'mysql',
-            'host' => env('DB_TEST_HOST', 'localhost'),
-            'database' => env('DB_TEST_DATABASE', 'homestead_test'),
-            'username' => env('DB_TEST_USERNAME', 'root'),
-            'password' => env('DB_TEST_PASSWORD', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
         ]
     ],
 
