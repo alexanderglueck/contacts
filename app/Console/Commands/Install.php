@@ -49,7 +49,7 @@ class Install extends Command
 
         $this->updateEnvironmentFile($credentials);
 
-        $this->call('cache:clear');
+        $this->clearCache();
 
         if ($this->confirm('Do you want to migrate the database?', false)) {
             $this->migrateDatabaseWithFreshCredentials($credentials);
@@ -61,7 +61,9 @@ class Install extends Command
             }
         }
 
-        $this->call('cache:clear');
+        $this->clearCache();
+
+        $this->symlinkStorage();
 
         $this->goodbye();
     }
@@ -119,7 +121,7 @@ class Install extends Command
 
         $this->reconnectToDatabase();
 
-        $this->call('cache:clear');
+        $this->clearCache();
         $this->call('config:clear');
 
         $this->call('migrate');
@@ -192,5 +194,15 @@ class Install extends Command
         DB::disconnect('system');
         DB::purge('system');
         DB::reconnect('system');
+    }
+
+    protected function symlinkStorage(): void
+    {
+        $this->call('storage:link');
+    }
+
+    protected function clearCache(): void
+    {
+        $this->call('cache:clear');
     }
 }

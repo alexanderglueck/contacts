@@ -9,7 +9,7 @@ class CommentCollection extends Collection
     /**
      * Thread the comment tree.
      *
-     * @return $this
+     * @return Collection
      */
     public function threaded()
     {
