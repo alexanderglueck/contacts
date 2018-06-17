@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers;
 
 use Auth;
 use Session;
@@ -10,7 +10,6 @@ use App\Models\Contact;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Rules\ValidIBANFormat;
-use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 
 class ContactController extends Controller
