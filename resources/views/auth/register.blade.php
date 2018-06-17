@@ -75,7 +75,7 @@
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" required name="terms">
-                                            {!!  trans('auth.register.fields.terms_of_service', ['tos_url' => '#']) !!}
+                                            {!!  trans('auth.register.fields.terms_of_service', ['tos_url' => route('pages.terms_of_service')]) !!}
                                         </label>
                                     </div>
 

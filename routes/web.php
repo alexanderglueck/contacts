@@ -69,3 +69,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('select', 'TenantSelectionController@index')->name('tenant.index');
     Route::post('select', 'TenantSelectionController@store')->name('tenant.store');
 });
+
+/**
+ * Pages
+ */
+Route::get('pages/terms-of-service', 'PageController@termsOfService')->name('pages.terms_of_service');

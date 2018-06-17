@@ -39,7 +39,7 @@ return [
             'email' => 'Email address',
             'password' => 'Password',
             'password_confirm' => 'Confirm password',
-            'terms_of_service' => 'I accept the <a href=":tos_url">terms of service</a>',
+            'terms_of_service' => 'I accept the <a target="_blank" href=":tos_url">terms of service</a>',
         ],
         'actions' => [
             'default' => 'Register',
