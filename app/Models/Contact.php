@@ -361,13 +361,23 @@ class Contact extends Model implements CalendarInterface
     }
 
     /**
-     * Defines the has-many relationship with the Note model
+     * Defines the has-many relationship with the ContactNote model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function notes()
     {
         return $this->hasMany(ContactNote::class);
+    }
+
+    /**
+     * Defines the has-many relationship with the ContactCall model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function calls()
+    {
+        return $this->hasMany(ContactCall::class);
     }
 
     /**

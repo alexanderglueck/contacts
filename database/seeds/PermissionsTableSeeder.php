@@ -29,7 +29,8 @@ class PermissionsTableSeeder extends Seeder
                 'roles',
                 'users',
                 'activities',
-                'notes'
+                'notes',
+                'calls'
             ],
             'create' => [
                 'contacts',
@@ -45,7 +46,8 @@ class PermissionsTableSeeder extends Seeder
                 'dates',
                 'addresses',
                 'roles',
-                'notes'
+                'notes',
+                'calls'
             ],
             'edit' => [
                 'contacts',
@@ -60,7 +62,8 @@ class PermissionsTableSeeder extends Seeder
                 'addresses',
                 'roles',
                 'users',
-                'notes'
+                'notes',
+                'calls'
             ],
             'delete' => [
                 'contacts',
@@ -75,7 +78,8 @@ class PermissionsTableSeeder extends Seeder
                 'addresses',
                 'roles',
                 'users',
-                'notes'
+                'notes',
+                'calls'
             ],
             'invite' => [
                 'users'

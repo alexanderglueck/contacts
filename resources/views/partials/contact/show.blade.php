@@ -44,6 +44,12 @@
             <br>
         @endif
 
+        @if (Auth::user()->hasPermissionTo('view calls'))
+            <strong>Calls</strong>:
+            @include('partials.contact.additional.calls', ['calls' => $contact->calls])
+            <br>
+        @endif
+
         @if (Auth::user()->hasPermissionTo('view giftIdeas'))
             <strong>{{ trans('ui.gift_ideas') }}</strong>:
             @include('partials.contact.additional.gift_ideas', ['giftIdeas' => $contact->giftIdeas])

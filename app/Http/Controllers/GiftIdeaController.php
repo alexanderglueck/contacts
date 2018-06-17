@@ -14,7 +14,7 @@ class GiftIdeaController extends Controller
 
     private $validationRules = [
         'name' => 'required',
-        'due_at' => 'nullable|sometimes|date|date_format:d.m.Y',
+        'due_at' => 'nullable|sometimes|date_format:d.m.Y',
         'description' => 'nullable',
         'url' => 'nullable|sometimes|url',
     ];

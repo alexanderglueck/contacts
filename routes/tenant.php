@@ -116,7 +116,7 @@ Route::group(['middleware' => 'subscription.active'], function () {
     });
 
     /**
-     * Contact Urls
+     * Contact Notes
      */
     Route::get('contact-notes', function () {
         return redirect()->route('contacts.index');
@@ -130,6 +130,23 @@ Route::group(['middleware' => 'subscription.active'], function () {
         Route::put('contact-notes/{contact}/{contactNote}', 'ContactNoteController@update')->name('contact_notes.update');
         Route::get('contact-notes/{contact}/{contactNote}/delete', 'ContactNoteController@delete')->name('contact_notes.delete');
         Route::delete('contact-notes/{contact}/{contactNote}', 'ContactNoteController@destroy')->name('contact_notes.destroy');
+    });
+
+    /**
+     * Contact Calls
+     */
+    Route::get('contact-calls', function () {
+        return redirect()->route('contacts.index');
+    });
+    Route::get('contact-calls/{contact}', 'ContactCallController@index')->name('contact_calls.index');
+    Route::get('contact-calls/{contact}/create', 'ContactCallController@create')->name('contact_calls.create');
+    Route::post('contact-calls/{contact}', 'ContactCallController@store')->name('contact_calls.store');
+    Route::group(['middleware' => ['verify_contact']], function () {
+        Route::get('contact-calls/{contact}/{contactCall}', 'ContactCallController@show')->name('contact_calls.show');
+        Route::get('contact-calls/{contact}/{contactCall}/edit', 'ContactCallController@edit')->name('contact_calls.edit');
+        Route::put('contact-calls/{contact}/{contactCall}', 'ContactCallController@update')->name('contact_calls.update');
+        Route::get('contact-calls/{contact}/{contactCall}/delete', 'ContactCallController@delete')->name('contact_calls.delete');
+        Route::delete('contact-calls/{contact}/{contactCall}', 'ContactCallController@destroy')->name('contact_calls.destroy');
     });
 
     /**
