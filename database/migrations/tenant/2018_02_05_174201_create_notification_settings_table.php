@@ -15,7 +15,7 @@ class CreateNotificationSettingsTable extends Migration
     {
         Schema::create('notification_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('send_daily')->default(false);
+            $table->boolean('send_daily')->default(false);
             $table->boolean('send_weekly')->default(false);
 
             $table->unsignedInteger('user_id');
