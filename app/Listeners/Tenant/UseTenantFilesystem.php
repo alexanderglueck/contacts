@@ -48,7 +48,7 @@ class UseTenantFilesystem
     {
         $config = config('filesystems.disks.' . config('filesystems.default'));
 
-        $config['root'] = $tenant->uuid;
+        $config['root'] = $config['root'] . DIRECTORY_SEPARATOR . $tenant->uuid;
 
         return $config;
     }
