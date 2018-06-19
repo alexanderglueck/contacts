@@ -18,7 +18,7 @@ class ContactCreated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param Contact $contact
      */
     public function __construct(Contact $contact)
     {

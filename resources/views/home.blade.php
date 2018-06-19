@@ -74,7 +74,7 @@
                                     View the available plans
                                 </a>
                             </p>
-                            @endsubscribed
+                        @endsubscribed
                     </div>
                 </div>
             </div>

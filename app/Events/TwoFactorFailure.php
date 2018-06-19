@@ -10,7 +10,9 @@ class TwoFactorFailure
 {
     use Dispatchable, SerializesModels;
 
-    /** @var User $user */
+    /**
+     * @var User
+     */
     public $user;
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Tenant\Manager;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationSetting extends Model
@@ -22,4 +23,9 @@ class NotificationSetting extends Model
         'send_daily',
         'send_weekly'
     ];
+
+    public function getTable()
+    {
+        return app(Manager::class)->getTenant()->tenantConnection->database . '.' . parent::getTable();
+    }
 }

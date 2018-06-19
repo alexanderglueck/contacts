@@ -36,7 +36,6 @@ class ContactCall extends Model
     }
 
     /**
-     *
      * @return string A d.m.Y or d.m. formatted date
      */
     public function getFormattedCalledAtAttribute()
