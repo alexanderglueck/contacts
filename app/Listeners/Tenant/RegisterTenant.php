@@ -35,5 +35,7 @@ class RegisterTenant
         app(Manager::class)->setTenant($event->tenant);
 
         $this->db->createConnection($event->tenant);
+
+        config()->set('scout.prefix', 'tenant_' . $event->tenant->id . '_');
     }
 }
