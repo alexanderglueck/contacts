@@ -31,6 +31,13 @@ class ContactAddress extends Model
     ];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['contact'];
+
+    /**
      * Defines the has-many relationship with the Contact model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

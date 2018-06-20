@@ -22,6 +22,13 @@ class ContactDate extends Model implements CalendarInterface
     ];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['contact'];
+
+    /**
      * Returns a string in d.m.Y or d.m. format depending on
      * the skip_year variable.
      *

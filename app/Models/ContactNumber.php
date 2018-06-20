@@ -15,6 +15,13 @@ class ContactNumber extends Model
     protected $fillable = ['name', 'number', 'created_by', 'updated_by'];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['contact'];
+
+    /**
      * Returns a formatted string of numbers.
      * Any other characters are discarded from the number property
      *
