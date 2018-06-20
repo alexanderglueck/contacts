@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Tenant\Manager;
 use Carbon\Carbon;
+use ScoutElastic\Searchable;
 use App\Traits\RecordsActivity;
-use Elasticquent\ElasticquentTrait;
+use App\ContactIndexConfigurator;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -14,7 +14,7 @@ class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
     use RecordsActivity;
-    use ElasticquentTrait;
+    use Searchable;
 
     protected $connection = 'tenant';
 
@@ -46,6 +46,16 @@ class Contact extends Model implements CalendarInterface
 
     protected $casts = [
         'active' => 'boolean'
+    ];
+
+    protected $indexConfigurator = ContactIndexConfigurator::class;
+
+    protected $searchRules = [
+        //
+    ];
+
+    protected $mapping = [
+        'properties' => []
     ];
 
     /**
@@ -413,7 +423,7 @@ class Contact extends Model implements CalendarInterface
      *
      * @return array
      */
-    public function getIndexDocumentData()
+    public function toSearchableArray()
     {
         $array = $this->toArray();
 
@@ -449,10 +459,5 @@ class Contact extends Model implements CalendarInterface
         unset($array['generate_name']);
 
         return $array;
-    }
-
-    function getIndexName()
-    {
-        return 'contact-' . app(Manager::class)->getTenant()->id;
     }
 }
