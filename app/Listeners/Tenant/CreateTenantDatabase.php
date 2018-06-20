@@ -2,7 +2,9 @@
 
 namespace App\Listeners\Tenant;
 
+use App\ContactIndexConfigurator;
 use App\Models\Role;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\Permission;
 use App\Tenant\Models\Tenant;
@@ -81,6 +83,11 @@ class CreateTenantDatabase implements ShouldQueue
         $this->setupPermissions($event->user, $event->tenant);
 
         /*
+         * Create elastic search index
+         */
+        $this->setupSearchIndex($event->tenant);
+
+        /*
          * Finish tenant setup
          */
         $event->tenant->update([
@@ -139,5 +146,17 @@ class CreateTenantDatabase implements ShouldQueue
         $role->syncPermissions(Permission::all());
 
         $user->assignRole($role);
+    }
+
+    /**
+     * @param Tenant $tenant
+     */
+    protected function setupSearchIndex(Tenant $tenant): void
+    {
+        config()->set('scout.prefix', 'tenant_' . $tenant->id . '_');
+
+        Artisan::call('elastic:create-index', [
+            'index-configurator' => ContactIndexConfigurator::class
+        ]);
     }
 }

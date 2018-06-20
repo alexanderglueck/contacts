@@ -3,8 +3,8 @@
 namespace App\Console\Commands\Scout;
 
 use App\Tenant\Database\DatabaseManager;
-use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Scout\Console\ImportCommand;
+use Illuminate\Contracts\Events\Dispatcher;
 use App\Tenant\Traits\Console\FetchesTenants;
 use App\Tenant\Traits\Console\AcceptsMultipleTenants;
 
