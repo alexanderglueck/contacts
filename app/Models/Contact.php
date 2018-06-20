@@ -443,6 +443,13 @@ class Contact extends Model implements CalendarInterface
             ];
         })->toArray();
 
+        $array['emails'] = $this->emails->map(function ($data) {
+            return [
+                'name' => $data['name'],
+                'email' => $data['email']
+            ];
+        })->toArray();
+
         $array['addresses'] = $this->addresses->map(function ($data) {
             return [
                 'name' => $data['name'],

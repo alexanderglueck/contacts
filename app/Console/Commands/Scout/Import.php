@@ -56,6 +56,9 @@ class Import extends ImportCommand
              */
             $this->db->purge();
 
+            /*
+             * Create a new tenant connection
+             */
             $this->db->createConnection($tenant);
             $this->db->connectToTenant();
 
