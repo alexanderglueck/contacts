@@ -461,6 +461,20 @@ class Contact extends Model implements CalendarInterface
             ];
         })->toArray();
 
+        $array['notes'] = $this->notes->map(function ($data) {
+            return [
+                'name' => $data['name'],
+                'note' => $data['note']
+            ];
+        })->toArray();
+
+        $array['urls'] = $this->urls->map(function ($data) {
+            return [
+                'name' => $data['name'],
+                'url' => $data['url']
+            ];
+        })->toArray();
+
         $array['gender'] = Gender::find($array['gender_id'])->gender;
 
         unset($array['generate_name']);
