@@ -12,7 +12,7 @@ Contacts allows you to manage your contacts by managing their
 
 ## Install
 
-> To run this project, you must have PHP \>7.1.3 and MySQL \> 10.1.25 (MariaDB) installed as prerequisites. 
+> To run this project, you must have PHP \>7.1.3, MySQL \> 10.1.25 (MariaDB) and ElasticSearch \> 6.2.4 installed as prerequisites. 
 
 1. Create a mysql database for contacts (you will be asked for this database 
 during the installation)
@@ -49,6 +49,10 @@ during the installation)
 In order for contacts to work you need Stripe API tokens. 
 Sign up for [Stripe] and enter your tokens into the `STRIPE_TOKEN` and 
 `STRIPE_KEY` fields in your `.env` file. 
+
+### ElasticSearch
+In order for contacts to work you need an ElasticSearch instance (\> 6.2.4) running. 
+You can configure the host in the `scout_elastic` config file.
 
 ## Security
 
