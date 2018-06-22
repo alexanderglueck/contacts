@@ -272,17 +272,19 @@
                                 {{ trans('ui.logs') }}
                             </a>
 
-                            <div class="dropdown-divider"></div>
+                            @hasteams
+                                <div class="dropdown-divider"></div>
 
-                            <a class="dropdown-item" href="{{ route('teams.index') }}">
-                                {{ trans('ui.teams') }}
-                            </a>
-
-                            @if (Auth::user()->hasPermissionTo('view roles'))
-                                <a class="dropdown-item" href="{{ route('roles.index') }}">
-                                    {{ trans('ui.roles') }}
+                                <a class="dropdown-item" href="{{ route('teams.index') }}">
+                                    {{ trans('ui.teams') }}
                                 </a>
-                            @endif
+
+                                @if (Auth::user()->hasPermissionTo('view roles'))
+                                    <a class="dropdown-item" href="{{ route('roles.index') }}">
+                                        {{ trans('ui.roles') }}
+                                    </a>
+                                @endif
+                            @endhasteams
 
                             <div class="dropdown-divider"></div>
 

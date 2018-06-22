@@ -6,6 +6,10 @@ trait HasSubscriptions
 {
     public function hasPiggybackSubscription(): bool
     {
+        if ($this->currentTeam == null) {
+            return false;
+        }
+
         if ($this->id == $this->currentTeam->owner->id) {
             return false;
         }
@@ -44,6 +48,11 @@ trait HasSubscriptions
     public function isCustomer()
     {
         return $this->hasStripeId();
+    }
+
+    public function hasTeams()
+    {
+        return $this->teams()->count() > 0;
     }
 
     public function hasTeamSubscription()

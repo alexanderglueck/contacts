@@ -65,7 +65,7 @@ class SetupTeamTables extends Migration
             $table->foreign('current_team_id')
                 ->references('id')
                 ->on('teams')
-                ->onDelete('cascade')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
         });
     }

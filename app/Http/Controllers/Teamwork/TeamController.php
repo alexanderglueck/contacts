@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Teamwork;
 
 use Exception;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
@@ -26,8 +28,9 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
-        return view('teamwork.index')
-            ->with('teams', auth()->user()->teams);
+        return view('teamwork.index', [
+            'teams' => auth()->user()->teams
+        ]);
     }
 
     /**
@@ -61,9 +64,7 @@ class TeamController extends Controller
             'name' => 'required'
         ]);
 
-        $teamModel = config('teamwork.team_model');
-
-        $team = $teamModel::create([
+        $team = Team::create([
             'name' => $request->name,
             'owner_id' => $request->user()->getKey()
         ]);
@@ -87,8 +88,7 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-        $team = $teamModel::findOrFail($id);
+        $team = Team::findOrFail($id);
 
         try {
             auth()->user()->switchTeam($team);
@@ -116,8 +116,7 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-        $team = $teamModel::findOrFail($id);
+        $team = Team::findOrFail($id);
 
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
@@ -140,9 +139,7 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-
-        $team = $teamModel::findOrFail($id);
+        $team = Team::findOrFail($id);
         $team->name = $request->name;
         $team->save();
 
@@ -162,18 +159,28 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-
-        $team = $teamModel::findOrFail($id);
+        $team = Team::findOrFail($id);
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 
+        /*
+         * Set the team owner to null to prevent the foreign key restriction
+         * from being applied
+         */
+        $team->update([
+            'owner_id' => null
+        ]);
+
         $team->delete();
 
-        $userModel = config('teamwork.user_model');
-        $userModel::where('current_team_id', $id)
-            ->update(['current_team_id' => null]);
+        /*
+         * Remove the team association to redirect them to the tenant selection
+         * page
+         */
+        User::where('current_team_id', $id)->update([
+            'current_team_id' => null
+        ]);
 
         return redirect(route('teams.index'));
     }

@@ -5,9 +5,8 @@ namespace App\Mail\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PasswordUpdated extends Mailable implements ShouldQueue
+class PasswordUpdated extends Mailable
 {
     use Queueable, SerializesModels;
 

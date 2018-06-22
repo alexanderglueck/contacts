@@ -14,16 +14,33 @@ class DeactivateController extends Controller
 
     public function store(DeactivateStoreRequest $request)
     {
+        /*
+         * Retrieve the user
+         */
         $user = $request->user();
 
+        /*
+         * Cancel the active subscription
+         */
         if ($user->subscribed('main')) {
             $user->subscription('main')->cancel();
         }
 
+        /*
+         * Logout the user
+         */
+        auth()->logout();
+
+        /*
+         * Soft-delete the user
+         */
         $user->delete();
 
+        /*
+         * Flash success message and redirect to homepage
+         */
         flashSuccess('Your account has been deactivated');
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 }

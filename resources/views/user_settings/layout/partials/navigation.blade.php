@@ -11,9 +11,11 @@
         Profile image
     </a>
 
+    @hasteams
     <a class="nav-link {{ return_if(on_page('*/notifications'), ' active') }}" href="{{ route('user_settings.notifications.show') }}">
         {{ trans('ui.notification_settings') }}
     </a>
+    @endhasteams
 
     <a class="nav-link {{ return_if(on_page('*/two-factor*'), ' active') }}" href="{{ route('user_settings.two_factor.edit') }}">
         Two-Factor authentication
