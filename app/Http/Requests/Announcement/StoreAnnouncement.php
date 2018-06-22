@@ -25,7 +25,9 @@ class StoreAnnouncement extends FormRequest
     {
         return [
             'title' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'expired_at' => 'nullable|date_format:Y-m-d H:i:s|after_or_equal:now',
+            'pinned_at' => 'nullable|date_format:Y-m-d H:i:s|before_or_equal:now'
         ];
     }
 }

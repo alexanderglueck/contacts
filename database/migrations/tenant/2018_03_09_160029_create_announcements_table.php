@@ -20,6 +20,8 @@ class CreateAnnouncementsTable extends Migration
             $table->text('body');
             $table->string('slug');
             $table->timestamps();
+            $table->dateTime('hidden_at')->nullable()->default(null);
+            $table->dateTime('pinned_at')->nullable()->default(null);
         });
     }
 
