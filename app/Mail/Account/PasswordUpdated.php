@@ -18,6 +18,8 @@ class PasswordUpdated extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->subject('Password updated')->markdown('emails.account.password.updated');
+        return $this
+            ->subject('Password updated')
+            ->markdown('emails.account.password.updated');
     }
 }

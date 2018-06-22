@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Account\PasswordUpdated;
 use Illuminate\Support\Facades\Session;
+use App\Events\Auth\UserChangedPassword;
 use App\Http\Requests\Account\PasswordUpdateRequest;
 
 class PasswordController extends Controller
@@ -25,7 +24,7 @@ class PasswordController extends Controller
             Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
         }
 
-        Mail::to($request->user())->send(new PasswordUpdated());
+        event(new UserChangedPassword($request->user()));
 
         return back();
     }
