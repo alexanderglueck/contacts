@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Events\TwoFactorFailure;
-use App\Events\TwoFactorSuccess;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use App\Events\TwoFactor\TwoFactorFailure;
+use App\Events\TwoFactor\TwoFactorSuccess;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller

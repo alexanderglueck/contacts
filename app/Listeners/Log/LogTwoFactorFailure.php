@@ -1,30 +1,21 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Log;
 
 use App\Models\LogEntry;
 use Illuminate\Support\Facades\Request;
+use App\Events\TwoFactor\TwoFactorFailure;
 
 class LogTwoFactorFailure
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
-     * @param  object $event
+     * @param  TwoFactorFailure $event
      *
      * @return void
      */
-    public function handle($event)
+    public function handle(TwoFactorFailure $event)
     {
         $logEntry = new LogEntry();
         $logEntry->event = 'auth.2fa_failed';

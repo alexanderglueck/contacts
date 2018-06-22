@@ -13,18 +13,18 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\TwoFactorSuccess' => [
-            'App\Listeners\LogTwoFactorSuccess',
+        'App\Events\TwoFactor\TwoFactorSuccess' => [
+            'App\Listeners\Log\LogTwoFactorSuccess',
         ],
-        'App\Events\TwoFactorFailure' => [
-            'App\Listeners\LogTwoFactorFailure',
+        'App\Events\TwoFactor\TwoFactorFailure' => [
+            'App\Listeners\Log\LogTwoFactorFailure',
         ],
         'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\LogSuccessfulLogin',
+            'App\Listeners\Log\LogSuccessfulLogin',
         ],
 
         'Illuminate\Auth\Events\Failed' => [
-            'App\Listeners\LogFailedLogin',
+            'App\Listeners\Log\LogFailedLogin',
         ],
 
         'App\Events\Tenant\TenantIdentified' => [

@@ -1,35 +1,30 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Log;
 
 use App\Models\LogEntry;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\Request;
 
-class LogTwoFactorSuccess
+class LogFailedLogin
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
-     * @param  object $event
+     * @param  Failed $event
      *
      * @return void
      */
-    public function handle($event)
+    public function handle(Failed $event)
     {
+        if ( ! isset($event->user->id)) {
+            return;
+        }
+
         $logEntry = new LogEntry();
-        $logEntry->event = 'auth.2fa_succeeded';
         $logEntry->created_by = $event->user->id;
         $logEntry->updated_by = $event->user->id;
+        $logEntry->event = 'auth.failed';
         $logEntry->ip_address = Request::ip();
         $logEntry->save();
     }

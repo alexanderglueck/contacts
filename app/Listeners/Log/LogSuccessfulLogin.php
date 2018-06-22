@@ -1,30 +1,21 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Log;
 
 use App\Models\LogEntry;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Request;
 
 class LogSuccessfulLogin
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
-     * @param  object $event
+     * @param  Login $event
      *
      * @return void
      */
-    public function handle($event)
+    public function handle(Login $event)
     {
         $logEntry = new LogEntry();
         if ($event->user->hasTwoFactorAuthentication()) {
