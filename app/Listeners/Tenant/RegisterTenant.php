@@ -32,10 +32,19 @@ class RegisterTenant
      */
     public function handle(TenantIdentified $event)
     {
+        /*
+         * Set the tenant
+         */
         app(Manager::class)->setTenant($event->tenant);
 
+        /*
+         * Create the tenant database connection
+         */
         $this->db->createConnection($event->tenant);
 
+        /*
+         * Set the scout search prefix
+         */
         config()->set('scout.prefix', 'tenant_' . $event->tenant->id . '_');
     }
 }

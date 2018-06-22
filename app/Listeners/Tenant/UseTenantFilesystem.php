@@ -37,13 +37,11 @@ class UseTenantFilesystem
         $this->filesystem->set('tenant', $this->createDriver($config));
     }
 
-    protected function createDriver($config)
-    {
-        $method = $this->getCreationMethod();
-
-        return $this->filesystem->{$method}($config);
-    }
-
+    /**
+     * @param Tenant $tenant
+     *
+     * @return array
+     */
     protected function getFilesystemConfig(Tenant $tenant)
     {
         $config = config('filesystems.disks.' . config('filesystems.default'));
@@ -53,6 +51,21 @@ class UseTenantFilesystem
         return $config;
     }
 
+    /**
+     * @param array $config
+     *
+     * @return mixed
+     */
+    protected function createDriver($config)
+    {
+        $method = $this->getCreationMethod();
+
+        return $this->filesystem->{$method}($config);
+    }
+
+    /**
+     * @return string
+     */
     protected function getCreationMethod()
     {
         return 'create' . ucfirst(config('filesystems.default')) . 'Driver';
