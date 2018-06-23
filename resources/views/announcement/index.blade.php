@@ -13,11 +13,28 @@
                     <div class="card-body">
                         <p>
                             <a href="{{ route('announcements.create') }}">
-                               {{ trans('ui.create_announcement') }}
+                                {{ trans('ui.create_announcement') }}
                             </a>
                         </p>
 
-                        @include('partials.announcement.index')
+                        <h2>Active</h2>
+                        @include('partials.announcement.index', ['announcements' => $active])
+
+                        <h2>Expired</h2>
+                        @include('partials.announcement.index', ['announcements' => $inactive])
+
+                        <h2>Relevant</h2>
+                        @include('partials.announcement.index', ['announcements' => $displayed])
+
+                        <h2>Irrelevant</h2>
+                        @include('partials.announcement.index', ['announcements' => $hidden])
+
+                        <h2>Read</h2>
+                        @include('partials.announcement.index', ['announcements' => $read])
+
+                        <h2>Unread</h2>
+                        @include('partials.announcement.index', ['announcements' => $unread])
+
                     </div>
                 </div>
             </div>

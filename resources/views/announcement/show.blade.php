@@ -24,10 +24,14 @@
                                 {{ trans('ui.delete_announcement') }}
                             </a>
                         </p>
+                        <p>
+                            <a href="{{ route('announcements.mark_as_read', [$announcement->slug]) }}">
+                                {{ trans('ui.mark_as_read') }}
+                            </a>
+                        </p>
 
                         @include('partials.announcement.show')
                     </div>
-
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -40,7 +41,7 @@ class Announcement extends Model
     }
 
     /**
-     * Returns all announcements that are either pinned or are not yet expired
+     * Returns all announcements that are either pinned or have not yet expired
      *
      * @param Builder $query
      *
@@ -55,7 +56,7 @@ class Announcement extends Model
     }
 
     /**
-     * Returns all announcements that are expired
+     * Returns all announcements that are expired and not pinned
      *
      * @param Builder $query
      *
@@ -66,6 +67,83 @@ class Announcement extends Model
         return $query
             ->whereRaw('expired_at < NOW()')
             ->whereNull('pinned_at');
+    }
+
+    /**
+     * All read announcements
+     *
+     * @param Builder $query
+     * @param User    $user
+     *
+     * @return Builder
+     */
+    public function scopeRead(Builder $query, User $user)
+    {
+        return $query->whereIn('id', $user->readAnnouncements()->pluck('id'));
+    }
+
+    /**
+     * Return all unread announcements
+     *
+     * @param Builder $query
+     * @param User    $user
+     *
+     * @return Builder
+     */
+    public function scopeUnread(Builder $query, User $user)
+    {
+        return $query->whereNotIn('id', $user->readAnnouncements()->pluck('id'));
+    }
+
+    /**
+     * Marks an announcement as read
+     *
+     * @param User $user
+     */
+    public function markAsRead(User $user)
+    {
+        if ($this->isRead($this, $user)) {
+            return;
+        }
+
+        $user->readAnnouncements()->save($this);
+    }
+
+    public function isRead(Announcement $announcement, User $user)
+    {
+        return $user->readAnnouncements()
+                ->where('announcement_id', '=', $announcement->id)
+                ->count() == 1;
+    }
+
+    /**
+     * Fetch the active announcements have not been read or that are pinned
+     *
+     * @param User $user
+     *
+     * @return mixed
+     */
+    public static function displayed(User $user)
+    {
+        return Announcement::active()->where(function ($query) use ($user) {
+            return $query->whereNotIn('id', $user->readAnnouncements()->pluck('id'))
+                ->orWhereNotNull('pinned_at');
+        });
+    }
+
+    /**
+     * Retunrs all announcements that have expired or have been read
+     *
+     * @param User $user
+     *
+     * @return mixed
+     */
+    public static function hidden(User $user)
+    {
+        return Announcement::inactive()->orWhere(function ($query) use ($user) {
+            return $query->whereIn('id', $user->readAnnouncements()->pluck('id'))
+                ->whereNull('pinned_at');
+        });
     }
 
     /**
