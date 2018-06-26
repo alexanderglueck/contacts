@@ -201,6 +201,7 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('announcements/create', 'AnnouncementController@create')->name('announcements.create');
     Route::post('announcements', 'AnnouncementController@store')->name('announcements.store');
     Route::get('announcements/{announcement}', 'AnnouncementController@show')->name('announcements.show');
+    Route::get('announcements/{announcement}/read', 'AnnouncementController@markAsRead')->name('announcements.mark_as_read');
     Route::get('announcements/{announcement}/edit', 'AnnouncementController@edit')->name('announcements.edit');
     Route::put('announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
     Route::get('announcements/{announcement}/delete', 'AnnouncementController@delete')->name('announcements.delete');

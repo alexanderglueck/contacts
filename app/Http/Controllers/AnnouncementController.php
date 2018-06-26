@@ -23,8 +23,20 @@ class AnnouncementController extends Controller
         $this->can('view');
 
         return view('announcement.index', [
-            'announcements' => Announcement::paginate(10)
+            'active' => Announcement::active()->paginate(10),
+            'inactive' => Announcement::inactive()->paginate(10),
+            'displayed' => Announcement::displayed(auth()->user())->paginate(10),
+            'hidden' => Announcement::hidden(auth()->user())->paginate(10),
+            'read' => Announcement::read(auth()->user())->paginate(10),
+            'unread' => Announcement::unread(auth()->user())->paginate(10)
         ]);
+    }
+
+    public function markAsRead(Announcement $announcement)
+    {
+        $announcement->markAsRead(auth()->user());
+
+        return redirect()->route('announcements.index');
     }
 
     /**

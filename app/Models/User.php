@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\System\News;
 use Laravel\Cashier\Billable;
 use Laravel\Cashier\Subscription;
+use App\Models\Admin\Announcement;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
@@ -195,6 +197,20 @@ class User extends Authenticatable
             'id',
             'stripe_plan'
         )->orderBy('subscriptions.created_at', 'desc');
+    }
+
+    public function readAnnouncements()
+    {
+        return $this->belongsToMany(
+            Announcement::class
+        );
+    }
+
+    public function readNews()
+    {
+        return $this->belongsToMany(
+            News::class
+        );
     }
 
     public function hasImage()

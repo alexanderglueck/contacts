@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Announcement;
+namespace App\Http\Requests\News;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAnnouncement extends FormRequest
+class EditNews extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class StoreAnnouncement extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create announcements');
+        return $this->user()->admin;
     }
 
     /**

@@ -175,3 +175,23 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
         });
     });
 });
+
+/**
+ * News
+ */
+Route::get('news', 'System\NewsController@index')->name('news.index');
+
+Route::group(['middleware' => 'admin'], function () {
+    Route::get('news/create', 'System\NewsController@create')->name('news.create');
+    Route::post('news', 'System\NewsController@store')->name('news.store');
+    Route::get('news/{news}/edit', 'System\NewsController@edit')->name('news.edit');
+    Route::put('news/{news}', 'System\NewsController@update')->name('news.update');
+    Route::get('news/{news}/delete', 'System\NewsController@delete')->name('news.delete');
+    Route::delete('news/{news}', 'System\NewsController@destroy')->name('news.destroy');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('news/{news}/read', 'System\NewsController@markAsRead')->name('news.mark_as_read');
+});
+
+Route::get('news/{news}', 'System\NewsController@show')->name('news.show');
