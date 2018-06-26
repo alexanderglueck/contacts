@@ -23,7 +23,7 @@ class News extends Announcement implements Readable
     ];
 
     /**
-     * All read announcements
+     * All read news
      *
      * @param Builder $query
      * @param User    $user
@@ -36,7 +36,7 @@ class News extends Announcement implements Readable
     }
 
     /**
-     * Return all unread announcements
+     * Return all unread news
      *
      * @param Builder $query
      * @param User    $user
@@ -49,7 +49,7 @@ class News extends Announcement implements Readable
     }
 
     /**
-     * Marks an announcement as read
+     * Marks an news as read
      *
      * @param User $user
      */
@@ -69,9 +69,8 @@ class News extends Announcement implements Readable
                 ->count() == 1;
     }
 
-
     /**
-     * Fetch the active announcements have not been read or that are pinned
+     * Fetch the active news have not been read or that are pinned
      *
      * @param User $user
      *
@@ -79,14 +78,14 @@ class News extends Announcement implements Readable
      */
     public static function displayed(User $user)
     {
-        return News::active()->where(function ($query) use ($user) {
+        return self::active()->where(function ($query) use ($user) {
             return $query->whereNotIn('id', $user->readNews()->pluck('id'))
                 ->orWhereNotNull('pinned_at');
         });
     }
 
     /**
-     * Returns all announcements that have expired or have been read
+     * Returns all news that have expired or have been read
      *
      * @param User $user
      *
@@ -94,7 +93,7 @@ class News extends Announcement implements Readable
      */
     public static function hidden(User $user)
     {
-        return News::inactive()->orWhere(function ($query) use ($user) {
+        return self::inactive()->orWhere(function ($query) use ($user) {
             return $query->whereIn('id', $user->readNews()->pluck('id'))
                 ->whereNull('pinned_at');
         });

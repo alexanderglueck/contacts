@@ -2,8 +2,6 @@
 
 namespace App\Interfaces;
 
-
 interface Readable
 {
-
 }

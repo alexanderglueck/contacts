@@ -126,7 +126,7 @@ class Announcement extends Model implements Readable
      */
     public static function displayed(User $user)
     {
-        return Announcement::active()->where(function ($query) use ($user) {
+        return self::active()->where(function ($query) use ($user) {
             return $query->whereNotIn('id', $user->readAnnouncements()->pluck('id'))
                 ->orWhereNotNull('pinned_at');
         });
@@ -141,7 +141,7 @@ class Announcement extends Model implements Readable
      */
     public static function hidden(User $user)
     {
-        return Announcement::inactive()->orWhere(function ($query) use ($user) {
+        return self::inactive()->orWhere(function ($query) use ($user) {
             return $query->whereIn('id', $user->readAnnouncements()->pluck('id'))
                 ->whereNull('pinned_at');
         });
