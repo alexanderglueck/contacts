@@ -3,11 +3,12 @@
 namespace App\Models\Admin;
 
 use App\Models\User;
+use App\Interfaces\Readable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class Announcement extends Model
+class Announcement extends Model implements Readable
 {
     use Sluggable;
 
@@ -109,10 +110,10 @@ class Announcement extends Model
         $user->readAnnouncements()->save($this);
     }
 
-    public function isRead(Announcement $announcement, User $user)
+    public function isRead(Readable $readable, User $user)
     {
         return $user->readAnnouncements()
-                ->where('announcement_id', '=', $announcement->id)
+                ->where('announcement_id', '=', $readable->id)
                 ->count() == 1;
     }
 
@@ -132,7 +133,7 @@ class Announcement extends Model
     }
 
     /**
-     * Retunrs all announcements that have expired or have been read
+     * Returns all announcements that have expired or have been read
      *
      * @param User $user
      *

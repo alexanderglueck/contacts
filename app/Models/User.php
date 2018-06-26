@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\System\News;
 use Laravel\Cashier\Billable;
 use Laravel\Cashier\Subscription;
 use App\Models\Admin\Announcement;
@@ -202,6 +203,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Announcement::class
+        );
+    }
+
+    public function readNews()
+    {
+        return $this->belongsToMany(
+            News::class
         );
     }
 

@@ -28,7 +28,10 @@
     <h5 class="my-0 font-weight-normal">{{ config('app.name') }}</h5>
     <nav class="my-2 my-md-0 mr-md-3 mr-md-auto ">
         <a class="p-2 text-dark" href="{{ route('plans.index') }}">
-            Plans
+            {{ trans('ui.plans.title') }}
+        </a>
+        <a class="p-2 text-dark" href="{{ route('news.index') }}">
+            {{ trans('ui.news') }}
         </a>
     </nav>
     <nav class="my-2 my-md-0 mr-md-3">
