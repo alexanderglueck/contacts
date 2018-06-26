@@ -70,6 +70,16 @@ class Announcement extends Model implements Readable
             ->whereNull('pinned_at');
     }
 
+    public function getReadReadables(User $user)
+    {
+        return $user->readAnnouncements();
+    }
+
+    public function getReadablesPivotKey()
+    {
+        return 'announcement_id';
+    }
+
     /**
      * All read announcements
      *
@@ -80,7 +90,7 @@ class Announcement extends Model implements Readable
      */
     public function scopeRead(Builder $query, User $user)
     {
-        return $query->whereIn('id', $user->readAnnouncements()->pluck('id'));
+        return $query->whereIn('id', $this->getReadReadables($user)->pluck('id'));
     }
 
     /**
@@ -93,7 +103,7 @@ class Announcement extends Model implements Readable
      */
     public function scopeUnread(Builder $query, User $user)
     {
-        return $query->whereNotIn('id', $user->readAnnouncements()->pluck('id'));
+        return $query->whereNotIn('id', $this->getReadReadables($user)->pluck('id'));
     }
 
     /**
@@ -107,13 +117,13 @@ class Announcement extends Model implements Readable
             return;
         }
 
-        $user->readAnnouncements()->save($this);
+        $this->getReadReadables($user)->save($this);
     }
 
     public function isRead(Readable $readable, User $user)
     {
-        return $user->readAnnouncements()
-                ->where('announcement_id', '=', $readable->id)
+        return $this->getReadReadables($user)
+                ->where($this->getReadablesPivotKey(), '=', $readable->id)
                 ->count() == 1;
     }
 
@@ -127,7 +137,7 @@ class Announcement extends Model implements Readable
     public static function displayed(User $user)
     {
         return self::active()->where(function ($query) use ($user) {
-            return $query->whereNotIn('id', $user->readAnnouncements()->pluck('id'))
+            return $query->whereNotIn('id', (new static)->getReadReadables($user)->pluck('id'))
                 ->orWhereNotNull('pinned_at');
         });
     }
@@ -142,7 +152,7 @@ class Announcement extends Model implements Readable
     public static function hidden(User $user)
     {
         return self::inactive()->orWhere(function ($query) use ($user) {
-            return $query->whereIn('id', $user->readAnnouncements()->pluck('id'))
+            return $query->whereIn('id', (new static)->getReadReadables($user)->pluck('id'))
                 ->whereNull('pinned_at');
         });
     }
