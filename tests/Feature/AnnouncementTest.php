@@ -132,10 +132,13 @@ class AnnouncementTest extends TestCase
         unset($differentAnnouncement['updated_by']);
 
         $response = $this->actingAs($user)
-            ->put(route('announcements.update', [$announcement->slug]),
-                array_merge($parameters,
+            ->put(
+                route('announcements.update', [$announcement->slug]),
+                array_merge(
+                    $parameters,
                     ['_token' => csrf_token()]
-                ));
+                )
+            );
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');

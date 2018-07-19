@@ -26,9 +26,9 @@ class CreateCommentsTable extends Migration
             $table->foreign('created_by')
                 ->references('id')
                 ->on(
-                env('DB_DATABASE') . '.' .
-                'users'
-            )
+                    env('DB_DATABASE') . '.' .
+                    'users'
+                )
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 

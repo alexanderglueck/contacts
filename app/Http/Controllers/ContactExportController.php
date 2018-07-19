@@ -81,7 +81,7 @@ class ContactExportController extends Controller
              $vcard->addURL($url->url, $url->name);
          }
 
-         return Response::make($vcard->getOutput(), 200, $vcard->getHeaders(true)); */
+         return response($vcard->getOutput(), 200, $vcard->getHeaders(true)); */
 
         /**
          * Excel

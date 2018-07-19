@@ -8,7 +8,7 @@ class Navigation
 {
     public static function isActiveRoute($routes, $output = 'active', $data = [])
     {
-        if ( ! is_array($routes)) {
+        if (! is_array($routes)) {
             $routes = [$routes];
         }
 

@@ -24,7 +24,7 @@ class SetTenant
          */
         $tenant = $this->resolveTenant(session('tenant'));
 
-        if ( ! $tenant) {
+        if (! $tenant) {
             /*
              * If no matching tenant could be found redirect to the select tenant
              * page
@@ -32,7 +32,7 @@ class SetTenant
             return redirect()->route('tenant.index');
         }
 
-        if ( ! auth()->user()->teams->contains('id', $tenant->id)) {
+        if (! auth()->user()->teams->contains('id', $tenant->id)) {
             /*
              * The users team was deleted or the user was kicked out
              * of the team. Redirect to the select tenant page
@@ -40,7 +40,7 @@ class SetTenant
             return redirect()->route('tenant.index');
         }
 
-        if ( ! auth()->user()->currentTeam) {
+        if (! auth()->user()->currentTeam) {
             /*
              * The user does not have a team assigned. Redirect to select tenant
              * page to prevent issues on other pages
