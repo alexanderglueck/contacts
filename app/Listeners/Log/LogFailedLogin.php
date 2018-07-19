@@ -17,7 +17,7 @@ class LogFailedLogin
      */
     public function handle(Failed $event)
     {
-        if ( ! isset($event->user->id)) {
+        if (! isset($event->user->id)) {
             return;
         }
 

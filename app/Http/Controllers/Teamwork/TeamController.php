@@ -118,7 +118,7 @@ class TeamController extends Controller
 
         $team = Team::findOrFail($id);
 
-        if ( ! auth()->user()->isOwnerOfTeam($team)) {
+        if (! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 
@@ -160,7 +160,7 @@ class TeamController extends Controller
         }
 
         $team = Team::findOrFail($id);
-        if ( ! auth()->user()->isOwnerOfTeam($team)) {
+        if (! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 

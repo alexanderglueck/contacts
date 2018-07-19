@@ -66,7 +66,7 @@ class AnnouncementController extends Controller
         $announcement->fill($request->all());
         $announcement->user_id = Auth::id();
 
-        if ( ! $announcement->save()) {
+        if (! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));
 
             return redirect()->route('announcements.create');
@@ -122,7 +122,7 @@ class AnnouncementController extends Controller
     {
         $announcement->fill($request->all());
 
-        if ( ! $announcement->save()) {
+        if (! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_updated'));
 
             return redirect()->route('announcements.edit', [$announcement->slug]);
@@ -144,7 +144,7 @@ class AnnouncementController extends Controller
      */
     public function destroy(DeleteAnnouncement $request, Announcement $announcement)
     {
-        if ( ! $announcement->delete()) {
+        if (! $announcement->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
 
             return redirect()->route('announcements.delete', [$announcement->slug]);

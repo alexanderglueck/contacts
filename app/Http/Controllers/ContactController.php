@@ -84,7 +84,7 @@ class ContactController extends Controller
         $contact->updated_by = Auth::id();
 
         if ($contact->save()) {
-            if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
+            if (! is_null($request->contact_groups) && is_array($request->contact_groups)) {
                 $contact->contactGroups()->sync($request->contact_groups);
             } else {
                 $contact->contactGroups()->sync([]);
@@ -158,7 +158,7 @@ class ContactController extends Controller
         $contact->fill($request->all());
         $contact->updated_by = Auth::id();
 
-        if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
+        if (! is_null($request->contact_groups) && is_array($request->contact_groups)) {
             $contact->contactGroups()->sync($request->contact_groups);
         } else {
             $contact->contactGroups()->sync([]);

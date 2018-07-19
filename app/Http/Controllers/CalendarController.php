@@ -123,7 +123,7 @@ class CalendarController extends Controller
         $dateTime = \DateTime::createFromFormat('Y-m-d', $tempEvent['start']);
 
         if ($dateTime->format('md') == '0301' && $dateTime->format('Y-m-d') != $tempEvent['start']) {
-            if ( ! $this->validateDate($tempEvent['start'], 'Y-m-d')) {
+            if (! $this->validateDate($tempEvent['start'], 'Y-m-d')) {
                 $dateTime->sub(new \DateInterval('P1D'));
                 $tempEvent['start'] = $dateTime->format('Y-m-d');
             }

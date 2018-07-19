@@ -94,7 +94,7 @@ class Install extends Command
 
     private function createEnvFile()
     {
-        if ( ! file_exists('.env')) {
+        if (! file_exists('.env')) {
             copy('.env.example', '.env');
             $this->line('.env file successfully created');
         }

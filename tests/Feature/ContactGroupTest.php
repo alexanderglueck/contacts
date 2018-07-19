@@ -122,10 +122,13 @@ class ContactGroupTest extends TestCase
         unset($contactGroup->updated_by);
 
         $response = $this
-            ->put(route('contact_groups.update', [$contactGroup->slug]),
-                array_merge($contactGroup2->toArray(),
+            ->put(
+                route('contact_groups.update', [$contactGroup->slug]),
+                array_merge(
+                    $contactGroup2->toArray(),
                     ['_token' => csrf_token()]
-                ));
+                )
+            );
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');

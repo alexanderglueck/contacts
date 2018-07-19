@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function acceptInvite($token)
     {
         $invite = Teamwork::getInviteFromAcceptToken($token);
-        if ( ! $invite) {
+        if (! $invite) {
             abort(404);
         }
 
