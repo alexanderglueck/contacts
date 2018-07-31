@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Permission;
 
@@ -33,15 +32,17 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $this->can('create');
 
         return view('role.create', [
             'permissions' => Permission::all(),
-            'users' => Auth::user()->currentTeam->users,
+            'users' => $request->user()->currentTeam->users,
             'role' => new Role
         ]);
     }
@@ -61,7 +62,7 @@ class RoleController extends Controller
 
         $role = new Role();
         $role->fill($request->except(['permissions', 'users']));
-        $role->team_id = Auth::user()->currentTeam->id;
+        $role->team_id = $request->user()->currentTeam->id;
 
         if ($role->save()) {
             $role->syncPermissions($request->permissions);
@@ -97,18 +98,19 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request           $request
      * @param  \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Role $role)
+    public function edit(Request $request, Role $role)
     {
         $this->can('edit');
 
         return view('role.edit', [
             'role' => $role,
             'createButtonText' => trans('ui.edit_role'),
-            'users' => Auth::user()->currentTeam->users,
+            'users' => $request->user()->currentTeam->users,
             'permissions' => Permission::all()
         ]);
     }
