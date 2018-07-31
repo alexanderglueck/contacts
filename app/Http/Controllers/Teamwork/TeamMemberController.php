@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teamwork;
 
+use App\Mail\TeamInvitation;
 use Illuminate\Http\Request;
 use Mpociot\Teamwork\TeamInvite;
 use App\Http\Controllers\Controller;
@@ -89,9 +90,7 @@ class TeamMemberController extends Controller
 
         if ( ! Teamwork::hasPendingInvite($request->email, $team)) {
             Teamwork::inviteToTeam($request->email, $team, function ($invite) {
-                Mail::send('teamwork.emails.invite', ['team' => $invite->team, 'invite' => $invite], function ($m) use ($invite) {
-                    $m->to($invite->email)->subject('Invitation to join team ' . $invite->team->name);
-                });
+                Mail::to($invite->email)->send(new TeamInvitation($invite));
                 // Send email to user
             });
         } else {
