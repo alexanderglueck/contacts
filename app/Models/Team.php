@@ -41,6 +41,6 @@ class Team extends Model implements Tenant
 
     public function invites()
     {
-        return $this->hasMany(Config::get('teamwork.invite_model'), 'team_id', 'id');
+        return $this->hasMany(config('teamwork.invite_model'), 'team_id', 'id');
     }
 }
