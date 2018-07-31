@@ -24,12 +24,10 @@ class TwoFactorController extends Controller
     public function edit(Request $request, Google2FA $google2fa)
     {
         // Check if 2FA is already enabled
-        if ( ! $request->user()->hasTwoFactorAuthentication()) {
-
+        if (! $request->user()->hasTwoFactorAuthentication()) {
             // Check if the user got redirected back from the enable route
             // (google2fa_secret session key available)
             if ($request->session()->has('google2fa_secret')) {
-
                 // Generate a new QR code URL with the secret from the session
                 $google2fa_url = $google2fa->getQRCodeGoogleUrl(
                     config('app.name'),
@@ -60,7 +58,7 @@ class TwoFactorController extends Controller
     {
         // disable 2fa
         $request->user()->google2fa_secret = null;
-        if ( ! $request->user()->save()) {
+        if (! $request->user()->save()) {
             // save failed, show error, keep codes
 
             return redirect()->route('user_settings.two_factor.edit');
@@ -106,10 +104,9 @@ class TwoFactorController extends Controller
 
         // validate if the entered key is correct
         if ($google2fa->verifyKey($userSecret, $secret)) {
-
             // user aktiviert 2 fa
             $request->user()->google2fa_secret = $userSecret;
-            if ( ! $request->user()->save()) {
+            if (! $request->user()->save()) {
                 // failed to save the secret
                 // show the image again
 
@@ -122,7 +119,7 @@ class TwoFactorController extends Controller
 
             // 10 backup codes werden generiert
             for ($i = 0; $i < 10; $i++) {
-                if ( ! $request->user()->backupCodes()->create([
+                if (! $request->user()->backupCodes()->create([
                     'value' => random_int(100000, 999999)
                 ])
                 ) {

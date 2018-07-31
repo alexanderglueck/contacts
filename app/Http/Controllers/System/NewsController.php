@@ -65,7 +65,7 @@ class NewsController extends Controller
         $announcement = new News();
         $announcement->fill($request->all());
 
-        if ( ! $announcement->save()) {
+        if (! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));
 
             return redirect()->route('news.create');
@@ -117,7 +117,7 @@ class NewsController extends Controller
     {
         $news->fill($request->all());
 
-        if ( ! $news->save()) {
+        if (! $news->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_updated'));
 
             return redirect()->route('news.edit', [$news->slug]);
@@ -139,7 +139,7 @@ class NewsController extends Controller
      */
     public function destroy(DeleteNews $request, News $news)
     {
-        if ( ! $news->delete()) {
+        if (! $news->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
 
             return redirect()->route('news.delete', [$news->slug]);

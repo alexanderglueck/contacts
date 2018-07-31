@@ -43,7 +43,7 @@ class SendWeeklyEmail extends Command
     public function handle()
     {
         foreach (User::all() as $user) {
-            if ( ! $user->notificationSettings()->send_weekly) {
+            if (! $user->notificationSettings()->send_weekly) {
                 continue;
             }
 

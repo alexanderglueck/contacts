@@ -149,7 +149,7 @@ class ContactDateController extends Controller
             $this->validationRules['date'] .= 'Y';
         }
 
-        if ( ! isset($request->skip_year)) {
+        if (! isset($request->skip_year)) {
             $request->skip_year = 0;
         }
 

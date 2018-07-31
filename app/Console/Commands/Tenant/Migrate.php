@@ -49,7 +49,7 @@ class Migrate extends MigrateCommand
      */
     public function handle()
     {
-        if ( ! $this->confirmToProceed()) {
+        if (! $this->confirmToProceed()) {
             return;
         }
 
