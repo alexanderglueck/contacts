@@ -116,9 +116,7 @@ class TeamMemberController extends Controller
         }
 
         $invite = TeamInvite::findOrFail($invite_id);
-        Mail::send('teamwork.emails.invite', ['team' => $invite->team, 'invite' => $invite], function ($m) use ($invite) {
-            $m->to($invite->email)->subject('Invitation to join team ' . $invite->team->name);
-        });
+        Mail::to($invite->email)->send(new TeamInvitation($invite));
 
         return redirect(route('teams.members.show', $invite->team));
     }

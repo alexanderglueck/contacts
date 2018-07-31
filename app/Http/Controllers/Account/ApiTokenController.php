@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Account;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class ApiTokenController extends Controller
 {
-    public function show()
+    public function show(Request $request)
     {
         return view('user_settings.api_token.show', [
-            'user' => Auth::user()
+            'user' => $request->user()
         ]);
     }
 
-    public function update()
+    public function update(Request $request)
     {
-        Auth::user()->api_token = str_random(60);
-        Auth::user()->save();
+        $request->user()->api_token = str_random(60);
+        $request->user()->save();
 
         return redirect()->route('user_settings.api_token.show');
     }
