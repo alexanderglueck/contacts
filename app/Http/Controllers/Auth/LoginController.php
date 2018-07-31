@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use App\Events\TwoFactor\TwoFactorFailure;
 use App\Events\TwoFactor\TwoFactorSuccess;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -102,7 +101,7 @@ class LoginController extends Controller
             'token' => 'required|digits:6',
         ]);
 
-        $secret = Input::get('token');
+        $secret = $request->post('token');
 
         $user = User::find($request->session()->get('token-user-id'));
 
