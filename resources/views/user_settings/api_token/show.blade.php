@@ -9,9 +9,8 @@
 
             <form class="form-horizontal" role="form" method="POST"
                   action="{{ route('user_settings.api_token.update', [$user->slug]) }}">
-                <input type="hidden" name="_method" value="PUT">
+                @method('PUT')
                 @csrf
-
 
                 <div class="form-group{{ $errors->has('api_token') ? ' has-error' : '' }}">
                     <label for="api_token"

@@ -1,5 +1,5 @@
 <form class="form-horizontal" role="form" method="POST" action="{{ route('contact_dates.destroy', [$contact->slug, $contactDate->slug]) }}">
-    <input type="hidden" name="_method" value="DELETE">
+    @method('DELETE')
     @csrf
 
     <div class="form-group">

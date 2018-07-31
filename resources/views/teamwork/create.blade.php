@@ -8,7 +8,7 @@
                     <div class="panel-heading">Create a new team</div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="post" action="{{route('teams.store')}}">
-                            {!! csrf_field() !!}
+                            @csrf
 
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label class="col-md-4 control-label">Name</label>

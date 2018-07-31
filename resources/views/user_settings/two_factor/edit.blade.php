@@ -17,7 +17,7 @@
 
             <form method="post" action="{{ route('user_settings.two_factor.destroy') }}">
                 @csrf
-                <input type="hidden" name="_method" value="DELETE">
+                @method('DELETE')
 
                 <input type="submit" value="deactivate"/>
 

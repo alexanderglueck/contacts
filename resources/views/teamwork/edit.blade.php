@@ -8,8 +8,8 @@
                     <div class="panel-heading">Edit team {{$team->name}}</div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="post" action="{{route('teams.update', $team)}}">
-                            <input type="hidden" name="_method" value="PUT" />
-                            {!! csrf_field() !!}
+                            @method('PUT')
+                            @csrf
 
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label class="col-md-4 control-label">Name</label>

@@ -29,8 +29,8 @@
                                         @if(auth()->user()->isOwnerOfTeam($team))
                                             @if(auth()->user()->getKey() !== $user->getKey())
                                                 <form style="display: inline-block;" action="{{route('teams.members.destroy', [$team, $user->id])}}" method="post">
-                                                    {!! csrf_field() !!}
-                                                    <input type="hidden" name="_method" value="DELETE"/>
+                                                    @csrf
+                                                    @method('DELETE')
                                                     <button class="btn btn-danger btn-sm">
                                                         <i class="fa fa-trash-o"></i>
                                                         Delete
@@ -91,7 +91,7 @@
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="post" action="{{route('teams.members.invite', $team)}}">
-                            {!! csrf_field() !!}
+                            @csrf
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                                 <label class="col-md-4 control-label">
                                     E-Mail Address

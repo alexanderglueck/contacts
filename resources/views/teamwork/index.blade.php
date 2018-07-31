@@ -53,8 +53,8 @@
                                                 </a>
 
                                                 <form style="display: inline-block;" action="{{route('teams.destroy', $team)}}" method="post">
-                                                    {!! csrf_field() !!}
-                                                    <input type="hidden" name="_method" value="DELETE" />
+                                                    @csrf
+                                                    @method('DELETE')
                                                     <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> Delete</button>
                                                 </form>
                                             @endif
