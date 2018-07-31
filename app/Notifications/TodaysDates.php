@@ -43,7 +43,7 @@ class TodaysDates extends Notification
         $events = ContactDate::datesOnDate(new \DateTime());
 
         $mailMessage = (new MailMessage)
-            ->from('service@gdev.at', env('app.name'))
+            ->from('service@gdev.at', config('app.name'))
             ->subject('Heutige Ereignisse');
 
         if (count($events) > 0) {

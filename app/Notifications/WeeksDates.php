@@ -52,7 +52,7 @@ class WeeksDates extends Notification
         $oneDay = DateInterval::createFromDateString('1 day');
 
         $mailMessage = (new MailMessage)
-            ->from('service@gdev.at', env('app.name'))
+            ->from('service@gdev.at', config('app.name'))
             ->subject('Bevorstehende Ereignisse');
 
         // events this week
