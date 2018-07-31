@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Models\ContactNumber;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ContactNumberController extends Controller
 {

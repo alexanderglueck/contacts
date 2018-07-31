@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
-use Validator;
 use App\Models\ContactGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class ContactGroupController extends Controller
 {
@@ -26,7 +26,7 @@ class ContactGroupController extends Controller
         $this->can('view');
 
         return view('contact_group.index', [
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->paginate(10)
+            'contactGroups' => ContactGroup::sorted()->paginate(10)
         ]);
     }
 
@@ -40,7 +40,7 @@ class ContactGroupController extends Controller
         $this->can('create');
 
         return view('contact_group.create', [
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
+            'contactGroups' => ContactGroup::sorted()->get(),
             'contactGroup' => new ContactGroup()
         ]);
     }

@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\Models\Gender;
 use App\Models\Contact;
 use App\Models\Country;
 use App\Models\ContactUrl;
 use App\Models\ContactDate;
 use App\Models\ContactEmail;
+use App\Models\ContactGroup;
 use Illuminate\Http\Request;
 use App\Models\ContactNumber;
 use App\Models\ContactAddress;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 
@@ -31,7 +32,7 @@ class ContactImportController extends Controller
         $this->can('create');
 
         return view('contact_import.index', [
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get()
+            'contactGroups' => ContactGroup::sorted()->get()
         ]);
     }
 
@@ -66,8 +67,8 @@ class ContactImportController extends Controller
 
                                 $import->gender_id = Gender::where('gender', '=', $row->gender)->first()->id;
 
-                                $import->created_by = Auth::user()->id;
-                                $import->updated_by = Auth::user()->id;
+                                $import->created_by = Auth::id();
+                                $import->updated_by = Auth::id();
 
                                 if ($import->save()) {
                                     // saved
@@ -106,8 +107,8 @@ class ContactImportController extends Controller
                                     $import->country_id = Country::where('country', '=', $row->country)->first()->id;
                                 }
 
-                                $import->created_by = Auth::user()->id;
-                                $import->updated_by = Auth::user()->id;
+                                $import->created_by = Auth::id();
+                                $import->updated_by = Auth::id();
                                 $import->contact_id = $this->contactMatching[$row->contact_id];
 
                                 if ($import->save()) {

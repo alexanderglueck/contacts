@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use App\Events\TwoFactor\TwoFactorFailure;
 use App\Events\TwoFactor\TwoFactorSuccess;
@@ -119,7 +119,7 @@ class LoginController extends Controller
 
             $request->session()->remove('token-user-id');
 
-            event(new TwoFactorSuccess(Auth::user()));
+            event(new TwoFactorSuccess($request->user()));
 
             return redirect()->route('home');
         }
@@ -136,7 +136,7 @@ class LoginController extends Controller
 
             $request->session()->remove('token-user-id');
 
-            event(new TwoFactorSuccess(Auth::user()));
+            event(new TwoFactorSuccess($request->user()));
 
             return redirect()->route('home');
         }

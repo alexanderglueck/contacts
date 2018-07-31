@@ -2,9 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Route;
 use Closure;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class VerifyCorrectContact
 {
@@ -12,7 +11,8 @@ class VerifyCorrectContact
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)

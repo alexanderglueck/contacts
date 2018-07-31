@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Models\Comment;
 use App\Models\Contact;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Comment\StoreComment;
 use App\Http\Requests\Comment\DeleteComment;

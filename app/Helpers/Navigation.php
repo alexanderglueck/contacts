@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use Route;
+use Illuminate\Support\Facades\Route;
 
 class Navigation
 {

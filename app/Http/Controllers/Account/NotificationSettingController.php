@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Account;
 
-use Auth;
 use Illuminate\Http\Request;
 use App\Models\NotificationSetting;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationSettingController extends Controller
 {
-    public function show()
+    public function show(Request $request)
     {
         return view('user_settings.notifications.edit', [
-            'user' => Auth::user(),
-            'settings' => Auth::user()->notificationSettings()
+            'user' => $request->user(),
+            'settings' => $request->user()->notificationSettings()
         ]);
     }
 

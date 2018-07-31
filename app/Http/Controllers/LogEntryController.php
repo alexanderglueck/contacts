@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use Illuminate\Http\Request;
 
 class LogEntryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return view('log_entry.index', [
-            'logs' => Auth::user()->logs()->paginate(50)
+            'logs' => $request->user()->logs()->paginate(50)
         ]);
     }
 }

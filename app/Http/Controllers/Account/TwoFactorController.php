@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Account;
 
-use Auth;
-use Session;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class TwoFactorController extends Controller
 {
@@ -17,12 +16,15 @@ class TwoFactorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request   $request
+     * @param Google2FA $google2fa
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Google2FA $google2fa)
     {
         // Check if 2FA is already enabled
-        if ( ! Auth::user()->hasTwoFactorAuthentication()) {
+        if ( ! $request->user()->hasTwoFactorAuthentication()) {
 
             // Check if the user got redirected back from the enable route
             // (google2fa_secret session key available)
@@ -31,7 +33,7 @@ class TwoFactorController extends Controller
                 // Generate a new QR code URL with the secret from the session
                 $google2fa_url = $google2fa->getQRCodeGoogleUrl(
                     config('app.name'),
-                    Auth::user()->email,
+                    $request->user()->email,
                     $request->session()->get('google2fa_secret')
                 );
 
@@ -49,23 +51,23 @@ class TwoFactorController extends Controller
         // The user already has 2fa enabled.
         // show backup codes and the disable button
         return view('user_settings.two_factor.edit', [
-            'user' => Auth::user(),
-            'backupCodes' => Auth::user()->backupCodes
+            'user' => $request->user(),
+            'backupCodes' => $request->user()->backupCodes
         ]);
     }
 
-    public function disable()
+    public function disable(Request $request)
     {
         // disable 2fa
-        Auth::user()->google2fa_secret = null;
-        if ( ! Auth::user()->save()) {
+        $request->user()->google2fa_secret = null;
+        if ( ! $request->user()->save()) {
             // save failed, show error, keep codes
 
             return redirect()->route('user_settings.two_factor.edit');
         }
 
         // delete backup codes
-        Auth::user()->backupCodes()->delete();
+        $request->user()->backupCodes()->delete();
 
         return redirect()->route('user_settings.two_factor.edit');
     }
@@ -106,8 +108,8 @@ class TwoFactorController extends Controller
         if ($google2fa->verifyKey($userSecret, $secret)) {
 
             // user aktiviert 2 fa
-            Auth::user()->google2fa_secret = $userSecret;
-            if ( ! Auth::user()->save()) {
+            $request->user()->google2fa_secret = $userSecret;
+            if ( ! $request->user()->save()) {
                 // failed to save the secret
                 // show the image again
 
@@ -120,7 +122,7 @@ class TwoFactorController extends Controller
 
             // 10 backup codes werden generiert
             for ($i = 0; $i < 10; $i++) {
-                if ( ! Auth::user()->backupCodes()->create([
+                if ( ! $request->user()->backupCodes()->create([
                     'value' => random_int(100000, 999999)
                 ])
                 ) {

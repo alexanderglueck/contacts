@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\Models\Gender;
 use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Country;
+use App\Models\ContactGroup;
 use Illuminate\Http\Request;
 use App\Rules\ValidIBANFormat;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Session;
 
 class ContactController extends Controller
 {
@@ -58,7 +59,7 @@ class ContactController extends Controller
         return view('contact.create', [
             'contact' => new Contact,
             'genders' => Gender::all(),
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
+            'contactGroups' => ContactGroup::sorted()->get(),
             'countries' => Country::all()
         ]);
     }
@@ -134,7 +135,7 @@ class ContactController extends Controller
             'createButtonText' => 'Kontakt bearbeiten',
             'contact' => $contact,
             'genders' => Gender::all(),
-            'contactGroups' => Auth::user()->contactGroups()->sorted()->get(),
+            'contactGroups' => ContactGroup::sorted()->get(),
             'countries' => Country::all()
         ]);
     }

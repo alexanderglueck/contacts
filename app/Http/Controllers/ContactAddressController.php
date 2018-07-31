@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\Models\Contact;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Models\ContactAddress;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ContactAddressController extends Controller
 {
