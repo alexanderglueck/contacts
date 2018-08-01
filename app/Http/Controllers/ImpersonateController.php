@@ -4,19 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\Impersonate\ImpersonateStoreRequest;
 
 class ImpersonateController extends Controller
 {
     protected $accessEntity = 'users';
 
-    public function store(Request $request)
+    public function store(ImpersonateStoreRequest $request)
     {
-        $this->can('impersonate');
-
-        $this->validate($request, [
-            'userId' => 'required|exists:system.users,id'
-        ]);
-
         abort_unless(auth()->user()->currentTeam->hasUser(
             User::find($request->userId)
         ), 403, 'Stop right there, criminal scum!');

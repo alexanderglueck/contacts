@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactUrl;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactUrl\ContactUrlStoreRequest;
+use App\Http\Requests\ContactUrl\ContactUrlUpdateRequest;
 
 class ContactUrlController extends Controller
 {
     protected $accessEntity = 'urls';
-
-    private $validationRules = [
-        'name' => 'required',
-        'url' => 'required|url'
-    ];
 
     /**
      * Display a listing of the resource.
@@ -54,17 +50,13 @@ class ContactUrlController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactUrlStoreRequest $request
+     * @param  \App\Models\Contact   $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactUrlStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $contactUrl = new ContactUrl();
         $contactUrl->fill($request->all());
         $contactUrl->contact_id = $contact->id;
@@ -122,18 +114,14 @@ class ContactUrlController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactUrl   $contactUrl
+     * @param ContactUrlUpdateRequest $request
+     * @param  \App\Models\Contact    $contact
+     * @param  \App\Models\ContactUrl $contactUrl
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactUrl $contactUrl)
+    public function update(ContactUrlUpdateRequest $request, Contact $contact, ContactUrl $contactUrl)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $contactUrl->fill($request->all());
         $contactUrl->updated_by = Auth::id();
 

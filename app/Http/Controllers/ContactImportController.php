@@ -9,7 +9,6 @@ use App\Models\ContactUrl;
 use App\Models\ContactDate;
 use App\Models\ContactEmail;
 use App\Models\ContactGroup;
-use Illuminate\Http\Request;
 use App\Models\ContactNumber;
 use App\Models\ContactAddress;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use App\Http\Requests\ContactImport\ContactImportImportRequest;
 
 class ContactImportController extends Controller
 {
@@ -39,17 +39,12 @@ class ContactImportController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param ContactImportImportRequest $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function import(Request $request)
+    public function import(ContactImportImportRequest $request)
     {
-        $this->can('create');
-
-        $this->validate($request, [
-            'contact_group_id' => 'required|integer|exists:tenant.contact_groups,id',
-            'import_file' => 'required|file|mimes:xlsx'
-        ]);
-
         if ($request->hasFile('import_file') && $request->file('import_file')->isValid()) {
             $fileNameOriginal = $request->file('import_file')->storePublicly('import');
 

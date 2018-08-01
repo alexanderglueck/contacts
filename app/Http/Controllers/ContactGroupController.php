@@ -3,18 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactGroup;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ContactGroup\ContactGroupStoreRequest;
+use App\Http\Requests\ContactGroup\ContactGroupUpdateRequest;
 
 class ContactGroupController extends Controller
 {
     protected $accessEntity = 'contactGroups';
-
-    private $validationRules = [
-        'name' => 'required',
-    ];
 
     /**
      * Display a listing of the resource.
@@ -48,22 +44,12 @@ class ContactGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ContactGroupStoreRequest $request
      *
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(ContactGroupStoreRequest $request)
     {
-        $this->can('create');
-
-        $validator = Validator::make($request->all(), $this->validationRules);
-        $validator->sometimes('parent_id', 'exists:tenant.contact_groups,id', function ($input) {
-            return strlen($input->parent_id) > 0;
-        });
-
-        $validator->validate();
-
         $contactGroup = new ContactGroup();
         $contactGroup->fill($request->all());
         $contactGroup->created_by = Auth::id();
@@ -118,23 +104,13 @@ class ContactGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ContactGroupUpdateRequest $request
      * @param  \App\Models\ContactGroup $contactGroup
      *
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, ContactGroup $contactGroup)
+    public function update(ContactGroupUpdateRequest $request, ContactGroup $contactGroup)
     {
-        $this->can('edit');
-
-        $validator = Validator::make($request->all(), $this->validationRules);
-        $validator->sometimes('parent_id', 'exists:tenant.contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
-            return strlen($input->parent_id) > 0;
-        });
-
-        $validator->validate();
-
         $contactGroup->fill($request->all());
         $contactGroup->updated_by = Auth::id();
 

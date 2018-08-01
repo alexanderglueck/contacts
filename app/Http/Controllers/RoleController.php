@@ -6,13 +6,11 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Permission;
+use App\Http\Requests\Role\RoleStoreRequest;
+use App\Http\Requests\Role\RoleUpdateRequest;
 
 class RoleController extends Controller
 {
-    private $validationRules = [
-        'name' => 'required',
-    ];
-
     protected $accessEntity = 'roles';
 
     /**
@@ -50,16 +48,12 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param RoleStoreRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoleStoreRequest $request)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $role = new Role();
         $role->fill($request->except(['permissions', 'users']));
         $role->team_id = $request->user()->currentTeam->id;
@@ -118,17 +112,13 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Role         $role
+     * @param RoleUpdateRequest $request
+     * @param  \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(RoleUpdateRequest $request, Role $role)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $role->fill($request->except(['users', 'permissions']));
 
         $role->syncPermissions($request->permissions);

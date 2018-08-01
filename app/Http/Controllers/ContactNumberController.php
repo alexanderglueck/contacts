@@ -3,19 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
-use Illuminate\Http\Request;
 use App\Models\ContactNumber;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactNumber\ContactNumberStoreRequest;
+use App\Http\Requests\ContactNumber\ContactNumberUpdateRequest;
 
 class ContactNumberController extends Controller
 {
     protected $accessEntity = 'numbers';
-
-    private $validationRules = [
-        'name' => 'required',
-        'number' => 'required|regex:/^[0-9\s \-()+]*$/'
-    ];
 
     /**
      * Display a listing of the resource.
@@ -54,17 +50,13 @@ class ContactNumberController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ContactNumberStoreRequest $request
      * @param  \App\Models\Contact      $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactNumberStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $contactNumber = new ContactNumber();
         $contactNumber->fill($request->all());
         $contactNumber->contact_id = $contact->id;
@@ -122,18 +114,14 @@ class ContactNumberController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param ContactNumberUpdateRequest $request
      * @param  \App\Models\Contact       $contact
      * @param  \App\Models\ContactNumber $contactNumber
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactNumber $contactNumber)
+    public function update(ContactNumberUpdateRequest $request, Contact $contact, ContactNumber $contactNumber)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $contactNumber->fill($request->all());
         $contactNumber->updated_by = Auth::id();
 

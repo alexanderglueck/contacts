@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactEmail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactEmail\ContactEmailStoreRequest;
+use App\Http\Requests\ContactEmail\ContactEmailUpdateRequest;
 
 class ContactEmailController extends Controller
 {
     protected $accessEntity = 'emails';
-
-    private $validationRules = [
-        'name' => 'required',
-        'email' => 'required|email'
-    ];
 
     /**
      * Display a listing of the resource.
@@ -54,17 +50,13 @@ class ContactEmailController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactEmailStoreRequest $request
+     * @param  \App\Models\Contact     $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactEmailStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $contactEmail = new ContactEmail();
         $contactEmail->fill($request->all());
         $contactEmail->contact_id = $contact->id;
@@ -122,18 +114,14 @@ class ContactEmailController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ContactEmailUpdateRequest $request
      * @param  \App\Models\Contact      $contact
      * @param  \App\Models\ContactEmail $contactEmail
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactEmail $contactEmail)
+    public function update(ContactEmailUpdateRequest $request, Contact $contact, ContactEmail $contactEmail)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $contactEmail->fill($request->all());
         $contactEmail->updated_by = Auth::id();
 

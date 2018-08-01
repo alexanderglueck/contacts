@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ContactAddress;
+use App\Http\Requests\Map\MapContactsRequest;
 
 class MapController extends Controller
 {
@@ -21,21 +21,16 @@ class MapController extends Controller
         return view('map.index', []);
     }
 
-    public function contacts(Request $request)
+    public function contacts(MapContactsRequest $request)
     {
-        $this->can('view');
-
-        $this->validate($request, [
-            'bounds' => 'required|string'
-        ]);
-
         $rawBounds = explode(',', $request->bounds);
 
-        $bounds = [];
-        $bounds['sw_lat'] = $rawBounds[0];
-        $bounds['sw_lng'] = $rawBounds[1];
-        $bounds['ne_lat'] = $rawBounds[2];
-        $bounds['ne_lng'] = $rawBounds[3];
+        $bounds = [
+            'sw_lat' => $rawBounds[0],
+            'sw_lng' => $rawBounds[1],
+            'ne_lat' => $rawBounds[2],
+            'ne_lng' => $rawBounds[3],
+        ];
 
         $contactAddresses = ContactAddress::whereNotNull('latitude')
             ->whereNotNull('longitude')

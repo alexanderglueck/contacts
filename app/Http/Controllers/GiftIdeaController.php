@@ -4,20 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\GiftIdea;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\GiftIdea\GiftIdeaStoreRequest;
+use App\Http\Requests\GiftIdea\GiftIdeaUpdateRequest;
 
 class GiftIdeaController extends Controller
 {
     protected $accessEntity = 'giftIdeas';
-
-    private $validationRules = [
-        'name' => 'required',
-        'due_at' => 'nullable|sometimes|date_format:d.m.Y',
-        'description' => 'nullable',
-        'url' => 'nullable|sometimes|url',
-    ];
 
     /**
      * Display a listing of the resource.
@@ -56,17 +50,13 @@ class GiftIdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param Contact                   $contact
+     * @param GiftIdeaStoreRequest $request
+     * @param Contact              $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(GiftIdeaStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $giftIdea = new GiftIdea();
         $giftIdea->fill($request->all());
         $giftIdea->contact_id = $contact->id;
@@ -124,17 +114,14 @@ class GiftIdeaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param Contact                   $contact
-     * @param  \App\Models\GiftIdea     $giftIdea
+     * @param GiftIdeaUpdateRequest $request
+     * @param Contact               $contact
+     * @param GiftIdea              $giftIdea
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, GiftIdea $giftIdea)
+    public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
         $giftIdea->fill($request->all());
         $giftIdea->updated_by = Auth::id();
 

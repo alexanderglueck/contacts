@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Teamwork;
 use Exception;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
 use Spatie\Permission\PermissionRegistrar;
+use App\Http\Requests\Team\TeamStoreRequest;
 
 class TeamController extends Controller
 {
@@ -50,19 +50,15 @@ class TeamController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param TeamStoreRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TeamStoreRequest $request)
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
-
-        $this->validate($request, [
-            'name' => 'required'
-        ]);
 
         $team = Team::create([
             'name' => $request->name,
@@ -128,12 +124,12 @@ class TeamController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param TeamStoreRequest $request
+     * @param  int             $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TeamStoreRequest $request, $id)
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');

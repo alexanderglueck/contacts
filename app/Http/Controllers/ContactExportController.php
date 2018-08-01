@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactGroup;
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Requests\ContactExport\ContactExportExportRequest;
 
 class ContactExportController extends Controller
 {
@@ -24,14 +24,8 @@ class ContactExportController extends Controller
         ]);
     }
 
-    public function export(Request $request)
+    public function export(ContactExportExportRequest $request)
     {
-        $this->can('create');
-
-        $this->validate($request, [
-            'contact_group_id' => 'required|integer|exists:tenant.contact_groups,id',
-        ]);
-
         /**
          * CSV
          */

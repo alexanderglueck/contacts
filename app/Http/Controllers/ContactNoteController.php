@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactNote;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactNote\ContactNoteStoreRequest;
+use App\Http\Requests\ContactNote\ContactNoteUpdateRequest;
 
 class ContactNoteController extends Controller
 {
     protected $accessEntity = 'notes';
-
-    private $validationRules = [
-        'name' => 'required',
-        'note' => 'required'
-    ];
 
     /**
      * Display a listing of the resource.
@@ -54,17 +50,13 @@ class ContactNoteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactNoteStoreRequest $request
+     * @param  \App\Models\Contact    $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactNoteStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $contactNote = new ContactNote();
         $contactNote->fill($request->all());
         $contactNote->contact_id = $contact->id;
@@ -122,18 +114,14 @@ class ContactNoteController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactNote  $contactNote
+     * @param ContactNoteUpdateRequest $request
+     * @param  \App\Models\Contact     $contact
+     * @param  \App\Models\ContactNote $contactNote
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactNote $contactNote)
+    public function update(ContactNoteUpdateRequest $request, Contact $contact, ContactNote $contactNote)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $contactNote->fill($request->all());
         $contactNote->updated_by = Auth::id();
 
