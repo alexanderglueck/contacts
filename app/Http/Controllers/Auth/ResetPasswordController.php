@@ -46,7 +46,7 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetResponse($response)
     {
-        if ( ! $this->guard()->user()->isActivated()) {
+        if (! $this->guard()->user()->isActivated()) {
             $this->guard()->logout();
         } else {
             session()->put('tenant', $this->guard()->user()->currentTeam->uuid);

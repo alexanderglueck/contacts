@@ -129,10 +129,13 @@ class ContactTest extends TestCase
         unset($contactGroup2['updated_by']);
 
         $response = $this
-            ->put(route('contacts.update', [$contactGroup->slug]),
-                array_merge($parameters,
+            ->put(
+                route('contacts.update', [$contactGroup->slug]),
+                array_merge(
+                    $parameters,
                     ['_token' => csrf_token()]
-                ));
+                )
+            );
 
 
         $response->assertStatus(302);

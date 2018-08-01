@@ -158,7 +158,8 @@ class Contact extends Model implements CalendarInterface
     }
 
     public static function datesInRange(
-        \DateTimeInterface $startDate, \DateTimeInterface $endDate
+        \DateTimeInterface $startDate,
+        \DateTimeInterface $endDate
     ) {
         $from = $startDate->format('md');
         $to = $endDate->format('md');

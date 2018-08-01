@@ -16,7 +16,7 @@ class RedirectIfNotActive
      */
     public function handle($request, Closure $next)
     {
-        if ( ! auth()->check() || auth()->user()->hasNoSubscription()) {
+        if (! auth()->check() || auth()->user()->hasNoSubscription()) {
             return redirect()->route('user_settings.profile.show');
         }
 

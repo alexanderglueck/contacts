@@ -53,7 +53,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
-        if ( ! $user->isActivated()) {
+        if (! $user->isActivated()) {
             $this->guard()->logout();
 
             flashError('Your account is not activated.');
@@ -78,7 +78,7 @@ class LoginController extends Controller
 
     public function token(Request $request)
     {
-        if ( ! $request->session()->has('token-user-id')) {
+        if (! $request->session()->has('token-user-id')) {
             Auth::logout();
 
             return redirect()->route('login');
@@ -89,7 +89,7 @@ class LoginController extends Controller
 
     public function check(Request $request, Google2FA $google2fa)
     {
-        if ( ! $request->session()->has('token-user-id')) {
+        if (! $request->session()->has('token-user-id')) {
             Auth::logout();
 
             return redirect()->route('login');

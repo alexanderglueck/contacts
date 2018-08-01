@@ -52,7 +52,7 @@ class TeamMemberController extends Controller
 
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($team_id);
-        if ( ! auth()->user()->isOwnerOfTeam($team)) {
+        if (! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 
@@ -88,7 +88,7 @@ class TeamMemberController extends Controller
         $teamModel = config('teamwork.team_model');
         $team = $teamModel::findOrFail($team_id);
 
-        if ( ! Teamwork::hasPendingInvite($request->email, $team)) {
+        if (! Teamwork::hasPendingInvite($request->email, $team)) {
             Teamwork::inviteToTeam($request->email, $team, function ($invite) {
                 Mail::to($invite->email)->send(new TeamInvitation($invite));
                 // Send email to user

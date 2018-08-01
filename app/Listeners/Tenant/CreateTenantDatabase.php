@@ -60,7 +60,7 @@ class CreateTenantDatabase implements ShouldQueue
         /*
          * Create tenant database
          */
-        if ( ! $this->databaseCreator->create($event->tenant)) {
+        if (! $this->databaseCreator->create($event->tenant)) {
             throw new \Exception('Database failed to be created.');
         }
 
