@@ -6,13 +6,10 @@ use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Account\TwoFactorCheckRequest;
 
 class TwoFactorController extends Controller
 {
-    private $validationRules = [
-        'secret' => 'required|digits:6',
-    ];
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -74,8 +71,10 @@ class TwoFactorController extends Controller
 
     /**
      * Generate a secret and display the QR code
-     * @param Request $request
+     *
+     * @param Request   $request
      * @param Google2FA $google2fa
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function enable(Request $request, Google2FA $google2fa)
@@ -89,20 +88,17 @@ class TwoFactorController extends Controller
      * Check if the entered code is valid for the given qr code,
      * only if valid enable 2fa. otherwise the contact is locked out
      *
-     * @param Request $request
-     * @param Google2FA $google2fa
+     * @param TwoFactorCheckRequest $request
+     * @param Google2FA             $google2fa
+     *
      * @return array
+     * @throws \Exception
      */
-    public function check(Request $request, Google2FA $google2fa)
+    public function check(TwoFactorCheckRequest $request, Google2FA $google2fa)
     {
-        $requestData = $request->all();
-
-        $request['secret'] = str_replace(' ', '', $requestData['secret']);
-
-        $this->validate($request, $this->validationRules);
+        $secret = str_replace(' ', '', $request->secret);
 
         $userSecret = $request->session()->get('google2fa_secret');
-        $secret = $requestData['secret'];
 
         // validate if the entered key is correct
         if ($google2fa->verifyKey($userSecret, $secret)) {

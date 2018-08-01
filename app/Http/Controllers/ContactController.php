@@ -8,30 +8,15 @@ use App\Models\Contact;
 use App\Models\Country;
 use App\Models\ContactGroup;
 use Illuminate\Http\Request;
-use App\Rules\ValidIBANFormat;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Contact\ContactStoreRequest;
+use App\Http\Requests\Contact\ContactUpdateRequest;
 
 class ContactController extends Controller
 {
     protected $accessEntity = 'contacts';
-
-    private $validationRules = [
-        'salutation' => 'required',
-        'title' => 'present',
-        'firstname' => 'required',
-        'lastname' => 'required',
-        'title_after' => 'present',
-        'company' => 'present',
-        'department' => 'present',
-        'job' => 'present',
-        'gender_id' => 'integer|exists:system.genders,id',
-        'nickname' => 'present',
-        'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
-        'died_at' => 'nullable|sometimes|date_format:d.m.Y',
-        'nationality_id' => 'nullable|sometimes|exists:system.countries,id',
-    ];
 
     /**
      * Display a listing of the resource.
@@ -67,18 +52,12 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ContactStoreRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContactStoreRequest $request)
     {
-        $this->can('create');
-
-        $this->validate($request, array_merge($this->validationRules, [
-            'iban' => new ValidIBANFormat
-        ]));
-
         $contact = new Contact();
         $contact->fill($request->all());
         $contact->created_by = Auth::id();
@@ -107,7 +86,6 @@ class ContactController extends Controller
      * @param  \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Contact $contact)
     {
@@ -143,19 +121,13 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactUpdateRequest $request
+     * @param  \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact)
+    public function update(ContactUpdateRequest $request, Contact $contact)
     {
-        $this->can('edit');
-
-        $this->validate($request, array_merge($this->validationRules, [
-            'iban' => new ValidIBANFormat
-        ]));
-
         $contact->fill($request->all());
         $contact->updated_by = Auth::id();
 

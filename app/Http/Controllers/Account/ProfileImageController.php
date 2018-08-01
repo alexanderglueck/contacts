@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Account\ProfileImageUpdateRequest;
 
 class ProfileImageController extends Controller
 {
@@ -16,12 +17,8 @@ class ProfileImageController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(ProfileImageUpdateRequest $request)
     {
-        $this->validate($request, [
-            'image' => 'required|mimes:jpeg,jpg,png'
-        ]);
-
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image')->storePublicly('public/profile_images');
 

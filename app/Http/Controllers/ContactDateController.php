@@ -4,19 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactDate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactDate\ContactDateStoreRequest;
+use App\Http\Requests\ContactDate\ContactDateUpdateRequest;
 
 class ContactDateController extends Controller
 {
     protected $accessEntity = 'dates';
-
-    private $validationRules = [
-        'name' => 'required',
-        'date' => 'required|date_format:d.m.',
-        'skip_year' => 'boolean'
-    ];
 
     /**
      * Display a listing of the resource.
@@ -55,27 +50,21 @@ class ContactDateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactDateStoreRequest $request
+     * @param  \App\Models\Contact    $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactDateStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $requestData = $request->all();
+        $validated = $request->validated();
 
         if ($request->skip_year) {
-            $requestData['date'] .= '1900';
-        } else {
-            $this->validationRules['date'] .= 'Y';
+            $validated['date'] .= 1900;
         }
 
-        $this->validate($request, $this->validationRules);
-
         $contactDate = new ContactDate();
-        $contactDate->fill($requestData);
+        $contactDate->fill($validated);
         $contactDate->contact_id = $contact->id;
         $contactDate->created_by = Auth::id();
         $contactDate->updated_by = Auth::id();
@@ -131,31 +120,21 @@ class ContactDateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactDate  $contactDate
+     * @param ContactDateUpdateRequest $request
+     * @param  \App\Models\Contact     $contact
+     * @param  \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactDate $contactDate)
+    public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate)
     {
-        $this->can('edit');
-
-        $requestData = $request->all();
+        $validated = $request->validated();
 
         if ($request->skip_year) {
-            $requestData['date'] .= '1900';
-        } else {
-            $this->validationRules['date'] .= 'Y';
+            $validated['date'] .= 1900;
         }
 
-        if ( ! isset($request->skip_year)) {
-            $request->skip_year = 0;
-        }
-
-        $this->validate($request, $this->validationRules);
-
-        $contactDate->fill($requestData);
+        $contactDate->fill($validated);
         $contactDate->updated_by = Auth::id();
 
         if ($contactDate->save()) {

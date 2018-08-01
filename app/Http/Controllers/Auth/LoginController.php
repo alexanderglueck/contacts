@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Events\TwoFactor\TwoFactorFailure;
 use App\Events\TwoFactor\TwoFactorSuccess;
+use App\Http\Requests\Login\LoginCheckRequest;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -87,7 +88,7 @@ class LoginController extends Controller
         return view('auth.token');
     }
 
-    public function check(Request $request, Google2FA $google2fa)
+    public function check(LoginCheckRequest $request, Google2FA $google2fa)
     {
         if ( ! $request->session()->has('token-user-id')) {
             Auth::logout();
@@ -96,10 +97,6 @@ class LoginController extends Controller
         }
 
         $request['token'] = str_replace(' ', '', $request->token);
-
-        $this->validate($request, [
-            'token' => 'required|digits:6',
-        ]);
 
         $secret = $request->post('token');
 

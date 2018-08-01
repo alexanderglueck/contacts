@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\Country;
-use Illuminate\Http\Request;
 use App\Models\ContactAddress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactAddress\ContactAddressStoreRequest;
+use App\Http\Requests\ContactAddress\ContactAddressUpdateRequest;
 
 class ContactAddressController extends Controller
 {
@@ -60,22 +61,13 @@ class ContactAddressController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactAddressStoreRequest $request
+     * @param  \App\Models\Contact       $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactAddressStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        if (strlen($request->latitude) > 0 && strlen($request->longitude) > 0) {
-            $this->validationRules['latitude'] = 'required|numeric';
-            $this->validationRules['longitude'] = 'required|numeric';
-        }
-
-        $this->validate($request, $this->validationRules);
-
         $contactAddress = new ContactAddress();
         $contactAddress->fill($request->all());
         $contactAddress->contact_id = $contact->id;
@@ -134,23 +126,14 @@ class ContactAddressController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request   $request
+     * @param ContactAddressUpdateRequest $request
      * @param  \App\Models\Contact        $contact
      * @param  \App\Models\ContactAddress $contactAddress
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactAddress $contactAddress)
+    public function update(ContactAddressUpdateRequest $request, Contact $contact, ContactAddress $contactAddress)
     {
-        $this->can('edit');
-
-        if (strlen($request->latitude) > 0 && strlen($request->longitude) > 0) {
-            $this->validationRules['latitude'] = 'required|numeric';
-            $this->validationRules['longitude'] = 'required|numeric';
-        }
-
-        $this->validate($request, $this->validationRules);
-
         $contactAddress->fill($request->all());
         $contactAddress->updated_by = Auth::id();
 

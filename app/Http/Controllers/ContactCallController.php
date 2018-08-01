@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactCall;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\ContactCall\ContactCallStoreRequest;
+use App\Http\Requests\ContactCall\ContactCallUpdateRequest;
 
 class ContactCallController extends Controller
 {
@@ -54,17 +55,13 @@ class ContactCallController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
+     * @param ContactCallStoreRequest $request
+     * @param  \App\Models\Contact    $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Contact $contact)
+    public function store(ContactCallStoreRequest $request, Contact $contact)
     {
-        $this->can('create');
-
-        $this->validate($request, $this->validationRules);
-
         $contactCall = new ContactCall();
         $contactCall->fill($request->all());
         $contactCall->contact_id = $contact->id;
@@ -122,18 +119,14 @@ class ContactCallController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactCall  $contactCall
+     * @param ContactCallUpdateRequest $request
+     * @param  \App\Models\Contact     $contact
+     * @param  \App\Models\ContactCall $contactCall
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact, ContactCall $contactCall)
+    public function update(ContactCallUpdateRequest $request, Contact $contact, ContactCall $contactCall)
     {
-        $this->can('edit');
-
-        $this->validate($request, $this->validationRules);
-
         $contactCall->fill($request->all());
         $contactCall->updated_by = Auth::id();
 

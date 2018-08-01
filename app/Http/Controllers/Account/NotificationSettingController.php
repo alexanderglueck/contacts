@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\NotificationSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Account\NotificationSettingUpdateRequest;
 
 class NotificationSettingController extends Controller
 {
@@ -17,15 +18,9 @@ class NotificationSettingController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(NotificationSettingUpdateRequest $request)
     {
-        $this->validate($request, [
-            'send_daily' => 'nullable|boolean',
-            'send_weekly' => 'nullable|boolean',
-        ]);
-
-        NotificationSetting::where('user_id', Auth::id())
-            ->delete();
+        NotificationSetting::where('user_id', Auth::id())->delete();
 
         $notificationSettings = new NotificationSetting();
         $notificationSettings->fill($request->all());
