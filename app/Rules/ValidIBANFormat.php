@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use IBAN;
 use Illuminate\Contracts\Validation\Rule;
 
 class ValidIBANFormat implements Rule
