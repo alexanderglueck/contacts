@@ -15,6 +15,10 @@ class TenantCacheManager extends CacheManager
             );
         }
 
+        if ($method == 'getStore') {
+            return $this->store()->$method(...$parameters);
+        }
+
         return $this->store()->tags($this->getTenantCacheTag())->$method(...$parameters);
     }
 

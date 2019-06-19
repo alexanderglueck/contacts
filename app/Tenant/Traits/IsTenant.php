@@ -2,7 +2,7 @@
 
 namespace App\Tenant\Traits;
 
-use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Str;
 use App\Tenant\Models\Tenant;
 use App\Models\TenantConnection;
 
@@ -13,7 +13,7 @@ trait IsTenant
         parent::boot();
 
         static::creating(function ($tenant) {
-            $tenant->uuid = Uuid::generate(4);
+            $tenant->uuid = (string) Str::uuid();;
         });
 
         static::created(function ($tenant) {

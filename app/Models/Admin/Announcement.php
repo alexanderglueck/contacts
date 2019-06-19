@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use Parsedown;
 use App\Models\User;
 use App\Interfaces\Readable;
 use Illuminate\Database\Eloquent\Model;
@@ -125,6 +126,13 @@ class Announcement extends Model implements Readable
         return $this->getReadReadables($user)
                 ->where($this->getReadablesPivotKey(), '=', $readable->id)
                 ->count() == 1;
+    }
+
+    public function getParsedBodyAttribute()
+    {
+        $parsedown = new Parsedown();
+
+        return $parsedown->line($this->body);
     }
 
     /**

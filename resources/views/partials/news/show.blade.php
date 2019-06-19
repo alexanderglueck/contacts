@@ -1,3 +1,3 @@
 <p>
-    @markdown($news->body)
+    {!! $news->parsedBody !!}
 </p>

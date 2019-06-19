@@ -2,15 +2,17 @@ FROM php:7.3-fpm
 
 WORKDIR /app
 
-RUN apt-get update -y && apt-get install -y sendmail libpng-dev
+RUN apt-get update -y && apt-get install -y sendmail libpng-dev libzip-dev zip
 
-RUN docker-php-ext-install pdo_mysql gd bcmath pcntl
+RUN docker-php-ext-configure zip --with-libzip
+
+RUN docker-php-ext-install pdo_mysql gd bcmath pcntl zip
 
 # imagick
-#RUN apk add --update --no-cache autoconf g++ imagemagick-dev imagemagick libtool make pcre-dev \
-#    && pecl install imagick \
-#    && docker-php-ext-enable imagick \
-#    && apk del autoconf g++ libtool make pcre-dev
+RUN apt-get update && apt-get install -y \
+    libmagickwand-dev --no-install-recommends \
+    && pecl install imagick \
+	&& docker-php-ext-enable imagick
 
 ARG HOST_USER_ID=1000
 ARG HOST_GROUP_ID=1000

@@ -13,43 +13,43 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\TwoFactor\TwoFactorSuccess' => [
-            'App\Listeners\Log\LogTwoFactorSuccess',
+        \App\Events\TwoFactor\TwoFactorSuccess::class => [
+            \App\Listeners\Log\LogTwoFactorSuccess::class,
         ],
-        'App\Events\TwoFactor\TwoFactorFailure' => [
-            'App\Listeners\Log\LogTwoFactorFailure',
+        \App\Events\TwoFactor\TwoFactorFailure::class => [
+            \App\Listeners\Log\LogTwoFactorFailure::class,
         ],
-        'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\Log\LogSuccessfulLogin',
-        ],
-
-        'Illuminate\Auth\Events\Failed' => [
-            'App\Listeners\Log\LogFailedLogin',
+        \Illuminate\Auth\Events\Login::class => [
+            \App\Listeners\Log\LogSuccessfulLogin::class,
         ],
 
-        'App\Events\Tenant\TenantIdentified' => [
-            'App\Listeners\Tenant\RegisterTenant',
-            'App\Listeners\Tenant\UseTenantFilesystem',
+        \Illuminate\Auth\Events\Failed::class => [
+            \App\Listeners\Log\LogFailedLogin::class,
         ],
 
-        'App\Events\Tenant\TenantWasCreated' => [
-            'App\Listeners\Tenant\CreateTenantDatabase',
+        \App\Events\Tenant\TenantIdentified::class => [
+            \App\Listeners\Tenant\RegisterTenant::class,
+            \App\Listeners\Tenant\UseTenantFilesystem::class,
         ],
 
-        'App\Events\Auth\UserSignedUp' => [
-            'App\Listeners\Auth\SendActivationEmail',
+        \App\Events\Tenant\TenantWasCreated::class => [
+            \App\Listeners\Tenant\CreateTenantDatabase::class,
         ],
 
-        'App\Events\Auth\UserRequestedActivationEmail' => [
-            'App\Listeners\Auth\SendActivationEmail',
+        \App\Events\Auth\UserSignedUp::class => [
+            \App\Listeners\Auth\SendActivationEmail::class,
         ],
 
-        'Illuminate\Auth\Events\PasswordReset' => [
-            'App\Listeners\Auth\SendPasswordChangedEmail',
+        \App\Events\Auth\UserRequestedActivationEmail::class => [
+            \App\Listeners\Auth\SendActivationEmail::class,
         ],
 
-        'App\Events\Auth\UserChangedPassword' => [
-            'App\Listeners\Auth\SendPasswordChangedEmail',
+        \Illuminate\Auth\Events\PasswordReset::class => [
+            \App\Listeners\Auth\SendPasswordChangedEmail::class,
+        ],
+
+        \App\Events\Auth\UserChangedPassword::class => [
+            \App\Listeners\Auth\SendPasswordChangedEmail::class,
         ],
     ];
 
