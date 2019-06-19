@@ -6,6 +6,7 @@ php:
 
 services:
   - elasticsearch
+  - mysql
 
 before_script:
   - cp .env.travis .env
