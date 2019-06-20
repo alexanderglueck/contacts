@@ -1,25 +1,19 @@
-php:
-  preset: laravel
+preset: laravel
 
-  enabled:
-    - phpdoc_annotation_without_dot
-    - not_operator_with_space
-    - concat_with_spaces
+enabled:
+  - phpdoc_annotation_without_dot
+  - not_operator_with_space
+  - concat_with_spaces
 
-  disabled:
-    - trailing_comma_in_multiline_array
-    - phpdoc_to_comment
-    - phpdoc_summary
-    - concat_without_spaces
+disabled:
+  - trailing_comma_in_multiline_array
+  - phpdoc_to_comment
+  - phpdoc_summary
+  - concat_without_spaces
 
-  finder:
-    exclude:
-      - "tests"
-    not-name:
-      - index.php
-      - server.php
-js:
-  finder:
-    not-name:
-      - webpack.mix.js
-css: true
+finder:
+  exclude:
+    - "tests"
+  not-name:
+    - index.php
+    - server.php
