@@ -2,6 +2,7 @@
 
 namespace App\Models\Traits;
 
+use Illuminate\Support\Str;
 use App\Models\ConfirmationToken;
 
 trait HasConfirmationTokens
@@ -9,7 +10,7 @@ trait HasConfirmationTokens
     public function generateConfirmationToken()
     {
         $this->confirmationToken()->create([
-            'token' => $token = str_random(150),
+            'token' => $token = Str::random(150),
             'expires_at' => $this->getConfirmationTokenExpiry()
         ]);
 

@@ -14,6 +14,7 @@ class DatabaseCreator
                 $this->getTenantDatabaseName($tenant)
             ));
         } catch (\Exception $ex) {
+            \Log::error($ex->getMessage());
             return false;
         }
     }
