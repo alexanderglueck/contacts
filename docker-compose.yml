@@ -19,6 +19,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - elasticsearch
     volumes:
       - ./:/app
 
@@ -45,3 +46,8 @@ services:
       - MYSQL_DATABASE=app
     volumes:
       - ./storage/tmp/db:/var/lib/mysql:cached
+
+  elasticsearch:
+    image: elasticsearch:6.7.2
+    ports:
+      - "9200:9200"

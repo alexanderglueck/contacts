@@ -38,7 +38,7 @@ class Role extends BaseRole
     {
         return $this->belongsToMany(
             config('permission.models.permission'),
-            $this->team->tenantConnection->database . '.' . config('permission.table_names.role_has_permissions')
+            $this->team()->first()->tenantConnection->database . '.' . config('permission.table_names.role_has_permissions')
         );
     }
 
