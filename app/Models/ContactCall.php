@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactCall extends Model
 {
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'note',
         'called_at',

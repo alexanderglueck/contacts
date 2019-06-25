@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContactGroupsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,37 +13,33 @@ class CreateContactGroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_groups', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
+            $table->text('comment');
+            $table->unsignedInteger('parent_id')->nullable();
+
+            $table->unsignedInteger('created_by');
+            $table->unsignedInteger('contact_id');
+
             $table->timestamps();
-            $table->string('name');
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->string('slug');
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            $table->foreign('updated_by')
+            $table->foreign('contact_id')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' . 'users'
-                )
+                ->on('contacts')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('parent_id')
                 ->references('id')
-                ->on('contact_groups')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->on('comments')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
@@ -54,6 +50,11 @@ class CreateContactGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_groups');
+        Schema::table('comments', function (Blueprint $table) {
+            $table->dropForeign('comments_created_by_foreign');
+            $table->dropForeign('comments_contact_id_foreign');
+        });
+
+        Schema::dropIfExists('comments');
     }
 }

@@ -47,4 +47,13 @@ abstract class TestCase extends BaseTestCase
 
         return $user;
     }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan("db:seed");
+    }
+
+
 }

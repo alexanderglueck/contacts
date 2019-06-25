@@ -9,8 +9,6 @@ class ContactUrl extends Model
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = ['name', 'url', 'created_by', 'updated_by'];
 
     /**

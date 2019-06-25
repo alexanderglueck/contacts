@@ -33,11 +33,11 @@ class ContactUpdateRequest extends FormRequest
             'company' => 'present',
             'department' => 'present',
             'job' => 'present',
-            'gender_id' => 'integer|exists:system.genders,id',
+            'gender_id' => 'integer|exists:genders,id',
             'nickname' => 'present',
             'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
             'died_at' => 'nullable|sometimes|date_format:d.m.Y',
-            'nationality_id' => 'nullable|sometimes|exists:system.countries,id',
+            'nationality_id' => 'nullable|sometimes|exists:countries,id',
             'iban' => new ValidIBANFormat
         ];
     }

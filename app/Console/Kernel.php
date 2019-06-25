@@ -24,9 +24,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SendWeeklyEmail::class,
         SendDailyEmail::class,
-        Migrate::class,
-        MigrateRollback::class,
-        Seed::class,
         Install::class
     ];
 

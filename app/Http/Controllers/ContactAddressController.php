@@ -20,7 +20,7 @@ class ContactAddressController extends Controller
         'zip' => 'required',
         'city' => 'required',
         'state' => 'required',
-        'country_id' => 'required|exists:system.countries,id',
+        'country_id' => 'required|exists:countries,id',
     ];
 
     /**

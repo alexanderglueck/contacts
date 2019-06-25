@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ActivityTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function creating_a_contact_adds_an_activity_entry()
@@ -16,7 +17,8 @@ class ActivityTest extends TestCase
         $user = $this->createUser('create contacts');
 
         $contact = factory(Contact::class)->create([
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('activities', [
@@ -36,7 +38,8 @@ class ActivityTest extends TestCase
         ]);
 
         $contact = factory(Contact::class)->create([
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('activities', [
@@ -80,7 +83,8 @@ class ActivityTest extends TestCase
         ]);
 
         $contact = factory(Contact::class)->create([
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('activities', [
@@ -112,6 +116,7 @@ class ActivityTest extends TestCase
 
         $contact = factory(Contact::class)->create([
             'created_by' => $user->id,
+            'updated_by' => $user->id,
             'lastname' => 'Doe'
         ]);
 

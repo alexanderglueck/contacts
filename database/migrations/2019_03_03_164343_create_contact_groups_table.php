@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContactEmailsTable extends Migration
+class CreateContactGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,40 +13,32 @@ class CreateContactEmailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_emails', function (Blueprint $table) {
+        Schema::create('contact_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('contact_id')->unsigned();
             $table->string('name');
-            $table->string('email');
-            $table->boolean('is_default')->default(false);
+            $table->integer('parent_id')->unsigned()->nullable();
             $table->string('slug');
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            $table->foreign('contact_id')
+            $table->foreign('parent_id')
                 ->references('id')
-                ->on('contacts')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->on('contact_groups')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -57,6 +49,6 @@ class CreateContactEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_emails');
+        Schema::dropIfExists('contact_groups');
     }
 }

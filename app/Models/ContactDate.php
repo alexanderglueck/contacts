@@ -11,8 +11,6 @@ class ContactDate extends Model implements CalendarInterface
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'name',
         'date',

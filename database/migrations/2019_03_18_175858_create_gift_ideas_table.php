@@ -32,19 +32,13 @@ class CreateGiftIdeasTable extends Migration
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

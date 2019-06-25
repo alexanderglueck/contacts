@@ -58,37 +58,25 @@ class CreateContactsTable extends Migration
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('gender_id')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'genders'
-                )
+                ->on('genders')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
 
             $table->foreign('nationality_id')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'countries'
-                )
+                ->on('countries')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

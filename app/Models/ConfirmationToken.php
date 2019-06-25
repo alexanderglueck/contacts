@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConfirmationToken extends Model
 {
-    protected $connection = 'system';
-
     public $timestamps = false;
 
     protected $dates = [

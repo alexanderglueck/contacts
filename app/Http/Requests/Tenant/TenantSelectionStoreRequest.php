@@ -28,7 +28,7 @@ class TenantSelectionStoreRequest extends FormRequest
             'team' => [
                 'required',
                 'integer',
-                'exists:system.teams,id',
+                'exists:teams,id',
                 Rule::exists('team_user', 'team_id')->where(function ($query) {
                     $query->where('user_id', auth()->id());
                 })

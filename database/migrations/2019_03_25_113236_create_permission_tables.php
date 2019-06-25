@@ -25,10 +25,7 @@ class CreatePermissionTables extends Migration
 
             $table->foreign('team_id')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'teams'
-                )
+                ->on('teams')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

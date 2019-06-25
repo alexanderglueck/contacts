@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'created_by',
         'comment',

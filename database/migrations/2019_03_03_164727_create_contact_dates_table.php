@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContactUrlsTable extends Migration
+class CreateContactDatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,32 +13,26 @@ class CreateContactUrlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_urls', function (Blueprint $table) {
+        Schema::create('contact_dates', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('contact_id')->unsigned();
             $table->string('name');
-            $table->string('url');
-            $table->boolean('is_default')->default(false);
+            $table->dateTime('date');
+            $table->boolean('skip_year')->default(false);
             $table->string('slug');
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -57,6 +51,6 @@ class CreateContactUrlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_urls');
+        Schema::dropIfExists('contact_dates');
     }
 }

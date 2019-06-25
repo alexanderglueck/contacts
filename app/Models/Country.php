@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
-    protected $connection = 'system';
-
     /**
      * Defines the has-many relationship with the Contact model
      *

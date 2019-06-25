@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateContactNotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,34 +13,31 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('contact_notes', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('comment');
-            $table->unsignedInteger('parent_id')->nullable();
-
-            $table->unsignedInteger('created_by');
-            $table->unsignedInteger('contact_id');
-
+            $table->integer('contact_id')->unsigned();
+            $table->string('name');
+            $table->text('note');
+            $table->string('slug');
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->unsigned();
             $table->timestamps();
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                env('DB_DATABASE') . '.' .
-                'users'
-            )
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('contact_id')
                 ->references('id')
                 ->on('contacts')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-
-            $table->foreign('parent_id')
-                ->references('id')
-                ->on('comments')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -53,11 +50,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->dropForeign('comments_created_by_foreign');
-            $table->dropForeign('comments_contact_id_foreign');
-        });
-
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('contact_notes');
     }
 }

@@ -39,7 +39,7 @@ class ContactGroupUpdateRequest extends FormRequest
     {
         $contactGroup = $this->route('contactGroup');
 
-        $validator->sometimes('parent_id', 'exists:tenant.contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
+        $validator->sometimes('parent_id', 'exists:contact_groups,id|not_in:' . $contactGroup->id, function ($input) {
             return strlen($input->parent_id) > 0;
         });
     }
