@@ -17,6 +17,7 @@ return [
      *
      * Defaults to null, which uses the toString() method on your model.
      */
+
     'source' => null,
 
     /**
@@ -24,7 +25,23 @@ return [
      * no length restrictions are enforced.  Set it to a positive integer if you
      * want to make sure your slugs aren't too long.
      */
+
     'maxLength' => null,
+
+    /**
+     * If you are setting a maximum length on your slugs, you may not want the
+     * truncated string to split a word in half.  The default setting of "true"
+     * will ensure this, e.g. with a maxLength of 12:
+     *
+     *   "my source string" -> "my-source"
+     *
+     * Setting it to "false" will simply truncate the generated slug at the
+     * desired length, e.g.:
+     *
+     *   "my source string" -> "my-source-st"
+     */
+
+    'maxLengthKeepWords' => true,
 
     /**
      * If left to "null", then use the cocur/slugify package to generate the slug
@@ -41,11 +58,13 @@ return [
      *
      *    'method' => array('Str','slug'),
      */
+
     'method' => null,
 
     /**
      * Separator to use when generating slugs.  Defaults to a hyphen.
      */
+
     'separator' => '-',
 
     /**
@@ -57,6 +76,7 @@ return [
      *     my-slug-1
      *     my-slug-2
      */
+
     'unique' => true,
 
     /**
@@ -67,6 +87,7 @@ return [
      * "similar" slugs.  The closure should return the new unique
      * suffix to append to the slug.
      */
+
     'uniqueSuffix' => null,
 
     /**
@@ -75,6 +96,7 @@ return [
      * If set to "false", then a new slug could duplicate one that exists on a trashed model.
      * If set to "true", then uniqueness is enforced across trashed and existing models.
      */
+
     'includeTrashed' => false,
 
     /**
@@ -100,6 +122,7 @@ return [
      *
      * and continue from there.
      */
+
     'reserved' => null,
 
     /**
@@ -112,6 +135,7 @@ return [
      * is probably not a good idea from an SEO point of view.
      * Only set this to true if you understand the possible consequences.
      */
+
     'onUpdate' => false,
 
 ];
