@@ -14,14 +14,14 @@ class CreateGiftIdeasTable extends Migration
     public function up()
     {
         Schema::create('gift_ideas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('contact_id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('contact_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('due_at')->nullable();
             $table->text('url')->nullable();
-            $table->unsignedInteger('created_by');
-            $table->unsignedInteger('updated_by');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
 
             $table->foreign('contact_id')

@@ -14,11 +14,11 @@ class CreateNotificationSettingsTable extends Migration
     public function up()
     {
         Schema::create('notification_settings', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->boolean('send_daily')->default(false);
             $table->boolean('send_weekly')->default(false);
 
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->timestamps();
 

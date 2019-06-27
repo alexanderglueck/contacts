@@ -39,13 +39,5 @@ class ConfirmationToken extends Model
         static::creating(function ($token) {
             optional($token->user->confirmationToken)->delete();
         });
-
-        /*
-         *  static::creating(function ($token) {
-            $token->user->confirmationTokens->each(function ($token) {
-                $token->delete();
-            });
-        });
-         */
     }
 }

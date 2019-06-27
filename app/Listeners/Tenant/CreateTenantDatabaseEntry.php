@@ -44,7 +44,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
         /*
          * Create elastic search index
          */
-     //   $this->setupSearchIndex($event->tenant);
+        $this->setupSearchIndex($event->tenant);
 
         /*
          * Finish tenant setup

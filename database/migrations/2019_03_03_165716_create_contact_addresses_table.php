@@ -14,15 +14,15 @@ class CreateContactAddressesTable extends Migration
     public function up()
     {
         Schema::create('contact_addresses', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('contact_id')->unsigned();
+            $table->unsignedBigInteger('contact_id');
             $table->string('name');
             $table->string('street');
             $table->string('zip');
             $table->string('city');
             $table->string('state');
-            $table->integer('country_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
 
             $table->boolean('is_default')->default(false);
 
@@ -31,8 +31,8 @@ class CreateContactAddressesTable extends Migration
 
             $table->string('slug');
 
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
 
             $table->foreign('created_by')
                 ->references('id')

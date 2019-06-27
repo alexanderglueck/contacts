@@ -11,7 +11,7 @@ trait IsTenant
         parent::boot();
 
         static::creating(function ($tenant) {
-            $tenant->uuid = (string) Str::uuid();;
+            $tenant->uuid = (string) Str::uuid();
         });
     }
 }

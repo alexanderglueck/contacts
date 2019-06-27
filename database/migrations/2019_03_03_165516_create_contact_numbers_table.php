@@ -14,9 +14,9 @@ class CreateContactNumbersTable extends Migration
     public function up()
     {
         Schema::create('contact_numbers', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('contact_id')->unsigned();
+            $table->unsignedBigInteger('contact_id');
             $table->string('name');
             $table->string('number');
 
@@ -24,8 +24,8 @@ class CreateContactNumbersTable extends Migration
 
             $table->string('slug');
 
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
 
             $table->foreign('created_by')
                 ->references('id')

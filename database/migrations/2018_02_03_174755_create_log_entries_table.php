@@ -14,12 +14,12 @@ class CreateLogEntriesTable extends Migration
     public function up()
     {
         Schema::create('log_entries', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('event');
             $table->ipAddress('ip_address')->nullable();
 
-            $table->unsignedInteger('created_by');
-            $table->unsignedInteger('updated_by');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
 
             $table->timestamps();
 

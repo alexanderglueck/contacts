@@ -14,13 +14,13 @@ class CreateContactGroupsTable extends Migration
     public function up()
     {
         Schema::create('contact_groups', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->string('name');
-            $table->integer('parent_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('slug');
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
 
             $table->foreign('created_by')
                 ->references('id')

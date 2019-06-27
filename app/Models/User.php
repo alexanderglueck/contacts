@@ -143,17 +143,6 @@ class User extends Authenticatable
         return $this->notificationSetting;
     }
 
-    public function permissions(): MorphToMany
-    {
-        return $this->morphToMany(
-            config('permission.models.permission'),
-            'model',
-            config('permission.table_names.model_has_permissions'),
-            'model_id',
-            'permission_id'
-        );
-    }
-
     public function isOwnerOfTeam($team)
     {
         return $team->owner_id == $this->id;

@@ -13,8 +13,8 @@ class SetupTeamTables extends Migration
     public function up()
     {
         Schema::create('teams', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('owner_id')->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('owner_id')->nullable();
             $table->string('name');
             $table->uuid('uuid');
             $table->boolean('created')->default(false);
@@ -28,8 +28,8 @@ class SetupTeamTables extends Migration
         });
 
         Schema::create('team_user', function (Blueprint $table) {
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('team_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('team_id');
             $table->timestamps();
 
             $table->foreign('user_id')
@@ -46,9 +46,9 @@ class SetupTeamTables extends Migration
         });
 
         Schema::create('team_invites', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('team_id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('team_id');
             $table->enum('type', ['invite', 'request']);
             $table->string('email');
             $table->string('accept_token');

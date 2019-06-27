@@ -479,4 +479,15 @@ class Contact extends Model implements CalendarInterface
 
         return $array;
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($contact) {
+            $contact->team_id = auth()->user()->current_team_id;
+        });
+    }
+
+
 }

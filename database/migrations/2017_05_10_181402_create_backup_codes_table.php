@@ -14,9 +14,9 @@ class CreateBackupCodesTable extends Migration
     public function up()
     {
         Schema::create('tfa_backup_codes', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned();
+            $table->unsignedBigInteger('user_id');
             $table->string('value');
 
             $table->foreign('user_id')
