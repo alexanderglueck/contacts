@@ -1,16 +1,18 @@
 language: php
 
 php:
-  - 7.1
   - 7.2
+  - 7.3
 
 services:
   - elasticsearch
   - mysql
 
 before_script:
+  - curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.0/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch restart
+  - sleep 10
   - cp .env.travis .env
-  - mysql -e 'create database contacts_main;'
+  - mysql -e 'create database contacts_testing;'
   - composer install --no-interaction
   - php artisan key:generate
   - php artisan migrate --seed
