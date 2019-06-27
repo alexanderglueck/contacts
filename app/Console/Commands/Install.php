@@ -56,7 +56,7 @@ class Install extends Command
             $this->line('Database successfully migrated.');
 
             if ($this->confirm('Do you want to seed the database?', false)) {
-                $this->seedDatabase($credentials);
+                $this->seedDatabase();
                 $this->line('Database successfully seeded.');
             }
         }
@@ -105,7 +105,7 @@ class Install extends Command
         foreach ($credentials as $key => $value) {
             $configKey = strtolower(str_replace('DB_', '', $key));
             if ($configKey === 'password' && $value == 'null') {
-                config(["database.connections.system.{$configKey}" => '']);
+                config(["database.connections.mysql.{$configKey}" => '']);
                 continue;
             }
 
@@ -113,11 +113,11 @@ class Install extends Command
                 continue;
             }
 
-            config(["database.connections.system.{$configKey}" => $value]);
+            config(["database.connections.mysql.{$configKey}" => $value]);
         }
 
         config(['contacts.tenant.system' => $credentials['DB_DATABASE']]);
-        config(['permission.table_names.permissions' => $credentials['DB_DATABASE'] . '.permissions']);
+        config(['permission.table_names.permissions' => 'permissions']);
 
         $this->reconnectToDatabase();
 
@@ -191,9 +191,9 @@ class Install extends Command
 
     protected function reconnectToDatabase(): void
     {
-        DB::disconnect('system');
-        DB::purge('system');
-        DB::reconnect('system');
+        DB::disconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
     }
 
     protected function symlinkStorage(): void

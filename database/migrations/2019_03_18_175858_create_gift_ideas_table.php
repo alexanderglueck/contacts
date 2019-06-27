@@ -14,14 +14,14 @@ class CreateGiftIdeasTable extends Migration
     public function up()
     {
         Schema::create('gift_ideas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('contact_id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('contact_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('due_at')->nullable();
             $table->text('url')->nullable();
-            $table->unsignedInteger('created_by');
-            $table->unsignedInteger('updated_by');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
 
             $table->foreign('contact_id')
@@ -32,19 +32,13 @@ class CreateGiftIdeasTable extends Migration
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

@@ -10,8 +10,6 @@ class ContactNumber extends Model
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = ['name', 'number', 'created_by', 'updated_by'];
 
     /**

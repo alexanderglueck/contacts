@@ -6,10 +6,7 @@ use DateTime;
 use DateInterval;
 use App\Models\ContactDate;
 use App\Console\Commands\Install;
-use App\Console\Commands\Tenant\Seed;
-use App\Console\Commands\Tenant\Migrate;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Tenant\MigrateRollback;
 use App\Console\Commands\Notification\SendDailyEmail;
 use App\Console\Commands\Notification\SendWeeklyEmail;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -24,16 +21,13 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SendWeeklyEmail::class,
         SendDailyEmail::class,
-        Migrate::class,
-        MigrateRollback::class,
-        Seed::class,
         Install::class
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      *
      * @return void
      */

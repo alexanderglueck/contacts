@@ -9,8 +9,6 @@ class ContactNote extends Model
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'name',
         'note',

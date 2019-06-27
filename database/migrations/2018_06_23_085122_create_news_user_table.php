@@ -14,8 +14,8 @@ class CreateNewsUserTable extends Migration
     public function up()
     {
         Schema::create('news_user', function (Blueprint $table) {
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('news_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('news_id');
             $table->timestamps();
 
             $table->foreign('user_id')

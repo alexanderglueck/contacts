@@ -13,7 +13,6 @@ use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -26,8 +25,6 @@ class User extends Authenticatable
     use HasSubscriptions;
     use SoftDeletes;
     use UserHasTeams;
-
-    protected $connection = 'system';
 
     /**
      * The attributes that are mass assignable.
@@ -143,17 +140,6 @@ class User extends Authenticatable
         }
 
         return $this->notificationSetting;
-    }
-
-    public function permissions(): MorphToMany
-    {
-        return $this->morphToMany(
-            config('permission.models.permission'),
-            'model',
-            config('database.connections.tenant.database') . '.' . config('permission.table_names.model_has_permissions'),
-            'model_id',
-            'permission_id'
-        );
     }
 
     public function isOwnerOfTeam($team)

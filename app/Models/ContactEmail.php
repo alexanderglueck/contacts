@@ -9,7 +9,6 @@ use Cviebrock\EloquentSluggable\Sluggable;
 class ContactEmail extends Model
 {
     use Sluggable;
-    protected $connection = 'tenant';
 
     protected $fillable = ['name', 'email', 'created_by', 'updated_by'];
 

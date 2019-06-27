@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use App\Tenant\Manager;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationSetting extends Model
 {
-    protected $connection = 'tenant';
-
     protected $casts = [
         'send_daily' => 'boolean',
         'send_weekly' => 'boolean',
@@ -23,9 +20,4 @@ class NotificationSetting extends Model
         'send_daily',
         'send_weekly'
     ];
-
-    public function getTable()
-    {
-        return app(Manager::class)->getTenant()->tenantConnection->database . '.' . parent::getTable();
-    }
 }

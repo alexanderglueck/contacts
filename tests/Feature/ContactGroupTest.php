@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\ContactGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ContactGroupTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function a_user_can_create_a_contact_group()
@@ -37,7 +38,8 @@ class ContactGroupTest extends TestCase
         $user = $this->createUser('view contactGroups');
 
         $contactGroup = create(ContactGroup::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this
@@ -53,7 +55,8 @@ class ContactGroupTest extends TestCase
         $user = $this->createUser('delete contactGroups');
 
         $contactGroup = create(ContactGroup::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this
@@ -69,7 +72,8 @@ class ContactGroupTest extends TestCase
         $user = $this->createUser('delete contactGroups');
 
         $contactGroup = create(ContactGroup::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('contact_groups', $contactGroup->toArray());
@@ -91,7 +95,8 @@ class ContactGroupTest extends TestCase
         $user = $this->createUser('edit contactGroups');
 
         $contactGroup = create(ContactGroup::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this
@@ -108,7 +113,8 @@ class ContactGroupTest extends TestCase
         $user = $this->createUser('edit contactGroups');
 
         $contactGroup = create(ContactGroup::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $check = $contactGroup->toArray();

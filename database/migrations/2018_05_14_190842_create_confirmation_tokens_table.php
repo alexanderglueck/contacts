@@ -14,8 +14,8 @@ class CreateConfirmationTokensTable extends Migration
     public function up()
     {
         Schema::create('confirmation_tokens', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id')->index();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->index();
             $table->string('token');
             $table->dateTime('expires_at');
 

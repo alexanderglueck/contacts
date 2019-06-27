@@ -9,8 +9,6 @@ class Gender extends Model
     const MALE = 1;
     const FEMALE = 2;
 
-    protected $connection = 'system';
-
     /**
      * Defines the has-many relationship with the Contact model
      *

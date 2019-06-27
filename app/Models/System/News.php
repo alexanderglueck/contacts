@@ -8,8 +8,6 @@ use App\Models\Admin\Announcement;
 
 class News extends Announcement implements Readable
 {
-    protected $connection = 'system';
-
     protected $table = 'news';
 
     protected $fillable = [

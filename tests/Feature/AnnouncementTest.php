@@ -7,10 +7,11 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\Admin\Announcement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AnnouncementTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function a_user_can_create_an_announcement()

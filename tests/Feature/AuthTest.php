@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function login_page_works()
@@ -26,7 +27,7 @@ class AuthTest extends TestCase
 
         $response = $this->post(route('login.check'), [
             'email' => $user->email,
-            'password' => 'secret'
+            'password' => 'password'
         ]);
 
         $response->assertSessionMissing('errors');

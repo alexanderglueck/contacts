@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContactDatesTable extends Migration
+class CreateContactCallsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,30 +13,24 @@ class CreateContactDatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_dates', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('contact_calls', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('contact_id');
+            $table->text('note')->nullable();
+            $table->dateTime('called_at');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
-            $table->integer('contact_id')->unsigned();
-            $table->string('name');
-            $table->dateTime('date');
-            $table->boolean('skip_year')->default(false);
-            $table->string('slug');
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' . 'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' . 'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -55,6 +49,6 @@ class CreateContactDatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_dates');
+        Schema::dropIfExists('contact_calls');
     }
 }

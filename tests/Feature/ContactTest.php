@@ -3,14 +3,12 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Team;
-use App\Models\User;
 use App\Models\Contact;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ContactTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @test */
     public function a_user_can_create_a_contact()
@@ -40,7 +38,8 @@ class ContactTest extends TestCase
         $user = $this->createUser('view contacts');
 
         $contact = create(Contact::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this->get(route('contacts.show', [$contact->slug]));
@@ -55,7 +54,8 @@ class ContactTest extends TestCase
         $user = $this->createUser('delete contacts');
 
         $contact = create(Contact::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this->get(route('contacts.delete', [$contact->slug]));
@@ -70,7 +70,8 @@ class ContactTest extends TestCase
         $user = $this->createUser('delete contacts');
 
         $contact = create(Contact::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $this->assertDatabaseHas('contacts', $contact->toArray());
@@ -92,7 +93,8 @@ class ContactTest extends TestCase
         $user = $this->createUser('edit contacts');
 
         $contact = create(Contact::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $response = $this->get(route('contacts.edit', [$contact->slug]));
@@ -108,7 +110,8 @@ class ContactTest extends TestCase
         $user = $this->createUser('edit contacts');
 
         $contactGroup = create(Contact::class, [
-            'created_by' => $user->id
+            'created_by' => $user->id,
+            'updated_by' => $user->id
         ]);
 
         $check = [
@@ -128,7 +131,7 @@ class ContactTest extends TestCase
         unset($parameters['updated_by']);
         unset($contactGroup2['updated_by']);
 
-        $response = $this
+        $response = $this->actingAs($user)
             ->put(route('contacts.update', [$contactGroup->slug]),
                 array_merge($parameters,
                     ['_token' => csrf_token()]

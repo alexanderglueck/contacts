@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class GiftIdea extends Model
 {
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'contact_id',
         'name',

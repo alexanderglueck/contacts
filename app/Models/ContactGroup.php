@@ -9,8 +9,6 @@ class ContactGroup extends Model
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = ['name', 'parent_id', 'created_by', 'updated_by'];
 
     /**
