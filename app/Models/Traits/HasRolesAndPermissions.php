@@ -42,7 +42,7 @@ trait HasRolesAndPermissions
         $permission = Permission::where(['name' => $permissionName])->first();
 
         if ( ! $permission instanceof Permission) {
-            throw new \Exception("Permission does not exist");
+            throw new \Exception('Permission does not exist');
         }
 
         return $this->hasPermissionViaRole($permission);

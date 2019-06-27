@@ -32,10 +32,7 @@ class AuthServiceProvider extends ServiceProvider
                     return $user->hasPermissionTo($ability) ?: null;
                 }
             } catch (\Exception $e) {
-
             }
-
-            return null;
         });
     }
 }

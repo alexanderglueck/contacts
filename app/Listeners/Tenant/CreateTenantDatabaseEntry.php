@@ -115,7 +115,9 @@ class CreateTenantDatabaseEntry implements ShouldQueue
             ->set('index', config('scout.prefix') . 'contact')
             ->get();
 
-        ElasticClient::indices()
-            ->delete($payload);
+        if (ElasticClient::indices()->exists($payload)) {
+            ElasticClient::indices()
+                ->delete($payload);
+        }
     }
 }
