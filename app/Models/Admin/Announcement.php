@@ -13,8 +13,6 @@ class Announcement extends Model implements Readable
 {
     use Sluggable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'title',
         'body',

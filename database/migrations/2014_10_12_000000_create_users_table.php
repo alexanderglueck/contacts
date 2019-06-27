@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('api_token', 60)->unique()->nullable();
             $table->string('google2fa_secret', 64)->nullable();
             $table->boolean('activated')->default(false);
-            $table->unsignedInteger('current_team_id')->nullable();
+            $table->unsignedBigInteger('current_team_id')->nullable();
             $table->string('stripe_id')->nullable();
             $table->string('card_brand')->nullable();
             $table->string('card_last_four')->nullable();

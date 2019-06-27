@@ -29,7 +29,7 @@ class ContactAddressUpdateRequest extends FormRequest
             'zip' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'country_id' => 'required|exists:system.countries,id',
+            'country_id' => 'required|exists:countries,id',
             'latitude' => 'sometimes|required|numeric',
             'longitude' => 'sometimes|required|numeric'
         ];

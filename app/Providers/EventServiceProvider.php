@@ -33,7 +33,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Tenant\TenantWasCreated::class => [
-            \App\Listeners\Tenant\CreateTenantDatabase::class,
+            \App\Listeners\Tenant\CreateTenantDatabaseEntry::class,
         ],
 
         \App\Events\Auth\UserSignedUp::class => [

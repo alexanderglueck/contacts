@@ -25,7 +25,7 @@ return [
     | This is the users table name used by Teamwork.
     |
     */
-    'users_table' => env('DB_DATABASE') . '.' . 'users',
+    'users_table' => 'users',
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ return [
     | This is the teams table name used by Teamwork to save teams to the database.
     |
     */
-    'teams_table' => env('DB_DATABASE') . '.' . 'teams',
+    'teams_table' => 'teams',
 
     /*
     |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ return [
     | database.
     |
     */
-    'team_user_table' => env('DB_DATABASE') . '.' . 'team_user',
+    'team_user_table' => 'team_user',
 
     /*
     |--------------------------------------------------------------------------
@@ -86,5 +86,5 @@ return [
     | invitation into teams to the database.
     |
     */
-    'team_invites_table' => env('DB_DATABASE') . '.' . 'team_invites',
+    'team_invites_table' => 'team_invites',
 ];

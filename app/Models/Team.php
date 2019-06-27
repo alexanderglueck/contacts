@@ -11,8 +11,6 @@ class Team extends Model implements Tenant
 {
     use IsTenant;
 
-    protected $connection = 'system';
-
     protected $casts = [
         'created' => 'boolean',
     ];

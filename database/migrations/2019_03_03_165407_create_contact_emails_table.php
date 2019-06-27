@@ -14,31 +14,25 @@ class CreateContactEmailsTable extends Migration
     public function up()
     {
         Schema::create('contact_emails', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('contact_id')->unsigned();
+            $table->unsignedBigInteger('contact_id');
             $table->string('name');
             $table->string('email');
             $table->boolean('is_default')->default(false);
             $table->string('slug');
-            $table->integer('created_by')->unsigned();
-            $table->integer('updated_by')->unsigned();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on(
-                    env('DB_DATABASE') . '.' .
-                    'users'
-                )
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 

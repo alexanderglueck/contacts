@@ -16,8 +16,6 @@ class Contact extends Model implements CalendarInterface
     use RecordsActivity;
     use Searchable;
 
-    protected $connection = 'tenant';
-
     protected $fillable = [
         'firstname',
         'lastname',
@@ -481,4 +479,15 @@ class Contact extends Model implements CalendarInterface
 
         return $array;
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($contact) {
+            $contact->team_id = auth()->user()->current_team_id;
+        });
+    }
+
+
 }

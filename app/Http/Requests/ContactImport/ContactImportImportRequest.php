@@ -24,7 +24,7 @@ class ContactImportImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'contact_group_id' => 'required|integer|exists:tenant.contact_groups,id',
+            'contact_group_id' => 'required|integer|exists:contact_groups,id',
             'import_file' => 'required|file|mimes:xlsx'
         ];
     }

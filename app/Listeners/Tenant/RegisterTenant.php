@@ -4,25 +4,9 @@ namespace App\Listeners\Tenant;
 
 use App\Tenant\Manager;
 use App\Events\Tenant\TenantIdentified;
-use App\Tenant\Database\DatabaseManager;
 
 class RegisterTenant
 {
-    /**
-     * @var DatabaseManager
-     */
-    protected $db;
-
-    /**
-     * Create the event listener.
-     *
-     * @param DatabaseManager $databaseManager
-     */
-    public function __construct(DatabaseManager $databaseManager)
-    {
-        $this->db = $databaseManager;
-    }
-
     /**
      * Handle the event.
      *
@@ -36,11 +20,6 @@ class RegisterTenant
          * Set the tenant
          */
         app(Manager::class)->setTenant($event->tenant);
-
-        /*
-         * Create the tenant database connection
-         */
-        $this->db->createConnection($event->tenant);
 
         /*
          * Set the scout search prefix

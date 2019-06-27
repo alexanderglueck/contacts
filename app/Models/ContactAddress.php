@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Scopes\CreatedByScope;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactAddress extends Model
 {
     use Sluggable;
-
-    protected $connection = 'tenant';
 
     protected $fillable = [
         'contact_id',
@@ -92,6 +89,6 @@ class ContactAddress extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CreatedByScope());
+        // static::addGlobalScope(new BelongsToTenantScope());
     }
 }

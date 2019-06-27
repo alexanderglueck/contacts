@@ -13,8 +13,8 @@ class CreateContactContactgroupPivotTable extends Migration
     public function up()
     {
         Schema::create('contact_contact_group', function (Blueprint $table) {
-            $table->integer('contact_id')->unsigned()->index();
-            $table->integer('contact_group_id')->unsigned()->index();
+            $table->unsignedBigInteger('contact_id')->index();
+            $table->unsignedBigInteger('contact_group_id')->index();
 
             $table->foreign('contact_id')
                 ->references('id')

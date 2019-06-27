@@ -14,13 +14,13 @@ class CreateAnnouncementUserTable extends Migration
     public function up()
     {
         Schema::create('announcement_user', function (Blueprint $table) {
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('announcement_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('announcement_id');
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')
-                ->on(env('DB_DATABASE') . '.' . 'users')
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 

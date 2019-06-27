@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConfirmationToken extends Model
 {
-    protected $connection = 'system';
-
     public $timestamps = false;
 
     protected $dates = [
@@ -41,13 +39,5 @@ class ConfirmationToken extends Model
         static::creating(function ($token) {
             optional($token->user->confirmationToken)->delete();
         });
-
-        /*
-         *  static::creating(function ($token) {
-            $token->user->confirmationTokens->each(function ($token) {
-                $token->delete();
-            });
-        });
-         */
     }
 }

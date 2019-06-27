@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTenantConnectionsTable extends Migration
+class CreateNotificationSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,18 @@ class CreateTenantConnectionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tenant_connections', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('team_id')->unsigned()->index();
-            $table->string('database');
+        Schema::create('notification_settings', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->boolean('send_daily')->default(false);
+            $table->boolean('send_weekly')->default(false);
+
+            $table->unsignedBigInteger('user_id');
+
             $table->timestamps();
 
-            $table->foreign('team_id')
+            $table->foreign('user_id')
                 ->references('id')
-                ->on('teams')
+                ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -34,6 +37,6 @@ class CreateTenantConnectionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant_connections');
+        Schema::dropIfExists('notification_settings');
     }
 }
