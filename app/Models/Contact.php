@@ -488,6 +488,4 @@ class Contact extends Model implements CalendarInterface
             $contact->team_id = auth()->user()->current_team_id;
         });
     }
-
-
 }

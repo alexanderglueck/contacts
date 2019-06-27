@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Guard;
 use App\Scopes\BelongsToTenantScope;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Spatie\Permission\Exceptions\RoleAlreadyExists;
-use Spatie\Permission\Guard;
 use Spatie\Permission\Models\Role as BaseRole;
+use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

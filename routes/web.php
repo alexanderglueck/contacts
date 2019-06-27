@@ -46,7 +46,6 @@ Route::group(['middleware' => ['guest']], function () {
  */
 Route::group(['as' => 'plans.'], function () {
     Route::get('plans/', 'Subscription\PlanController@index')->name('index');
-   // Route::get('plans/teams', 'Subscription\PlanTeamController@index')->name('teams.index');
 });
 
 /**

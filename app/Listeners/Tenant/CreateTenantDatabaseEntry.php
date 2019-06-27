@@ -24,7 +24,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  TenantWasCreated $event
+     * @param TenantWasCreated $event
      *
      * @return void
      * @throws \Exception
@@ -34,7 +34,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
         /*
          * Setup tenant database
          */
-      //  $this->seed($event->tenant);
+        //  $this->seed($event->tenant);
 
         /*
          * Setup roles and permissions
