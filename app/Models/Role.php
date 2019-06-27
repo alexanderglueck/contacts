@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
-use Spatie\Permission\Guard;
 use App\Scopes\BelongsToTenantScope;
+use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Spatie\Permission\Models\Role as BaseRole;
-use Spatie\Permission\Exceptions\RoleAlreadyExists;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Role extends BaseRole
+class Role extends Model
 {
     use Sluggable;
+
+    protected $fillable = [
+        'name',
+        'team_id'
+    ];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
 
     public function syncUsers($users)
     {
@@ -20,7 +26,7 @@ class Role extends BaseRole
 
         foreach ($currentUsers as $user) {
             /** @var $user User */
-            $user->removeRole($this->id);
+            $user->roles()->detach($this->id);
         }
 
         if (is_array($users)) {
@@ -33,25 +39,6 @@ class Role extends BaseRole
     public function team()
     {
         return $this->belongsTo(Team::class);
-    }
-
-    public function permissions(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            config('permission.models.permission'),
-            config('permission.table_names.role_has_permissions')
-        );
-    }
-
-    public function users(): MorphToMany
-    {
-        return $this->morphedByMany(
-            getModelForGuard($this->attributes['guard_name']),
-            'model',
-            config('permission.table_names.model_has_roles'),
-            'role_id',
-            'model_id'
-        );
     }
 
     /**
@@ -89,25 +76,5 @@ class Role extends BaseRole
         parent::boot();
 
         static::addGlobalScope(new BelongsToTenantScope());
-    }
-
-    public static function create(array $attributes = [])
-    {
-        $attributes['guard_name'] = $attributes['guard_name'] ?? Guard::getDefaultName(static::class);
-
-        if (static::withoutGlobalScopes()
-            ->where('team_id', $attributes['team_id'])
-            ->where('name', $attributes['name'])
-            ->where('guard_name', $attributes['guard_name'])
-            ->first()
-        ) {
-            throw RoleAlreadyExists::create($attributes['name'], $attributes['guard_name']);
-        }
-
-        if (isNotLumen() && app()::VERSION < '5.4') {
-            return parent::create($attributes);
-        }
-
-        return static::query()->create($attributes);
     }
 }

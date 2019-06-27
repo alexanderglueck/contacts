@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use ScoutElastic\Searchable;
 use App\Traits\RecordsActivity;
 use App\ContactIndexConfigurator;
+use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -483,6 +484,8 @@ class Contact extends Model implements CalendarInterface
     protected static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new BelongsToTenantScope());
 
         static::creating(function ($contact) {
             $contact->team_id = auth()->user()->current_team_id;

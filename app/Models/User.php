@@ -6,12 +6,12 @@ use App\Models\System\News;
 use Laravel\Cashier\Billable;
 use Laravel\Cashier\Subscription;
 use App\Models\Admin\Announcement;
-use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
 use Mpociot\Teamwork\Traits\UserHasTeams;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
+use App\Models\Traits\HasRolesAndPermissions;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -19,7 +19,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use Sluggable;
-    use HasRoles;
+    use HasRolesAndPermissions;
     use HasConfirmationTokens;
     use Billable;
     use HasSubscriptions;

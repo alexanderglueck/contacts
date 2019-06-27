@@ -8,8 +8,10 @@ use App\Models\Permission;
 use App\Tenant\Models\Tenant;
 use App\ContactIndexConfigurator;
 use App\Events\Auth\UserSignedUp;
+use ScoutElastic\Payloads\RawPayload;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
+use ScoutElastic\Facades\ElasticClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CreateTenantDatabaseEntry implements ShouldQueue
@@ -88,9 +90,9 @@ class CreateTenantDatabaseEntry implements ShouldQueue
             'team_id' => $tenant->id
         ]);
 
-        $role->syncPermissions(Permission::all());
+        $role->permissions()->attach(Permission::pluck('id')->flatten()->toArray());
 
-        $user->assignRole($role);
+        $user->roles()->attach($role);
     }
 
     /**
@@ -100,8 +102,20 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     {
         config()->set('scout.prefix', 'tenant_' . $tenant->id . '_');
 
+        $this->dropExistingIndex();
+
         Artisan::call('elastic:create-index', [
             'index-configurator' => ContactIndexConfigurator::class
         ]);
+    }
+
+    protected function dropExistingIndex(): void
+    {
+        $payload = (new RawPayload())
+            ->set('index', config('scout.prefix') . 'contact')
+            ->get();
+
+        ElasticClient::indices()
+            ->delete($payload);
     }
 }

@@ -32,7 +32,6 @@ abstract class TestCase extends BaseTestCase
 
         session()->put('tenant', $team->uuid);
 
-
         $this->be($user);
 
         event(new TenantWasCreated($team, $user));
@@ -42,8 +41,6 @@ abstract class TestCase extends BaseTestCase
         $this->session([
             'tenant' => $team->uuid
         ]);
-
-        $user->givePermissionTo($permission);
 
         return $user;
     }
