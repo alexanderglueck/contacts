@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\WebsocketTest;
 use Illuminate\Http\Request;
+use App\Events\WebsocketTest;
 
 class WebsocketTestController extends Controller
 {
@@ -11,6 +11,6 @@ class WebsocketTestController extends Controller
     {
         event(new WebsocketTest(now()->format('d.m.Y H:i:s')));
 
-        return "done";
+        return 'done';
     }
 }
