@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -20,3 +19,8 @@ window.Vue = require('vue');
 const app = new Vue({
     el: '#app'
 });
+
+window.Echo.private('contact-1-1')
+    .listen('WebsocketTest', (e) => {
+        console.log(e);
+    });

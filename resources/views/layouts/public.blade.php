@@ -24,7 +24,7 @@
 </head>
 
 <body class="gray-bg">
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow" id="app">
     <h5 class="my-0 font-weight-normal">{{ config('app.name') }}</h5>
     <nav class="my-2 my-md-0 mr-md-3 mr-md-auto ">
         <a class="p-2 text-dark" href="{{ route('plans.index') }}">
