@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactDate;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactDate\ContactDateStoreRequest;
 use App\Http\Requests\ContactDate\ContactDateUpdateRequest;
@@ -16,7 +15,7 @@ class ContactDateController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,7 +32,7 @@ class ContactDateController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,7 +50,7 @@ class ContactDateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactDateStoreRequest $request
-     * @param  \App\Models\Contact    $contact
+     * @param \App\Models\Contact     $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -63,13 +62,7 @@ class ContactDateController extends Controller
             $validated['date'] .= 1900;
         }
 
-        $contactDate = new ContactDate();
-        $contactDate->fill($validated);
-        $contactDate->contact_id = $contact->id;
-        $contactDate->created_by = Auth::id();
-        $contactDate->updated_by = Auth::id();
-
-        if ($contactDate->save()) {
+        if ($contact->contactDates()->create($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.created'));
 
             return redirect()->route('contact_dates.index', [$contact->slug]);
@@ -83,8 +76,8 @@ class ContactDateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
@@ -101,8 +94,8 @@ class ContactDateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
@@ -121,8 +114,8 @@ class ContactDateController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactDateUpdateRequest $request
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactDate  $contactDate
      *
      * @return \Illuminate\Http\Response
      */
@@ -134,10 +127,7 @@ class ContactDateController extends Controller
             $validated['date'] .= 1900;
         }
 
-        $contactDate->fill($validated);
-        $contactDate->updated_by = Auth::id();
-
-        if ($contactDate->save()) {
+        if ($contactDate->update($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.updated'));
 
             return redirect()->route('contact_dates.show', [$contact->slug, $contactDate->slug]);
@@ -151,8 +141,8 @@ class ContactDateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -175,8 +165,8 @@ class ContactDateController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactDate $contactDate
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */

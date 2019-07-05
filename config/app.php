@@ -176,19 +176,24 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TenantServiceProvider::class,
         App\Providers\StripeServiceProvider::class,
         Mpociot\Teamwork\TeamworkServiceProvider::class,
 
-     //   Elasticquent\ElasticquentServiceProvider::class,
+        //   Elasticquent\ElasticquentServiceProvider::class,
 
         /*
          * Custom Blade Directives
          */
         App\Providers\BladeServiceProvider::class,
+
+        /*
+         * Permission Service Provider
+         */
+        App\Providers\PermissionServiceProvider::class,
     ],
 
     /*

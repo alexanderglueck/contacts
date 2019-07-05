@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\GiftIdea;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\GiftIdea\GiftIdeaStoreRequest;
 use App\Http\Requests\GiftIdea\GiftIdeaUpdateRequest;
@@ -57,13 +56,7 @@ class GiftIdeaController extends Controller
      */
     public function store(GiftIdeaStoreRequest $request, Contact $contact)
     {
-        $giftIdea = new GiftIdea();
-        $giftIdea->fill($request->all());
-        $giftIdea->contact_id = $contact->id;
-        $giftIdea->created_by = Auth::id();
-        $giftIdea->updated_by = Auth::id();
-
-        if ($giftIdea->save()) {
+        if ($contact->giftIdeas()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.created'));
 
             return redirect()->route('gift_ideas.index', [$contact->slug]);
@@ -77,8 +70,8 @@ class GiftIdeaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Contact               $contact
-     * @param  \App\Models\GiftIdea $giftIdea
+     * @param Contact              $contact
+     * @param \App\Models\GiftIdea $giftIdea
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +88,8 @@ class GiftIdeaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Contact               $contact
-     * @param  \App\Models\GiftIdea $giftIdea
+     * @param Contact              $contact
+     * @param \App\Models\GiftIdea $giftIdea
      *
      * @return \Illuminate\Http\Response
      */
@@ -122,10 +115,7 @@ class GiftIdeaController extends Controller
      */
     public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea)
     {
-        $giftIdea->fill($request->all());
-        $giftIdea->updated_by = Auth::id();
-
-        if ($giftIdea->save()) {
+        if ($giftIdea->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.updated'));
 
             return redirect()->route('gift_ideas.show', [$contact->slug, $giftIdea->id]);
@@ -163,8 +153,8 @@ class GiftIdeaController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact  $contact
-     * @param  \App\Models\GiftIdea $giftIdea
+     * @param \App\Models\Contact  $contact
+     * @param \App\Models\GiftIdea $giftIdea
      *
      * @return \Illuminate\Http\Response
      */

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactUrl;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactUrl\ContactUrlStoreRequest;
 use App\Http\Requests\ContactUrl\ContactUrlUpdateRequest;
@@ -16,7 +15,7 @@ class ContactUrlController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,7 +32,7 @@ class ContactUrlController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,19 +50,13 @@ class ContactUrlController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactUrlStoreRequest $request
-     * @param  \App\Models\Contact   $contact
+     * @param \App\Models\Contact    $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function store(ContactUrlStoreRequest $request, Contact $contact)
     {
-        $contactUrl = new ContactUrl();
-        $contactUrl->fill($request->all());
-        $contactUrl->contact_id = $contact->id;
-        $contactUrl->created_by = Auth::id();
-        $contactUrl->updated_by = Auth::id();
-
-        if ($contactUrl->save()) {
+        if ($contact->urls()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.created'));
 
             return redirect()->route('contact_urls.index', [$contact->slug]);
@@ -77,8 +70,8 @@ class ContactUrlController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact    $contact
-     * @param  \App\Models\ContactUrl $contactUrl
+     * @param \App\Models\Contact    $contact
+     * @param \App\Models\ContactUrl $contactUrl
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +88,8 @@ class ContactUrlController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact    $contact
-     * @param  \App\Models\ContactUrl $contactUrl
+     * @param \App\Models\Contact    $contact
+     * @param \App\Models\ContactUrl $contactUrl
      *
      * @return \Illuminate\Http\Response
      */
@@ -115,17 +108,14 @@ class ContactUrlController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactUrlUpdateRequest $request
-     * @param  \App\Models\Contact    $contact
-     * @param  \App\Models\ContactUrl $contactUrl
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactUrl  $contactUrl
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactUrlUpdateRequest $request, Contact $contact, ContactUrl $contactUrl)
     {
-        $contactUrl->fill($request->all());
-        $contactUrl->updated_by = Auth::id();
-
-        if ($contactUrl->save()) {
+        if ($contactUrl->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.updated'));
 
             return redirect()->route('contact_urls.show', [$contact->slug, $contactUrl->slug]);
@@ -139,8 +129,8 @@ class ContactUrlController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact    $contact
-     * @param  \App\Models\ContactUrl $contactUrl
+     * @param \App\Models\Contact    $contact
+     * @param \App\Models\ContactUrl $contactUrl
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -163,8 +153,8 @@ class ContactUrlController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact    $contact
-     * @param  \App\Models\ContactUrl $contactUrl
+     * @param \App\Models\Contact    $contact
+     * @param \App\Models\ContactUrl $contactUrl
      *
      * @return \Illuminate\Http\Response
      */

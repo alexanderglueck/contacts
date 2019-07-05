@@ -194,3 +194,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('news/{news}', 'System\NewsController@show')->name('news.show');
+
+Route::get('websocket', 'WebsocketTestController@index')->name('websocket.test');

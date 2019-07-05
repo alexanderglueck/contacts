@@ -51,6 +51,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\Auth\UserChangedPassword::class => [
             \App\Listeners\Auth\SendPasswordChangedEmail::class,
         ],
+
+        \App\Events\WebsocketTest::class => [
+            \App\Listeners\SendEventToBrowser::class
+        ]
     ];
 
     /**

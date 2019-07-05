@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Models\System\News;
 use Laravel\Cashier\Billable;
+use App\Models\Traits\HasRoles;
 use Laravel\Cashier\Subscription;
 use App\Models\Admin\Announcement;
-use Spatie\Permission\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
 use Mpociot\Teamwork\Traits\UserHasTeams;

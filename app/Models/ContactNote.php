@@ -9,12 +9,7 @@ class ContactNote extends Model
 {
     use Sluggable;
 
-    protected $fillable = [
-        'name',
-        'note',
-        'created_by',
-        'updated_by'
-    ];
+    protected $fillable = ['name', 'note'];
 
     /**
      * All of the relationships to be touched.
@@ -56,5 +51,24 @@ class ContactNote extends Model
                 'reserved' => ['create']
             ]
         ];
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }

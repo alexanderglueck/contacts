@@ -6,12 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactCall extends Model
 {
-    protected $fillable = [
-        'note',
-        'called_at',
-        'created_by',
-        'updated_by'
-    ];
+    protected $fillable = ['note', 'called_at'];
 
     /**
      * Defines the has-many relationship with the Contact model
@@ -45,5 +40,24 @@ class ContactCall extends Model
         }
 
         return '';
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }
