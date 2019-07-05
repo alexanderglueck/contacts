@@ -7,7 +7,6 @@ use App\Models\Team;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
-use Spatie\Permission\PermissionRegistrar;
 use App\Http\Requests\Team\TeamStoreRequest;
 
 class TeamController extends Controller
@@ -74,7 +73,7 @@ class TeamController extends Controller
     /**
      * Switch to the given team.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -94,15 +93,13 @@ class TeamController extends Controller
             abort(403);
         }
 
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
         return redirect()->route('home');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -125,7 +122,7 @@ class TeamController extends Controller
      * Update the specified resource in storage.
      *
      * @param TeamStoreRequest $request
-     * @param  int             $id
+     * @param int              $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -145,7 +142,7 @@ class TeamController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
