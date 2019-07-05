@@ -2,8 +2,9 @@
 
 namespace App\Models\Traits;
 
-use App\Models\Role;
+use Exception;
 use App\Models\Permission;
+use App\Permission\PermissionRegistrar;
 
 trait HasPermissions
 {
@@ -27,21 +28,23 @@ trait HasPermissions
     {
         try {
             return $this->hasPermissionTo($permission);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
 
     public function hasPermissionTo($permissionName): bool
     {
-        $permission = Permission::where(['name' => $permissionName])->first();
-
-        if ( ! $permission instanceof Permission) {
-            throw new \Exception('Permission does not exist');
+        if (is_string($permissionName)) {
+            $permission = Permission::findByName($permissionName);
         }
 
-        if ($this instanceof Role) {
-            return $this->hasDirectPermission($permission);
+        if (is_int($permissionName)) {
+            $permission = Permission::findById($permissionName);
+        }
+
+        if ( ! $permission instanceof Permission) {
+            throw new Exception('Permission does not exist');
         }
 
         return $this->hasPermissionViaRole($permission);
@@ -57,14 +60,14 @@ trait HasPermissions
     public function hasDirectPermission($permission): bool
     {
         if (is_string($permission)) {
-            $permission = Permission::where(['name' => $permission])->first();
+            $permission = Permission::findByName($permission);
             if ( ! $permission) {
                 return false;
             }
         }
 
         if (is_int($permission)) {
-            $permission = Permission::find($permission);
+            $permission = Permission::findById($permission);
             if ( ! $permission) {
                 return false;
             }
@@ -85,11 +88,13 @@ trait HasPermissions
     protected function getStoredPermission($permissions)
     {
         if (is_numeric($permissions)) {
-            return Permission::find($permissions);
+            return Permission::findById($permissions);
         }
+
         if (is_string($permissions)) {
-            return Permission::where(['name' => $permissions])->first();
+            return Permission::findByName($permissions)->first();
         }
+
         if (is_array($permissions)) {
             return Permission::whereIn('name', $permissions)->get();
         }
@@ -134,6 +139,23 @@ trait HasPermissions
             );
         }
 
+        $this->forgetCachedPermissions();
+
         return $this;
+    }
+
+    public function syncPermissions(...$permissions)
+    {
+        $this->permissions()->detach();
+
+        return $this->givePermissionTo($permissions);
+    }
+
+    /**
+     * Forget the cached permissions.
+     */
+    public function forgetCachedPermissions()
+    {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

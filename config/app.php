@@ -183,12 +183,17 @@ return [
         App\Providers\StripeServiceProvider::class,
         Mpociot\Teamwork\TeamworkServiceProvider::class,
 
-     //   Elasticquent\ElasticquentServiceProvider::class,
+        //   Elasticquent\ElasticquentServiceProvider::class,
 
         /*
          * Custom Blade Directives
          */
         App\Providers\BladeServiceProvider::class,
+
+        /*
+         * Permission Service Provider
+         */
+        App\Providers\PermissionServiceProvider::class,
     ],
 
     /*

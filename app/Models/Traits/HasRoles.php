@@ -6,6 +6,8 @@ use App\Models\Role;
 
 trait HasRoles
 {
+    use HasPermissions;
+
     /**
      * @return mixed
      */
@@ -17,11 +19,15 @@ trait HasRoles
     public function assignRole($role)
     {
         $this->roles()->attach($role);
+
+        $this->forgetCachedPermissions();
     }
 
     public function removeRole($role)
     {
         $this->roles()->detach($role);
+
+        $this->forgetCachedPermissions();
     }
 
     public function hasRole($roles): bool
@@ -29,12 +35,15 @@ trait HasRoles
         if (is_string($roles)) {
             return $this->roles->contains('name', $roles);
         }
+
         if (is_int($roles)) {
             return $this->roles->contains('id', $roles);
         }
+
         if ($roles instanceof Role) {
             return $this->roles->contains('id', $roles->id);
         }
+
         if (is_array($roles)) {
             foreach ($roles as $role) {
                 if ($this->hasRole($role)) {

@@ -6,25 +6,16 @@ use App\Scopes\BelongsToTenantScope;
 use App\Models\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\Traits\RefreshesPermissionCache;
 
 class Role extends Model
 {
-    use Sluggable, HasPermissions;
+    use Sluggable, HasPermissions, RefreshesPermissionCache;
 
     protected $fillable = [
         'name',
         'team_id'
     ];
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class);
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
 
     public function syncUsers($users)
     {
@@ -32,7 +23,7 @@ class Role extends Model
 
         foreach ($currentUsers as $user) {
             /** @var $user User */
-            $user->roles()->detach($this->id);
+            $user->removeRole($this->id);
         }
 
         if (is_array($users)) {
@@ -42,11 +33,14 @@ class Role extends Model
         }
     }
 
-    public function syncPermissions(...$permissions)
+    public function hasPermissionTo($permission)
     {
-        $this->permissions()->detach();
+        return $this->hasDirectPermission($permission);
+    }
 
-        return $this->givePermissionTo($permissions);
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 
     public function team()
