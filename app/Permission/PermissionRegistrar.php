@@ -91,7 +91,7 @@ class PermissionRegistrar
     public function getPermissions(array $params = []): Collection
     {
         if ($this->permissions === null) {
-            $this->permissions = $this->cache->remember(self::$cacheKey . "-" . auth()->user()->current_team_id, self::$cacheExpirationTime, function () {
+            $this->permissions = $this->cache->remember(self::$cacheKey . '-' . auth()->user()->current_team_id, self::$cacheExpirationTime, function () {
                 return Permission::with('roles')->get();
             });
         }

@@ -19,13 +19,12 @@ class Permission extends Model
      *
      * @return Permission
      * @throws Exception
-     *
      */
     public static function findByName(string $name)
     {
         $permission = static::getPermissions(['name' => $name])->first();
         if ( ! $permission) {
-            throw new Exception("Permission does not exist");
+            throw new Exception('Permission does not exist');
         }
 
         return $permission;
@@ -38,13 +37,12 @@ class Permission extends Model
      *
      * @return Permission
      * @throws Exception
-     *
      */
     public static function findById(int $id)
     {
         $permission = static::getPermissions(['id' => $id])->first();
         if ( ! $permission) {
-            throw new Exception("Permission does not exist");
+            throw new Exception('Permission does not exist');
         }
 
         return $permission;
