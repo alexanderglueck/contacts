@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactNote;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactNote\ContactNoteStoreRequest;
 use App\Http\Requests\ContactNote\ContactNoteUpdateRequest;
@@ -16,7 +15,7 @@ class ContactNoteController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,7 +32,7 @@ class ContactNoteController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,19 +50,13 @@ class ContactNoteController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactNoteStoreRequest $request
-     * @param  \App\Models\Contact    $contact
+     * @param \App\Models\Contact     $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function store(ContactNoteStoreRequest $request, Contact $contact)
     {
-        $contactNote = new ContactNote();
-        $contactNote->fill($request->all());
-        $contactNote->contact_id = $contact->id;
-        $contactNote->created_by = Auth::id();
-        $contactNote->updated_by = Auth::id();
-
-        if ($contactNote->save()) {
+        if ($contact->notes()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.created'));
 
             return redirect()->route('contact_notes.index', [$contact->slug]);
@@ -77,8 +70,8 @@ class ContactNoteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactNote $contactNote
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactNote $contactNote
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +88,8 @@ class ContactNoteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactNote $contactNote
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactNote $contactNote
      *
      * @return \Illuminate\Http\Response
      */
@@ -115,17 +108,14 @@ class ContactNoteController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactNoteUpdateRequest $request
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactNote $contactNote
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactNote  $contactNote
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactNoteUpdateRequest $request, Contact $contact, ContactNote $contactNote)
     {
-        $contactNote->fill($request->all());
-        $contactNote->updated_by = Auth::id();
-
-        if ($contactNote->save()) {
+        if ($contactNote->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.updated'));
 
             return redirect()->route('contact_notes.show', [$contact->slug, $contactNote->slug]);
@@ -139,8 +129,8 @@ class ContactNoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactNote $contactNote
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactNote $contactNote
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -163,8 +153,8 @@ class ContactNoteController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactNote $contactNote
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactNote $contactNote
      *
      * @return \Illuminate\Http\Response
      */

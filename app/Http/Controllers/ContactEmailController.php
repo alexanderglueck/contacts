@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactEmail;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactEmail\ContactEmailStoreRequest;
 use App\Http\Requests\ContactEmail\ContactEmailUpdateRequest;
@@ -16,7 +15,7 @@ class ContactEmailController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,7 +32,7 @@ class ContactEmailController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,19 +50,13 @@ class ContactEmailController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactEmailStoreRequest $request
-     * @param  \App\Models\Contact     $contact
+     * @param \App\Models\Contact      $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function store(ContactEmailStoreRequest $request, Contact $contact)
     {
-        $contactEmail = new ContactEmail();
-        $contactEmail->fill($request->all());
-        $contactEmail->contact_id = $contact->id;
-        $contactEmail->created_by = Auth::id();
-        $contactEmail->updated_by = Auth::id();
-
-        if ($contactEmail->save()) {
+        if ($contact->emails()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.created'));
 
             return redirect()->route('contact_emails.index', [$contact->slug]);
@@ -77,8 +70,8 @@ class ContactEmailController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactEmail $contactEmail
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactEmail $contactEmail
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +88,8 @@ class ContactEmailController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactEmail $contactEmail
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactEmail $contactEmail
      *
      * @return \Illuminate\Http\Response
      */
@@ -115,17 +108,14 @@ class ContactEmailController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactEmailUpdateRequest $request
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactEmail $contactEmail
+     * @param \App\Models\Contact       $contact
+     * @param \App\Models\ContactEmail  $contactEmail
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactEmailUpdateRequest $request, Contact $contact, ContactEmail $contactEmail)
     {
-        $contactEmail->fill($request->all());
-        $contactEmail->updated_by = Auth::id();
-
-        if ($contactEmail->save()) {
+        if ($contactEmail->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.updated'));
 
             return redirect()->route('contact_emails.show', [$contact->slug, $contactEmail->slug]);
@@ -139,8 +129,8 @@ class ContactEmailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactEmail $contactEmail
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactEmail $contactEmail
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -163,8 +153,8 @@ class ContactEmailController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact      $contact
-     * @param  \App\Models\ContactEmail $contactEmail
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactEmail $contactEmail
      *
      * @return \Illuminate\Http\Response
      */

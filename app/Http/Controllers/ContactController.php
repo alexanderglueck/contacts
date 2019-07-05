@@ -60,8 +60,6 @@ class ContactController extends Controller
     {
         $contact = new Contact();
         $contact->fill($request->all());
-        $contact->created_by = Auth::id();
-        $contact->updated_by = Auth::id();
 
         if ($contact->save()) {
             if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
@@ -83,7 +81,7 @@ class ContactController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -101,7 +99,7 @@ class ContactController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -122,22 +120,19 @@ class ContactController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactUpdateRequest $request
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact  $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactUpdateRequest $request, Contact $contact)
     {
-        $contact->fill($request->all());
-        $contact->updated_by = Auth::id();
-
         if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
             $contact->contactGroups()->sync($request->contact_groups);
         } else {
             $contact->contactGroups()->sync([]);
         }
 
-        if ($contact->save()) {
+        if ($contact->update($request->all())) {
             flashSuccess(trans('flash_message.contact.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
@@ -151,7 +146,7 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -180,7 +175,7 @@ class ContactController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */

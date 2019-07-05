@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Scopes\CreatedByScope;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
@@ -10,7 +9,7 @@ class ContactNumber extends Model
 {
     use Sluggable;
 
-    protected $fillable = ['name', 'number', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'number'];
 
     /**
      * All of the relationships to be touched.
@@ -74,6 +73,13 @@ class ContactNumber extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CreatedByScope());
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }

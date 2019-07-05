@@ -317,6 +317,11 @@ class Contact extends Model implements CalendarInterface
         return $this->hasMany(ContactDate::class)->orderBy('name');
     }
 
+    /**
+     * Defines the has-many relationship with the ContactDate model
+     *
+     * @return mixed
+     */
     public function contactDates()
     {
         return $this->hasMany(ContactDate::class)->orderBy('name');
@@ -489,6 +494,12 @@ class Contact extends Model implements CalendarInterface
 
         static::creating(function ($contact) {
             $contact->team_id = auth()->user()->current_team_id;
+            $contact->created_by = auth()->id();
+            $contact->updated_by = auth()->id();
+        });
+
+        static::updating(function ($contact) {
+            $contact->updated_by = auth()->id();
         });
     }
 }

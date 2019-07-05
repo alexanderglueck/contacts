@@ -9,7 +9,7 @@ class ContactUrl extends Model
 {
     use Sluggable;
 
-    protected $fillable = ['name', 'url', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'url'];
 
     /**
      * All of the relationships to be touched.
@@ -62,6 +62,13 @@ class ContactUrl extends Model
     {
         parent::boot();
 
-        //   static::addGlobalScope(new CreatedByScope());
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }

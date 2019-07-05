@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Scopes\CreatedByScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -11,13 +10,7 @@ class ContactDate extends Model implements CalendarInterface
 {
     use Sluggable;
 
-    protected $fillable = [
-        'name',
-        'date',
-        'skip_year',
-        'created_by',
-        'updated_by'
-    ];
+    protected $fillable = ['name', 'date', 'skip_year'];
 
     /**
      * All of the relationships to be touched.
@@ -169,6 +162,13 @@ class ContactDate extends Model implements CalendarInterface
     {
         parent::boot();
 
-        static::addGlobalScope(new CreatedByScope());
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }

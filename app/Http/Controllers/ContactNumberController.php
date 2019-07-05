@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactNumber;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactNumber\ContactNumberStoreRequest;
 use App\Http\Requests\ContactNumber\ContactNumberUpdateRequest;
@@ -16,7 +15,7 @@ class ContactNumberController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,7 +32,7 @@ class ContactNumberController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,19 +50,13 @@ class ContactNumberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactNumberStoreRequest $request
-     * @param  \App\Models\Contact      $contact
+     * @param \App\Models\Contact       $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function store(ContactNumberStoreRequest $request, Contact $contact)
     {
-        $contactNumber = new ContactNumber();
-        $contactNumber->fill($request->all());
-        $contactNumber->contact_id = $contact->id;
-        $contactNumber->created_by = Auth::id();
-        $contactNumber->updated_by = Auth::id();
-
-        if ($contactNumber->save()) {
+        if ($contact->numbers()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_number.created'));
 
             return redirect()->route('contact_numbers.index', [$contact->slug]);
@@ -77,8 +70,8 @@ class ContactNumberController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact       $contact
-     * @param  \App\Models\ContactNumber $contactNumber
+     * @param \App\Models\Contact       $contact
+     * @param \App\Models\ContactNumber $contactNumber
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +88,8 @@ class ContactNumberController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact       $contact
-     * @param  \App\Models\ContactNumber $contactNumber
+     * @param \App\Models\Contact       $contact
+     * @param \App\Models\ContactNumber $contactNumber
      *
      * @return \Illuminate\Http\Response
      */
@@ -115,17 +108,14 @@ class ContactNumberController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactNumberUpdateRequest $request
-     * @param  \App\Models\Contact       $contact
-     * @param  \App\Models\ContactNumber $contactNumber
+     * @param \App\Models\Contact        $contact
+     * @param \App\Models\ContactNumber  $contactNumber
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactNumberUpdateRequest $request, Contact $contact, ContactNumber $contactNumber)
     {
-        $contactNumber->fill($request->all());
-        $contactNumber->updated_by = Auth::id();
-
-        if ($contactNumber->save()) {
+        if ($contactNumber->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_number.updated'));
 
             return redirect()->route('contact_numbers.show', [$contact->slug, $contactNumber->slug]);
@@ -139,8 +129,8 @@ class ContactNumberController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact       $contact
-     * @param  \App\Models\ContactNumber $contactNumber
+     * @param \App\Models\Contact       $contact
+     * @param \App\Models\ContactNumber $contactNumber
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -163,8 +153,8 @@ class ContactNumberController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact       $contact
-     * @param  \App\Models\ContactNumber $contactNumber
+     * @param \App\Models\Contact       $contact
+     * @param \App\Models\ContactNumber $contactNumber
      *
      * @return \Illuminate\Http\Response
      */

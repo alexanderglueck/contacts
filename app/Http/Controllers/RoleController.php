@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Spatie\Permission\Models\Permission;
 use App\Http\Requests\Role\RoleStoreRequest;
 use App\Http\Requests\Role\RoleUpdateRequest;
 
@@ -76,7 +76,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Role $role
+     * @param \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      */
@@ -92,8 +92,8 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Request           $request
-     * @param  \App\Models\Role $role
+     * @param Request          $request
+     * @param \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      */
@@ -113,7 +113,7 @@ class RoleController extends Controller
      * Update the specified resource in storage.
      *
      * @param RoleUpdateRequest $request
-     * @param  \App\Models\Role $role
+     * @param \App\Models\Role  $role
      *
      * @return \Illuminate\Http\Response
      */
@@ -139,7 +139,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Role $role
+     * @param \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -162,7 +162,7 @@ class RoleController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Role $role
+     * @param \App\Models\Role $role
      *
      * @return \Illuminate\Http\Response
      */

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactCall;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactCall\ContactCallStoreRequest;
 use App\Http\Requests\ContactCall\ContactCallUpdateRequest;
@@ -13,15 +12,10 @@ class ContactCallController extends Controller
 {
     protected $accessEntity = 'calls';
 
-    private $validationRules = [
-        'note' => 'nullable',
-        'called_at' => 'required|date_format:d.m.Y H:i'
-    ];
-
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -38,7 +32,7 @@ class ContactCallController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param  \App\Models\Contact $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
@@ -56,19 +50,13 @@ class ContactCallController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactCallStoreRequest $request
-     * @param  \App\Models\Contact    $contact
+     * @param \App\Models\Contact     $contact
      *
      * @return \Illuminate\Http\Response
      */
     public function store(ContactCallStoreRequest $request, Contact $contact)
     {
-        $contactCall = new ContactCall();
-        $contactCall->fill($request->all());
-        $contactCall->contact_id = $contact->id;
-        $contactCall->created_by = Auth::id();
-        $contactCall->updated_by = Auth::id();
-
-        if ($contactCall->save()) {
+        if ($contact->calls()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.created'));
 
             return redirect()->route('contact_calls.index', [$contact->slug]);
@@ -82,8 +70,8 @@ class ContactCallController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactCall $contactCall
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactCall $contactCall
      *
      * @return \Illuminate\Http\Response
      */
@@ -100,8 +88,8 @@ class ContactCallController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactCall $contactCall
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactCall $contactCall
      *
      * @return \Illuminate\Http\Response
      */
@@ -120,17 +108,14 @@ class ContactCallController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactCallUpdateRequest $request
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactCall $contactCall
+     * @param \App\Models\Contact      $contact
+     * @param \App\Models\ContactCall  $contactCall
      *
      * @return \Illuminate\Http\Response
      */
     public function update(ContactCallUpdateRequest $request, Contact $contact, ContactCall $contactCall)
     {
-        $contactCall->fill($request->all());
-        $contactCall->updated_by = Auth::id();
-
-        if ($contactCall->save()) {
+        if ($contactCall->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.updated'));
 
             return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->slug]);
@@ -144,8 +129,8 @@ class ContactCallController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactCall $contactCall
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactCall $contactCall
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
@@ -168,8 +153,8 @@ class ContactCallController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Contact     $contact
-     * @param  \App\Models\ContactCall $contactCall
+     * @param \App\Models\Contact     $contact
+     * @param \App\Models\ContactCall $contactCall
      *
      * @return \Illuminate\Http\Response
      */
