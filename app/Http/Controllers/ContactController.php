@@ -8,7 +8,6 @@ use App\Models\Contact;
 use App\Models\Country;
 use App\Models\ContactGroup;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Contact\ContactStoreRequest;
