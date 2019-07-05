@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Scopes\BelongsToTenantScope;
+use App\Models\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Role extends Model
 {
-    use Sluggable;
+    use Sluggable, HasPermissions;
 
     protected $fillable = [
         'name',
@@ -18,6 +19,11 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany(Permission::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 
     public function syncUsers($users)
@@ -34,6 +40,13 @@ class Role extends Model
                 User::find($user)->assignRole($this->id);
             }
         }
+    }
+
+    public function syncPermissions(...$permissions)
+    {
+        $this->permissions()->detach();
+
+        return $this->givePermissionTo($permissions);
     }
 
     public function team()

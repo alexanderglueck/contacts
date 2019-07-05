@@ -92,7 +92,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
 
         $role->permissions()->attach(Permission::pluck('id')->flatten()->toArray());
 
-        $user->roles()->attach($role);
+        $user->assignRole($role);
     }
 
     /**
