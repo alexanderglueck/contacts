@@ -7,7 +7,6 @@ use Laravel\Cashier\Billable;
 use App\Models\Traits\HasRoles;
 use Laravel\Cashier\Subscription;
 use App\Models\Admin\Announcement;
-use App\Models\Traits\HasPermissions;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Notifications\Notifiable;
 use Mpociot\Teamwork\Traits\UserHasTeams;
@@ -21,7 +20,6 @@ class User extends Authenticatable
     use Notifiable;
     use Sluggable;
     use HasRoles;
-    use HasPermissions;
     use HasConfirmationTokens;
     use Billable;
     use HasSubscriptions;
