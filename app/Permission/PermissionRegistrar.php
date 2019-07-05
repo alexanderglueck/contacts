@@ -78,7 +78,7 @@ class PermissionRegistrar
     {
         $this->permissions = null;
 
-        return $this->cache->forget(self::$cacheKey);
+        return $this->cache->forget(self::$cacheKey . '-' . auth()->user()->current_team_id);
     }
 
     /**
