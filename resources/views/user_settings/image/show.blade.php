@@ -6,7 +6,7 @@
             Profile image
         </div>
         <div class="card-body">
-            <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="{{ route('user_settings.image.update', [$user->slug]) }}">
+            <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="{{ route('user_settings.image.update') }}">
                 @method('PUT')
                 @csrf
                 <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
@@ -15,7 +15,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <input id="image" type="file" class="form-control" name="image" value="" required>
+                        <input id="image" type="file" class="form-control-file" name="image" value="" required>
 
                         @if ($errors->has('image'))
                             <span class="help-block">
