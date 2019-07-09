@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Contact;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\Http\Requests\Comment\StoreComment;
-use App\Http\Requests\Comment\DeleteComment;
-use App\Http\Requests\Comment\UpdateComment;
+use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Requests\Comment\DeleteCommentRequest;
+use App\Http\Requests\Comment\UpdateCommentRequest;
 
 class CommentController extends Controller
 {
@@ -17,25 +16,14 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreComment $request
-     * @param Contact      $contact
+     * @param StoreCommentRequest $request
+     * @param Contact             $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreComment $request, Contact $contact)
+    public function store(StoreCommentRequest $request, Contact $contact)
     {
-        $comment = new Comment();
-        $comment->fill($request->all());
-
-        if ($request->has('parent_id')) {
-            $comment->parent_id = $request->parent_id;
-        }
-
-        $comment->contact_id = $contact->id;
-        $comment->created_by = Auth::id();
-        $comment->save();
-
-        if ($comment->save()) {
+        if ($contact->comments()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.comment.created'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
@@ -67,17 +55,15 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateComment $request
-     * @param Contact       $contact
-     * @param Comment       $comment
+     * @param UpdateCommentRequest $request
+     * @param Contact              $contact
+     * @param Comment              $comment
      *
      * @return \Response
      */
-    public function update(UpdateComment $request, Contact $contact, Comment $comment)
+    public function update(UpdateCommentRequest $request, Contact $contact, Comment $comment)
     {
-        $comment->comment = $request->comment;
-
-        if ($comment->save()) {
+        if ($comment->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.comment.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
@@ -91,14 +77,14 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteComment $request
-     * @param Contact       $contact
-     * @param Comment       $comment
+     * @param DeleteCommentRequest $request
+     * @param Contact              $contact
+     * @param Comment              $comment
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(DeleteComment $request, Contact $contact, Comment $comment)
+    public function destroy(DeleteCommentRequest $request, Contact $contact, Comment $comment)
     {
         if ($comment->delete()) {
             Session::flash('alert-success', trans('flash_message.comment.deleted'));

@@ -10,6 +10,7 @@ class Comment extends Model
     protected $fillable = [
         'created_by',
         'comment',
+        'parent_id',
         'created_at',
         'updated_at',
         'contact_id'
@@ -28,12 +29,25 @@ class Comment extends Model
     /**
      * Use a custom collection for all comments.
      *
-     * @param  array $models
+     * @param array $models
      *
      * @return CommentCollection
      */
     public function newCollection(array $models = [])
     {
         return new CommentCollection($models);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($contact) {
+            $contact->created_by = auth()->id();
+        });
+
+        static::updating(function ($contact) {
+            $contact->updated_by = auth()->id();
+        });
     }
 }

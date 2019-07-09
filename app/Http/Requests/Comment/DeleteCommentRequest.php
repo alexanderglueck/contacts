@@ -4,7 +4,7 @@ namespace App\Http\Requests\Comment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreComment extends FormRequest
+class DeleteCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class StoreComment extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create comments');
+        return $this->user()->can('delete comments');
     }
 
     /**
@@ -24,7 +24,7 @@ class StoreComment extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'required'
+            //
         ];
     }
 }
