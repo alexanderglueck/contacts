@@ -183,7 +183,7 @@
             <li class="nav-item">
                 <form action="{{ route('search.search') }}" method="post">
                     @csrf
-                    <input type="text" name="search" class="form-control" placeholder="Search">
+                    <input type="search" name="search" class="form-control" placeholder="Search">
                 </form>
             </li>
 
