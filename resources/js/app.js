@@ -14,13 +14,9 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-//Vue.component('contact-list', require('./components/ContactList.vue'));
+Vue.component('contact-presence-channel', require('./components/ContactPresenceChannel.vue').default);
 
 const app = new Vue({
     el: '#app'
 });
 
-window.Echo.private('contact-1-1')
-    .listen('WebsocketTest', (e) => {
-        console.log(e);
-    });

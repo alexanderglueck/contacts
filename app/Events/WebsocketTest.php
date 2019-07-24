@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -33,6 +33,6 @@ class WebsocketTest implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('contact-1-1');
+        return new PresenceChannel('p.contact.1.1');
     }
 }
