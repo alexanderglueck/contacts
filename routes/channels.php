@@ -29,7 +29,6 @@ Broadcast::channel('p.contact.{tenantId}.{contactId}', function ($user, $tenantI
     }
 });
 
-
 Broadcast::channel('contact.{tenantId}.{contactId}', function ($user, $tenantId, $contactId) {
     return \App\Models\Team::findOrNew($tenantId)->users()->where('users.id', $user->id)->exists() &&
         \App\Models\Team::findOrNew($tenantId)->contacts()->where('contacts.id', $contactId)->exists();

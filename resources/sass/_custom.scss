@@ -32,3 +32,9 @@
   content: '*';
   color: $danger;
 }
+
+@import "../../node_modules/cropperjs/src/css/cropper";
+
+img {
+  max-width: 100%; /* This rule is very important, please do not ignore this! */
+}
