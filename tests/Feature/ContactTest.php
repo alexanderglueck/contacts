@@ -109,30 +109,30 @@ class ContactTest extends TestCase
     {
         $user = $this->createUser('edit contacts');
 
-        $contactGroup = create(Contact::class, [
+        $contact = create(Contact::class, [
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
 
         $check = [
-            'id' => $contactGroup->id,
-            'lastname' => $contactGroup->lastname,
+            'id' => $contact->id,
+            'lastname' => $contact->lastname,
         ];
 
-        $contactGroup2 = $contactGroup;
-        $contactGroup2->lastname = "something else";
-        $contactGroup2->date_of_birth = $contactGroup2->formatted_date_of_birth;
+        $editedContact = $contact;
+        $editedContact->lastname = "something else";
+        $editedContact->date_of_birth = $editedContact->formatted_date_of_birth;
 
-        $parameters = $contactGroup2->toArray();
-        $parameters['date_of_birth'] = $contactGroup2->formatted_date_of_birth;
+        $parameters = $editedContact->toArray();
+        $parameters['date_of_birth'] = $editedContact->formatted_date_of_birth;
 
         unset($parameters['updated_at']);
-        unset($contactGroup2['updated_at']);
+        unset($editedContact['updated_at']);
         unset($parameters['updated_by']);
-        unset($contactGroup2['updated_by']);
+        unset($editedContact['updated_by']);
 
         $response = $this->actingAs($user)
-            ->put(route('contacts.update', [$contactGroup->slug]),
+            ->put(route('contacts.update', [$contact->slug]),
                 array_merge($parameters,
                     ['_token' => csrf_token()]
                 ));
@@ -140,7 +140,7 @@ class ContactTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseHas('contacts', $contactGroup2->toArray());
+        $this->assertDatabaseHas('contacts', $editedContact->toArray());
         $this->assertDatabaseMissing('contacts', $check);
         $this->assertAuthenticatedAs($user);
     }
