@@ -27,6 +27,7 @@ class Contact extends Model implements CalendarInterface
         'salutation',
         'gender_id',
         'company',
+        'vatin',
         'department',
         'job',
         'custom_id',

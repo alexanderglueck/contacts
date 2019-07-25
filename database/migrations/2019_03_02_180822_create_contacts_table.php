@@ -26,6 +26,7 @@ class CreateContactsTable extends Migration
             $table->string('iban')->nullable()->default(null);
 
             $table->string('company')->nullable()->default(null);
+            $table->string('vatin')->nullable()->default(null);
             $table->string('department')->nullable()->default(null);
             $table->string('job')->nullable()->default(null);
 
