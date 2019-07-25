@@ -3,7 +3,7 @@
 @if(count($numbers)>0)
     <ul>
         @foreach($numbers as $number)
-            <li><strong>{{$number->name}}</strong> <a href="tel:{{$number->formatted_number }}">{{ $number->number }}</a></li>
+            <li><strong>{{$number->name}}</strong> <a href="tel:{{$number->formatted_number }}" rel="noopener noreferrer">{{ $number->number }}</a></li>
         @endforeach
     </ul>
 @else

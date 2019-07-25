@@ -4,7 +4,7 @@
         {{ $giftIdea->name }}<br/>
 
         <strong>{{ trans('ui.description') }}: </strong>
-        {{ $giftIdea->description }}<br/>
+        {!! nl2br(e($giftIdea->description)) !!}<br/>
 
         <strong>{{ trans('ui.link') }}: </strong>
         @if (trim($giftIdea->url) !== '')
