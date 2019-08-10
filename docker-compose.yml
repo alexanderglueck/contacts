@@ -55,3 +55,5 @@ services:
     image: elasticsearch:6.7.2
     ports:
       - "9200:9200"
+    volumes:
+      - ./storage/tmp/elastic:/usr/share/elasticsearch/data

@@ -89,6 +89,13 @@ class ContactAddress extends Model
     {
         parent::boot();
 
-        // static::addGlobalScope(new BelongsToTenantScope());
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }

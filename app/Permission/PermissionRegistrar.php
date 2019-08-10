@@ -78,6 +78,10 @@ class PermissionRegistrar
     {
         $this->permissions = null;
 
+        if ( ! auth()->check()) {
+            return true;
+        }
+
         return $this->cache->forget(self::$cacheKey . '-' . auth()->user()->current_team_id);
     }
 
