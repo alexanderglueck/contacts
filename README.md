@@ -5,44 +5,37 @@
 
 > A simple contact management system to keep track of your friends and family. 
 
-Contacts allows you to manage your contacts by managing their 
+Contacts allows you to manage your contacts by managing their/keeping track of
  - addresses
  - phone numbers
  - birthdays
+ - recurring dates
+ - email addresses
+ - calls
+ - notes
+ - comments
+ - websites
+ - gift ideas
 
 ## Install
 
-> To run this project, you must have PHP \>7.1.3, MySQL \> 10.1.25 (MariaDB) and ElasticSearch \> 6.2.4 installed as prerequisites. 
+> Contacts uses [Docker](https://www.docker.com/) to keep the setup at a minimum 
 
-1. Create a mysql database for contacts (you will be asked for this database 
-during the installation)
-    ```mysql
-    CREATE DATABASE your_database_name_here;
-    ```
-
-2. Continue by cloning this repository to your machine, and installing all Composer & NPM dependencies.
+1. Begin by cloning this repository to your machine and starting the containers.
     ```bash
-    git clone git@github.com:alexanderglueck/contacts.git
-    cd contacts && composer install && npm install
+    git clone https://github.com/alexanderglueck/contacts.git
+    cd contacts && docker-compose -f docker-compose.dist.yml build 
+        && docker-compose -f docker-compose.dist.yml up -d
     ``` 
- 
-3. Then run the contacts installer. 
-    ```bash
-    php artisan contacts:install
-    ```
 
-4. Finally compile the JavaScript and CSS assets
+2. First time you start the containers, run the database migrations
     ```bash
-    npm run prod
-    ```
-    
-5. Run contacts
-    ```bash
-    # Run this on one terminal
-    php artisan queue:listen
-    # Run this on another terminal
-    php artisan serve
-    ```
+    docker exec contacts_app_1 php artisan migrate --seed
+   ```
+
+3. Visit `/install` to complete your installation
+
+4. Enjoy
 
 ## Setup
 ### Stripe
@@ -50,9 +43,8 @@ In order for contacts to work you need Stripe API tokens.
 Sign up for [Stripe] and enter your tokens into the `STRIPE_TOKEN` and 
 `STRIPE_KEY` fields in your `.env` file. 
 
-### ElasticSearch
-In order for contacts to work you need an ElasticSearch instance (\> 6.2.4) running. 
-You can configure the host in the `scout_elastic` config file.
+### Google Maps API Key
+In order for maps in contacts to work you need a Google Maps API Key. 
 
 ## Security
 

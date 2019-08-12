@@ -2,7 +2,7 @@ FROM php:7.3-fpm
 
 WORKDIR /app
 
-RUN apt-get update -y && apt-get install -y sendmail libpng-dev libzip-dev zip
+RUN apt-get update -y && apt-get install -y sendmail libpng-dev libzip-dev zip gnupg
 
 RUN docker-php-ext-configure zip --with-libzip
 
@@ -33,12 +33,22 @@ RUN \
     useradd -r -u ${HOST_USER_ID} -g dockergroup dockeruser; \
   fi
 
+# composer
 RUN curl -sS https://getcomposer.org/installer | \
   php -- --install-dir=/usr/local/bin --filename=composer
+
+# npm
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
+  && apt-get install -y nodejs
 
 COPY . .
 
 RUN composer install
+
+RUN npm install && npm run prod
+
+RUN cp .env.example .env \
+  && php artisan key:generate
 
 RUN mkdir -p /home/dockeruser \
   && chown -R dockeruser:dockergroup /home/dockeruser
