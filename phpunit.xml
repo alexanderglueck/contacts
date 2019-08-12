@@ -26,7 +26,6 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="DB_DATABASE" value="contacts_testing"/>
-        <server name="CONTACTS_TENANT_PREFIX" value="ct_"/>
         <server name="CACHE_DRIVER" value="array"/>
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
