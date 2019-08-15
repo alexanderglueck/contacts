@@ -15,7 +15,7 @@
 $factory->define(App\Models\ContactAddress::class, function (Faker\Generator $faker) {
     static $contacts;
 
-    $contacts = $contacts ?: App\Models\Contact::all()->keys()->toArray();
+    $contacts = $contacts ?: App\Models\Contact::pluck('id')->toArray();
 
     return [
         'contact_id' => $faker->randomElement($contacts),

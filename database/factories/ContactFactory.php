@@ -35,6 +35,9 @@ $factory->define(App\Models\Contact::class, function (Faker\Generator $faker) {
         'died_from' => null,
         'nationality_id' => null,
         'created_by' => 1,
-        'updated_by' => 1
+        'updated_by' => 1,
+        'team_id' => function () {
+            return factory(\App\Models\Team::class);
+        }
     ];
 });
