@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use ScoutElastic\Searchable;
+use App\Search\FuzzySearchRule;
 use App\Traits\RecordsActivity;
 use App\ContactIndexConfigurator;
 use App\Scopes\BelongsToTenantScope;
@@ -51,7 +52,7 @@ class Contact extends Model implements CalendarInterface
     protected $indexConfigurator = ContactIndexConfigurator::class;
 
     protected $searchRules = [
-        //
+        FuzzySearchRule::class
     ];
 
     protected $mapping = [
