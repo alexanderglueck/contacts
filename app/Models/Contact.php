@@ -12,6 +12,9 @@ use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
+/**
+ * @mixin \Eloquent
+ */
 class Contact extends Model implements CalendarInterface
 {
     use Sluggable;

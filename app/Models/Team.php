@@ -7,6 +7,9 @@ use App\Tenant\Traits\IsTenant;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Eloquent
+ */
 class Team extends Model implements Tenant
 {
     use IsTenant;

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
+/**
+ * @mixin \Eloquent
+ */
 class ContactUrl extends Model
 {
     use Sluggable;

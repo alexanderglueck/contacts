@@ -15,6 +15,9 @@ use App\Models\Traits\HasConfirmationTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     use Notifiable;

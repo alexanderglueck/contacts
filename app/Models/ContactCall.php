@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Eloquent
+ */
 class ContactCall extends Model
 {
     protected $fillable = ['note', 'called_at'];

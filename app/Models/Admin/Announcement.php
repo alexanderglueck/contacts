@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
 
+/**
+ * @mixin \Eloquent
+ */
 class Announcement extends Model implements Readable
 {
     use Sluggable;
