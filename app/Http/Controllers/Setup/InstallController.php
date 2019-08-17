@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Setup;
 
+use Artisan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -37,7 +38,11 @@ class InstallController extends Controller
         ) {
             $this->writeToEnv('CONTACTS_INSTALLED', 'true');
 
-            return redirect('/')->with('alert-success', trans('install.saved'));
+            Artisan::call('storage:link');
+            Artisan::call('route:cache');
+            Artisan::call('config:cache');
+
+            return redirect()->route('welcome')->with('alert-success', trans('install.saved'));
         }
 
         return back();
