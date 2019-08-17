@@ -13,7 +13,7 @@
                     </div>
                     <div class="card-body">
                         @if(strlen($contact->image)>0)
-                            <p>Aktuell: <img src="{{ url($contact->image) }}"/>
+                            <p>Aktuell: <img src="{{ asset('storage/' . $contact->image) }}"/>
                             </p>
                         @endif
 
@@ -28,7 +28,7 @@
 
                                 <div class="col-md-6">
                                     <div class="image-crop">
-                                        <img id="cropper-image" src="@if(strlen($contact->image)>0){{ url($contact->image) }}@endif">
+                                        <img id="cropper-image" src="@if(strlen($contact->image)>0){{ asset('storage/' . $contact->image) }}@endif">
                                     </div>
                                     <div class="img-preview img-preview-sm"></div>
                                     <label title="Upload image file" for="inputImage" class="">

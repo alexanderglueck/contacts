@@ -23,9 +23,9 @@ class ProfileImageController extends Controller
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image')->storePublicly('public/profile_images');
 
-            $img = Image::make(storage_path('app/') . $file);
-            $img->resize(50, 50);
-            $img->save();
+            Image::make(storage_path('app/') . $file)
+                ->resize(50, 50)
+                ->save();
 
             if ($request->user()->image) {
                 if (file_exists(storage_path('app/public/') . $request->user()->image)) {
