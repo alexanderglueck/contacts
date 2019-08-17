@@ -498,7 +498,10 @@ class Contact extends Model implements CalendarInterface
         static::addGlobalScope(new BelongsToTenantScope());
 
         static::creating(function ($contact) {
-            $contact->team_id = auth()->user()->current_team_id;
+            if (auth()->check()) {
+                $contact->team_id = auth()->user()->current_team_id;
+            }
+
             $contact->created_by = auth()->id();
             $contact->updated_by = auth()->id();
         });
