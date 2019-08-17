@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - publicdata:/app/public
+      - appdata:/app
       - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
@@ -22,8 +22,8 @@ services:
       - elasticsearch
     image: webapp
     volumes:
-      - storagedata:/app/storage/app/
-      - publicdata:/app/public/
+      - appdata:/app
+      - .docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     networks:
       - main-network
 
@@ -72,8 +72,7 @@ services:
       - main-network
 
 volumes:
-  storagedata:
-  publicdata:
+  appdata:
   dbdata:
   searchdata:
 

@@ -20,6 +20,7 @@ services:
       - elasticsearch
     volumes:
       - ./:/app
+      - .docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     image: webapp
 
   horizon:
