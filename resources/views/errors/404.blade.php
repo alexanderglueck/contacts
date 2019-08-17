@@ -1,43 +1,34 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="{{ app()->getLocale() }}">
 <head>
-
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,follow">
 
-    <title>404 {{ config('app.name', 'CRM') }}</title>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <title>
+        404 - {{ config('app.name', 'Contacts') }}
+    </title>
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
+    <!-- Styles -->
+    <link href="{{ asset('css/vendor.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 
 <body class="gray-bg">
 
-
-<div class="middle-box text-center animated fadeInDown">
+<div class="container">
     <h1>404</h1>
-    <h3 class="font-bold">Page Not Found</h3>
-
-    <div class="error-desc">
-        Sorry, but the page you are looking for has note been found. Try checking the URL for error, then hit the refresh button on your browser or try found something else in our app.
-        <form class="form-inline m-t" role="form">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search for page">
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-    </div>
+    <p>
+        <strong>Uh oh!</strong>
+        Looks like you took a wrong turn somewhere.<br>
+        <br>
+        <a href="{{ route('welcome') }}">Back to contacts</a>
+    </p>
 </div>
 
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-
 </body>
-
 </html>
