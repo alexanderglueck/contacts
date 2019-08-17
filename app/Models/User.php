@@ -217,8 +217,10 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::created(function ($user, GenerateProfileImageAction $generateProfileImageAction) {
-            $generateProfileImageAction->execute($user);
+        static::created(function ($user) {
+            if (trim($user->image) === '') {
+                app(GenerateProfileImageAction::class)->execute($user);
+            }
         });
     }
 }

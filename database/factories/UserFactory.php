@@ -23,6 +23,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'current_team_id' => function () {
             return factory(\App\Models\Team::class);
         },
+        'image' => 'profile_images/someimage.jpg',
         'activated' => true
     ];
 });
