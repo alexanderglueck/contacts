@@ -41,8 +41,8 @@
 
                     <div class="form-group">
                         <div class="col-md-8 col-md-offset-4">
-                            <button type="submit" class="btn btn-danger">
-                                Bild entfernen
+                            <button type="submit" class="btn btn-info">
+                                Zurücksetzen
                             </button>
                         </div>
                     </div>

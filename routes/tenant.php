@@ -1,33 +1,61 @@
 <?php
 
-Route::get('/home', 'HomeController@index')->name('home');
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\GiftIdeaController;
+use App\Http\Controllers\LogEntryController;
+use App\Http\Controllers\ContactUrlController;
+use App\Http\Controllers\ContactCallController;
+use App\Http\Controllers\ContactDateController;
+use App\Http\Controllers\ContactNoteController;
+use App\Http\Controllers\ImpersonateController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ContactEmailController;
+use App\Http\Controllers\ContactGroupController;
+use App\Http\Controllers\ContactExportController;
+use App\Http\Controllers\ContactImportController;
+use App\Http\Controllers\ContactNumberController;
+use App\Http\Controllers\Teamwork\AuthController;
+use App\Http\Controllers\Teamwork\TeamController;
+use App\Http\Controllers\ContactAddressController;
+use App\Http\Controllers\Teamwork\TeamMemberController;
+use App\Http\Controllers\Account\NotificationSettingController;
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Export
      */
-    Route::get('contacts/export', 'ContactExportController@index')->name('export.index');
-    Route::post('contacts/export', 'ContactExportController@export')->name('export.export');
+    Route::get('contacts/export', [ContactExportController::class, 'index'])->name('export.index');
+    Route::post('contacts/export', [ContactExportController::class, 'export'])->name('export.export');
 
     /**
      * Contact Import
      */
-    Route::get('contacts/import', 'ContactImportController@index')->name('import.index');
-    Route::post('contacts/import', 'ContactImportController@import')->name('import.import');
+    Route::get('contacts/import', [ContactImportController::class, 'index'])->name('import.index');
+    Route::post('contacts/import', [ContactImportController::class, 'import'])->name('import.import');
 
     /**
      * Contacts
      */
-    Route::get('contacts', 'ContactController@index')->name('contacts.index');
-    Route::get('contacts/create', 'ContactController@create')->name('contacts.create');
-    Route::post('contacts', 'ContactController@store')->name('contacts.store');
-    Route::get('contacts/{contact}', 'ContactController@show')->name('contacts.show');
-    Route::get('contacts/{contact}/edit', 'ContactController@edit')->name('contacts.edit');
-    Route::put('contacts/{contact}', 'ContactController@update')->name('contacts.update');
-    Route::get('contacts/{contact}/delete', 'ContactController@delete')->name('contacts.delete');
-    Route::delete('contacts/{contact}', 'ContactController@destroy')->name('contacts.destroy');
-    Route::get('contacts/{contact}/image', 'ContactController@image')->name('contacts.image');
-    Route::put('contacts/{contact}/image', 'ContactController@updateImage')->name('contacts.update_image');
+    Route::get('contacts', [ContactController::class, 'index'])->name('contacts.index');
+    Route::get('contacts/create', [ContactController::class, 'create'])->name('contacts.create');
+    Route::post('contacts', [ContactController::class, 'store'])->name('contacts.store');
+    Route::get('contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+    Route::get('contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit');
+    Route::put('contacts/{contact}', [ContactController::class, 'update'])->name('contacts.update');
+    Route::get('contacts/{contact}/delete', [ContactController::class, 'delete'])->name('contacts.delete');
+    Route::delete('contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
+    Route::get('contacts/{contact}/image', [ContactController::class, 'image'])->name('contacts.image');
+    Route::put('contacts/{contact}/image', [ContactController::class, 'updateImage'])->name('contacts.update_image');
 
     /**
      * Contact Addresses
@@ -35,16 +63,16 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-addresses', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-addresses/{contact}', 'ContactAddressController@index')->name('contact_addresses.index');
-    Route::get('contact-addresses/{contact}/create', 'ContactAddressController@create')->name('contact_addresses.create');
-    Route::post('contact-addresses/{contact}', 'ContactAddressController@store')->name('contact_addresses.store');
+    Route::get('contact-addresses/{contact}', [ContactAddressController::class, 'index'])->name('contact_addresses.index');
+    Route::get('contact-addresses/{contact}/create', [ContactAddressController::class, 'create'])->name('contact_addresses.create');
+    Route::post('contact-addresses/{contact}', [ContactAddressController::class, 'store'])->name('contact_addresses.store');
 
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-addresses/{contact}/{contactAddress}', 'ContactAddressController@show')->name('contact_addresses.show');
-        Route::get('contact-addresses/{contact}/{contactAddress}/edit', 'ContactAddressController@edit')->name('contact_addresses.edit');
-        Route::put('contact-addresses/{contact}/{contactAddress}', 'ContactAddressController@update')->name('contact_addresses.update');
-        Route::get('contact-addresses/{contact}/{contactAddress}/delete', 'ContactAddressController@delete')->name('contact_addresses.delete');
-        Route::delete('contact-addresses/{contact}/{contactAddress}', 'ContactAddressController@destroy')->name('contact_addresses.destroy');
+        Route::get('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'show'])->name('contact_addresses.show');
+        Route::get('contact-addresses/{contact}/{contactAddress}/edit', [ContactAddressController::class, 'edit'])->name('contact_addresses.edit');
+        Route::put('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'update'])->name('contact_addresses.update');
+        Route::get('contact-addresses/{contact}/{contactAddress}/delete', [ContactAddressController::class, 'delete'])->name('contact_addresses.delete');
+        Route::delete('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'destroy'])->name('contact_addresses.destroy');
     });
 
     /**
@@ -53,15 +81,15 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-dates', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-dates/{contact}', 'ContactDateController@index')->name('contact_dates.index');
-    Route::get('contact-dates/{contact}/create', 'ContactDateController@create')->name('contact_dates.create');
-    Route::post('contact-dates/{contact}', 'ContactDateController@store')->name('contact_dates.store');
+    Route::get('contact-dates/{contact}', [ContactDateController::class, 'index'])->name('contact_dates.index');
+    Route::get('contact-dates/{contact}/create', [ContactDateController::class, 'create'])->name('contact_dates.create');
+    Route::post('contact-dates/{contact}', [ContactDateController::class, 'store'])->name('contact_dates.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-dates/{contact}/{contactDate}', 'ContactDateController@show')->name('contact_dates.show');
-        Route::get('contact-dates/{contact}/{contactDate}/edit', 'ContactDateController@edit')->name('contact_dates.edit');
-        Route::put('contact-dates/{contact}/{contactDate}', 'ContactDateController@update')->name('contact_dates.update');
-        Route::get('contact-dates/{contact}/{contactDate}/delete', 'ContactDateController@delete')->name('contact_dates.delete');
-        Route::delete('contact-dates/{contact}/{contactDate}', 'ContactDateController@destroy')->name('contact_dates.destroy');
+        Route::get('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'show'])->name('contact_dates.show');
+        Route::get('contact-dates/{contact}/{contactDate}/edit', [ContactDateController::class, 'edit'])->name('contact_dates.edit');
+        Route::put('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'update'])->name('contact_dates.update');
+        Route::get('contact-dates/{contact}/{contactDate}/delete', [ContactDateController::class, 'delete'])->name('contact_dates.delete');
+        Route::delete('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'destroy'])->name('contact_dates.destroy');
     });
 
     /**
@@ -70,15 +98,15 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-emails', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-emails/{contact}', 'ContactEmailController@index')->name('contact_emails.index');
-    Route::get('contact-emails/{contact}/create', 'ContactEmailController@create')->name('contact_emails.create');
-    Route::post('contact-emails/{contact}', 'ContactEmailController@store')->name('contact_emails.store');
+    Route::get('contact-emails/{contact}', [ContactEmailController::class, 'index'])->name('contact_emails.index');
+    Route::get('contact-emails/{contact}/create', [ContactEmailController::class, 'create'])->name('contact_emails.create');
+    Route::post('contact-emails/{contact}', [ContactEmailController::class, 'store'])->name('contact_emails.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-emails/{contact}/{contactEmail}', 'ContactEmailController@show')->name('contact_emails.show');
-        Route::get('contact-emails/{contact}/{contactEmail}/edit', 'ContactEmailController@edit')->name('contact_emails.edit');
-        Route::put('contact-emails/{contact}/{contactEmail}', 'ContactEmailController@update')->name('contact_emails.update');
-        Route::get('contact-emails/{contact}/{contactEmail}/delete', 'ContactEmailController@delete')->name('contact_emails.delete');
-        Route::delete('contact-emails/{contact}/{contactEmail}', 'ContactEmailController@destroy')->name('contact_emails.destroy');
+        Route::get('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'show'])->name('contact_emails.show');
+        Route::get('contact-emails/{contact}/{contactEmail}/edit', [ContactEmailController::class, 'edit'])->name('contact_emails.edit');
+        Route::put('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'update'])->name('contact_emails.update');
+        Route::get('contact-emails/{contact}/{contactEmail}/delete', [ContactEmailController::class, 'delete'])->name('contact_emails.delete');
+        Route::delete('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'destroy'])->name('contact_emails.destroy');
     });
 
     /**
@@ -87,15 +115,15 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-numbers', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-numbers/{contact}', 'ContactNumberController@index')->name('contact_numbers.index');
-    Route::get('contact-numbers/{contact}/create', 'ContactNumberController@create')->name('contact_numbers.create');
-    Route::post('contact-numbers/{contact}', 'ContactNumberController@store')->name('contact_numbers.store');
+    Route::get('contact-numbers/{contact}', [ContactNumberController::class, 'index'])->name('contact_numbers.index');
+    Route::get('contact-numbers/{contact}/create', [ContactNumberController::class, 'create'])->name('contact_numbers.create');
+    Route::post('contact-numbers/{contact}', [ContactNumberController::class, 'store'])->name('contact_numbers.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-numbers/{contact}/{contactNumber}', 'ContactNumberController@show')->name('contact_numbers.show');
-        Route::get('contact-numbers/{contact}/{contactNumber}/edit', 'ContactNumberController@edit')->name('contact_numbers.edit');
-        Route::put('contact-numbers/{contact}/{contactNumber}', 'ContactNumberController@update')->name('contact_numbers.update');
-        Route::get('contact-numbers/{contact}/{contactNumber}/delete', 'ContactNumberController@delete')->name('contact_numbers.delete');
-        Route::delete('contact-numbers/{contact}/{contactNumber}', 'ContactNumberController@destroy')->name('contact_numbers.destroy');
+        Route::get('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'show'])->name('contact_numbers.show');
+        Route::get('contact-numbers/{contact}/{contactNumber}/edit', [ContactNumberController::class, 'edit'])->name('contact_numbers.edit');
+        Route::put('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'update'])->name('contact_numbers.update');
+        Route::get('contact-numbers/{contact}/{contactNumber}/delete', [ContactNumberController::class, 'delete'])->name('contact_numbers.delete');
+        Route::delete('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'destroy'])->name('contact_numbers.destroy');
     });
 
     /**
@@ -104,15 +132,15 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-urls', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-urls/{contact}', 'ContactUrlController@index')->name('contact_urls.index');
-    Route::get('contact-urls/{contact}/create', 'ContactUrlController@create')->name('contact_urls.create');
-    Route::post('contact-urls/{contact}', 'ContactUrlController@store')->name('contact_urls.store');
+    Route::get('contact-urls/{contact}', [ContactUrlController::class, 'index'])->name('contact_urls.index');
+    Route::get('contact-urls/{contact}/create', [ContactUrlController::class, 'create'])->name('contact_urls.create');
+    Route::post('contact-urls/{contact}', [ContactUrlController::class, 'store'])->name('contact_urls.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-urls/{contact}/{contactUrl}', 'ContactUrlController@show')->name('contact_urls.show');
-        Route::get('contact-urls/{contact}/{contactUrl}/edit', 'ContactUrlController@edit')->name('contact_urls.edit');
-        Route::put('contact-urls/{contact}/{contactUrl}', 'ContactUrlController@update')->name('contact_urls.update');
-        Route::get('contact-urls/{contact}/{contactUrl}/delete', 'ContactUrlController@delete')->name('contact_urls.delete');
-        Route::delete('contact-urls/{contact}/{contactUrl}', 'ContactUrlController@destroy')->name('contact_urls.destroy');
+        Route::get('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'show'])->name('contact_urls.show');
+        Route::get('contact-urls/{contact}/{contactUrl}/edit', [ContactUrlController::class, 'edit'])->name('contact_urls.edit');
+        Route::put('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'update'])->name('contact_urls.update');
+        Route::get('contact-urls/{contact}/{contactUrl}/delete', [ContactUrlController::class, 'delete'])->name('contact_urls.delete');
+        Route::delete('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'destroy'])->name('contact_urls.destroy');
     });
 
     /**
@@ -121,15 +149,15 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-notes', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-notes/{contact}', 'ContactNoteController@index')->name('contact_notes.index');
-    Route::get('contact-notes/{contact}/create', 'ContactNoteController@create')->name('contact_notes.create');
-    Route::post('contact-notes/{contact}', 'ContactNoteController@store')->name('contact_notes.store');
+    Route::get('contact-notes/{contact}', [ContactNoteController::class, 'index'])->name('contact_notes.index');
+    Route::get('contact-notes/{contact}/create', [ContactNoteController::class, 'create'])->name('contact_notes.create');
+    Route::post('contact-notes/{contact}', [ContactNoteController::class, 'store'])->name('contact_notes.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-notes/{contact}/{contactNote}', 'ContactNoteController@show')->name('contact_notes.show');
-        Route::get('contact-notes/{contact}/{contactNote}/edit', 'ContactNoteController@edit')->name('contact_notes.edit');
-        Route::put('contact-notes/{contact}/{contactNote}', 'ContactNoteController@update')->name('contact_notes.update');
-        Route::get('contact-notes/{contact}/{contactNote}/delete', 'ContactNoteController@delete')->name('contact_notes.delete');
-        Route::delete('contact-notes/{contact}/{contactNote}', 'ContactNoteController@destroy')->name('contact_notes.destroy');
+        Route::get('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'show'])->name('contact_notes.show');
+        Route::get('contact-notes/{contact}/{contactNote}/edit', [ContactNoteController::class, 'edit'])->name('contact_notes.edit');
+        Route::put('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'update'])->name('contact_notes.update');
+        Route::get('contact-notes/{contact}/{contactNote}/delete', [ContactNoteController::class, 'delete'])->name('contact_notes.delete');
+        Route::delete('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'destroy'])->name('contact_notes.destroy');
     });
 
     /**
@@ -138,82 +166,82 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('contact-calls', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('contact-calls/{contact}', 'ContactCallController@index')->name('contact_calls.index');
-    Route::get('contact-calls/{contact}/create', 'ContactCallController@create')->name('contact_calls.create');
-    Route::post('contact-calls/{contact}', 'ContactCallController@store')->name('contact_calls.store');
+    Route::get('contact-calls/{contact}', [ContactCallController::class, 'index'])->name('contact_calls.index');
+    Route::get('contact-calls/{contact}/create', [ContactCallController::class, 'create'])->name('contact_calls.create');
+    Route::post('contact-calls/{contact}', [ContactCallController::class, 'store'])->name('contact_calls.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-calls/{contact}/{contactCall}', 'ContactCallController@show')->name('contact_calls.show');
-        Route::get('contact-calls/{contact}/{contactCall}/edit', 'ContactCallController@edit')->name('contact_calls.edit');
-        Route::put('contact-calls/{contact}/{contactCall}', 'ContactCallController@update')->name('contact_calls.update');
-        Route::get('contact-calls/{contact}/{contactCall}/delete', 'ContactCallController@delete')->name('contact_calls.delete');
-        Route::delete('contact-calls/{contact}/{contactCall}', 'ContactCallController@destroy')->name('contact_calls.destroy');
+        Route::get('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'show'])->name('contact_calls.show');
+        Route::get('contact-calls/{contact}/{contactCall}/edit', [ContactCallController::class, 'edit'])->name('contact_calls.edit');
+        Route::put('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'update'])->name('contact_calls.update');
+        Route::get('contact-calls/{contact}/{contactCall}/delete', [ContactCallController::class, 'delete'])->name('contact_calls.delete');
+        Route::delete('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'destroy'])->name('contact_calls.destroy');
     });
 
     /**
      * Contact Groups
      */
-    Route::get('contact-groups', 'ContactGroupController@index')->name('contact_groups.index');
-    Route::get('contact-groups/create', 'ContactGroupController@create')->name('contact_groups.create');
-    Route::post('contact-groups', 'ContactGroupController@store')->name('contact_groups.store');
-    Route::get('contact-groups/{contactGroup}', 'ContactGroupController@show')->name('contact_groups.show');
-    Route::get('contact-groups/{contactGroup}/edit', 'ContactGroupController@edit')->name('contact_groups.edit');
-    Route::put('contact-groups/{contactGroup}', 'ContactGroupController@update')->name('contact_groups.update');
-    Route::get('contact-groups/{contactGroup}/delete', 'ContactGroupController@delete')->name('contact_groups.delete');
-    Route::delete('contact-groups/{contactGroup}', 'ContactGroupController@destroy')->name('contact_groups.destroy');
+    Route::get('contact-groups', [ContactGroupController::class, 'index'])->name('contact_groups.index');
+    Route::get('contact-groups/create', [ContactGroupController::class, 'create'])->name('contact_groups.create');
+    Route::post('contact-groups', [ContactGroupController::class, 'store'])->name('contact_groups.store');
+    Route::get('contact-groups/{contactGroup}', [ContactGroupController::class, 'show'])->name('contact_groups.show');
+    Route::get('contact-groups/{contactGroup}/edit', [ContactGroupController::class, 'edit'])->name('contact_groups.edit');
+    Route::put('contact-groups/{contactGroup}', [ContactGroupController::class, 'update'])->name('contact_groups.update');
+    Route::get('contact-groups/{contactGroup}/delete', [ContactGroupController::class, 'delete'])->name('contact_groups.delete');
+    Route::delete('contact-groups/{contactGroup}', [ContactGroupController::class, 'destroy'])->name('contact_groups.destroy');
 
     /**
      * Calendar
      */
-    Route::get('calendar', 'CalendarController@index')->name('calendar.index');
-    Route::get('calendar/events', 'CalendarController@events')->name('calendar.events');
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
     /**
      * Map
      */
-    Route::get('map', 'MapController@index')->name('map.index');
-    Route::post('map/contacts', 'MapController@contacts')->name('map.contacts');
+    Route::get('map', [MapController::class, 'index'])->name('map.index');
+    Route::post('map/contacts', [MapController::class, 'contacts'])->name('map.contacts');
 
     /**
      * Search
      */
-    Route::post('search', 'SearchController@search')->name('search.search');
+    Route::post('search', [SearchController::class, 'search'])->name('search.search');
 
     /**
      * Reports
      */
-    Route::get('reports', 'ReportController@index')->name('reports.index');
-    Route::get('reports/inactive', 'ReportController@inactive')->name('reports.inactive');
-    Route::get('reports/male', 'ReportController@maleGender')->name('reports.male');
-    Route::get('reports/female', 'ReportController@femaleGender')->name('reports.female');
-    Route::get('reports/wrong-male', 'ReportController@wrongMaleGender')->name('reports.wrong_male');
-    Route::get('reports/wrong-female', 'ReportController@wrongFemaleGender')->name('reports.wrong_female');
-    Route::get('reports/no-email', 'ReportController@noEmail')->name('reports.no_email');
-    Route::get('reports/no-date', 'ReportController@noDate')->name('reports.no_date');
-    Route::get('reports/no-address', 'ReportController@noAddress')->name('reports.no_address');
-    Route::get('reports/no-number', 'ReportController@noNumber')->name('reports.no_number');
-    Route::get('reports/no-url', 'ReportController@noUrl')->name('reports.no_url');
-    Route::get('reports/no-lat-lng', 'ReportController@noLatLng')->name('reports.no_lat_lng');
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/inactive', [ReportController::class, 'inactive'])->name('reports.inactive');
+    Route::get('reports/male', [ReportController::class, 'maleGender'])->name('reports.male');
+    Route::get('reports/female', [ReportController::class, 'femaleGender'])->name('reports.female');
+    Route::get('reports/wrong-male', [ReportController::class, 'wrongMaleGender'])->name('reports.wrong_male');
+    Route::get('reports/wrong-female', [ReportController::class, 'wrongFemaleGender'])->name('reports.wrong_female');
+    Route::get('reports/no-email', [ReportController::class, 'noEmail'])->name('reports.no_email');
+    Route::get('reports/no-date', [ReportController::class, 'noDate'])->name('reports.no_date');
+    Route::get('reports/no-address', [ReportController::class, 'noAddress'])->name('reports.no_address');
+    Route::get('reports/no-number', [ReportController::class, 'noNumber'])->name('reports.no_number');
+    Route::get('reports/no-url', [ReportController::class, 'noUrl'])->name('reports.no_url');
+    Route::get('reports/no-lat-lng', [ReportController::class, 'noLatLng'])->name('reports.no_lat_lng');
 
     /**
      * Announcements
      */
-    Route::get('announcements', 'AnnouncementController@index')->name('announcements.index');
-    Route::get('announcements/create', 'AnnouncementController@create')->name('announcements.create');
-    Route::post('announcements', 'AnnouncementController@store')->name('announcements.store');
-    Route::get('announcements/{announcement}', 'AnnouncementController@show')->name('announcements.show');
-    Route::get('announcements/{announcement}/read', 'AnnouncementController@markAsRead')->name('announcements.mark_as_read');
-    Route::get('announcements/{announcement}/edit', 'AnnouncementController@edit')->name('announcements.edit');
-    Route::put('announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
-    Route::get('announcements/{announcement}/delete', 'AnnouncementController@delete')->name('announcements.delete');
-    Route::delete('announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
+    Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
+    Route::get('announcements/{announcement}/read', [AnnouncementController::class, 'markAsRead'])->name('announcements.mark_as_read');
+    Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::put('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::get('announcements/{announcement}/delete', [AnnouncementController::class, 'delete'])->name('announcements.delete');
+    Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
     /**
      * Comments
      */
-    Route::post('comments/{contact}', 'CommentController@store')->name('comments.store');
-    Route::get('comments/{contact}/{comment}/edit', 'CommentController@edit')->name('comments.edit');
-    Route::put('comments/{contact}/{comment}', 'CommentController@update')->name('comments.update');
-    Route::delete('comments/{contact}/{comment}', 'CommentController@destroy')->name('comments.destroy');
+    Route::post('comments/{contact}', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('comments/{contact}/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('comments/{contact}/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('comments/{contact}/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     /**
      * Gift Ideas
@@ -221,40 +249,40 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('gift-ideas', function () {
         return redirect()->route('contacts.index');
     });
-    Route::get('gift-ideas/{contact}', 'GiftIdeaController@index')->name('gift_ideas.index');
-    Route::get('gift-ideas/{contact}/create', 'GiftIdeaController@create')->name('gift_ideas.create');
-    Route::post('gift-ideas/{contact}', 'GiftIdeaController@store')->name('gift_ideas.store');
+    Route::get('gift-ideas/{contact}', [GiftIdeaController::class, 'index'])->name('gift_ideas.index');
+    Route::get('gift-ideas/{contact}/create', [GiftIdeaController::class, 'create'])->name('gift_ideas.create');
+    Route::post('gift-ideas/{contact}', [GiftIdeaController::class, 'store'])->name('gift_ideas.store');
 
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@show')->name('gift_ideas.show');
-        Route::get('gift-ideas/{contact}/{giftIdea}/edit', 'GiftIdeaController@edit')->name('gift_ideas.edit');
-        Route::put('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@update')->name('gift_ideas.update');
-        Route::get('gift-ideas/{contact}/{giftIdea}/delete', 'GiftIdeaController@delete')->name('gift_ideas.delete');
-        Route::delete('gift-ideas/{contact}/{giftIdea}', 'GiftIdeaController@destroy')->name('gift_ideas.destroy');
+        Route::get('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'show'])->name('gift_ideas.show');
+        Route::get('gift-ideas/{contact}/{giftIdea}/edit', [GiftIdeaController::class, 'edit'])->name('gift_ideas.edit');
+        Route::put('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'update'])->name('gift_ideas.update');
+        Route::get('gift-ideas/{contact}/{giftIdea}/delete', [GiftIdeaController::class, 'delete'])->name('gift_ideas.delete');
+        Route::delete('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'destroy'])->name('gift_ideas.destroy');
     });
 
     /**
      * Manage roles
      */
-    Route::get('roles', 'RoleController@index')->name('roles.index');
-    Route::get('roles/create', 'RoleController@create')->name('roles.create');
-    Route::post('roles', 'RoleController@store')->name('roles.store');
-    Route::get('roles/{role}', 'RoleController@show')->name('roles.show');
-    Route::get('roles/{role}/edit', 'RoleController@edit')->name('roles.edit');
-    Route::put('roles/{role}', 'RoleController@update')->name('roles.update');
-    Route::get('roles/{role}/delete', 'RoleController@delete')->name('roles.delete');
-    Route::delete('roles/{role}', 'RoleController@destroy')->name('roles.destroy');
+    Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('roles/{role}', [RoleController::class, 'show'])->name('roles.show');
+    Route::get('roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+    Route::get('roles/{role}/delete', [RoleController::class, 'delete'])->name('roles.delete');
+    Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
     /**
      * Impersonate user
      */
-    Route::post('impersonate', 'ImpersonateController@store')->name('user.impersonate');
-    Route::delete('impersonate', 'ImpersonateController@destroy');
+    Route::post('impersonate', [ImpersonateController::class, 'store'])->name('user.impersonate');
+    Route::delete('impersonate', [ImpersonateController::class, 'destroy']);
 
     /**
      * Activities
      */
-    Route::get('activities', 'ActivityController@index')->name('activities.index');
+    Route::get('activities', [ActivityController::class, 'index'])->name('activities.index');
 });
 
 /**
@@ -264,21 +292,21 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     /**
      * Notification Settings
      */
-    Route::get('notifications', 'NotificationSettingController@show')->name('notifications.show');
-    Route::put('notifications', 'NotificationSettingController@update')->name('notifications.update');
+    Route::get('notifications', [NotificationSettingController::class, 'show'])->name('notifications.show');
+    Route::put('notifications', [NotificationSettingController::class, 'update'])->name('notifications.update');
 });
 
 /**
  * Log
  */
-Route::get('logs', 'LogEntryController@index')->name('logs.index');
+Route::get('logs', [LogEntryController::class, 'index'])->name('logs.index');
 
 /**
  * Images
  */
-Route::get('profile_images/{image}', function ($image) {
-    return Image::make(storage_path('app/profile_images/') . $image)->response();
-})->name('images.user');
+//Route::get('profile_images/{image}', function ($image) {
+//    return Image::make(storage_path('app/profile_images/') . $image)->response();
+//})->name('images.user');
 
 Route::get('contact_images/{image}', function ($image) {
     return Image::make(storage_path('app/contact_images/') . $image)->response();
@@ -288,20 +316,20 @@ Route::get('contact_images/{image}', function ($image) {
  * Teamwork
  */
 Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function () {
-    Route::get('/', 'TeamController@index')->name('teams.index');
-    Route::get('create', 'TeamController@create')->name('teams.create');
-    Route::post('teams', 'TeamController@store')->name('teams.store');
-    Route::get('edit/{id}', 'TeamController@edit')->name('teams.edit');
-    Route::put('edit/{id}', 'TeamController@update')->name('teams.update');
-    Route::delete('destroy/{id}', 'TeamController@destroy')->name('teams.destroy');
-    Route::get('switch/{id}', 'TeamController@switchTeam')->name('teams.switch');
+    Route::get('/', [TeamController::class, 'index'])->name('teams.index');
+    Route::get('create', [TeamController::class, 'create'])->name('teams.create');
+    Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::get('edit/{id}', [TeamController::class, 'edit'])->name('teams.edit');
+    Route::put('edit/{id}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('destroy/{id}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::get('switch/{id}', [TeamController::class, 'switchTeam'])->name('teams.switch');
 
     Route::group(['middleware' => ['subscription.team']], function () {
-        Route::get('members/{id}', 'TeamMemberController@show')->name('teams.members.show');
-        Route::get('members/resend/{invite_id}', 'TeamMemberController@resendInvite')->name('teams.members.resend_invite');
-        Route::post('members/{id}', 'TeamMemberController@invite')->name('teams.members.invite');
-        Route::delete('members/{id}/{user_id}', 'TeamMemberController@destroy')->name('teams.members.destroy');
+        Route::get('members/{id}', [TeamMemberController::class, 'show'])->name('teams.members.show');
+        Route::get('members/resend/{invite_id}', [TeamMemberController::class, 'resendInvite'])->name('teams.members.resend_invite');
+        Route::post('members/{id}', [TeamMemberController::class, 'invite'])->name('teams.members.invite');
+        Route::delete('members/{id}/{user_id}', [TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
     });
 
-    Route::get('accept/{token}', 'AuthController@acceptInvite')->name('teams.accept_invite');
+    Route::get('accept/{token}', [AuthController::class, 'acceptInvite'])->name('teams.accept_invite');
 });

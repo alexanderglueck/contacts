@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use App\Domain\Users\Actions\GenerateProfileImageAction;
 use App\Http\Requests\Account\ProfileImageUpdateRequest;
 
 class ProfileImageController extends Controller
@@ -46,16 +47,9 @@ class ProfileImageController extends Controller
         return redirect()->route('user_settings.image.show');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, GenerateProfileImageAction $generateProfileImageAction)
     {
-        if ($request->user()->hasImage()) {
-            if (file_exists(storage_path('app/public/') . $request->user()->image)) {
-                unlink(storage_path('app/public/') . $request->user()->image);
-            }
-        }
-
-        $request->user()->image = null;
-        $request->user()->save();
+        $generateProfileImageAction->execute($request->user());
 
         flashSuccess(trans('flash_message.user_setting.updated'));
 
