@@ -2,13 +2,6 @@
 
 namespace App\GraphQL\Types;
 
-use App\Models\Address;
-use App\Models\ContactCall;
-use App\Models\ContactDate;
-use App\Models\ContactEmail;
-use App\Models\ContactNote;
-use App\Models\ContactNumber;
-use App\Models\ContactUrl;
 use App\Models\Country;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Type as GraphQLType;

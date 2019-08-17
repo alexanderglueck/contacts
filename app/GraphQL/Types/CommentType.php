@@ -3,9 +3,6 @@
 namespace App\GraphQL\Types;
 
 use App\Models\Comment;
-use App\Models\Contact;
-use Closure;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 use Rebing\GraphQL\Support\Type as GraphQLType;

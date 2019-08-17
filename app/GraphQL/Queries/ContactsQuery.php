@@ -2,12 +2,12 @@
 
 namespace App\GraphQL\Queries;
 
-use App\Models\Contact;
 use Closure;
+use App\Models\Contact;
+use GraphQL\Type\Definition\Type;
+use Rebing\GraphQL\Support\Query;
 use GraphQL\Type\Definition\ResolveInfo;
 use Rebing\GraphQL\Support\Facades\GraphQL;
-use Rebing\GraphQL\Support\Query;
-use GraphQL\Type\Definition\Type;
 
 class ContactsQuery extends Query
 {
@@ -35,11 +35,5 @@ class ContactsQuery extends Query
         }
 
         return Contact::all();
-    }
-
-    public function authorize(array $args): bool
-    {
-        return true;
-        return auth()->check();
     }
 }

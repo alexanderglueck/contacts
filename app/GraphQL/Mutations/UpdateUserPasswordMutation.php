@@ -1,14 +1,13 @@
 <?php
 
-
 namespace App\GraphQL\Mutations;
 
 use CLosure;
-use App\Models\User;
 use GraphQL;
+use App\Models\User;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\ResolveInfo;
 use Rebing\GraphQL\Support\Mutation;
+use GraphQL\Type\Definition\ResolveInfo;
 
 class UpdateUserPasswordMutation extends Mutation
 {
@@ -33,7 +32,7 @@ class UpdateUserPasswordMutation extends Mutation
     {
         $user = User::find($args['id']);
         if ( ! $user) {
-            return null;
+            return;
         }
 
         $user->password = bcrypt($args['password']);
