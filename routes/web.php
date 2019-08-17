@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\System\NewsController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Setup\InstallController;
+use App\Http\Controllers\WebsocketTestController;
 use App\Http\Controllers\Account\DeleteController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Auth\ActivationController;
@@ -26,13 +28,7 @@ use App\Http\Controllers\Account\Subscription\SubscriptionCancelController;
 use App\Http\Controllers\Account\Subscription\SubscriptionResumeController;
 use App\Http\Controllers\Account\Subscription\SubscriptionInvoiceController;
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('home');
-    }
-
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Authentication Routes...
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');

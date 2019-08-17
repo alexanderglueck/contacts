@@ -60,9 +60,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Addresses
      */
-    Route::get('contact-addresses', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-addresses/{contact}', [ContactAddressController::class, 'index'])->name('contact_addresses.index');
     Route::get('contact-addresses/{contact}/create', [ContactAddressController::class, 'create'])->name('contact_addresses.create');
     Route::post('contact-addresses/{contact}', [ContactAddressController::class, 'store'])->name('contact_addresses.store');
@@ -78,9 +75,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Dates
      */
-    Route::get('contact-dates', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-dates/{contact}', [ContactDateController::class, 'index'])->name('contact_dates.index');
     Route::get('contact-dates/{contact}/create', [ContactDateController::class, 'create'])->name('contact_dates.create');
     Route::post('contact-dates/{contact}', [ContactDateController::class, 'store'])->name('contact_dates.store');
@@ -95,9 +89,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Emails
      */
-    Route::get('contact-emails', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-emails/{contact}', [ContactEmailController::class, 'index'])->name('contact_emails.index');
     Route::get('contact-emails/{contact}/create', [ContactEmailController::class, 'create'])->name('contact_emails.create');
     Route::post('contact-emails/{contact}', [ContactEmailController::class, 'store'])->name('contact_emails.store');
@@ -112,9 +103,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Numbers
      */
-    Route::get('contact-numbers', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-numbers/{contact}', [ContactNumberController::class, 'index'])->name('contact_numbers.index');
     Route::get('contact-numbers/{contact}/create', [ContactNumberController::class, 'create'])->name('contact_numbers.create');
     Route::post('contact-numbers/{contact}', [ContactNumberController::class, 'store'])->name('contact_numbers.store');
@@ -129,9 +117,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Urls
      */
-    Route::get('contact-urls', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-urls/{contact}', [ContactUrlController::class, 'index'])->name('contact_urls.index');
     Route::get('contact-urls/{contact}/create', [ContactUrlController::class, 'create'])->name('contact_urls.create');
     Route::post('contact-urls/{contact}', [ContactUrlController::class, 'store'])->name('contact_urls.store');
@@ -146,9 +131,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Notes
      */
-    Route::get('contact-notes', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-notes/{contact}', [ContactNoteController::class, 'index'])->name('contact_notes.index');
     Route::get('contact-notes/{contact}/create', [ContactNoteController::class, 'create'])->name('contact_notes.create');
     Route::post('contact-notes/{contact}', [ContactNoteController::class, 'store'])->name('contact_notes.store');
@@ -163,9 +145,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Contact Calls
      */
-    Route::get('contact-calls', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('contact-calls/{contact}', [ContactCallController::class, 'index'])->name('contact_calls.index');
     Route::get('contact-calls/{contact}/create', [ContactCallController::class, 'create'])->name('contact_calls.create');
     Route::post('contact-calls/{contact}', [ContactCallController::class, 'store'])->name('contact_calls.store');
@@ -246,9 +225,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     /**
      * Gift Ideas
      */
-    Route::get('gift-ideas', function () {
-        return redirect()->route('contacts.index');
-    });
     Route::get('gift-ideas/{contact}', [GiftIdeaController::class, 'index'])->name('gift_ideas.index');
     Route::get('gift-ideas/{contact}/create', [GiftIdeaController::class, 'create'])->name('gift_ideas.create');
     Route::post('gift-ideas/{contact}', [GiftIdeaController::class, 'store'])->name('gift_ideas.store');
@@ -308,9 +284,9 @@ Route::get('logs', [LogEntryController::class, 'index'])->name('logs.index');
 //    return Image::make(storage_path('app/profile_images/') . $image)->response();
 //})->name('images.user');
 
-Route::get('contact_images/{image}', function ($image) {
-    return Image::make(storage_path('app/contact_images/') . $image)->response();
-})->name('images.contact');
+//Route::get('contact_images/{image}', function ($image) {
+//    return Image::make(storage_path('app/contact_images/') . $image)->response();
+//})->name('images.contact');
 
 /**
  * Teamwork
