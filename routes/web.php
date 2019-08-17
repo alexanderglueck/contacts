@@ -57,6 +57,7 @@ Route::post('login/token', [LoginController::class, 'check'])->name('login.token
  * Install
  */
 Route::get('install', [InstallController::class, 'index'])->name('install');
+Route::post('install', [InstallController::class, 'store'])->name('install.store');
 
 /**
  * Account activation
