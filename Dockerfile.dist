@@ -45,10 +45,10 @@ COPY . .
 
 RUN composer install
 
-RUN npm install && npm run prod
-
 RUN cp .env.example .env \
   && php artisan key:generate
+
+RUN npm install && npm run prod
 
 RUN mkdir -p /home/dockeruser \
   && chown -R dockeruser:dockergroup /home/dockeruser
