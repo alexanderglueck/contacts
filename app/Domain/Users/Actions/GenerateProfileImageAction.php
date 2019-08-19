@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
 class GenerateProfileImageAction
@@ -19,6 +20,8 @@ class GenerateProfileImageAction
         $file = 'profile_images/' . Str::random(40) . '.jpeg';
 
         $avatar = new InitialAvatar();
+
+        File::exists(storage_path('app/public/profile_images/')) or File::makeDirectory(storage_path('app/public/profile_images/'));
 
         $avatar->name($user->name)
             ->length(2)

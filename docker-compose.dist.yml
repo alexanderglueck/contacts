@@ -5,8 +5,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - publicdata:/app/public/
-      - storagedata:/app/storage/app/public/
+      - public-data:/app/public/
+      - storage-data:/app/storage/app/public/
       - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
@@ -21,10 +21,12 @@ services:
       - mysql
       - redis
       - elasticsearch
+      - horizon
+      - websockets
     image: webapp
     volumes:
-      - publicdata:/app/public/
-      - storagedata:/app/storage/app/public/
+      - public-data:/app/public/
+      - storage-data:/app/storage/app/public/
       - .docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     networks:
       - main-network
@@ -34,6 +36,9 @@ services:
     command: php artisan horizon
     depends_on:
       - redis
+      - mysql
+      - elasticsearch
+      - websockets
     networks:
       - main-network
 
@@ -42,6 +47,10 @@ services:
     command: php artisan websockets:serve
     ports:
       - "6001:6001"
+    depends_on:
+      - redis
+      - mysql
+      - elasticsearch
     networks:
       - main-network
 
@@ -76,8 +85,8 @@ services:
       - main-network
 
 volumes:
-  publicdata:
-  storagedata:
+  public-data:
+  storage-data:
   dbdata:
   searchdata:
 

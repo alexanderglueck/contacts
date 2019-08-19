@@ -18,6 +18,8 @@ services:
       - mysql
       - redis
       - elasticsearch
+      - horizon
+      - websockets
     volumes:
       - ./:/app
       - .docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
@@ -27,6 +29,11 @@ services:
     image: webapp
     volumes:
       - ./:/app
+    depends_on:
+      - redis
+      - mysql
+      - elasticsearch
+      - websockets
     command: php artisan horizon
 
   websockets:
@@ -36,6 +43,8 @@ services:
     command: php artisan websockets:serve
     depends_on:
       - redis
+      - mysql
+      - elasticsearch
     ports:
       - "6001:6001"
 
