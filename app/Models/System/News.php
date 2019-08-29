@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Interfaces\Readable;
 use App\Models\Admin\Announcement;
 
+/**
+ * @mixin \Eloquent
+ */
 class News extends Announcement implements Readable
 {
     protected $table = 'news';

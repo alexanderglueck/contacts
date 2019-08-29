@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\RefreshesPermissionCache;
 
+/**
+ * @mixin \Eloquent
+ */
 class Role extends Model
 {
     use Sluggable, HasPermissions, RefreshesPermissionCache;

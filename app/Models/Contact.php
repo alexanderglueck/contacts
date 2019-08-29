@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use ScoutElastic\Searchable;
+use App\Search\FuzzySearchRule;
 use App\Traits\RecordsActivity;
 use App\ContactIndexConfigurator;
 use App\Scopes\BelongsToTenantScope;
@@ -11,6 +12,9 @@ use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
+/**
+ * @mixin \Eloquent
+ */
 class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
@@ -51,7 +55,7 @@ class Contact extends Model implements CalendarInterface
     protected $indexConfigurator = ContactIndexConfigurator::class;
 
     protected $searchRules = [
-        //
+        FuzzySearchRule::class
     ];
 
     protected $mapping = [
@@ -494,7 +498,10 @@ class Contact extends Model implements CalendarInterface
         static::addGlobalScope(new BelongsToTenantScope());
 
         static::creating(function ($contact) {
-            $contact->team_id = auth()->user()->current_team_id;
+            if (auth()->check()) {
+                $contact->team_id = auth()->user()->current_team_id;
+            }
+
             $contact->created_by = auth()->id();
             $contact->updated_by = auth()->id();
         });

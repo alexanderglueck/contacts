@@ -7,11 +7,11 @@ use App\Models\ConfirmationToken;
 
 trait HasConfirmationTokens
 {
-    public function generateConfirmationToken()
+    public function generateConfirmationToken($expiry = null)
     {
         $this->confirmationToken()->create([
             'token' => $token = Str::random(150),
-            'expires_at' => $this->getConfirmationTokenExpiry()
+            'expires_at' => $this->getConfirmationTokenExpiry($expiry)
         ]);
 
         return $token;
@@ -22,8 +22,8 @@ trait HasConfirmationTokens
         return $this->hasOne(ConfirmationToken::class);
     }
 
-    protected function getConfirmationTokenExpiry()
+    protected function getConfirmationTokenExpiry($expiry)
     {
-        return $this->freshTimestamp()->addMinutes(10);
+        return $this->freshTimestamp()->addMinutes($expiry ?: 10);
     }
 }

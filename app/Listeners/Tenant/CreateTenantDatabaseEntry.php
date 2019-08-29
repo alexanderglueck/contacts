@@ -73,7 +73,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     protected function seed(Tenant $tenant)
     {
         $seeding = Artisan::call('db:seed', [
-            '--datab' => [$tenant->id]
+            '--database' => [$tenant->id]
         ]);
 
         return $seeding === 0;

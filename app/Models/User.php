@@ -14,7 +14,11 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\HasConfirmationTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Domain\Users\Actions\GenerateProfileImageAction;
 
+/**
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -207,5 +211,16 @@ class User extends Authenticatable
     public function hasTwoFactorAuthentication()
     {
         return trim($this->google2fa_secret) !== '';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            if (trim($user->image) === '') {
+                app(GenerateProfileImageAction::class)->execute($user);
+            }
+        });
     }
 }

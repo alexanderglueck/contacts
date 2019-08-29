@@ -15,7 +15,7 @@
 $factory->define(App\Models\ContactDate::class, function (Faker\Generator $faker) {
     static $contacts;
 
-    $contacts = $contacts ?: App\Models\Contact::all()->keys()->toArray();
+    $contacts = $contacts ?: App\Models\Contact::pluck('id')->toArray();
 
     $skipYear = $faker->boolean;
 

@@ -40,6 +40,9 @@ COPY . .
 
 RUN composer install
 
+RUN mkdir -p /home/dockeruser \
+  && chown -R dockeruser:dockergroup /home/dockeruser
+
 RUN chown -R dockeruser:dockergroup /app
 
 USER dockeruser

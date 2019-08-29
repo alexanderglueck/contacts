@@ -8,6 +8,9 @@ use Illuminate\Support\Collection;
 use App\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Eloquent
+ */
 class Permission extends Model
 {
     use HasRoles;

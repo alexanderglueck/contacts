@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Question\Question;
 
 class Install extends Command
@@ -49,8 +48,6 @@ class Install extends Command
 
         $this->updateEnvironmentFile($credentials);
 
-        $this->clearCache();
-
         if ($this->confirm('Do you want to migrate the database?', false)) {
             $this->migrateDatabaseWithFreshCredentials($credentials);
             $this->line('Database successfully migrated.');
@@ -71,7 +68,7 @@ class Install extends Command
     /**
      * Update the .env file from an array of $key => $value pairs.
      *
-     * @param  array $updatedValues
+     * @param array $updatedValues
      *
      * @return void
      */
@@ -102,28 +99,6 @@ class Install extends Command
 
     protected function migrateDatabaseWithFreshCredentials($credentials)
     {
-        foreach ($credentials as $key => $value) {
-            $configKey = strtolower(str_replace('DB_', '', $key));
-            if ($configKey === 'password' && $value == 'null') {
-                config(["database.connections.mysql.{$configKey}" => '']);
-                continue;
-            }
-
-            if (in_array($configKey, ['contacts_tenant_prefix'])) {
-                continue;
-            }
-
-            config(["database.connections.mysql.{$configKey}" => $value]);
-        }
-
-        config(['contacts.tenant.system' => $credentials['DB_DATABASE']]);
-        config(['permission.table_names.permissions' => 'permissions']);
-
-        $this->reconnectToDatabase();
-
-        $this->clearCache();
-        $this->call('config:clear');
-
         $this->call('migrate');
     }
 
@@ -135,26 +110,25 @@ class Install extends Command
     protected function requestCredentials()
     {
         return [
-            'DB_DATABASE' => $this->ask('System database name', 'contacts_main'),
-            'DB_HOST' => $this->ask('Database host', '127.0.0.1'),
-            'DB_PORT' => $this->ask('Database port', 3306),
-            'DB_USERNAME' => $this->ask('Database user'),
-            'DB_PASSWORD' => $this->askHiddenWithDefault('Database password (leave blank for no password)'),
-            'CONTACTS_TENANT_PREFIX' => $this->ask('Tenant database name prefix', 'contact_')
+            'DB_DATABASE' => $this->ask('Database name', config('database.connections.mysql.database')),
+            'DB_HOST' => $this->ask('Database host', config('database.connections.mysql.host')),
+            'DB_PORT' => $this->ask('Database port', config('database.connections.mysql.port')),
+            'DB_USERNAME' => $this->ask('Database user', config('database.connections.mysql.username')),
+            'DB_PASSWORD' => $this->askHiddenWithDefault('Database password (enter null for no password)')
         ];
     }
 
     /**
      * Prompt the user for optional input but hide the answer from the console.
      *
-     * @param  string $question
-     * @param  bool   $fallback
+     * @param string $question
+     * @param bool   $fallback
      *
      * @return string
      */
     public function askHiddenWithDefault($question, $fallback = true)
     {
-        $question = new Question($question, 'null');
+        $question = new Question($question, config('database.connections.mysql.password'));
         $question->setHidden(true)->setHiddenFallback($fallback);
 
         return $this->output->askQuestion($question);
@@ -187,13 +161,6 @@ class Install extends Command
             $this->call('key:generate');
             $this->line('Secret key properly generated.');
         }
-    }
-
-    protected function reconnectToDatabase(): void
-    {
-        DB::disconnect('mysql');
-        DB::purge('mysql');
-        DB::reconnect('mysql');
     }
 
     protected function symlinkStorage(): void
