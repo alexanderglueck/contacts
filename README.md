@@ -38,13 +38,14 @@ Contacts allows you to manage your contacts by managing their/keeping track of
 4. Enjoy
 
 ## Setup
-### Stripe
-In order for contacts to work you need Stripe API tokens. 
-Sign up for [Stripe] and enter your tokens into the `STRIPE_TOKEN` and 
-`STRIPE_KEY` fields in your `.env` file. 
 
-### Google Maps API Key
-In order for maps in contacts to work you need a Google Maps API Key. 
+## Seeding the database
+```bash
+php artisan tinker
+Auth::loginUsingId(1);
+config()->set('scout.prefix', 'tenant_1_');
+factory(\App\Models\Contact::class, 1000)->create(['team_id' => 1, 'created_by' => 1, 'updated_by' => 1])
+```
 
 ## Security
 

@@ -28,7 +28,9 @@
         "pragmarx/google2fa": "^3.0",
         "pusher/pusher-php-server": "~3.0",
         "react/dns": "^0.4.19",
-        "rebing/graphql-laravel": "^2.0"
+        "rebing/graphql-laravel": "^2.0",
+        "spatie/laravel-blade-x": "^2.2",
+        "spatie/laravel-queueable-action": "^2.1"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
