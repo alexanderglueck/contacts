@@ -57,14 +57,14 @@ services:
   redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     networks:
       - main-network
 
   mysql:
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=app
@@ -76,7 +76,7 @@ services:
   elasticsearch:
     image: elasticsearch:6.7.2
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
     volumes:
       - searchdata:/usr/share/elasticsearch/data
     environment:
