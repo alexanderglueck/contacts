@@ -39,9 +39,14 @@
 
                             {!! \App\Helpers\Form::text('coupon', trans('ui.coupon')) !!}
 
+                            {!! \App\Helpers\Form::text('card-holder-name', trans('Card holder name'), auth()->user()->name, true) !!}
+
+                            <div id="card-element"></div>
+
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" id="pay" class="btn btn-primary">
+                                    <button type="submit" id="card-button" class="btn btn-primary"
+                                            data-secret="{{ $intent->client_secret }}">
                                         {{ trans('ui.pay') }}
                                     </button>
                                 </div>
@@ -55,38 +60,52 @@
 @endsection
 
 @section('js-links')
-    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 @endsection
 
 @section('js')
     <script>
-        let handler = StripeCheckout.configure({
-            key: '{{ config('services.stripe.key') }}',
-            locale: 'auto',
-            zipCode: true,
-            token: function (token) {
-                let form = $("#payment-form");
+        document.addEventListener('DOMContentLoaded', function () {
+            const stripe = Stripe('{{ config('cashier.key') }}');
 
-                $("#pay").prop('disabled', true);
-                $("<input>").attr({
-                    type: 'hidden',
-                    name: 'token',
-                    value: token.id
-                }).appendTo(form);
+            const elements = stripe.elements();
+            const cardElement = elements.create('card');
 
-                form.submit();
-            }
-        });
+            cardElement.mount('#card-element');
 
-        $('#pay').click(function (e) {
-            e.preventDefault();
+            const cardHolderName = document.getElementById('card-holder-name');
+            const cardForm = document.getElementById('payment-form');
+            const cardButton = document.getElementById('card-button');
+            const clientSecret = cardButton.dataset.secret;
 
-            handler.open({
-                name: 'Contacts',
-                description: 'Membership',
-                currency: 'eur',
-                key: '{{ config('services.stripe.key') }}',
-                email: '{{ auth()->user()->email }}'
+            cardForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                $("#card-button").prop('disabled', true);
+
+                const {setupIntent, error} = await stripe.confirmCardSetup(
+                    clientSecret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {name: cardHolderName.value}
+                        }
+                    }
+                );
+
+                if (error) {
+                    // Display "error.message" to the user...
+                    $("#card-button").prop('disabled', false);
+                } else {
+                    // The card has been verified successfully...
+                    let form = $("#payment-form");
+
+                    $("<input>").attr({
+                        type: 'hidden',
+                        name: 'token',
+                        value: setupIntent.payment_method
+                    }).appendTo(form);
+
+                    form.submit();
+                }
             });
         });
     </script>

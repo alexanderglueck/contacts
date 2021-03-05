@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-/**
- * @mixin \Eloquent
- */
 class ContactNote extends Model
 {
     use Sluggable;
@@ -46,7 +43,7 @@ class ContactNote extends Model
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

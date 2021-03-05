@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Parsedown;
 use App\Models\User;
 use App\Interfaces\Readable;
@@ -9,12 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-/**
- * @mixin \Eloquent
- */
 class Announcement extends Model implements Readable
 {
-    use Sluggable;
+    use Sluggable, HasFactory;
 
     protected $fillable = [
         'title',
@@ -181,7 +179,7 @@ class Announcement extends Model implements Readable
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

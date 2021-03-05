@@ -13,23 +13,23 @@
 
                     <form action="{{ route('install.store') }}" method="post">
                         @csrf
-                        <div class="card-body">
-                            <p>
-                                <strong>
-                                    1. {{ trans('install.maps_api') }}:
-                                </strong>
-                                <br>
-                                @if (trim(config('contacts.googleMapsKey')) !== '')
-                                    {{ trans('install.maps_api_done') }}
-                                @else
+                    <div class="card-body">
+                        <p>
+                            <strong>
+                                1. {{ trans('install.maps_api') }}:
+                            </strong>
+                            <br>
+                            @if (trim(config('contacts.googleMapsKey')) !== '')
+                                {{ trans('install.maps_api_done') }}
+                            @else
 
-                                    <a class="btn btn-primary" href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
-                                        {{ trans('install.maps_api_get') }}
-                                    </a>
-                                    <br>
-                                @endif
-                            </p>
-                            @if (trim(config('contacts.googleMapsKey')) === '')
+                                <a class="btn btn-primary" href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
+                                    {{ trans('install.maps_api_get') }}
+                                </a>
+                                <br>
+                            @endif
+                        </p>
+                        @if (trim(config('contacts.googleMapsKey')) === '')
                                 <div class="form-group">
                                     <label for="maps_api_key">GOOGLE_MAPS_GEOCODING_KEY</label>
                                     <input type="text" class="form-control" name="maps_api_key" id="maps_api_key" placeholder="GOOGLE_MAPS_GEOCODING_KEY" required>
@@ -60,19 +60,19 @@
                                     <label for="stripe_api_secret">STRIPE_API_SECRET</label>
                                     <input type="text" class="form-control" name="stripe_api_secret" id="stripe_api_secret" placeholder="STRIPE_API_SECRET" value="{{ old('stripe_api_secret', config('services.stripe.secret')) }}" required>
                                 </div>
-                            @endif
+                        @endif
 
-                            <p>
-                                <strong>
-                                    {{ trans('install.finish') }}:
-                                </strong>
-                                <br>
-                            </p>
+                        <p>
+                            <strong>
+                                {{ trans('install.finish') }}:
+                            </strong>
+                            <br>
+                        </p>
 
                             <button type="submit" class="btn btn-primary">
                                 {{ trans('install.save') }}
                             </button>
-                        </div>
+                    </div>
                     </form>
                 </div>
             </div>

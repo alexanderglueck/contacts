@@ -28,7 +28,7 @@ class TwoFactorController extends Controller
             if ($request->session()->has('google2fa_secret')) {
 
                 // Generate a new QR code URL with the secret from the session
-                $google2fa_url = $google2fa->getQRCodeGoogleUrl(
+                $google2fa_url = $google2fa->getQRCodeUrl(
                     config('app.name'),
                     $request->user()->email,
                     $request->session()->get('google2fa_secret')

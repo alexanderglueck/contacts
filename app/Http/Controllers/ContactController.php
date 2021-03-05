@@ -214,9 +214,7 @@ class ContactController extends Controller
                 intval($request->image_y)
             )->save();
 
-            Image::make(storage_path('app/') . $fileNameOriginal)
-                ->resize(200, 200)
-                ->save();
+            Image::make(storage_path('app/') . $fileNameOriginal)->resize(200, 200)->save();
 
             if ($contact->image) {
                 if (file_exists(storage_path('app/public/') . $contact->image)) {

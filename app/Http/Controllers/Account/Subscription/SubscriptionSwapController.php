@@ -6,6 +6,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\SubscriptionSwapStoreRequest;
+use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class SubscriptionSwapController extends Controller
 {
@@ -38,7 +39,13 @@ class SubscriptionSwapController extends Controller
             $user->currentTeam->users()->sync([$user->id]);
         }
 
-        $user->subscription('main')->swap($plan->gateway_id);
+        try {
+            $user->subscription('main')->swap($plan->gateway_id);
+        } catch (PaymentActionRequired $exception) {
+            return redirect()->route('cashier.payment',
+                [$exception->payment->id, 'redirect' => route('home')]
+            );
+        }
 
         flashSuccess('Your plan has been changed!');
 

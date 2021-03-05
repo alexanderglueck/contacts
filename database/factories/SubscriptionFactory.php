@@ -1,24 +1,34 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
+namespace Database\Factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\Laravel\Cashier\Subscription::class, function (Faker\Generator $faker) {
-    return [
-        'name' => 'main',
-        'stripe_id' => $faker->word,
-        'stripe_plan' => $faker->word,
-        'quantity' => 1,
-        'trial_ends_at' => null,
-        'ends_at' => null
-    ];
-});
+use App\Models\Subscription;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+
+class SubscriptionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Subscription::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => 'main',
+            'stripe_id' => $this->faker->word,
+            'stripe_plan' => $this->faker->word,
+            'quantity' => 1,
+            'trial_ends_at' => null,
+            'ends_at' => null
+        ];
+    }
+}

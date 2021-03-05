@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Setup;
 
-use Artisan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 
 class InstallController extends Controller
 {

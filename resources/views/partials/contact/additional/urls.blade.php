@@ -1,6 +1,4 @@
-<a href="{{ route('contact_urls.index', [$contact->slug])  }}">
-    Websiten verwalten
-</a>
+<a href="{{ route('contact_urls.index', [$contact->slug])  }}">Websiten verwalten</a>
 
 @if(count($urls)>0)
     <ul>

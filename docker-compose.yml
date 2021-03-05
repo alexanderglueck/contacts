@@ -17,34 +17,25 @@ services:
     depends_on:
       - mysql
       - redis
-      - elasticsearch
-      - horizon
-      - websockets
+      - meilisearch
     volumes:
       - ./:/app
-      - .docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     image: webapp
 
-  horizon:
-    image: webapp
-    volumes:
-      - ./:/app
-    depends_on:
-      - redis
-      - mysql
-      - elasticsearch
-      - websockets
-    command: php artisan horizon
+#  horizon:
+#    image: webapp
+#    volumes:
+#      - ./:/app
+#    command: php artisan horizon
 
   websockets:
     image: webapp
+    depends_on:
+      - mysql
+      - redis
     volumes:
       - ./:/app
     command: php artisan websockets:serve
-    depends_on:
-      - redis
-      - mysql
-      - elasticsearch
     ports:
       - "6001:6001"
 
@@ -63,9 +54,9 @@ services:
     volumes:
       - ./storage/tmp/db:/var/lib/mysql:cached
 
-  elasticsearch:
-    image: elasticsearch:6.7.2
+  meilisearch:
+    image: getmeili/meilisearch
     ports:
-      - "9200:9200"
+      - "7700:7700"
     volumes:
-      - ./storage/tmp/elastic:/usr/share/elasticsearch/data
+      - ./storage/tmp/search/data.ms:/data.ms

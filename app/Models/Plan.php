@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * @mixin \Eloquent
- */
 class Plan extends Model
 {
     protected $casts = [

@@ -5,9 +5,6 @@ namespace App\Models;
 use App\Collections\CommentCollection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @mixin \Eloquent
- */
 class Comment extends Model
 {
     protected $fillable = [

@@ -1,23 +1,30 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
+namespace Database\Factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\Models\Role::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->name,
-        'team_id' => function () {
-            return factory(\App\Models\Team::class);
-        },
-        'guard_name' => 'web'
-    ];
-});
+use App\Models\Role;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class RoleFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Role::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'team_id' => \App\Models\Team::factory(),
+            'guard_name' => 'web'
+        ];
+    }
+}

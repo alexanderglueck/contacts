@@ -68,7 +68,7 @@ class Install extends Command
     /**
      * Update the .env file from an array of $key => $value pairs.
      *
-     * @param array $updatedValues
+     * @param  array $updatedValues
      *
      * @return void
      */
@@ -121,8 +121,8 @@ class Install extends Command
     /**
      * Prompt the user for optional input but hide the answer from the console.
      *
-     * @param string $question
-     * @param bool   $fallback
+     * @param  string $question
+     * @param  bool   $fallback
      *
      * @return string
      */

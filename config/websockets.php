@@ -5,8 +5,18 @@ use BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize;
 return [
 
     /*
+     * Set a custom dashboard configuration
+     */
+    'dashboard' => [
+        'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+    ],
+
+    /*
      * This package comes with multi tenancy out of the box. Here you can
      * configure the different apps that can use the webSockets server.
+     *
+     * Optionally you specify capacity so you can limit the maximum
+     * concurrent connections for a specific app.
      *
      * Optionally you can disable client events so clients cannot send
      * messages to each other via the webSockets.
@@ -17,8 +27,10 @@ return [
             'name' => env('APP_NAME'),
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
+            'path' => env('PUSHER_APP_PATH'),
+            'capacity' => null,
             'enable_client_messages' => false,
-            'enable_statistics' => true,
+            'enable_statistics' => false,
         ],
     ],
 
@@ -69,6 +81,12 @@ return [
          */
         'model' => \BeyondCode\LaravelWebSockets\Statistics\Models\WebSocketsStatisticsEntry::class,
 
+        /**
+         * The Statistics Logger will, by default, handle the incoming statistics, store them
+         * and then release them into the database on each interval defined below.
+         */
+        'logger' => BeyondCode\LaravelWebSockets\Statistics\Logger\HttpStatisticsLogger::class,
+
         /*
          * Here you can specify the interval in seconds at which statistics should be logged.
          */
@@ -98,18 +116,18 @@ return [
          * certificate chain of issuers. The private key also may be contained
          * in a separate file specified by local_pk.
          */
-        'local_cert' => null,
+        'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
 
         /*
          * Path to local private key file on filesystem in case of separate files for
          * certificate (local_cert) and private key.
          */
-        'local_pk' => null,
+        'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
 
         /*
          * Passphrase for your local_cert file.
          */
-        'passphrase' => null,
+        'passphrase' => env('LARAVEL_WEBSOCKETS_SSL_PASSPHRASE', null),
     ],
 
     /*

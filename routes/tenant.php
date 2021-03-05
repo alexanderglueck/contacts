@@ -1,32 +1,33 @@
 <?php
 
-use App\Http\Controllers\MapController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Account\NotificationSettingController;
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\GiftIdeaController;
-use App\Http\Controllers\LogEntryController;
-use App\Http\Controllers\ContactUrlController;
-use App\Http\Controllers\ContactCallController;
-use App\Http\Controllers\ContactDateController;
-use App\Http\Controllers\ContactNoteController;
-use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactAddressController;
+use App\Http\Controllers\ContactCallController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactDateController;
 use App\Http\Controllers\ContactEmailController;
-use App\Http\Controllers\ContactGroupController;
 use App\Http\Controllers\ContactExportController;
+use App\Http\Controllers\ContactGroupController;
 use App\Http\Controllers\ContactImportController;
+use App\Http\Controllers\ContactNoteController;
 use App\Http\Controllers\ContactNumberController;
+use App\Http\Controllers\ContactUrlController;
+use App\Http\Controllers\GiftIdeaController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImpersonateController;
+use App\Http\Controllers\LogEntryController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Teamwork\AuthController;
 use App\Http\Controllers\Teamwork\TeamController;
-use App\Http\Controllers\ContactAddressController;
 use App\Http\Controllers\Teamwork\TeamMemberController;
-use App\Http\Controllers\Account\NotificationSettingController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 

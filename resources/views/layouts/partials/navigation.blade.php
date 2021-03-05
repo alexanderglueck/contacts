@@ -15,12 +15,12 @@
         <!-- Left Side Of Navbar -->
         <ul class="navbar-nav mr-auto">
             @subscribed
-                @if (Auth::user()->hasAnyPermission([
-                    'view contacts',
-                    'create contacts',
-                    'create import',
-                    'create export'
-                ]))
+            @if (Auth::user()->hasAnyPermission([
+                'view contacts',
+                'create contacts',
+                'create import',
+                'create export'
+            ]))
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle"
                        data-toggle="dropdown"

@@ -1,32 +1,33 @@
 <?php
 
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\System\NewsController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Setup\InstallController;
-use App\Http\Controllers\WebsocketTestController;
-use App\Http\Controllers\Account\DeleteController;
-use App\Http\Controllers\Account\ProfileController;
-use App\Http\Controllers\Auth\ActivationController;
-use App\Http\Controllers\TenantSelectionController;
 use App\Http\Controllers\Account\ApiTokenController;
-use App\Http\Controllers\Account\PasswordController;
-use App\Http\Controllers\Account\TwoFactorController;
-use App\Http\Controllers\Subscription\PlanController;
 use App\Http\Controllers\Account\DeactivateController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Account\DeleteController;
+use App\Http\Controllers\Account\PasswordController;
+use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\ProfileImageController;
-use App\Http\Controllers\Auth\ActivationResendController;
-use App\Http\Controllers\Webhooks\StripeWebhookController;
-use App\Http\Controllers\Subscription\SubscriptionController;
-use App\Http\Controllers\Account\Subscription\SubscriptionCardController;
-use App\Http\Controllers\Account\Subscription\SubscriptionSwapController;
 use App\Http\Controllers\Account\Subscription\SubscriptionCancelController;
-use App\Http\Controllers\Account\Subscription\SubscriptionResumeController;
+use App\Http\Controllers\Account\Subscription\SubscriptionCardController;
 use App\Http\Controllers\Account\Subscription\SubscriptionInvoiceController;
+use App\Http\Controllers\Account\Subscription\SubscriptionResumeController;
+use App\Http\Controllers\Account\Subscription\SubscriptionSwapController;
+use App\Http\Controllers\Account\TwoFactorController;
+use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\ActivationResendController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\Setup\InstallController;
+use App\Http\Controllers\Subscription\PlanController;
+use App\Http\Controllers\Subscription\SubscriptionController;
+use App\Http\Controllers\System\NewsController;
+use App\Http\Controllers\TenantSelectionController;
+use App\Http\Controllers\Webhooks\StripeWebhookController;
+use App\Http\Controllers\WebsocketTestController;
+use App\Http\Controllers\WelcomeController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 

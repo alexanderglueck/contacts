@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use App\Interfaces\CalendarInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-/**
- * @mixin \Eloquent
- */
 class ContactDate extends Model implements CalendarInterface
 {
-    use Sluggable;
+    use Sluggable, HasFactory;
 
     protected $fillable = ['name', 'date', 'skip_year'];
 
@@ -146,7 +144,7 @@ class ContactDate extends Model implements CalendarInterface
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

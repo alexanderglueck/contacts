@@ -4,16 +4,14 @@ namespace App\Models;
 
 use Exception;
 use App\Models\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use App\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @mixin \Eloquent
- */
 class Permission extends Model
 {
-    use HasRoles;
+    use HasRoles, HasFactory;
 
     /**
      * Find a permission by its name (and optionally guardName).

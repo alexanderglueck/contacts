@@ -4,15 +4,13 @@ namespace App\Models;
 
 use App\Tenant\Models\Tenant;
 use App\Tenant\Traits\IsTenant;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @mixin \Eloquent
- */
 class Team extends Model implements Tenant
 {
-    use IsTenant;
+    use IsTenant, HasFactory;
 
     protected $casts = [
         'created' => 'boolean',
