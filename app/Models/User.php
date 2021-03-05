@@ -2,29 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\System\News;
-use Laravel\Cashier\Billable;
-use App\Models\Traits\HasRoles;
-use Laravel\Cashier\Subscription;
+use App\Domain\Users\Actions\GenerateProfileImageAction;
 use App\Models\Admin\Announcement;
-use App\Models\Traits\HasSubscriptions;
-use Illuminate\Notifications\Notifiable;
-use Mpociot\Teamwork\Traits\UserHasTeams;
-use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\System\News;
 use App\Models\Traits\HasConfirmationTokens;
+use App\Models\Traits\HasRoles;
+use App\Models\Traits\HasSubscriptions;
+use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Subscription;
+use Mpociot\Teamwork\Traits\UserHasTeams;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-    use Sluggable;
-    use HasRoles;
-    use HasConfirmationTokens;
-    use Billable;
-    use HasSubscriptions;
-    use SoftDeletes;
-    use UserHasTeams;
+    use HasFactory, Notifiable, Sluggable, HasRoles, HasConfirmationTokens, Billable, HasSubscriptions, SoftDeletes, UserHasTeams;
 
     /**
      * The attributes that are mass assignable.
@@ -32,11 +28,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'activated', 'current_team_id'
-    ];
-
-    protected $casts = [
-        'activated' => 'boolean'
+        'name',
+        'email',
+        'password',
+        'activated', 'current_team_id'
     ];
 
     /**
@@ -54,7 +49,7 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [
@@ -70,7 +65,18 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'google2fa_secret', 'api_token'
+        'password',
+        'remember_token',
+        'google2fa_secret', 'api_token'
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
     ];
 
     /**
@@ -207,5 +213,16 @@ class User extends Authenticatable
     public function hasTwoFactorAuthentication()
     {
         return trim($this->google2fa_secret) !== '';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            if (trim($user->image) === '') {
+                app(GenerateProfileImageAction::class)->execute($user);
+            }
+        });
     }
 }

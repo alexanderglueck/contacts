@@ -6,7 +6,7 @@
     <ul>
         @foreach($giftIdeas as $giftIdea)
             <li><strong>{{$giftIdea->name}}</strong>
-                <a href="{{ $giftIdea->url }}" target="_blank">
+                <a href="{{ $giftIdea->url }}" target="_blank" rel="noopener noreferrer">
                     {{ $giftIdea->url }}
                 </a>
             </li>

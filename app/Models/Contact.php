@@ -3,19 +3,20 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use ScoutElastic\Searchable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\RecordsActivity;
-use App\ContactIndexConfigurator;
 use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Laravel\Scout\Searchable;
 
 class Contact extends Model implements CalendarInterface
 {
     use Sluggable;
     use RecordsActivity;
     use Searchable;
+    use HasFactory;
 
     protected $fillable = [
         'firstname',
@@ -27,6 +28,7 @@ class Contact extends Model implements CalendarInterface
         'salutation',
         'gender_id',
         'company',
+        'vatin',
         'department',
         'job',
         'custom_id',
@@ -45,16 +47,6 @@ class Contact extends Model implements CalendarInterface
 
     protected $casts = [
         'active' => 'boolean'
-    ];
-
-    protected $indexConfigurator = ContactIndexConfigurator::class;
-
-    protected $searchRules = [
-        //
-    ];
-
-    protected $mapping = [
-        'properties' => []
     ];
 
     /**
@@ -158,7 +150,8 @@ class Contact extends Model implements CalendarInterface
 
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
-    ) {
+    )
+    {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
 
@@ -412,7 +405,7 @@ class Contact extends Model implements CalendarInterface
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [
@@ -420,6 +413,11 @@ class Contact extends Model implements CalendarInterface
                 'reserved' => ['create', 'export', 'import']
             ]
         ];
+    }
+
+    public function searchableAs()
+    {
+        return 'contact';
     }
 
     /**
@@ -493,7 +491,10 @@ class Contact extends Model implements CalendarInterface
         static::addGlobalScope(new BelongsToTenantScope());
 
         static::creating(function ($contact) {
+            if (auth()->check()) {
             $contact->team_id = auth()->user()->current_team_id;
+            }
+
             $contact->created_by = auth()->id();
             $contact->updated_by = auth()->id();
         });

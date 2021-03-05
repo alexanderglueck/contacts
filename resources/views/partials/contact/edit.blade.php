@@ -1,5 +1,10 @@
 @csrf
 
+<fieldset>
+    <legend>
+        Basic information
+    </legend>
+
 {!! \App\Helpers\Form::text('salutation', trans('ui.salutation'), $contact->salutation, true, true) !!}
 
 {!! \App\Helpers\Form::text('title', trans('ui.title'), $contact->title) !!}
@@ -10,8 +15,20 @@
 
 {!! \App\Helpers\Form::text('title_after', trans('ui.title_after'), $contact->title_after) !!}
 
+    {!! \App\Helpers\Form::text('nickname', trans('ui.nickname'), $contact->nickname) !!}
+
+</fieldset>
+
+<fieldset>
+    <legend>Details</legend>
+
 {!! \App\Helpers\Form::text('date_of_birth', trans('ui.date_of_birth'), $contact->formatted_date_of_birth) !!}
 
+    {!! \App\Helpers\Form::text('iban', trans('ui.iban'), $contact->iban) !!}
+</fieldset>
+
+<fieldset>
+    <legend>Work related</legend>
 {!! \App\Helpers\Form::text('company', trans('ui.company'), $contact->company, false, false) !!}
 
 {!! \App\Helpers\Form::text('vatin', trans('ui.vatin'), $contact->vatin) !!}
@@ -20,8 +37,10 @@
 
 {!! \App\Helpers\Form::text('job', trans('ui.job'), $contact->job) !!}
 
-{!! \App\Helpers\Form::text('iban', trans('ui.iban'), $contact->iban) !!}
+</fieldset>
 
+<fieldset>
+    <legend>Additional information</legend>
 
 <div class="form-group{{ $errors->has('gender') ? ' has-danger' : '' }}">
     <label for="gender_id" class="col-md-4 form-control-label">{{ trans('ui.gender') }}
@@ -41,8 +60,6 @@
         @endif
     </div>
 </div>
-
-{!! \App\Helpers\Form::text('nickname', trans('ui.nickname'), $contact->nickname) !!}
 
 {!! \App\Helpers\Form::text('custom_id', trans('ui.custom_id'), $contact->custom_id) !!}
 
@@ -110,6 +127,8 @@
         @endif
     </div>
 </div>
+</fieldset>
+
 
 <div class="form-group">
     <div class="col-md-8 col-md-offset-4">

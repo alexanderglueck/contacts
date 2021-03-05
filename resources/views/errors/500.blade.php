@@ -1,37 +1,35 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="{{ app()->getLocale() }}">
 <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,follow">
 
-    <title>INSPINIA | 500 Error</title>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <title>
+        404 - {{ config('app.name', 'Contacts') }}
+    </title>
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
+    <!-- Styles -->
+    <link href="{{ asset('css/vendor.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 
 <body class="gray-bg">
 
-
-<div class="middle-box text-center animated fadeInDown">
+<div class="container">
     <h1>500</h1>
-    <h3 class="font-bold">Internal Server Error</h3>
-
-    <div class="error-desc">
-        The server encountered something unexpected that didn't allow it to complete the request. We apologize.<br/>
-        You can go back to main page: <br/><a href="{{ route('home') }}" class="btn btn-primary m-t">Home</a>
+    <p>
+        <strong>Uh oh!</strong>
+        Looks like something went wrong on our end.<br>
+        <br>
+        <a href="{{ route('welcome') }}">Back to contacts</a>
+    </p>
     </div>
-</div>
-
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
 
 </body>
 

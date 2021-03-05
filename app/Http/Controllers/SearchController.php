@@ -16,10 +16,13 @@ class SearchController extends Controller
      */
     public function search(Request $request)
     {
-        $contacts = Contact::search($request->post('search'))->paginate();
+        $search = $request->post('search');
+
+        $contacts = Contact::search($search)->paginate();
 
         return view('contact.index', [
-            'contacts' => $contacts
+            'contacts' => $contacts,
+            'search' => $search
         ]);
     }
 }

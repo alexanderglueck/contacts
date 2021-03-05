@@ -39,6 +39,9 @@
                         @endif
 
                         @include('partials.contact.show')
+
+                        <contact-presence-channel contact-id="{{ $contact->id }}" tenant-id="{{ auth()->user()->currentTeam->id }}" ></contact-presence-channel>
+
                     </div>
 
                 </div>

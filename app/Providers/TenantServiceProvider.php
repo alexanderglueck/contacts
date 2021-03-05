@@ -37,8 +37,8 @@ class TenantServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->extend('cache', function () {
-            return new TenantCacheManager($this->app);
-        });
+//        $this->app->extend('cache', function () {
+//            return new TenantCacheManager($this->app);
+//        });
     }
 }

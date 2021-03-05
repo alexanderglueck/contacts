@@ -14,8 +14,6 @@ use App\Models\ContactAddress;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
-use Maatwebsite\Excel\Readers\LaravelExcelReader;
-use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use App\Http\Requests\ContactImport\ContactImportImportRequest;
 
 class ContactImportController extends Controller
@@ -48,11 +46,11 @@ class ContactImportController extends Controller
         if ($request->hasFile('import_file') && $request->file('import_file')->isValid()) {
             $fileNameOriginal = $request->file('import_file')->storePublicly('import');
 
-            Excel::load(storage_path('app/') . $fileNameOriginal, function (LaravelExcelReader $reader) use ($request) {
+            Excel::load(storage_path('app/') . $fileNameOriginal, function ( $reader) use ($request) {
                 $this->contactMatching = [];
 
                 // reader methods
-                $reader->each(function (LaravelExcelWorksheet $sheet) use ($request) {
+                $reader->each(function ( $sheet) use ($request) {
                     switch ($sheet->getTitle()) {
                         case 'Kontakte':
                             // Loop through all rows

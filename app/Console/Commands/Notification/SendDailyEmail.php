@@ -40,7 +40,7 @@ class SendDailyEmail extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         foreach (User::all() as $user) {
             if ( ! $user->notificationSettings()->send_daily) {
@@ -49,5 +49,7 @@ class SendDailyEmail extends Command
 
             $user->notify($this->todaysDates);
         }
+
+        return 0;
     }
 }

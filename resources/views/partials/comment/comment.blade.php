@@ -10,7 +10,7 @@
         </span>
         <div class="clearfix"></div>
 
-        {{ $comment->comment }}
+        {!! nl2br(e($comment->comment)) !!}
 
         @include ('partials.comment.create', ['parentId' => $comment->id])
 

@@ -6,13 +6,13 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Permission;
 use App\Tenant\Models\Tenant;
-use App\ContactIndexConfigurator;
 use App\Events\Auth\UserSignedUp;
-use ScoutElastic\Payloads\RawPayload;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
-use ScoutElastic\Facades\ElasticClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use MeiliSearch\Client;
+use MeiliSearch\Exceptions\HTTPRequestException;
+use MeiliSearch\MeiliSearch;
 
 class CreateTenantDatabaseEntry implements ShouldQueue
 {
@@ -73,7 +73,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     protected function seed(Tenant $tenant)
     {
         $seeding = Artisan::call('db:seed', [
-            '--datab' => [$tenant->id]
+            '--database' => [$tenant->id]
         ]);
 
         return $seeding === 0;
@@ -104,20 +104,19 @@ class CreateTenantDatabaseEntry implements ShouldQueue
 
         $this->dropExistingIndex();
 
-        Artisan::call('elastic:create-index', [
-            'index-configurator' => ContactIndexConfigurator::class
-        ]);
+        $client = new Client('http://meilisearch:7700');
+        $client->createIndex(config('scout.prefix') . 'contact');
     }
 
     protected function dropExistingIndex(): void
     {
-        $payload = (new RawPayload())
-            ->set('index', config('scout.prefix') . 'contact')
-            ->get();
+        $client = new Client('http://meilisearch:7700');
 
-        if (ElasticClient::indices()->exists($payload)) {
-            ElasticClient::indices()
-                ->delete($payload);
+        try {
+            $index = $client->getIndex(config('scout.prefix') . 'contact');
+            $client->deleteIndex(config('scout.prefix') . 'contact');
+        } catch (HTTPRequestException $e) {
+
         }
     }
 }

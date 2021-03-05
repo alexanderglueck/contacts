@@ -17,19 +17,22 @@ services:
     depends_on:
       - mysql
       - redis
-      - elasticsearch
+      - meilisearch
     volumes:
       - ./:/app
     image: webapp
 
-  horizon:
-    image: webapp
-    volumes:
-      - ./:/app
-    command: php artisan horizon
+#  horizon:
+#    image: webapp
+#    volumes:
+#      - ./:/app
+#    command: php artisan horizon
 
   websockets:
     image: webapp
+    depends_on:
+      - mysql
+      - redis
     volumes:
       - ./:/app
     command: php artisan websockets:serve
@@ -51,7 +54,9 @@ services:
     volumes:
       - ./storage/tmp/db:/var/lib/mysql:cached
 
-  elasticsearch:
-    image: elasticsearch:6.7.2
+  meilisearch:
+    image: getmeili/meilisearch
     ports:
-      - "9200:9200"
+      - "7700:7700"
+    volumes:
+      - ./storage/tmp/search/data.ms:/data.ms

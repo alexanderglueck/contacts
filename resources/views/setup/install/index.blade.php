@@ -11,6 +11,8 @@
                         {{ trans('install.install') }}
                     </div>
 
+                    <form action="{{ route('install.store') }}" method="post">
+                        @csrf
                     <div class="card-body">
                         <p>
                             <strong>
@@ -25,12 +27,39 @@
                                     {{ trans('install.maps_api_get') }}
                                 </a>
                                 <br>
-
-                                {!! trans('install.maps_api_env') !!}
                             @endif
                         </p>
                         @if (trim(config('contacts.googleMapsKey')) === '')
-                            <pre><code>GOOGLE_MAPS_GEOCODING_KEY=@{{GOOGLE_MAPS_API_KEY}}</code></pre>
+                                <div class="form-group">
+                                    <label for="maps_api_key">GOOGLE_MAPS_GEOCODING_KEY</label>
+                                    <input type="text" class="form-control" name="maps_api_key" id="maps_api_key" placeholder="GOOGLE_MAPS_GEOCODING_KEY" required>
+                                </div>
+                            @endif
+
+                            <p>
+                                <strong>
+                                    2. {{ trans('install.stripe_api') }}:
+                                </strong>
+                                <br>
+                                @if (trim(config('services.stripe.key')) !== '' && trim(config('services.stripe.secret')) !== '')
+                                    {{ trans('install.stripe_api_done') }}
+                                @else
+
+                                    <a class="btn btn-primary" href="https://stripe.com/" target="_blank">
+                                        {{ trans('install.stripe_api_get') }}
+                                    </a>
+                                    <br>
+                                @endif
+                            </p>
+                            @if (trim(config('services.stripe.key')) === '' || trim(config('services.stripe.secret')) === '')
+                                <div class="form-group">
+                                    <label for="stripe_api_key">STRIPE_API_KEY</label>
+                                    <input type="text" class="form-control" name="stripe_api_key" id="stripe_api_key" placeholder="STRIPE_API_KEY" value="{{ old('stripe_api_key', config('services.stripe.key')) }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="stripe_api_secret">STRIPE_API_SECRET</label>
+                                    <input type="text" class="form-control" name="stripe_api_secret" id="stripe_api_secret" placeholder="STRIPE_API_SECRET" value="{{ old('stripe_api_secret', config('services.stripe.secret')) }}" required>
+                                </div>
                         @endif
 
                         <p>
@@ -40,9 +69,11 @@
                             <br>
                         </p>
 
-                        <pre><code>CONTACTS_INSTALLED=true</code></pre>
-
+                            <button type="submit" class="btn btn-primary">
+                                {{ trans('install.save') }}
+                            </button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>

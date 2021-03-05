@@ -19,7 +19,7 @@
         <label for="number" class="col-md-4 form-control-label">Nummer<span class="required">*</span></label>
 
         <div class="col-md-6">
-            <input id="number" type="text" class="form-control" name="number" value="{{ old('number', $contactNumber->number) }}" required>
+            <input id="number" type="tel" class="form-control" name="number" value="{{ old('number', $contactNumber->number) }}" required>
 
             @if ($errors->has('number'))
                 <span class="form-text">

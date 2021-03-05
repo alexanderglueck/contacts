@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactNumber extends Model
 {
-    use Sluggable;
+    use Sluggable, HasFactory;
 
     protected $fillable = ['name', 'number'];
 
@@ -54,7 +55,7 @@ class ContactNumber extends Model
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

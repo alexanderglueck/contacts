@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactUrl extends Model
 {
-    use Sluggable;
+    use Sluggable, HasFactory;
 
     protected $fillable = ['name', 'url'];
 
@@ -43,7 +44,7 @@ class ContactUrl extends Model
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

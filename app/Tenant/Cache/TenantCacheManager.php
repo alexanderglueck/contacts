@@ -9,6 +9,7 @@ class TenantCacheManager extends CacheManager
 {
     public function __call($method, $parameters)
     {
+
         if ($method == 'tags') {
             return $this->store()->tags(
                 array_merge($this->getTenantCacheTag(), ...$parameters)

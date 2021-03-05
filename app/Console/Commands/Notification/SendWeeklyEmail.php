@@ -40,7 +40,7 @@ class SendWeeklyEmail extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         foreach (User::all() as $user) {
             if ( ! $user->notificationSettings()->send_weekly) {
@@ -49,5 +49,7 @@ class SendWeeklyEmail extends Command
 
             $user->notify($this->upcomingDates);
         }
+
+        return 0;
     }
 }

@@ -205,7 +205,7 @@ class ContactController extends Controller
         ]);
 
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
-            $fileNameOriginal = $request->file('file')->storePublicly('contact_images');
+            $fileNameOriginal = $request->file('file')->storePublicly('public/contact_images');
 
             Image::make(storage_path('app/') . $fileNameOriginal)->crop(
                 intval($request->image_height),
@@ -217,12 +217,12 @@ class ContactController extends Controller
             Image::make(storage_path('app/') . $fileNameOriginal)->resize(200, 200)->save();
 
             if ($contact->image) {
-                if (file_exists(storage_path('app/') . $contact->image)) {
-                    unlink(storage_path('app/') . $contact->image);
+                if (file_exists(storage_path('app/public/') . $contact->image)) {
+                    unlink(storage_path('app/public/') . $contact->image);
                 }
             }
 
-            $contact->image = $fileNameOriginal;
+            $contact->image = str_replace('public/', '', $fileNameOriginal);
 
             if ($contact->save()) {
                 Session::flash('alert-success', trans('flash_message.contact.updated'));

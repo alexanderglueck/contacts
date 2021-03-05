@@ -2,13 +2,13 @@
 
 namespace App\Console;
 
-use DateTime;
-use DateInterval;
-use App\Models\ContactDate;
 use App\Console\Commands\Install;
-use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\Notification\SendDailyEmail;
 use App\Console\Commands\Notification\SendWeeklyEmail;
+use App\Models\ContactDate;
+use DateInterval;
+use DateTime;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -27,8 +27,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
-     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -38,7 +37,7 @@ class Kernel extends ConsoleKernel
             ->timezone('Europe/Vienna')
             ->when(function () {
                 // someone has birthday on this day
-                $events = ContactDate::datesOnDate(new \DateTime());
+                $events = ContactDate::datesOnDate(new DateTime());
 
                 return count($events) > 0;
             });
@@ -83,7 +82,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

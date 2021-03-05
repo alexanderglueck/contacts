@@ -16,7 +16,7 @@ class ActivityTest extends TestCase
     {
         $user = $this->createUser('create contacts');
 
-        $contact = factory(Contact::class)->create([
+        $contact = Contact::factory()->create([
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
@@ -37,7 +37,7 @@ class ActivityTest extends TestCase
             'edit contacts'
         ]);
 
-        $contact = factory(Contact::class)->create([
+        $contact = Contact::factory()->create([
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
@@ -82,7 +82,7 @@ class ActivityTest extends TestCase
             'delete contacts'
         ]);
 
-        $contact = factory(Contact::class)->create([
+        $contact = Contact::factory()->create([
             'created_by' => $user->id,
             'updated_by' => $user->id
         ]);
@@ -114,7 +114,7 @@ class ActivityTest extends TestCase
     {
         $user = $this->createUser('view activities');
 
-        $contact = factory(Contact::class)->create([
+        $contact = Contact::factory()->create([
             'created_by' => $user->id,
             'updated_by' => $user->id,
             'lastname' => 'Doe'

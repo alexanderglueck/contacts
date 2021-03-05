@@ -183,7 +183,7 @@
             <li class="nav-item">
                 <form action="{{ route('search.search') }}" method="post">
                     @csrf
-                    <input type="text" name="search" class="form-control" placeholder="Search">
+                    <input type="search" name="search" class="form-control" placeholder="Search" value="{{ $search ?? '' }}">
                 </form>
             </li>
 
@@ -205,7 +205,7 @@
         <!-- Right Side Of Navbar -->
         <ul class="navbar-nav">
             <!-- Authentication Links -->
-            @if (Auth::guest())
+            @guest
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ route('login') }}">Login</a>
                 </li>
@@ -306,7 +306,7 @@
 
                         </div>
                     </li>
-                @endif
+            @endguest
         </ul>
     </div>
 

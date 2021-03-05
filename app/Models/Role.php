@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Scopes\BelongsToTenantScope;
 use App\Models\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\RefreshesPermissionCache;
 
 class Role extends Model
 {
-    use Sluggable, HasPermissions, RefreshesPermissionCache;
+    use Sluggable, HasPermissions, RefreshesPermissionCache, HasFactory;
 
     protected $fillable = [
         'name',
@@ -63,7 +64,7 @@ class Role extends Model
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

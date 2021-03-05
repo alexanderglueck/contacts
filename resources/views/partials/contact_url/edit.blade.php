@@ -20,7 +20,7 @@
         <label for="url" class="col-md-4 form-control-label">Website<span class="required">*</span></label>
 
         <div class="col-md-6">
-            <input id="url" type="text" class="form-control" name="url" value="{{ old('url', $contactUrl->url) }}" required>
+            <input id="url" type="url" class="form-control" name="url" value="{{ old('url', $contactUrl->url) }}" required>
 
             @if ($errors->has('url'))
                 <span class="form-text">

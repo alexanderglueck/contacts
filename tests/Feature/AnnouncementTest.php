@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 use App\Models\Team;
 use App\Models\User;
@@ -107,7 +108,7 @@ class AnnouncementTest extends TestCase
     /** @test */
     public function a_user_can_update_an_announcement()
     {
-        \Session::start();
+        Session::start();
 
         $user = $this->createUser('edit announcements');
 

@@ -7,6 +7,9 @@
 /**
  * Home
  */
+
+use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
+
 Breadcrumbs::register('welcome', function ($breadcrumbs) {
     $breadcrumbs->push('Home', route('welcome'));
 });

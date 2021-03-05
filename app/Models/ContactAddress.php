@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactAddress extends Model
 {
-    use Sluggable;
+    use Sluggable, HasFactory;
 
     protected $fillable = [
         'contact_id',
@@ -69,7 +70,7 @@ class ContactAddress extends Model
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [
@@ -89,6 +90,13 @@ class ContactAddress extends Model
     {
         parent::boot();
 
-        // static::addGlobalScope(new BelongsToTenantScope());
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+            $model->updated_by = auth()->id();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = auth()->id();
+        });
     }
 }
