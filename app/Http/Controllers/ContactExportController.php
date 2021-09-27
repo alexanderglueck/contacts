@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ContactsExport;
 use App\Models\ContactGroup;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\ContactExport\ContactExportExportRequest;
 
 class ContactExportController extends Controller
@@ -82,138 +82,6 @@ class ContactExportController extends Controller
          */
         $contacts = ContactGroup::find($request->contact_group_id)->contacts()->active()->sorted()->get();
 
-        Excel::create('contacts', function ($excel) use ($contacts) {
-
-            // Set the title
-            $excel->setTitle('Kontakt Export');
-
-            // Our first sheet
-            $excel->sheet('Kontakte', function ($sheet) use ($contacts) {
-                $tempContacts = [];
-
-                foreach ($contacts as $contact) {
-                    $temp = [
-                        'id' => $contact->id,
-                        'lastname' => $contact->lastname,
-                        'firstname' => $contact->firstname,
-                        'company' => $contact->company,
-                        'job' => $contact->job,
-                        'department' => $contact->department,
-                        'title' => $contact->title,
-                        'title_after' => $contact->title_after,
-                        'salutation' => $contact->salutation,
-                        'gender' => $contact->gender->gender,
-                        'nickname' => $contact->nickname,
-                        'image' => $contact->image,
-                    ];
-
-                    array_push($tempContacts, $temp);
-                }
-
-                $sheet->fromArray($tempContacts);
-            });
-
-            // Our second sheet
-            $excel->sheet('Adressen', function ($sheet) use ($contacts) {
-                $tempAddresses = [];
-
-                foreach ($contacts as $contact) {
-                    foreach ($contact->addresses as $address) {
-                        $temp = [
-                            'contact_id' => $address->contact_id,
-                            'name' => $address->name,
-                            'street' => $address->street,
-                            'zip' => $address->zip,
-                            'city' => $address->city,
-                            'state' => $address->state,
-                            'country' => $address->country->country,
-                            'longitude' => $address->longitude,
-                            'latitude' => $address->latitude,
-                        ];
-
-                        array_push($tempAddresses, $temp);
-                    }
-                }
-
-                $sheet->fromArray($tempAddresses);
-            });
-
-            // Our second sheet
-            $excel->sheet('Datumsangaben', function ($sheet) use ($contacts) {
-                $contactDates = [];
-
-                foreach ($contacts as $contact) {
-                    foreach ($contact->dates as $date) {
-                        $temp = [
-                            'contact_id' => $date->contact_id,
-                            'name' => $date->name,
-                            'date' => $date->formatted_date,
-                            'skip_year' => $date->skip_year,
-                        ];
-
-                        array_push($contactDates, $temp);
-                    }
-                }
-
-                $sheet->fromArray($contactDates);
-            });
-
-            // Our third sheet
-            $excel->sheet('E-Mails', function ($sheet) use ($contacts) {
-                $contactEmails = [];
-
-                foreach ($contacts as $contact) {
-                    foreach ($contact->emails as $email) {
-                        $temp = [
-                            'contact_id' => $email->contact_id,
-                            'name' => $email->name,
-                            'email' => $email->email,
-                        ];
-
-                        array_push($contactEmails, $temp);
-                    }
-                }
-
-                $sheet->fromArray($contactEmails);
-            });
-
-            // Our fourth sheet
-            $excel->sheet('Nummern', function ($sheet) use ($contacts) {
-                $contactNumbers = [];
-
-                foreach ($contacts as $contact) {
-                    foreach ($contact->numbers as $number) {
-                        $temp = [
-                            'contact_id' => $number->contact_id,
-                            'name' => $number->name,
-                            'number' => $number->number,
-                        ];
-
-                        array_push($contactNumbers, $temp);
-                    }
-                }
-
-                $sheet->fromArray($contactNumbers);
-            });
-
-            // Our fifth sheet
-            $excel->sheet('Websiten', function ($sheet) use ($contacts) {
-                $contactWebsites = [];
-
-                foreach ($contacts as $contact) {
-                    foreach ($contact->urls as $website) {
-                        $temp = [
-                            'contact_id' => $website->contact_id,
-                            'name' => $website->name,
-                            'url' => $website->url,
-                        ];
-
-                        array_push($contactWebsites, $temp);
-                    }
-                }
-
-                $sheet->fromArray($contactWebsites);
-            });
-        })->download('xlsx');
+        return (new ContactsExport($contacts))->download('contacts.xlsx');
     }
 }
