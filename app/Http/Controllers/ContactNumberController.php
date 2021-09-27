@@ -10,7 +10,7 @@ use App\Http\Requests\ContactNumber\ContactNumberUpdateRequest;
 
 class ContactNumberController extends Controller
 {
-    protected $accessEntity = 'numbers';
+    protected ?string $accessEntity = 'numbers';
 
     /**
      * Display a listing of the resource.

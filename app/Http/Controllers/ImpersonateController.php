@@ -8,7 +8,7 @@ use App\Http\Requests\Impersonate\ImpersonateStoreRequest;
 
 class ImpersonateController extends Controller
 {
-    protected $accessEntity = 'users';
+    protected ?string $accessEntity = 'users';
 
     public function store(ImpersonateStoreRequest $request)
     {

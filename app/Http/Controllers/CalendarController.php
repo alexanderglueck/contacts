@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
-    protected $accessEntity = 'calendar';
+    protected ?string $accessEntity = 'calendar';
 
     /**
      * Display a listing of the contact dates.

@@ -7,7 +7,7 @@ use App\Http\Requests\Map\MapContactsRequest;
 
 class MapController extends Controller
 {
-    protected $accessEntity = 'map';
+    protected ?string $accessEntity = 'map';
 
     /**
      * Display all the geocoded contacts on a map.
@@ -39,7 +39,7 @@ class MapController extends Controller
             ->whereRaw('(CASE WHEN ' . $bounds['ne_lat'] . ' < ' . $bounds['sw_lat'] . '
                     THEN latitude BETWEEN ' . $bounds['ne_lat'] . ' AND ' . $bounds['sw_lat'] . '
                     ELSE latitude BETWEEN ' . $bounds['sw_lat'] . ' AND ' . $bounds['ne_lat'] . '
-            END) 
+            END)
             AND
             (CASE WHEN ' . $bounds['ne_lng'] . ' < ' . $bounds['sw_lng'] . '
                     THEN longitude BETWEEN ' . $bounds['ne_lng'] . ' AND ' . $bounds['sw_lng'] . '

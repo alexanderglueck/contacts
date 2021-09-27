@@ -11,7 +11,7 @@ use App\Http\Requests\Announcement\UpdateAnnouncement;
 
 class AnnouncementController extends Controller
 {
-    protected $accessEntity = 'announcements';
+    protected ?string $accessEntity = 'announcements';
 
     /**
      * Display a listing of the resource.

@@ -11,7 +11,7 @@ use App\Http\Requests\Role\RoleUpdateRequest;
 
 class RoleController extends Controller
 {
-    protected $accessEntity = 'roles';
+    protected ?string $accessEntity = 'roles';
 
     /**
      * Display a listing of the resource.

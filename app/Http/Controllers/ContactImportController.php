@@ -18,9 +18,9 @@ use App\Http\Requests\ContactImport\ContactImportImportRequest;
 
 class ContactImportController extends Controller
 {
-    protected $accessEntity = 'import';
+    protected ?string $accessEntity = 'import';
 
-    private $contactMatching;
+    private array $contactMatching = [];
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

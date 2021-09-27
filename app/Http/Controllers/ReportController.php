@@ -6,7 +6,7 @@ use App\Models\Contact;
 
 class ReportController extends Controller
 {
-    protected $accessEntity = 'reports';
+    protected ?string $accessEntity = 'reports';
 
     public function index()
     {

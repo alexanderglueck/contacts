@@ -8,7 +8,7 @@ use App\Http\Requests\ContactExport\ContactExportExportRequest;
 
 class ContactExportController extends Controller
 {
-    protected $accessEntity = 'export';
+    protected ?string $accessEntity = 'export';
 
     /**
      * Display a listing of the resource.

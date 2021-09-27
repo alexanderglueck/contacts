@@ -11,7 +11,7 @@ use App\Http\Requests\Comment\UpdateCommentRequest;
 
 class CommentController extends Controller
 {
-    protected $accessEntity = 'comments';
+    protected ?string $accessEntity = 'comments';
 
     /**
      * Store a newly created resource in storage.

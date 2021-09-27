@@ -10,7 +10,7 @@ use App\Http\Requests\ContactDate\ContactDateUpdateRequest;
 
 class ContactDateController extends Controller
 {
-    protected $accessEntity = 'dates';
+    protected ?string $accessEntity = 'dates';
 
     /**
      * Display a listing of the resource.
