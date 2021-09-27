@@ -11,7 +11,7 @@ use App\Http\Requests\Comment\UpdateCommentRequest;
 
 class CommentController extends Controller
 {
-    protected $accessEntity = 'comments';
+    protected ?string $accessEntity = 'comments';
 
     /**
      * Store a newly created resource in storage.
@@ -63,7 +63,7 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Contact $contact, Comment $comment)
     {
-        if ($comment->update($request->all())) {
+        if ($comment->update($request->validated())) {
             Session::flash('alert-success', trans('flash_message.comment.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);

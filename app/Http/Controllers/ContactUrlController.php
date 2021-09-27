@@ -10,7 +10,7 @@ use App\Http\Requests\ContactUrl\ContactUrlUpdateRequest;
 
 class ContactUrlController extends Controller
 {
-    protected $accessEntity = 'urls';
+    protected ?string $accessEntity = 'urls';
 
     /**
      * Display a listing of the resource.

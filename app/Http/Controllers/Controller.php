@@ -12,7 +12,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $accessEntity = null;
+    protected ?string $accessEntity = null;
 
     protected function can($right)
     {

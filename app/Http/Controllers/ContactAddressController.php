@@ -11,7 +11,7 @@ use App\Http\Requests\ContactAddress\ContactAddressUpdateRequest;
 
 class ContactAddressController extends Controller
 {
-    protected $accessEntity = 'addresses';
+    protected ?string $accessEntity = 'addresses';
 
     /**
      * Display a listing of the resource.

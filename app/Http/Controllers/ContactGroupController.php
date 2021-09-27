@@ -10,7 +10,7 @@ use App\Http\Requests\ContactGroup\ContactGroupUpdateRequest;
 
 class ContactGroupController extends Controller
 {
-    protected $accessEntity = 'contactGroups';
+    protected ?string $accessEntity = 'contactGroups';
 
     /**
      * Display a listing of the resource.

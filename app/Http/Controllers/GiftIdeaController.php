@@ -10,7 +10,7 @@ use App\Http\Requests\GiftIdea\GiftIdeaUpdateRequest;
 
 class GiftIdeaController extends Controller
 {
-    protected $accessEntity = 'giftIdeas';
+    protected ?string $accessEntity = 'giftIdeas';
 
     /**
      * Display a listing of the resource.

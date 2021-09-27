@@ -10,7 +10,7 @@ use App\Http\Requests\ContactNote\ContactNoteUpdateRequest;
 
 class ContactNoteController extends Controller
 {
-    protected $accessEntity = 'notes';
+    protected ?string $accessEntity = 'notes';
 
     /**
      * Display a listing of the resource.

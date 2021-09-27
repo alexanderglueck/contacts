@@ -10,7 +10,7 @@ use App\Http\Requests\ContactEmail\ContactEmailUpdateRequest;
 
 class ContactEmailController extends Controller
 {
-    protected $accessEntity = 'emails';
+    protected ?string $accessEntity = 'emails';
 
     /**
      * Display a listing of the resource.

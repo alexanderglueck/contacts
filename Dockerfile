@@ -7,7 +7,7 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions pdo_mysql bcmath pcntl zip gd imagick
 
-RUN apt-get update -y && apt-get install -y sendmail
+RUN apt-get update -y && apt-get install -y sendmail unzip
 
 ARG HOST_USER_ID=1000
 ARG HOST_GROUP_ID=1000

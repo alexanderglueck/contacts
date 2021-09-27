@@ -45,9 +45,5 @@ class Comment extends Model
         static::creating(function ($contact) {
             $contact->created_by = auth()->id();
         });
-
-        static::updating(function ($contact) {
-            $contact->updated_by = auth()->id();
-        });
     }
 }
