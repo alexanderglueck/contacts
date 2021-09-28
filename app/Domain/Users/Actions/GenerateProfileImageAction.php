@@ -9,7 +9,7 @@ use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
 class GenerateProfileImageAction
 {
-    public function execute(User $user)
+    public function execute(User $user): void
     {
         if ($user->image) {
             if (file_exists(storage_path('app/public/') . $user->image)) {

@@ -6,15 +6,17 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Events\Auth\UserRequestedActivationEmail;
 use App\Http\Requests\Auth\ActivateResendRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ActivationResendController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('auth.activation.resend.index');
     }
 
-    public function store(ActivateResendRequest $request)
+    public function store(ActivateResendRequest $request): RedirectResponse
     {
         $user = User::where('email', $request->email)->first();
 

@@ -12,9 +12,9 @@ class WebsocketTest implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message = 'do something';
+    public string $message = 'do something';
 
-    public $dateNow;
+    public string $dateNow;
 
     /**
      * Create a new event instance.

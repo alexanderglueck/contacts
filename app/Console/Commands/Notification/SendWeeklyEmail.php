@@ -22,12 +22,10 @@ class SendWeeklyEmail extends Command
      */
     protected $description = 'Sends an email with all upcoming contact dates to all users';
 
-    protected $upcomingDates;
+    protected WeeksDates $upcomingDates;
 
     /**
      * Create a new command instance.
-     *
-     * @param WeeksDates $weeksDates
      */
     public function __construct(WeeksDates $weeksDates)
     {
@@ -37,8 +35,6 @@ class SendWeeklyEmail extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(): int
     {

@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Setup;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
 
 class InstallController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         if (config('contacts.installed')) {
-            return abort(404);
+            abort(404);
         }
 
         return view('setup.install.index');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         if (trim($request->maps_api_key) !== '') {
             $this->writeToEnv('GOOGLE_MAPS_GEOCODING_KEY', $request->maps_api_key);
@@ -48,7 +50,7 @@ class InstallController extends Controller
         return back();
     }
 
-    private function writeToEnv($key, $value)
+    private function writeToEnv($key, $value): void
     {
         $envFile = app()->environmentFilePath();
 

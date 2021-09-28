@@ -7,7 +7,7 @@ use App\Events\WebsocketTest;
 
 class WebsocketTestController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): string
     {
         event(new WebsocketTest(now()->format('d.m.Y H:i:s')));
 

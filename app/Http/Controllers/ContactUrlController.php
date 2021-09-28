@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactUrl;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactUrl\ContactUrlStoreRequest;
 use App\Http\Requests\ContactUrl\ContactUrlUpdateRequest;
@@ -19,7 +21,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Contact $contact)
+    public function index(Contact $contact): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact)
+    public function create(Contact $contact): View
     {
         $this->can('create');
 
@@ -54,7 +56,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactUrlStoreRequest $request, Contact $contact)
+    public function store(ContactUrlStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->urls()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.created'));
@@ -75,7 +77,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact, ContactUrl $contactUrl)
+    public function show(Contact $contact, ContactUrl $contactUrl): View
     {
         $this->can('view');
 
@@ -93,7 +95,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, ContactUrl $contactUrl)
+    public function edit(Contact $contact, ContactUrl $contactUrl): View
     {
         $this->can('edit');
 
@@ -113,7 +115,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactUrlUpdateRequest $request, Contact $contact, ContactUrl $contactUrl)
+    public function update(ContactUrlUpdateRequest $request, Contact $contact, ContactUrl $contactUrl): RedirectResponse
     {
         if ($contactUrl->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.updated'));
@@ -135,7 +137,7 @@ class ContactUrlController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, ContactUrl $contactUrl)
+    public function destroy(Contact $contact, ContactUrl $contactUrl): RedirectResponse
     {
         $this->can('delete');
 
@@ -158,7 +160,7 @@ class ContactUrlController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact, ContactUrl $contactUrl)
+    public function delete(Contact $contact, ContactUrl $contactUrl): View
     {
         $this->can('delete');
 

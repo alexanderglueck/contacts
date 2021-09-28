@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Account\DeactivateStoreRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DeactivateController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('user_settings.deactivate.index');
     }
 
-    public function store(DeactivateStoreRequest $request)
+    public function store(DeactivateStoreRequest $request): RedirectResponse
     {
         /*
          * Retrieve the user

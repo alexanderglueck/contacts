@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactAddress;
 use App\Http\Requests\Map\MapContactsRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 
 class MapController extends Controller
 {
@@ -14,14 +16,14 @@ class MapController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
         return view('map.index', []);
     }
 
-    public function contacts(MapContactsRequest $request)
+    public function contacts(MapContactsRequest $request): JsonResponse
     {
         $rawBounds = explode(',', $request->bounds);
 

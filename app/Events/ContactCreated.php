@@ -13,17 +13,12 @@ class ContactCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $contact;
 
     /**
      * Create a new event instance.
-     *
-     * @param Contact $contact
      */
-    public function __construct(Contact $contact)
+    public function __construct(public Contact $contact)
     {
-        $this->contact = $contact;
-
         $this->dontBroadcastToCurrentUser();
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Account;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -9,12 +11,12 @@ use Illuminate\Support\Facades\Session;
 
 class DeleteController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('user_settings.delete.show');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();
 

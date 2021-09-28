@@ -6,20 +6,23 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\SubscriptionSwapStoreRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class SubscriptionSwapController extends Controller
 {
-    public function index()
+    public function index(Request $request): View
     {
-        $plans = Plan::except(auth()->user()->plan->id)->active()->get();
+        $plans = Plan::except($request->user()->plan->id)->active()->get();
 
         return view('user_settings.subscription.swap.index', [
             'plans' => $plans
         ]);
     }
 
-    public function store(SubscriptionSwapStoreRequest $request)
+    public function store(SubscriptionSwapStoreRequest $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -52,7 +55,7 @@ class SubscriptionSwapController extends Controller
         return back();
     }
 
-    protected function downgradesFromTeamPlan(User $user, Plan $plan)
+    protected function downgradesFromTeamPlan(User $user, Plan $plan): bool
     {
         return $user->plan->isForTeams() && $plan->isNotForTeams();
     }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Role\RoleStoreRequest;
@@ -18,7 +20,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
@@ -34,7 +36,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $this->can('create');
 
@@ -52,7 +54,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(RoleStoreRequest $request)
+    public function store(RoleStoreRequest $request): RedirectResponse
     {
         $role = new Role();
         $role->fill($request->except(['permissions', 'users']));
@@ -80,7 +82,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
+    public function show(Role $role): View
     {
         $this->can('view');
 
@@ -97,7 +99,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, Role $role)
+    public function edit(Request $request, Role $role): View
     {
         $this->can('edit');
 
@@ -117,7 +119,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(RoleUpdateRequest $request, Role $role)
+    public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
         $role->fill($request->except(['users', 'permissions']));
 
@@ -144,7 +146,7 @@ class RoleController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role): RedirectResponse
     {
         $this->can('delete');
 
@@ -166,7 +168,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Role $role)
+    public function delete(Role $role): View
     {
         $this->can('delete');
 

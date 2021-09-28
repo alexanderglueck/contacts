@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use DateInterval;
 use DateTime;
 use App\Models\Contact;
 use App\Models\ContactDate;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CalendarController extends Controller
@@ -13,10 +16,8 @@ class CalendarController extends Controller
 
     /**
      * Display a listing of the contact dates.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
@@ -26,12 +27,8 @@ class CalendarController extends Controller
     /**
      * Returns a JSON array of contact dates in the given
      * start and end date range.
-     *
-     * @param  \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function events(Request $request)
+    public function events(Request $request): JsonResponse
     {
         $this->can('view');
 
@@ -64,7 +61,7 @@ class CalendarController extends Controller
         return response()->json($events);
     }
 
-    private function processEvent(&$events, $event, $eventDate, $fromRaw, $toRaw, $fromYear, $toYear)
+    private function processEvent(&$events, $event, $eventDate, $fromRaw, $toRaw, $fromYear, $toYear): void
     {
         /**
          * Check to see if the given date is in the from year or in the to year.
@@ -118,13 +115,13 @@ class CalendarController extends Controller
         }
     }
 
-    private function handleLeapYear($tempEvent)
+    private function handleLeapYear(array $tempEvent): array
     {
-        $dateTime = \DateTime::createFromFormat('Y-m-d', $tempEvent['start']);
+        $dateTime = DateTime::createFromFormat('Y-m-d', $tempEvent['start']);
 
         if ($dateTime->format('md') == '0301' && $dateTime->format('Y-m-d') != $tempEvent['start']) {
             if ( ! $this->validateDate($tempEvent['start'], 'Y-m-d')) {
-                $dateTime->sub(new \DateInterval('P1D'));
+                $dateTime->sub(new DateInterval('P1D'));
                 $tempEvent['start'] = $dateTime->format('Y-m-d');
             }
         }
@@ -132,7 +129,7 @@ class CalendarController extends Controller
         return $tempEvent;
     }
 
-    private function validateDate($date, $format = 'Y-m-d H:i:s')
+    private function validateDate(string $date, string $format = 'Y-m-d H:i:s'): bool
     {
         $d = DateTime::createFromFormat($format, $date);
 

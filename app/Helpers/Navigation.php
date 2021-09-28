@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 class Navigation
 {
-    public static function isActiveRoute($routes, $output = 'active', $data = [])
+    public static function isActiveRoute($routes, $output = 'active', $data = []): string
     {
         if ( ! is_array($routes)) {
             $routes = [$routes];
@@ -25,5 +25,7 @@ class Navigation
                 }
             }
         }
+
+        return '';
     }
 }

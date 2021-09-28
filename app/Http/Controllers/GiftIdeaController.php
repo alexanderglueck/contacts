@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\GiftIdea;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\GiftIdea\GiftIdeaStoreRequest;
 use App\Http\Requests\GiftIdea\GiftIdeaUpdateRequest;
@@ -19,7 +21,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Contact $contact)
+    public function index(Contact $contact): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact)
+    public function create(Contact $contact): View
     {
         $this->can('create');
 
@@ -54,7 +56,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(GiftIdeaStoreRequest $request, Contact $contact)
+    public function store(GiftIdeaStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->giftIdeas()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.created'));
@@ -75,7 +77,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact, GiftIdea $giftIdea)
+    public function show(Contact $contact, GiftIdea $giftIdea): View
     {
         $this->can('view');
 
@@ -93,7 +95,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, GiftIdea $giftIdea)
+    public function edit(Contact $contact, GiftIdea $giftIdea): View
     {
         $this->can('edit');
 
@@ -113,7 +115,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea)
+    public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
         if ($giftIdea->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.updated'));
@@ -135,7 +137,7 @@ class GiftIdeaController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, GiftIdea $giftIdea)
+    public function destroy(Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
         $this->can('delete');
 
@@ -158,7 +160,7 @@ class GiftIdeaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact, GiftIdea $giftIdea)
+    public function delete(Contact $contact, GiftIdea $giftIdea): View
     {
         $this->can('delete');
 

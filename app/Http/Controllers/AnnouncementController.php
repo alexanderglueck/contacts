@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin\Announcement;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Announcement\StoreAnnouncement;
@@ -18,23 +21,23 @@ class AnnouncementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): View
     {
         $this->can('view');
 
         return view('announcement.index', [
             'active' => Announcement::active()->paginate(10),
             'inactive' => Announcement::inactive()->paginate(10),
-            'displayed' => Announcement::displayed(auth()->user())->paginate(10),
-            'hidden' => Announcement::hidden(auth()->user())->paginate(10),
-            'read' => Announcement::read(auth()->user())->paginate(10),
-            'unread' => Announcement::unread(auth()->user())->paginate(10)
+            'displayed' => Announcement::displayed($request->user())->paginate(10),
+            'hidden' => Announcement::hidden($request->user())->paginate(10),
+            'read' => Announcement::read($request->user())->paginate(10),
+            'unread' => Announcement::unread($request->user())->paginate(10)
         ]);
     }
 
-    public function markAsRead(Announcement $announcement)
+    public function markAsRead(Request $request, Announcement $announcement): RedirectResponse
     {
-        $announcement->markAsRead(auth()->user());
+        $announcement->markAsRead($request->user());
 
         return redirect()->route('announcements.index');
     }
@@ -44,7 +47,7 @@ class AnnouncementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $this->can('create');
 
@@ -60,11 +63,11 @@ class AnnouncementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAnnouncement $request)
+    public function store(StoreAnnouncement $request): RedirectResponse
     {
         $announcement = new Announcement();
         $announcement->fill($request->all());
-        $announcement->user_id = Auth::id();
+        $announcement->user_id = $request->user()->id;
 
         if ( ! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));
@@ -80,11 +83,11 @@ class AnnouncementController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Admin\Announcement $announcement
+     * @param \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Announcement $announcement)
+    public function show(Announcement $announcement): View
     {
         $this->can('view');
 
@@ -96,11 +99,11 @@ class AnnouncementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Admin\Announcement $announcement
+     * @param \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Announcement $announcement)
+    public function edit(Announcement $announcement): View
     {
         $this->can('edit');
 
@@ -113,12 +116,12 @@ class AnnouncementController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateAnnouncement              $request
-     * @param  \App\Models\Admin\Announcement $announcement
+     * @param UpdateAnnouncement $request
+     * @param \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAnnouncement $request, Announcement $announcement)
+    public function update(UpdateAnnouncement $request, Announcement $announcement): RedirectResponse
     {
         $announcement->fill($request->all());
 
@@ -136,13 +139,13 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteAnnouncement              $request
-     * @param  \App\Models\Admin\Announcement $announcement
+     * @param DeleteAnnouncement $request
+     * @param \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(DeleteAnnouncement $request, Announcement $announcement)
+    public function destroy(DeleteAnnouncement $request, Announcement $announcement): RedirectResponse
     {
         if ( ! $announcement->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
@@ -158,11 +161,11 @@ class AnnouncementController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param  \App\Models\Admin\Announcement $announcement
+     * @param \App\Models\Admin\Announcement $announcement
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Announcement $announcement)
+    public function delete(Announcement $announcement): View
     {
         $this->can('delete');
 

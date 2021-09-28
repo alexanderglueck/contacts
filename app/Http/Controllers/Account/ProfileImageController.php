@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Account;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
@@ -11,14 +13,14 @@ use App\Http\Requests\Account\ProfileImageUpdateRequest;
 
 class ProfileImageController extends Controller
 {
-    public function show(Request $request)
+    public function show(Request $request): View
     {
         return view('user_settings.image.show', [
             'user' => $request->user()
         ]);
     }
 
-    public function update(ProfileImageUpdateRequest $request)
+    public function update(ProfileImageUpdateRequest $request): RedirectResponse
     {
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image')->storePublicly('public/profile_images');
@@ -47,7 +49,7 @@ class ProfileImageController extends Controller
         return redirect()->route('user_settings.image.show');
     }
 
-    public function destroy(Request $request, GenerateProfileImageAction $generateProfileImageAction)
+    public function destroy(Request $request, GenerateProfileImageAction $generateProfileImageAction): RedirectResponse
     {
         $generateProfileImageAction->execute($request->user());
 

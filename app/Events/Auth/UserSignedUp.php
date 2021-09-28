@@ -13,7 +13,7 @@ class UserSignedUp
     /**
      * @var User
      */
-    public $user;
+    public User $user;
 
     /**
      * Create a new event instance.

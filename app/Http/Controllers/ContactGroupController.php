@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactGroup;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactGroup\ContactGroupStoreRequest;
@@ -17,7 +19,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
@@ -31,7 +33,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $this->can('create');
 
@@ -48,7 +50,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactGroupStoreRequest $request)
+    public function store(ContactGroupStoreRequest $request): RedirectResponse
     {
         $contactGroup = new ContactGroup();
         $contactGroup->fill($request->all());
@@ -73,7 +75,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(ContactGroup $contactGroup)
+    public function show(ContactGroup $contactGroup): View
     {
         $this->can('view');
 
@@ -90,7 +92,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(ContactGroup $contactGroup)
+    public function edit(ContactGroup $contactGroup): View
     {
         $this->can('edit');
 
@@ -109,7 +111,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactGroupUpdateRequest $request, ContactGroup $contactGroup)
+    public function update(ContactGroupUpdateRequest $request, ContactGroup $contactGroup): RedirectResponse
     {
         $contactGroup->fill($request->all());
         $contactGroup->updated_by = Auth::id();
@@ -133,7 +135,7 @@ class ContactGroupController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(ContactGroup $contactGroup)
+    public function destroy(ContactGroup $contactGroup): RedirectResponse
     {
         $this->can('delete');
 
@@ -155,7 +157,7 @@ class ContactGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(ContactGroup $contactGroup)
+    public function delete(ContactGroup $contactGroup): View
     {
         return view('contact_group.delete', [
             'contactGroup' => $contactGroup

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use Illuminate\Contracts\View\View;
 
 class ReportController extends Controller
 {
     protected ?string $accessEntity = 'reports';
 
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
@@ -34,7 +35,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function inactive()
+    public function inactive(): View
     {
         $this->can('view');
 
@@ -43,7 +44,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function maleGender()
+    public function maleGender(): View
     {
         $this->can('view');
 
@@ -52,7 +53,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function femaleGender()
+    public function femaleGender(): View
     {
         $this->can('view');
 
@@ -61,7 +62,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function wrongMaleGender()
+    public function wrongMaleGender(): View
     {
         $this->can('view');
 
@@ -70,7 +71,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function wrongFemaleGender()
+    public function wrongFemaleGender(): View
     {
         $this->can('view');
 
@@ -79,7 +80,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noEmail()
+    public function noEmail(): View
     {
         $this->can('view');
 
@@ -88,7 +89,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noDate()
+    public function noDate(): View
     {
         $this->can('view');
 
@@ -97,7 +98,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noAddress()
+    public function noAddress(): View
     {
         $this->can('view');
 
@@ -106,7 +107,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noNumber()
+    public function noNumber(): View
     {
         $this->can('view');
 
@@ -115,7 +116,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noUrl()
+    public function noUrl(): View
     {
         $this->can('view');
 
@@ -124,7 +125,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function noLatLng()
+    public function noLatLng(): View
     {
         $this->can('view');
 

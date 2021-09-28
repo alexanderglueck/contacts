@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\Tenant\TenantSelectionStoreRequest;
 
@@ -15,7 +17,7 @@ class TenantSelectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         return view('tenant.index', [
             'teams' => $request->user()->teams
@@ -29,7 +31,7 @@ class TenantSelectionController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(TenantSelectionStoreRequest $request)
+    public function store(TenantSelectionStoreRequest $request): RedirectResponse
     {
         $team = Team::find($request->team);
 

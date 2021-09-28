@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactDate;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactDate\ContactDateStoreRequest;
 use App\Http\Requests\ContactDate\ContactDateUpdateRequest;
@@ -19,7 +21,7 @@ class ContactDateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Contact $contact)
+    public function index(Contact $contact): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class ContactDateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact)
+    public function create(Contact $contact): View
     {
         $this->can('create');
 
@@ -50,11 +52,11 @@ class ContactDateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactDateStoreRequest $request
-     * @param \App\Models\Contact     $contact
+     * @param \App\Models\Contact $contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactDateStoreRequest $request, Contact $contact)
+    public function store(ContactDateStoreRequest $request, Contact $contact): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -76,12 +78,12 @@ class ContactDateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Contact     $contact
+     * @param \App\Models\Contact $contact
      * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact, ContactDate $contactDate)
+    public function show(Contact $contact, ContactDate $contactDate): View
     {
         $this->can('view');
 
@@ -94,12 +96,12 @@ class ContactDateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Contact     $contact
+     * @param \App\Models\Contact $contact
      * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, ContactDate $contactDate)
+    public function edit(Contact $contact, ContactDate $contactDate): View
     {
         $this->can('edit');
 
@@ -114,12 +116,12 @@ class ContactDateController extends Controller
      * Update the specified resource in storage.
      *
      * @param ContactDateUpdateRequest $request
-     * @param \App\Models\Contact      $contact
-     * @param \App\Models\ContactDate  $contactDate
+     * @param \App\Models\Contact $contact
+     * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate)
+    public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -141,13 +143,13 @@ class ContactDateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Contact     $contact
+     * @param \App\Models\Contact $contact
      * @param \App\Models\ContactDate $contactDate
      *
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, ContactDate $contactDate)
+    public function destroy(Contact $contact, ContactDate $contactDate): RedirectResponse
     {
         $this->can('delete');
 
@@ -164,13 +166,8 @@ class ContactDateController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Contact     $contact
-     * @param \App\Models\ContactDate $contactDate
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact, ContactDate $contactDate)
+    public function delete(Contact $contact, ContactDate $contactDate): View
     {
         $this->can('delete');
 

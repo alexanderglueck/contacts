@@ -11,25 +11,8 @@ class TenantWasCreated
 {
     use Dispatchable, SerializesModels;
 
-    /**
-     * @var Tenant
-     */
-    public $tenant;
-
-    /**
-     * @var User
-     */
-    public $user;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param Tenant $tenant
-     * @param User   $user
-     */
-    public function __construct(Tenant $tenant, User $user)
+    public function __construct(public Tenant $tenant, public User $user)
     {
-        $this->tenant = $tenant;
-        $this->user = $user;
+        //
     }
 }

@@ -8,10 +8,8 @@ class CommentCollection extends Collection
 {
     /**
      * Thread the comment tree.
-     *
-     * @return Collection
      */
-    public function threaded()
+    public function threaded(): self
     {
         $comments = parent::groupBy('parent_id');
 

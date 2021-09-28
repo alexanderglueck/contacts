@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContactImport\ContactImportImportRequest;
 use App\Imports\ContactsImport;
 use App\Models\ContactGroup;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -12,10 +14,7 @@ class ContactImportController extends Controller
 {
     protected ?string $accessEntity = 'import';
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
+    public function index(): View
     {
         $this->can('create');
 
@@ -26,12 +25,8 @@ class ContactImportController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param ContactImportImportRequest $request
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function import(ContactImportImportRequest $request, ContactsImport $contactsImport)
+    public function import(ContactImportImportRequest $request, ContactsImport $contactsImport): RedirectResponse
     {
         if ($request->hasFile('import_file') && $request->file('import_file')->isValid()) {
 

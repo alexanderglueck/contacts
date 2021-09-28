@@ -34,10 +34,9 @@ class Import extends ImportCommand
      * Execute the console command.
      *
      * @param Dispatcher $events
-     *
-     * @return mixed
+     * @return int
      */
-    public function handle(Dispatcher $events)
+    public function handle(Dispatcher $events): int
     {
         $this->tenants($this->option('tenants'))->each(function ($tenant) use ($events) {
             /*
@@ -48,5 +47,7 @@ class Import extends ImportCommand
 
             parent::handle($events);
         });
+
+        return 0;
     }
 }

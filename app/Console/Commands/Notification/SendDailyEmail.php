@@ -22,12 +22,10 @@ class SendDailyEmail extends Command
      */
     protected $description = 'Sends an email with today\'s contact dates to all users';
 
-    protected $todaysDates;
+    protected TodaysDates $todaysDates;
 
     /**
      * Create a new command instance.
-     *
-     * @param TodaysDates $todaysDates
      */
     public function __construct(TodaysDates $todaysDates)
     {
@@ -37,8 +35,6 @@ class SendDailyEmail extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(): int
     {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Account;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
@@ -18,7 +20,7 @@ class TwoFactorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, Google2FA $google2fa)
+    public function edit(Request $request, Google2FA $google2fa): View
     {
         // Check if 2FA is already enabled
         if ( ! $request->user()->hasTwoFactorAuthentication()) {
@@ -53,7 +55,7 @@ class TwoFactorController extends Controller
         ]);
     }
 
-    public function disable(Request $request)
+    public function disable(Request $request): RedirectResponse
     {
         // disable 2fa
         $request->user()->google2fa_secret = null;
@@ -77,7 +79,7 @@ class TwoFactorController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function enable(Request $request, Google2FA $google2fa)
+    public function enable(Request $request, Google2FA $google2fa): RedirectResponse
     {
         $request->session()->put('google2fa_secret', $google2fa->generateSecretKey(64));
 
@@ -91,10 +93,9 @@ class TwoFactorController extends Controller
      * @param TwoFactorCheckRequest $request
      * @param Google2FA             $google2fa
      *
-     * @return array
      * @throws \Exception
      */
-    public function check(TwoFactorCheckRequest $request, Google2FA $google2fa)
+    public function check(TwoFactorCheckRequest $request, Google2FA $google2fa): RedirectResponse
     {
         $secret = str_replace(' ', '', $request->secret);
 

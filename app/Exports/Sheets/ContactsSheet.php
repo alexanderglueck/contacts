@@ -2,6 +2,7 @@
 
 namespace App\Exports\Sheets;
 
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -14,7 +15,7 @@ class ContactsSheet implements FromArray, WithTitle
 
     public function array(): array
     {
-        return $this->contacts->map(function ($contact) {
+        return $this->contacts->map(function (Contact $contact) {
             return [
                 'id' => $contact->id,
                 'lastname' => $contact->lastname,

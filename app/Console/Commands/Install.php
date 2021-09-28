@@ -22,21 +22,9 @@ class Install extends Command
     protected $description = 'Install contacts';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $this->welcome();
 
@@ -49,7 +37,7 @@ class Install extends Command
         $this->updateEnvironmentFile($credentials);
 
         if ($this->confirm('Do you want to migrate the database?', false)) {
-            $this->migrateDatabaseWithFreshCredentials($credentials);
+            $this->migrateDatabaseWithFreshCredentials();
             $this->line('Database successfully migrated.');
 
             if ($this->confirm('Do you want to seed the database?', false)) {
@@ -63,6 +51,8 @@ class Install extends Command
         $this->symlinkStorage();
 
         $this->goodbye();
+
+        return 0;
     }
 
     /**
@@ -72,7 +62,7 @@ class Install extends Command
      *
      * @return void
      */
-    protected function updateEnvironmentFile($updatedValues)
+    protected function updateEnvironmentFile(array $updatedValues): void
     {
         $envFile = $this->laravel->environmentFilePath();
 
@@ -89,7 +79,7 @@ class Install extends Command
         }
     }
 
-    private function createEnvFile()
+    private function createEnvFile(): void
     {
         if ( ! file_exists('.env')) {
             copy('.env.example', '.env');
@@ -97,17 +87,15 @@ class Install extends Command
         }
     }
 
-    protected function migrateDatabaseWithFreshCredentials($credentials)
+    protected function migrateDatabaseWithFreshCredentials(): void
     {
         $this->call('migrate');
     }
 
     /**
      * Request the local database details from the user.
-     *
-     * @return array
      */
-    protected function requestCredentials()
+    protected function requestCredentials(): array
     {
         return [
             'DB_DATABASE' => $this->ask('Database name', config('database.connections.mysql.database')),
@@ -120,13 +108,8 @@ class Install extends Command
 
     /**
      * Prompt the user for optional input but hide the answer from the console.
-     *
-     * @param  string $question
-     * @param  bool   $fallback
-     *
-     * @return string
      */
-    public function askHiddenWithDefault($question, $fallback = true)
+    public function askHiddenWithDefault(string $question, bool $fallback = true): string
     {
         $question = new Question($question, config('database.connections.mysql.password'));
         $question->setHidden(true)->setHiddenFallback($fallback);
@@ -137,7 +120,7 @@ class Install extends Command
     /**
      * Display the welcome message.
      */
-    protected function welcome()
+    protected function welcome(): void
     {
         $this->info('>> Welcome to the Contacts installation process! <<');
     }
@@ -145,12 +128,12 @@ class Install extends Command
     /**
      * Display the completion message.
      */
-    protected function goodbye()
+    protected function goodbye(): void
     {
         $this->info('>> The installation process is complete. Enjoy your new contacts installation! <<');
     }
 
-    protected function seedDatabase()
+    protected function seedDatabase(): void
     {
         $this->call('db:seed');
     }

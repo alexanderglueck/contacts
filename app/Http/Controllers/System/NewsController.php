@@ -6,6 +6,8 @@ use App\Models\System\News;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\News\EditNews;
 use App\Http\Requests\News\DeleteNews;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 
 class NewsController extends Controller
@@ -15,7 +17,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         if (auth()->check()) {
             return view('news.index', [
@@ -34,7 +36,7 @@ class NewsController extends Controller
         ]);
     }
 
-    public function markAsRead(News $news)
+    public function markAsRead(News $news): RedirectResponse
     {
         $news->markAsRead(auth()->user());
 
@@ -46,7 +48,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('news.create', [
             'news' => new News
@@ -60,7 +62,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(EditNews $request)
+    public function store(EditNews $request): RedirectResponse
     {
         $announcement = new News();
         $announcement->fill($request->all());
@@ -83,7 +85,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(News $news)
+    public function show(News $news): View
     {
         return view('news.show', [
             'news' => $news
@@ -97,7 +99,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(News $news)
+    public function edit(News $news): View
     {
         return view('news.edit', [
             'news' => $news,
@@ -113,7 +115,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(EditNews $request, News $news)
+    public function update(EditNews $request, News $news): RedirectResponse
     {
         $news->fill($request->all());
 
@@ -137,7 +139,7 @@ class NewsController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(DeleteNews $request, News $news)
+    public function destroy(DeleteNews $request, News $news): RedirectResponse
     {
         if ( ! $news->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
@@ -157,7 +159,7 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(News $news)
+    public function delete(News $news): View
     {
         return view('news.delete', [
             'news' => $news

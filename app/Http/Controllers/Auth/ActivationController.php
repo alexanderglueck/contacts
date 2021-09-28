@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\ConfirmationToken;
 use App\Http\Controllers\Controller;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ActivationController extends Controller
 {
-    protected $redirectTo = '/home';
+    protected string $redirectTo = '/home';
 
     /**
      * ActivationController constructor.
@@ -19,7 +20,7 @@ class ActivationController extends Controller
         $this->middleware(['confirmation_token.expired:/']);
     }
 
-    public function activate(ConfirmationToken $token, Request $request)
+    public function activate(ConfirmationToken $token, Request $request): RedirectResponse
     {
         $token->user->update([
             'activated' => true
@@ -34,7 +35,7 @@ class ActivationController extends Controller
         return redirect()->intended($this->redirectPath());
     }
 
-    public function redirectPath()
+    public function redirectPath(): string
     {
         return $this->redirectTo;
     }

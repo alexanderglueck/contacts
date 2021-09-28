@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exports\ContactsExport;
 use App\Models\ContactGroup;
 use App\Http\Requests\ContactExport\ContactExportExportRequest;
+use Illuminate\Contracts\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ContactExportController extends Controller
 {
@@ -12,10 +14,8 @@ class ContactExportController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('create');
 
@@ -24,7 +24,7 @@ class ContactExportController extends Controller
         ]);
     }
 
-    public function export(ContactExportExportRequest $request)
+    public function export(ContactExportExportRequest $request): BinaryFileResponse
     {
         /**
          * CSV

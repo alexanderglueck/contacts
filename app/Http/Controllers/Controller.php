@@ -14,12 +14,12 @@ class Controller extends BaseController
 
     protected ?string $accessEntity = null;
 
-    protected function can($right)
+    protected function can($right): void
     {
         abort_unless(Auth::user()->can($right . ' ' . $this->accessEntity), 403, trans('ui.access_denied'));
     }
 
-    protected function isImpersonating()
+    protected function isImpersonating(): bool
     {
         return session()->has('impersonate');
     }

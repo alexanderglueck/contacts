@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Subscription;
 use App\Models\Plan;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\SubscriptionStoreRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 
 class SubscriptionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $plans = Plan::active()->get();
 
@@ -21,7 +23,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function store(SubscriptionStoreRequest $request)
+    public function store(SubscriptionStoreRequest $request): RedirectResponse
     {
         $subscription = $request->user()
             ->newSubscription('main', $request->plan);

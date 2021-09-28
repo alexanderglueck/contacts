@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactEmail;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactEmail\ContactEmailStoreRequest;
 use App\Http\Requests\ContactEmail\ContactEmailUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactEmail;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
 
 class ContactEmailController extends Controller
 {
@@ -19,7 +21,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Contact $contact)
+    public function index(Contact $contact): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact)
+    public function create(Contact $contact): View
     {
         $this->can('create');
 
@@ -54,7 +56,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactEmailStoreRequest $request, Contact $contact)
+    public function store(ContactEmailStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->emails()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.created'));
@@ -75,7 +77,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact, ContactEmail $contactEmail)
+    public function show(Contact $contact, ContactEmail $contactEmail): View
     {
         $this->can('view');
 
@@ -93,7 +95,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, ContactEmail $contactEmail)
+    public function edit(Contact $contact, ContactEmail $contactEmail): View
     {
         $this->can('edit');
 
@@ -113,7 +115,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactEmailUpdateRequest $request, Contact $contact, ContactEmail $contactEmail)
+    public function update(ContactEmailUpdateRequest $request, Contact $contact, ContactEmail $contactEmail): RedirectResponse
     {
         if ($contactEmail->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.updated'));
@@ -135,7 +137,7 @@ class ContactEmailController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, ContactEmail $contactEmail)
+    public function destroy(Contact $contact, ContactEmail $contactEmail): RedirectResponse
     {
         $this->can('delete');
 
@@ -158,7 +160,7 @@ class ContactEmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact, ContactEmail $contactEmail)
+    public function delete(Contact $contact, ContactEmail $contactEmail): View
     {
         $this->can('delete');
 

@@ -7,6 +7,8 @@ use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Country;
 use App\Models\ContactGroup;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +24,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $this->can('create');
 
@@ -55,7 +57,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactStoreRequest $request)
+    public function store(ContactStoreRequest $request): RedirectResponse
     {
         $contact = new Contact();
         $contact->fill($request->all());
@@ -84,7 +86,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact)
+    public function show(Contact $contact): View
     {
         $this->can('view');
 
@@ -102,7 +104,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact)
+    public function edit(Contact $contact): View
     {
         $this->can('edit');
 
@@ -123,7 +125,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactUpdateRequest $request, Contact $contact)
+    public function update(ContactUpdateRequest $request, Contact $contact): RedirectResponse
     {
         if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
             $contact->contactGroups()->sync($request->contact_groups);
@@ -150,7 +152,7 @@ class ContactController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact)
+    public function destroy(Contact $contact): RedirectResponse
     {
         $this->can('delete');
 
@@ -178,7 +180,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact)
+    public function delete(Contact $contact): View
     {
         $this->can('delete');
 
@@ -187,7 +189,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function image(Contact $contact)
+    public function image(Contact $contact): View
     {
         $this->can('edit');
 
@@ -196,7 +198,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateImage(Request $request, Contact $contact)
+    public function updateImage(Request $request, Contact $contact): RedirectResponse
     {
         $this->can('edit');
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -14,7 +15,7 @@ class SearchController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function search(Request $request)
+    public function search(Request $request): View
     {
         $search = $request->post('search');
 

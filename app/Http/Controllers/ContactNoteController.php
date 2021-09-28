@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\ContactNote;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactNote\ContactNoteStoreRequest;
 use App\Http\Requests\ContactNote\ContactNoteUpdateRequest;
@@ -19,7 +21,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Contact $contact)
+    public function index(Contact $contact): View
     {
         $this->can('view');
 
@@ -36,7 +38,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Contact $contact)
+    public function create(Contact $contact): View
     {
         $this->can('create');
 
@@ -54,7 +56,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(ContactNoteStoreRequest $request, Contact $contact)
+    public function store(ContactNoteStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->notes()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.created'));
@@ -75,7 +77,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Contact $contact, ContactNote $contactNote)
+    public function show(Contact $contact, ContactNote $contactNote): View
     {
         $this->can('view');
 
@@ -93,7 +95,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact, ContactNote $contactNote)
+    public function edit(Contact $contact, ContactNote $contactNote): View
     {
         $this->can('edit');
 
@@ -113,7 +115,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactNoteUpdateRequest $request, Contact $contact, ContactNote $contactNote)
+    public function update(ContactNoteUpdateRequest $request, Contact $contact, ContactNote $contactNote): RedirectResponse
     {
         if ($contactNote->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.updated'));
@@ -135,7 +137,7 @@ class ContactNoteController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Contact $contact, ContactNote $contactNote)
+    public function destroy(Contact $contact, ContactNote $contactNote): RedirectResponse
     {
         $this->can('delete');
 
@@ -158,7 +160,7 @@ class ContactNoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete(Contact $contact, ContactNote $contactNote)
+    public function delete(Contact $contact, ContactNote $contactNote): View
     {
         $this->can('delete');
 

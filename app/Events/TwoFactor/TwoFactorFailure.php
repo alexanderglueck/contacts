@@ -10,18 +10,9 @@ class TwoFactorFailure
 {
     use Dispatchable, SerializesModels;
 
-    /**
-     * @var User
-     */
-    public $user;
 
-    /**
-     * Create a new event instance.
-     *
-     * @param User $user
-     */
-    public function __construct(User $user)
+    public function __construct(public User $user)
     {
-        $this->user = $user;
+        //
     }
 }

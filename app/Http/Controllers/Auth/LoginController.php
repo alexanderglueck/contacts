@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
@@ -32,7 +33,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected string $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -88,7 +89,7 @@ class LoginController extends Controller
         return view('auth.token');
     }
 
-    public function check(LoginCheckRequest $request, Google2FA $google2fa)
+    public function check(LoginCheckRequest $request, Google2FA $google2fa): RedirectResponse
     {
         if ( ! $request->session()->has('token-user-id')) {
             Auth::logout();

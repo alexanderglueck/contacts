@@ -10,18 +10,14 @@ class TenantIdentified
 {
     use Dispatchable, SerializesModels;
 
-    /**
-     * @var Tenant
-     */
-    public $tenant;
 
     /**
      * Create a new event instance.
-     *
-     * @param Tenant $tenant
      */
-    public function __construct(Tenant $tenant)
+    public function __construct(
+        public Tenant $tenant
+    )
     {
-        $this->tenant = $tenant;
+        //
     }
 }
