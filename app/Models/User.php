@@ -126,7 +126,7 @@ class User extends Authenticatable
      */
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'created_by')->orderBy('created_at', 'asc');
+        return $this->hasMany(Comment::class, 'created_by')->orderBy('created_at');
     }
 
     public function notificationSetting()

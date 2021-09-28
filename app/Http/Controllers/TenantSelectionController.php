@@ -12,10 +12,6 @@ class TenantSelectionController extends Controller
 {
     /**
      * Display a list of tenants for the user to switch to
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(Request $request): View
     {
@@ -26,10 +22,6 @@ class TenantSelectionController extends Controller
 
     /**
      * Switch the currently authenticated user to the selected tenant
-     *
-     * @param TenantSelectionStoreRequest $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(TenantSelectionStoreRequest $request): RedirectResponse
     {

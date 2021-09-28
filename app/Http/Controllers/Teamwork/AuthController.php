@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teamwork;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Mpociot\Teamwork\Facades\Teamwork;
 
@@ -9,12 +10,8 @@ class AuthController extends Controller
 {
     /**
      * Accept the given invite
-     *
-     * @param $token
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function acceptInvite($token)
+    public function acceptInvite(string $token): RedirectResponse
     {
         $invite = Teamwork::getInviteFromAcceptToken($token);
         if ( ! $invite) {

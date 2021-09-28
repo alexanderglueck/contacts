@@ -24,8 +24,8 @@ class GenerateProfileImageAction
         File::exists(storage_path('app/public/profile_images/')) or File::makeDirectory(storage_path('app/public/profile_images/'));
 
         $avatar->name($user->name)
-            ->length(2)
-            ->fontSize(0.5)
+            ->length()
+            ->fontSize()
             ->size(50)
             ->background('#3867d6')
             ->color('#EEE')

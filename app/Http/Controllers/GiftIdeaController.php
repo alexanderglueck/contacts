@@ -16,10 +16,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @param Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact): View
     {
@@ -33,10 +29,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact): View
     {
@@ -50,11 +42,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param GiftIdeaStoreRequest $request
-     * @param Contact              $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(GiftIdeaStoreRequest $request, Contact $contact): RedirectResponse
     {
@@ -71,11 +58,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param Contact              $contact
-     * @param \App\Models\GiftIdea $giftIdea
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, GiftIdea $giftIdea): View
     {
@@ -89,11 +71,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param Contact              $contact
-     * @param \App\Models\GiftIdea $giftIdea
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, GiftIdea $giftIdea): View
     {
@@ -108,12 +85,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param GiftIdeaUpdateRequest $request
-     * @param Contact               $contact
-     * @param GiftIdea              $giftIdea
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
@@ -130,12 +101,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param Contact  $contact
-     * @param GiftIdea $giftIdea
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
@@ -154,11 +119,6 @@ class GiftIdeaController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Contact  $contact
-     * @param \App\Models\GiftIdea $giftIdea
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, GiftIdea $giftIdea): View
     {

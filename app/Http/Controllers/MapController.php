@@ -13,8 +13,6 @@ class MapController extends Controller
 
     /**
      * Display all the geocoded contacts on a map.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(): View
     {

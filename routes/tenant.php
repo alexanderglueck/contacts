@@ -296,16 +296,16 @@ Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function () {
     Route::get('/', [TeamController::class, 'index'])->name('teams.index');
     Route::get('create', [TeamController::class, 'create'])->name('teams.create');
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
-    Route::get('edit/{id}', [TeamController::class, 'edit'])->name('teams.edit');
-    Route::put('edit/{id}', [TeamController::class, 'update'])->name('teams.update');
-    Route::delete('destroy/{id}', [TeamController::class, 'destroy'])->name('teams.destroy');
-    Route::get('switch/{id}', [TeamController::class, 'switchTeam'])->name('teams.switch');
+    Route::get('edit/{team}', [TeamController::class, 'edit'])->name('teams.edit');
+    Route::put('edit/{team}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('destroy/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::get('switch/{team}', [TeamController::class, 'switchTeam'])->name('teams.switch');
 
     Route::group(['middleware' => ['subscription.team']], function () {
-        Route::get('members/{id}', [TeamMemberController::class, 'show'])->name('teams.members.show');
-        Route::get('members/resend/{invite_id}', [TeamMemberController::class, 'resendInvite'])->name('teams.members.resend_invite');
-        Route::post('members/{id}', [TeamMemberController::class, 'invite'])->name('teams.members.invite');
-        Route::delete('members/{id}/{user_id}', [TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
+        Route::get('members/{team}', [TeamMemberController::class, 'show'])->name('teams.members.show');
+        Route::get('members/resend/{invite}', [TeamMemberController::class, 'resendInvite'])->name('teams.members.resend_invite');
+        Route::post('members/{team}', [TeamMemberController::class, 'invite'])->name('teams.members.invite');
+        Route::delete('members/{team}/{user}', [TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
     });
 
     Route::get('accept/{token}', [AuthController::class, 'acceptInvite'])->name('teams.accept_invite');

@@ -46,12 +46,8 @@ class RegisterController extends Controller
 
     /**
      * Get a validator for an incoming registration request.
-     *
-     * @param  array $data
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data): Validator
+    protected function validator(array $data): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
@@ -63,10 +59,6 @@ class RegisterController extends Controller
 
     /**
      * Create a new user instance after a valid registration.
-     *
-     * @param  array $data
-     *
-     * @return \App\Models\User
      */
     protected function create(array $data): User
     {
@@ -77,13 +69,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param User    $user
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    protected function registered(Request $request, $user): RedirectResponse
+    protected function registered(Request $request, User $user): RedirectResponse
     {
         /*
          * Do not immediately sign-in the user

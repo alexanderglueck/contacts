@@ -66,8 +66,7 @@ class WeeksDates extends Notification
             $startDate->format('Y'),
             $endDate->format('Y'),
             $startDate,
-            $endDate,
-            true
+            $endDate
         );
 
         // Reset end date (we added one week above)

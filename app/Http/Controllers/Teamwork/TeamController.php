@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
 use App\Http\Requests\Team\TeamStoreRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
@@ -18,26 +21,22 @@ class TeamController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): View|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
         return view('teamwork.index', [
-            'teams' => auth()->user()->teams
+            'teams' => $request->user()->teams
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
@@ -48,12 +47,8 @@ class TeamController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param TeamStoreRequest $request
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function store(TeamStoreRequest $request)
+    public function store(TeamStoreRequest $request): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
@@ -72,18 +67,12 @@ class TeamController extends Controller
 
     /**
      * Switch to the given team.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function switchTeam($id)
+    public function switchTeam(Team $team): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
-
-        $team = Team::findOrFail($id);
 
         try {
             auth()->user()->switchTeam($team);
@@ -98,41 +87,31 @@ class TeamController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Team $team): View|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
-
-        $team = Team::findOrFail($id);
 
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 
-        return view('teamwork.edit')->withTeam($team);
+        return view('teamwork.edit', [
+            'team' => $team
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param TeamStoreRequest $request
-     * @param int              $id
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function update(TeamStoreRequest $request, $id)
+    public function update(TeamStoreRequest $request, Team $team): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        $team = Team::findOrFail($id);
         $team->name = $request->name;
         $team->save();
 
@@ -141,18 +120,13 @@ class TeamController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Team $team): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        $team = Team::findOrFail($id);
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
@@ -171,7 +145,7 @@ class TeamController extends Controller
          * Remove the team association to redirect them to the tenant selection
          * page
          */
-        User::where('current_team_id', $id)->update([
+        User::where('current_team_id', $team->id)->update([
             'current_team_id' => null
         ]);
 

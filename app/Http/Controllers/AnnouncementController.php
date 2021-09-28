@@ -18,8 +18,6 @@ class AnnouncementController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(Request $request): View
     {
@@ -44,8 +42,6 @@ class AnnouncementController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(): View
     {
@@ -58,10 +54,6 @@ class AnnouncementController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param StoreAnnouncement $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(StoreAnnouncement $request): RedirectResponse
     {
@@ -82,10 +74,6 @@ class AnnouncementController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\Admin\Announcement $announcement
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Announcement $announcement): View
     {
@@ -98,10 +86,6 @@ class AnnouncementController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Admin\Announcement $announcement
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Announcement $announcement): View
     {
@@ -115,11 +99,6 @@ class AnnouncementController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param UpdateAnnouncement $request
-     * @param \App\Models\Admin\Announcement $announcement
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(UpdateAnnouncement $request, Announcement $announcement): RedirectResponse
     {
@@ -138,12 +117,6 @@ class AnnouncementController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param DeleteAnnouncement $request
-     * @param \App\Models\Admin\Announcement $announcement
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(DeleteAnnouncement $request, Announcement $announcement): RedirectResponse
     {
@@ -160,10 +133,6 @@ class AnnouncementController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Admin\Announcement $announcement
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(Announcement $announcement): View
     {

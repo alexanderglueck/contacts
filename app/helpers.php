@@ -25,7 +25,7 @@ function flashWarning($message = null)
 
 function flashInfo($message = null)
 {
-    flash($message, 'info');
+    flash($message);
 }
 
 /*

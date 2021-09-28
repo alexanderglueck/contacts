@@ -16,10 +16,6 @@ class ContactDateController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact): View
     {
@@ -33,10 +29,6 @@ class ContactDateController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact): View
     {
@@ -50,11 +42,6 @@ class ContactDateController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param ContactDateStoreRequest $request
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(ContactDateStoreRequest $request, Contact $contact): RedirectResponse
     {
@@ -77,11 +64,6 @@ class ContactDateController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\Contact $contact
-     * @param \App\Models\ContactDate $contactDate
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactDate $contactDate): View
     {
@@ -95,11 +77,6 @@ class ContactDateController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Contact $contact
-     * @param \App\Models\ContactDate $contactDate
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactDate $contactDate): View
     {
@@ -114,12 +91,6 @@ class ContactDateController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param ContactDateUpdateRequest $request
-     * @param \App\Models\Contact $contact
-     * @param \App\Models\ContactDate $contactDate
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate): RedirectResponse
     {
@@ -142,12 +113,6 @@ class ContactDateController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Contact $contact
-     * @param \App\Models\ContactDate $contactDate
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(Contact $contact, ContactDate $contactDate): RedirectResponse
     {

@@ -16,10 +16,6 @@ class ContactNoteController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(Contact $contact): View
     {
@@ -33,10 +29,6 @@ class ContactNoteController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(Contact $contact): View
     {
@@ -50,11 +42,6 @@ class ContactNoteController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param ContactNoteStoreRequest $request
-     * @param \App\Models\Contact     $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(ContactNoteStoreRequest $request, Contact $contact): RedirectResponse
     {
@@ -71,11 +58,6 @@ class ContactNoteController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\Contact     $contact
-     * @param \App\Models\ContactNote $contactNote
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact, ContactNote $contactNote): View
     {
@@ -89,11 +71,6 @@ class ContactNoteController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Contact     $contact
-     * @param \App\Models\ContactNote $contactNote
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, ContactNote $contactNote): View
     {
@@ -108,12 +85,6 @@ class ContactNoteController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param ContactNoteUpdateRequest $request
-     * @param \App\Models\Contact      $contact
-     * @param \App\Models\ContactNote  $contactNote
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(ContactNoteUpdateRequest $request, Contact $contact, ContactNote $contactNote): RedirectResponse
     {
@@ -130,12 +101,6 @@ class ContactNoteController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Contact     $contact
-     * @param \App\Models\ContactNote $contactNote
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(Contact $contact, ContactNote $contactNote): RedirectResponse
     {
@@ -154,11 +119,6 @@ class ContactNoteController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Contact     $contact
-     * @param \App\Models\ContactNote $contactNote
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact, ContactNote $contactNote): View
     {

@@ -33,11 +33,6 @@ class CommentController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param Contact $contact
-     * @param Comment $comment
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact, Comment $comment): View
     {
@@ -51,12 +46,6 @@ class CommentController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param UpdateCommentRequest $request
-     * @param Contact $contact
-     * @param Comment $comment
-     *
-     * @return \Response
      */
     public function update(UpdateCommentRequest $request, Contact $contact, Comment $comment): RedirectResponse
     {
@@ -73,13 +62,6 @@ class CommentController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param DeleteCommentRequest $request
-     * @param Contact $contact
-     * @param Comment $comment
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(DeleteCommentRequest $request, Contact $contact, Comment $comment): RedirectResponse
     {

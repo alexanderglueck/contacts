@@ -17,8 +17,6 @@ class RoleController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(): View
     {
@@ -31,10 +29,6 @@ class RoleController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(Request $request): View
     {
@@ -49,10 +43,6 @@ class RoleController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param RoleStoreRequest $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(RoleStoreRequest $request): RedirectResponse
     {
@@ -77,10 +67,6 @@ class RoleController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\Role $role
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Role $role): View
     {
@@ -93,11 +79,6 @@ class RoleController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param Request          $request
-     * @param \App\Models\Role $role
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Role $role): View
     {
@@ -113,11 +94,6 @@ class RoleController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param RoleUpdateRequest $request
-     * @param \App\Models\Role  $role
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
@@ -140,11 +116,6 @@ class RoleController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Role $role
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(Role $role): RedirectResponse
     {
@@ -163,10 +134,6 @@ class RoleController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Role $role
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(Role $role): View
     {

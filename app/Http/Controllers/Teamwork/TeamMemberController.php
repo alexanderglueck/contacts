@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Teamwork;
 
 use App\Mail\TeamInvitation;
+use App\Models\Team;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Mpociot\Teamwork\TeamInvite;
 use App\Http\Controllers\Controller;
@@ -18,46 +22,31 @@ class TeamMemberController extends Controller
 
     /**
      * Show the members of the given team.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Team $team): View|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-        $team = $teamModel::findOrFail($id);
-
-        return view('teamwork.members.list')->withTeam($team);
+        return view('teamwork.members.list', [
+            'team' => $team
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param int $team_id
-     * @param int $user_id
-     *
-     * @return \Illuminate\Http\Response
-     * @internal param int $id
      */
-    public function destroy($team_id, $user_id)
+    public function destroy(Team $team, User $user): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        $teamModel = config('teamwork.team_model');
-        $team = $teamModel::findOrFail($team_id);
         if ( ! auth()->user()->isOwnerOfTeam($team)) {
             abort(403);
         }
 
-        $userModel = config('teamwork.user_model');
-        $user = $userModel::findOrFail($user_id);
         if ($user->getKey() === auth()->user()->getKey()) {
             abort(403);
         }
@@ -73,20 +62,11 @@ class TeamMemberController extends Controller
         return redirect(route('teams.index'));
     }
 
-    /**
-     * @param Request $request
-     * @param int     $team_id
-     *
-     * @return $this
-     */
-    public function invite(Request $request, $team_id)
+    public function invite(Request $request, Team $team): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
-
-        $teamModel = config('teamwork.team_model');
-        $team = $teamModel::findOrFail($team_id);
 
         if ( ! Teamwork::hasPendingInvite($request->email, $team)) {
             Teamwork::inviteToTeam($request->email, $team, function ($invite) {
@@ -104,18 +84,13 @@ class TeamMemberController extends Controller
 
     /**
      * Resend an invitation mail.
-     *
-     * @param $invite_id
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function resendInvite($invite_id)
+    public function resendInvite(TeamInvite $invite): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        $invite = TeamInvite::findOrFail($invite_id);
         Mail::to($invite->email)->send(new TeamInvitation($invite));
 
         return redirect(route('teams.members.show', $invite->team));

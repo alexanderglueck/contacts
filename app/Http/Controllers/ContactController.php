@@ -21,8 +21,6 @@ class ContactController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(): View
     {
@@ -35,8 +33,6 @@ class ContactController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(): View
     {
@@ -52,10 +48,6 @@ class ContactController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param ContactStoreRequest $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(ContactStoreRequest $request): RedirectResponse
     {
@@ -81,10 +73,6 @@ class ContactController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(Contact $contact): View
     {
@@ -99,10 +87,6 @@ class ContactController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(Contact $contact): View
     {
@@ -119,11 +103,6 @@ class ContactController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param ContactUpdateRequest $request
-     * @param \App\Models\Contact  $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(ContactUpdateRequest $request, Contact $contact): RedirectResponse
     {
@@ -146,11 +125,6 @@ class ContactController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(Contact $contact): RedirectResponse
     {
@@ -175,10 +149,6 @@ class ContactController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param \App\Models\Contact $contact
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(Contact $contact): View
     {

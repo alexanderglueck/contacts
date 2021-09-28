@@ -16,8 +16,6 @@ class ContactGroupController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index(): View
     {
@@ -30,8 +28,6 @@ class ContactGroupController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(): View
     {
@@ -45,10 +41,6 @@ class ContactGroupController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param ContactGroupStoreRequest $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(ContactGroupStoreRequest $request): RedirectResponse
     {
@@ -70,10 +62,6 @@ class ContactGroupController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\ContactGroup $contactGroup
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(ContactGroup $contactGroup): View
     {
@@ -87,10 +75,6 @@ class ContactGroupController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ContactGroup $contactGroup
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(ContactGroup $contactGroup): View
     {
@@ -105,11 +89,6 @@ class ContactGroupController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param ContactGroupUpdateRequest $request
-     * @param  \App\Models\ContactGroup $contactGroup
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(ContactGroupUpdateRequest $request, ContactGroup $contactGroup): RedirectResponse
     {
@@ -129,11 +108,6 @@ class ContactGroupController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\ContactGroup $contactGroup
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(ContactGroup $contactGroup): RedirectResponse
     {
@@ -152,10 +126,6 @@ class ContactGroupController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param  \App\Models\ContactGroup $contactGroup
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(ContactGroup $contactGroup): View
     {

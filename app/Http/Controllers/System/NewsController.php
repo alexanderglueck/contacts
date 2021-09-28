@@ -8,6 +8,7 @@ use App\Http\Requests\News\EditNews;
 use App\Http\Requests\News\DeleteNews;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class NewsController extends Controller
@@ -17,16 +18,16 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         if (auth()->check()) {
             return view('news.index', [
                 'active' => News::active()->paginate(10),
                 'inactive' => News::inactive()->paginate(10),
-                'displayed' => News::displayed(auth()->user())->paginate(10),
-                'hidden' => News::hidden(auth()->user())->paginate(10),
-                'read' => News::read(auth()->user())->paginate(10),
-                'unread' => News::unread(auth()->user())->paginate(10)
+                'displayed' => News::displayed($request->user())->paginate(10),
+                'hidden' => News::hidden($request->user())->paginate(10),
+                'read' => News::read($request->user())->paginate(10),
+                'unread' => News::unread($request->user())->paginate(10)
             ]);
         }
 
@@ -36,17 +37,15 @@ class NewsController extends Controller
         ]);
     }
 
-    public function markAsRead(News $news): RedirectResponse
+    public function markAsRead(Request $request, News $news): RedirectResponse
     {
-        $news->markAsRead(auth()->user());
+        $news->markAsRead($request->user());
 
         return redirect()->route('news.index');
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create(): View
     {
@@ -57,10 +56,6 @@ class NewsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param EditNews $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(EditNews $request): RedirectResponse
     {
@@ -80,10 +75,6 @@ class NewsController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  News $news
-     *
-     * @return \Illuminate\Http\Response
      */
     public function show(News $news): View
     {
@@ -94,10 +85,6 @@ class NewsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  News $news
-     *
-     * @return \Illuminate\Http\Response
      */
     public function edit(News $news): View
     {
@@ -109,11 +96,6 @@ class NewsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param EditNews $request
-     * @param  News    $news
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(EditNews $request, News $news): RedirectResponse
     {
@@ -132,12 +114,6 @@ class NewsController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param DeleteNews $request
-     * @param  News      $news
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function destroy(DeleteNews $request, News $news): RedirectResponse
     {
@@ -154,10 +130,6 @@ class NewsController extends Controller
 
     /**
      * Show the form for deleting the specified resource.
-     *
-     * @param  News $news
-     *
-     * @return \Illuminate\Http\Response
      */
     public function delete(News $news): View
     {

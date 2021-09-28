@@ -10,10 +10,6 @@ class SearchController extends Controller
 {
     /**
      * Returns all the contacts that matched the search criteria.
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function search(Request $request): View
     {

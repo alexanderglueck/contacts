@@ -47,13 +47,8 @@ class LoginController extends Controller
 
     /**
      * The user has been authenticated.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  mixed                    $user
-     *
-     * @return mixed
      */
-    protected function authenticated(Request $request, User $user)
+    protected function authenticated(Request $request, User $user): RedirectResponse
     {
         if ( ! $user->isActivated()) {
             $this->guard()->logout();
@@ -76,6 +71,8 @@ class LoginController extends Controller
         if ($user->currentTeam) {
             session()->put('tenant', $user->currentTeam->uuid);
         }
+
+        return redirect()->intended($this->redirectPath());
     }
 
     public function token(Request $request)
