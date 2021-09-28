@@ -76,7 +76,7 @@ class ContactGroupTest extends TestCase
             'updated_by' => $user->id
         ]);
 
-        $this->assertDatabaseHas('contact_groups', $contactGroup->toArray());
+        $this->assertModelExists($contactGroup);
 
         $response = $this
             ->delete(route('contact_groups.destroy', [$contactGroup->slug]), [
@@ -85,7 +85,7 @@ class ContactGroupTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseMissing('contact_groups', $contactGroup->toArray());
+        $this->assertModelMissing( $contactGroup);
         $this->assertAuthenticatedAs($user);
     }
 
@@ -135,7 +135,7 @@ class ContactGroupTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseHas('contact_groups', $contactGroup2->toArray());
+        $this->assertModelExists($contactGroup2);
         $this->assertDatabaseMissing('contact_groups', $check);
         $this->assertAuthenticatedAs($user);
     }

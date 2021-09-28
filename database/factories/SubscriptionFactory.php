@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 
 class SubscriptionFactory extends Factory
@@ -23,12 +25,13 @@ class SubscriptionFactory extends Factory
     public function definition()
     {
         return [
+            'user_id' => User::factory(),
             'name' => 'main',
-            'stripe_id' => $this->faker->word,
-            'stripe_plan' => $this->faker->word,
-            'quantity' => 1,
+            'stripe_id' => 'sub_' . Str::random(40),
+            'stripe_status' => true,
+            'quantity' => null,
             'trial_ends_at' => null,
-            'ends_at' => null
+            'ends_at' => null,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Admin;
 
 use App\Models\Admin\Announcement;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,7 +24,9 @@ class AnnouncementFactory extends Factory
         return [
             'user_id' => \App\Models\User::factory(),
             'title' => $this->faker->sentence,
-            'body' => $this->faker->paragraph(30)
+            'body' => $this->faker->paragraph(30),
+            'slug' => $this->faker->unique->slug
+
         ];
     }
 }

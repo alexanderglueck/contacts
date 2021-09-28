@@ -4,10 +4,11 @@ namespace Tests;
 
 use App\Events\Tenant\TenantIdentified;
 use App\Events\Tenant\TenantWasCreated;
+use App\Models\Subscription;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Laravel\Cashier\Subscription;
+
 
 abstract class TestCase extends BaseTestCase
 {

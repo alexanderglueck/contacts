@@ -74,7 +74,7 @@ class ContactTest extends TestCase
             'updated_by' => $user->id
         ]);
 
-        $this->assertDatabaseHas('contacts', $contact->toArray());
+        $this->assertModelExists($contact);
 
         $response = $this
             ->delete(route('contacts.destroy', [$contact->slug]), [
@@ -83,7 +83,7 @@ class ContactTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseMissing('contacts', $contact->toArray());
+        $this->assertModelMissing($contact);
         $this->assertAuthenticatedAs($user);
     }
 
@@ -133,14 +133,12 @@ class ContactTest extends TestCase
 
         $response = $this->actingAs($user)
             ->put(route('contacts.update', [$contact->slug]),
-                array_merge($parameters,
-                    ['_token' => csrf_token()]
-                ));
+                $parameters);
 
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseHas('contacts', $editedContact->toArray());
+        $this->assertModelExists($editedContact);
         $this->assertDatabaseMissing('contacts', $check);
         $this->assertAuthenticatedAs($user);
     }

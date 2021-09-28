@@ -11,7 +11,6 @@ use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use MeiliSearch\Client;
-use MeiliSearch\Exceptions\HTTPRequestException;
 use MeiliSearch\MeiliSearch;
 
 class CreateTenantDatabaseEntry implements ShouldQueue
@@ -46,7 +45,9 @@ class CreateTenantDatabaseEntry implements ShouldQueue
         /*
          * Create elastic search index
          */
-        $this->setupSearchIndex($event->tenant);
+        if ( ! app()->environment('testing')) {
+            $this->setupSearchIndex($event->tenant);
+        }
 
         /*
          * Finish tenant setup
@@ -80,7 +81,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     }
 
     /**
-     * @param User   $user
+     * @param User $user
      * @param Tenant $tenant
      */
     protected function setupPermissions(User $user, Tenant $tenant)
@@ -112,11 +113,7 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     {
         $client = new Client('http://meilisearch:7700');
 
-        try {
-            $index = $client->getIndex(config('scout.prefix') . 'contact');
-            $client->deleteIndex(config('scout.prefix') . 'contact');
-        } catch (HTTPRequestException $e) {
-
-        }
+        $index = $client->getIndex(config('scout.prefix') . 'contact');
+        $client->deleteIndex(config('scout.prefix') . 'contact');
     }
 }

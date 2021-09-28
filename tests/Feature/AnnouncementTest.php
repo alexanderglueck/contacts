@@ -19,7 +19,7 @@ class AnnouncementTest extends TestCase
     {
         $user = $this->createUser('create announcements');
 
-        $announcement = make(Announcement::class, [
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
@@ -30,7 +30,7 @@ class AnnouncementTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('errors');
-        $this->assertDatabaseHas('announcements', $announcement->toArray());
+        $this->assertModelExists( $announcement);
         $this->assertAuthenticatedAs($user);
     }
 
@@ -39,7 +39,7 @@ class AnnouncementTest extends TestCase
     {
         $user = $this->createUser('view announcements');
 
-        $announcement = make(Announcement::class, [
+        $announcement = create(Announcement::class, [
             'user_id' => $user->id
         ]);
 
@@ -75,7 +75,7 @@ class AnnouncementTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->assertDatabaseHas('announcements', $announcement->toArray());
+        $this->assertModelExists( $announcement);
 
         $response = $this
             ->delete(route('announcements.destroy', [$announcement->slug]));
@@ -141,7 +141,7 @@ class AnnouncementTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
-        $this->assertDatabaseHas('announcements', $differentAnnouncement->toArray());
+        $this->assertModelExists( $differentAnnouncement);
         $this->assertDatabaseMissing('announcements', $check);
         $this->assertAuthenticatedAs($user);
     }
