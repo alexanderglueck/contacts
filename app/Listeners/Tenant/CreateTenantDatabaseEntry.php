@@ -11,6 +11,7 @@ use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use MeiliSearch\Client;
+use MeiliSearch\Exceptions\ApiException;
 use MeiliSearch\MeiliSearch;
 
 class CreateTenantDatabaseEntry implements ShouldQueue
@@ -113,7 +114,11 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     {
         $client = new Client(config('scout.meilisearch.host'), config('scout.meilisearch.key'));
 
-        $index = $client->getIndex(config('scout.prefix') . 'contact');
-        $client->deleteIndex(config('scout.prefix') . 'contact');
+        try {
+            $index = $client->getIndex(config('scout.prefix') . 'contact');
+            $client->deleteIndex(config('scout.prefix') . 'contact');
+        } catch (ApiException $e) {
+            // Index not found
+        }
     }
 }
