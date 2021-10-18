@@ -105,13 +105,13 @@ class CreateTenantDatabaseEntry implements ShouldQueue
 
         $this->dropExistingIndex();
 
-        $client = new Client('http://meilisearch:7700');
+        $client = new Client(config('scout.meilisearch.host'));
         $client->createIndex(config('scout.prefix') . 'contact');
     }
 
     protected function dropExistingIndex(): void
     {
-        $client = new Client('http://meilisearch:7700');
+        $client = new Client(config('scout.meilisearch.host'));
 
         $index = $client->getIndex(config('scout.prefix') . 'contact');
         $client->deleteIndex(config('scout.prefix') . 'contact');
