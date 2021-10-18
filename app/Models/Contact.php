@@ -417,7 +417,7 @@ class Contact extends Model implements CalendarInterface
 
     public function searchableAs()
     {
-        return 'contact';
+        return config()->get('scout.prefix') . 'contact';
     }
 
     /**
@@ -492,7 +492,7 @@ class Contact extends Model implements CalendarInterface
 
         static::creating(function ($contact) {
             if (auth()->check()) {
-            $contact->team_id = auth()->user()->current_team_id;
+                $contact->team_id = auth()->user()->current_team_id;
             }
 
             $contact->created_by = auth()->id();
