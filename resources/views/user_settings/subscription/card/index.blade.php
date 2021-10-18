@@ -11,9 +11,15 @@
 
                 <p>Your card will be used for future payments.</p>
 
-                <input id="card-holder-name" type="text" value="{{ auth()->user()->name }}">
+                <div class="form-group">
+                    <label for="card-holder-name">Card holder name</label>
+                    <input id="card-holder-name" class="form-control" type="text" value="{{ auth()->user()->name }}">
+                </div>
 
-                <div id="card-element"></div>
+                <div class="form-group">
+                    <label for="card-element">Card information</label>
+                    <div id="card-element" class="form-control" style='padding-top: .7em;'></div>
+                </div>
 
                 <div class="form-group">
                     <div class="col-md-8 col-md-offset-4">

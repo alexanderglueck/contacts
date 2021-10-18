@@ -37,11 +37,23 @@
                                 </div>
                             </div>
 
-                            {!! \App\Helpers\Form::text('coupon', trans('ui.coupon')) !!}
+                            <div class="form-group">
+                                <label for="coupon">@lang('ui.coupon')</label>
+                                <input name="coupon" id="coupon" class="form-control"
+                                       type="text" />
+                            </div>
 
-                            {!! \App\Helpers\Form::text('card-holder-name', trans('Card holder name'), auth()->user()->name, true) !!}
+                            <div class="form-group">
+                                <label for="card-holder-name">Card holder name</label>
+                                <input name="card-holder-name" id="card-holder-name" class="form-control"
+                                       value="{{ auth()->user()->name }}"
+                                       type="text" required />
+                            </div>
 
-                            <div id="card-element"></div>
+                            <div class="form-group">
+                                <label for="card-element">@lang('ui.app.subscription.fields.card_info')</label>
+                                <div id="card-element" class="form-control" style='padding-top: .7em;'></div>
+                            </div>
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
