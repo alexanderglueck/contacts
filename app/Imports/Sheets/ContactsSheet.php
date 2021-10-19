@@ -31,7 +31,7 @@ class ContactsSheet implements ToCollection
                 'title_after' => $row[7],
                 'salutation' => $row[8],
                 'nickname' => $row[10],
-                'image' => $row[11],
+                'image' => $row[11] ?? null,
             ]);
             $contact->gender_id = Gender::where('gender', '=', $row[9])->first()->id;
 
