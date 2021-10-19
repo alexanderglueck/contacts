@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Imports\MappingHolder;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
          * @see https://laravel-news.com/laravel-5-4-key-too-long-error
          */
         Schema::defaultStringLength(191);
+        Paginator::useBootstrap();
     }
 }
