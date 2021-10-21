@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ICalController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Setup\InstallController;
 use App\Http\Controllers\Subscription\PlanController;
@@ -198,6 +199,13 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
         });
     });
 });
+
+
+/**
+ * ICal
+ */
+Route::get('calendar/ical', [ICalController::class, 'index'])->middleware(['auth:api', 'tenant'])->name('ical');
+
 
 /**
  * News

@@ -12,8 +12,8 @@ class SetTenant
     /**
      * Handle an incoming request.
      *
-     * @param  Request $request
-     * @param  Closure $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      */
@@ -23,6 +23,10 @@ class SetTenant
          * Try to find a tenant that matches the UUID stored in the session
          */
         $tenant = $this->resolveTenant(session('tenant'));
+
+        if ( ! $tenant && $request->has('tenant')) {
+            $tenant = $this->resolveTenant($request->get('tenant'));
+        }
 
         if ( ! $tenant) {
             /*
