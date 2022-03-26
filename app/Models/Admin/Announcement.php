@@ -3,7 +3,7 @@
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Parsedown;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Interfaces\Readable;
 use Illuminate\Database\Eloquent\Model;
@@ -129,9 +129,7 @@ class Announcement extends Model implements Readable
 
     public function getParsedBodyAttribute()
     {
-        $parsedown = new Parsedown();
-
-        return $parsedown->line($this->body);
+        return Str::markdown($this->body);
     }
 
     /**
