@@ -26,9 +26,10 @@ class SubscriptionFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => 'main',
+            'type' => 'main',
             'stripe_id' => 'sub_' . Str::random(40),
-            'stripe_status' => true,
+            'stripe_status' => 'active',
+            'stripe_price' => null,
             'quantity' => null,
             'trial_ends_at' => null,
             'ends_at' => null,

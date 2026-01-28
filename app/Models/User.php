@@ -187,7 +187,7 @@ class User extends Authenticatable
             'user_id',
             'gateway_id',
             'id',
-            'stripe_plan'
+            'stripe_price'
         )->orderBy('subscriptions.created_at', 'desc');
     }
 
