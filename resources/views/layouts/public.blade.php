@@ -17,8 +17,7 @@
     </title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/vendor.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     @yield('css')
 </head>
@@ -57,7 +56,6 @@
 
 @yield('content')
 
-<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
 @yield('js-links')
 
 @yield('js')
