@@ -101,7 +101,7 @@
     </div>
 </div>
 
-{!! \App\Helpers\Form::textarea('first_met', trans('ui.first_met'), $contact->first_met) !!}
+{!! \App\Helpers\Form::textarea('how_we_met', trans('ui.how_we_met'), $contact->how_we_met) !!}
 
 {!! \App\Helpers\Form::textarea('note', trans('ui.note'), $contact->note) !!}
 

@@ -34,7 +34,7 @@ class Contact extends Model implements CalendarInterface
         'custom_id',
         'nickname',
         'active',
-        'first_met',
+        'how_we_met',
         'note',
         'died_at',
         'died_from',
