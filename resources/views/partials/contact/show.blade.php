@@ -8,6 +8,8 @@
         <strong>Anrede: </strong> {{ $contact->salutation }}<br>
         <strong>Geburtstag: </strong> {{ $contact->formatted_date_of_birth }}
         <br>
+        <strong>{{ trans('ui.how_we_met') }}: </strong> {{ $contact->how_we_met }}
+        <br>
         @if (Auth::user()->hasPermissionTo('view addresses'))
             <strong>Adressen</strong>:
             @include('partials.contact.additional.addresses', ['addresses' => $contact->addresses])

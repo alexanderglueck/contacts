@@ -81,7 +81,7 @@ return [
     'logs' => 'Logs',
     'notification_settings' => 'Notification settings',
     'update' => 'Update',
-    'first_met' => 'First met',
+    'how_we_met' => 'How we met',
     'note' => 'Note',
     'died_at' => 'Died at',
     'died_from' => 'Died from',
