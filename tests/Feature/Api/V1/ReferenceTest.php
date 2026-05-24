@@ -43,23 +43,30 @@ class ReferenceTest extends TestCase
     }
 
     #[Test]
-    public function contact_groups_returns_the_existing_groups()
+    public function contact_groups_returns_only_the_current_tenants_groups()
     {
-        $user = $this->createUser();
-        create(ContactGroup::class, ['name' => 'Friends']);
-        create(ContactGroup::class, ['name' => 'Colleagues']);
-        Sanctum::actingAs($user);
+        $alice = $this->createUser();
+        create(ContactGroup::class, [
+            'name' => 'Alice friends',
+            'created_by' => $alice->id,
+            'updated_by' => $alice->id,
+        ]);
+
+        $bob = $this->createUser();
+        create(ContactGroup::class, [
+            'name' => 'Bob colleagues',
+            'created_by' => $bob->id,
+            'updated_by' => $bob->id,
+        ]);
+
+        Sanctum::actingAs($bob);
 
         $response = $this->getJson(route('api.v1.reference.contact_groups'));
 
         $response->assertOk();
         $names = collect($response->json('data'))->pluck('name')->all();
-        $this->assertContains('Friends', $names);
-        $this->assertContains('Colleagues', $names);
-        // Note: the contact_groups table has no team_id column, so this
-        // endpoint is NOT tenant-scoped in practice despite the controller
-        // comment claiming otherwise — a known gap, separate from this
-        // test's contract.
+        $this->assertContains('Bob colleagues', $names);
+        $this->assertNotContains('Alice friends', $names);
     }
 
     #[Test]
