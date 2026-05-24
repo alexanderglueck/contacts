@@ -1,3 +1,0 @@
-<p>
-    {!! $news->parsedBody !!}
-</p>
