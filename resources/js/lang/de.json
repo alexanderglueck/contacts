@@ -212,6 +212,78 @@
         "heading": "Kontakte auf der Karte",
         "open_contact": "Kontakt öffnen"
     },
+    "home": {
+        "title": "Übersicht",
+        "birthday_today_one": "🎉 Heute ist ein Geburtstag!",
+        "birthday_today_many": "🎉 Heute haben mehrere Geburtstag!",
+        "is_turning": "wird",
+        "no_permissions": "Sie haben noch keine Berechtigungen. Bitten Sie einen Administrator, Ihnen Zugriff zu gewähren.",
+        "no_subscription": "Sie haben kein aktives Abonnement.",
+        "view_plans": "Verfügbare Tarife ansehen",
+        "upcoming": "Anstehende Geburtstage",
+        "next_7_days": "Nächste 7 Tage",
+        "no_upcoming": "Keine Geburtstage in den nächsten 7 Tagen.",
+        "turning": "Wird {age}",
+        "today": "heute",
+        "tomorrow": "morgen",
+        "in_n_days": "in {days} Tagen",
+        "tiles": {
+            "contacts": "Kontakte",
+            "contacts_desc": "Kontakte verwalten",
+            "groups": "Kontaktgruppen",
+            "groups_desc": "Kontaktgruppen verwalten",
+            "calendar": "Kalender",
+            "calendar_desc": "Anstehende Termine ansehen",
+            "map": "Karte",
+            "map_desc": "Kontakte auf einer Karte ansehen"
+        }
+    },
+    "calendar": {
+        "title": "Kalender",
+        "no_events": "Keine anstehenden Ereignisse in diesem Zeitraum.",
+        "list_year": "Liste (Jahr)",
+        "subscribe_title": "In Ihrer Kalender-App abonnieren",
+        "subscribe_help": "Erstellen Sie eine URL, die Sie in Google Kalender, Apple Kalender oder Outlook einfügen können, um Geburtstage und wichtige Termine synchron zu halten.",
+        "copy_now": "Kopieren Sie diese URL jetzt — sie wird nicht erneut angezeigt. Fügen Sie sie in Ihrer Kalender-App unter „Per URL hinzufügen“ / „URL abonnieren“ ein.",
+        "copy": "Kopieren",
+        "has_token": "Eine Kalender-Synchronisations-URL wurde bereits erstellt. Falls Sie sie verloren haben, erzeugen Sie eine neue — die alte URL wird dann ungültig.",
+        "no_token": "Noch keine Synchronisations-URL.",
+        "rotate": "Synchronisations-URL erneuern",
+        "generate": "Synchronisations-URL erstellen",
+        "rotate_confirm": "Sie haben bereits eine Kalender-Synchronisations-URL. Wenn Sie eine neue erstellen, wird die alte ungültig und alle Kalender, die sie abonniert haben, hören auf zu funktionieren."
+    },
+    "contact_groups": {
+        "title": "Kontaktgruppen",
+        "create": "Kontaktgruppe erstellen",
+        "edit": "Kontaktgruppe bearbeiten",
+        "delete": "Kontaktgruppe löschen",
+        "back": "← Zurück zu den Kontaktgruppen",
+        "delete_q": "Kontaktgruppe {name} löschen?",
+        "delete_body": "Dadurch wird die Kontaktgruppe {name} endgültig entfernt.",
+        "none": "Noch keine Kontaktgruppen vorhanden.",
+        "showing_one": "Zeige {from}–{to} von {total} Kontaktgruppe",
+        "showing_many": "Zeige {from}–{to} von {total} Kontaktgruppen",
+        "name_label": "Name",
+        "contacts_in_group": "Kontakte in dieser Gruppe",
+        "no_contacts_in_group": "Keine Kontakte in dieser Gruppe.",
+        "fields": {
+            "name": "Name",
+            "contacts": "Kontakte"
+        }
+    },
+    "import": {
+        "title": "Kontakte importieren",
+        "help": "Laden Sie eine .xlsx- oder .csv-Datei hoch. Importierte Einträge werden der gewählten Gruppe zugeordnet.",
+        "contact_group": "Kontaktgruppe",
+        "file": "Datei",
+        "submit": "Importieren"
+    },
+    "export": {
+        "title": "Kontakte exportieren",
+        "help": "Lädt aktive Kontakte der gewählten Gruppe als .xlsx-Datei herunter.",
+        "contact_group": "Kontaktgruppe",
+        "submit": ".xlsx herunterladen"
+    },
     "reports": {
         "title": "Berichte",
         "none": "Keine Berichte verfügbar.",

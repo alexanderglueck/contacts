@@ -212,6 +212,78 @@
         "heading": "Contacts on the map",
         "open_contact": "Open contact"
     },
+    "home": {
+        "title": "Dashboard",
+        "birthday_today_one": "🎉 It's a birthday today!",
+        "birthday_today_many": "🎉 Birthdays today!",
+        "is_turning": "is turning",
+        "no_permissions": "You don't have any permissions yet. Ask an administrator to grant you access.",
+        "no_subscription": "You do not have an active subscription.",
+        "view_plans": "View available plans",
+        "upcoming": "Upcoming birthdays",
+        "next_7_days": "Next 7 days",
+        "no_upcoming": "No birthdays in the next 7 days.",
+        "turning": "Turning {age}",
+        "today": "today",
+        "tomorrow": "tomorrow",
+        "in_n_days": "in {days} days",
+        "tiles": {
+            "contacts": "Contacts",
+            "contacts_desc": "Manage your contacts",
+            "groups": "Contact groups",
+            "groups_desc": "Manage contact groups",
+            "calendar": "Calendar",
+            "calendar_desc": "View upcoming dates",
+            "map": "Map",
+            "map_desc": "See contacts on a map"
+        }
+    },
+    "calendar": {
+        "title": "Calendar",
+        "no_events": "No upcoming events in this range.",
+        "list_year": "list (year)",
+        "subscribe_title": "Subscribe in your calendar app",
+        "subscribe_help": "Generate a URL you can paste into Google Calendar, Apple Calendar or Outlook to keep contact birthdays and important dates in sync.",
+        "copy_now": "Copy this URL now — it won't be shown again. Paste it into your calendar app's \"Add by URL\" / \"Subscribe from URL\" option.",
+        "copy": "Copy",
+        "has_token": "A calendar sync URL has already been generated. If you've lost it, rotate to generate a fresh one — the old URL will stop working.",
+        "no_token": "No sync URL yet.",
+        "rotate": "Rotate sync URL",
+        "generate": "Generate sync URL",
+        "rotate_confirm": "You already have a calendar sync URL. Generating a new one will revoke the old one and break any calendars currently subscribed to it."
+    },
+    "contact_groups": {
+        "title": "Contact groups",
+        "create": "Create contact group",
+        "edit": "Edit contact group",
+        "delete": "Delete contact group",
+        "back": "← Back to contact groups",
+        "delete_q": "Delete contact group {name}?",
+        "delete_body": "This will permanently remove the contact group {name}.",
+        "none": "No contact groups yet.",
+        "showing_one": "Showing {from}–{to} of {total} contact group",
+        "showing_many": "Showing {from}–{to} of {total} contact groups",
+        "name_label": "Name",
+        "contacts_in_group": "Contacts in this group",
+        "no_contacts_in_group": "No contacts in this group.",
+        "fields": {
+            "name": "Name",
+            "contacts": "Contacts"
+        }
+    },
+    "import": {
+        "title": "Import contacts",
+        "help": "Upload an .xlsx or .csv file. Imported rows are attached to the selected group.",
+        "contact_group": "Contact group",
+        "file": "File",
+        "submit": "Import"
+    },
+    "export": {
+        "title": "Export contacts",
+        "help": "Downloads active contacts in the selected group as an .xlsx file.",
+        "contact_group": "Contact group",
+        "submit": "Download .xlsx"
+    },
     "reports": {
         "title": "Reports",
         "none": "No reports available.",

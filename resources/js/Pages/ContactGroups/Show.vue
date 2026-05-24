@@ -1,6 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+const { t } = useI18n();
 
 defineProps({
     contactGroup: { type: Object, required: true },
@@ -15,7 +18,7 @@ defineProps({
 
         <div class="text-sm">
             <Link :href="route('contact_groups.index')" class="text-indigo-600 hover:text-indigo-500">
-                &larr; Back to contact groups
+                {{ t('contact_groups.back') }}
             </Link>
         </div>
 
@@ -28,25 +31,25 @@ defineProps({
                         :href="route('contact_groups.edit', contactGroup.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
-                        Edit
+                        {{ t('common.edit') }}
                     </Link>
                     <Link
                         v-if="can.delete"
                         :href="route('contact_groups.delete', contactGroup.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
-                        Delete
+                        {{ t('common.delete') }}
                     </Link>
                 </div>
             </div>
 
             <dl class="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contact_groups.fields.name') }}</dt>
                     <dd class="text-gray-900">{{ contactGroup.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Contacts</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contact_groups.fields.contacts') }}</dt>
                     <dd class="text-gray-900">{{ contacts.length }}</dd>
                 </div>
             </dl>
@@ -54,11 +57,11 @@ defineProps({
 
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">Contacts in this group</h3>
+                <h3 class="text-lg font-medium text-gray-900">{{ t('contact_groups.contacts_in_group') }}</h3>
             </div>
 
             <div v-if="contacts.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No contacts in this group.
+                {{ t('contact_groups.no_contacts_in_group') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
