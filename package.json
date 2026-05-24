@@ -13,11 +13,16 @@
         "vue": "^3.5.0"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.20",
+        "@fullcalendar/daygrid": "^6.1.20",
+        "@fullcalendar/interaction": "^6.1.20",
+        "@fullcalendar/vue3": "^6.1.20",
         "@headlessui/vue": "^1.7.23",
         "@inertiajs/vue3": "^3.2.0",
         "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/vite": "^4.3.0",
         "laravel-echo": "^2.3.0",
+        "leaflet": "^1.9.4",
         "pusher-js": "^8.5.0",
         "tailwindcss": "^4.3.0"
     }

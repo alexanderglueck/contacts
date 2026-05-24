@@ -1,66 +1,72 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
-const events = ref([]);
-const loading = ref(true);
-const error = ref(null);
-
-const startOfMonth = () => {
-    const d = new Date();
-    return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0, 10);
+const fetchEvents = (info, successCallback, failureCallback) => {
+    axios
+        .get(route('calendar.events'), {
+            params: {
+                start: info.startStr.slice(0, 10),
+                end: info.endStr.slice(0, 10),
+            },
+        })
+        .then(({ data }) => successCallback(data))
+        .catch((e) => failureCallback(e));
 };
 
-const endOfNextMonth = () => {
-    const d = new Date();
-    return new Date(d.getFullYear(), d.getMonth() + 2, 0).toISOString().slice(0, 10);
-};
-
-onMounted(async () => {
-    try {
-        const { data } = await axios.get(route('calendar.events'), {
-            params: { start: startOfMonth(), end: endOfNextMonth() },
-        });
-        events.value = data;
-    } catch (e) {
-        error.value = e.message;
-    } finally {
-        loading.value = false;
+const onEventClick = (info) => {
+    info.jsEvent.preventDefault();
+    if (info.event.url) {
+        router.visit(info.event.url);
     }
-});
+};
+
+const calendarOptions = {
+    plugins: [dayGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,dayGridWeek',
+    },
+    firstDay: 1,
+    weekNumbers: true,
+    height: 'auto',
+    events: fetchEvents,
+    eventClick: onEventClick,
+    eventColor: '#4F46E5',
+    eventTextColor: '#ffffff',
+};
 </script>
 
 <template>
     <AppLayout title="Calendar">
         <Head title="Calendar" />
 
-        <div class="bg-white shadow rounded-lg">
-            <div class="border-b border-gray-200 px-6 py-4">
-                <h2 class="text-lg font-medium text-gray-900">Upcoming dates</h2>
-                <p class="text-xs text-gray-500 mt-1">
-                    Next ~60 days. A proper calendar grid is a follow-up.
-                </p>
-            </div>
-
-            <div v-if="loading" class="px-6 py-8 text-center text-sm text-gray-500">Loading…</div>
-            <div v-else-if="error" class="px-6 py-8 text-center text-sm text-red-600">{{ error }}</div>
-            <div v-else-if="events.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No upcoming dates.
-            </div>
-            <ul v-else class="divide-y divide-gray-200">
-                <li v-for="event in events" :key="`${event.id}-${event.start}`" class="px-6 py-3 flex justify-between text-sm">
-                    <Link
-                        v-if="event.url"
-                        :href="event.url"
-                        class="text-indigo-600 hover:text-indigo-500"
-                    >
-                        {{ event.title }}
-                    </Link>
-                    <span v-else class="text-gray-900">{{ event.title }}</span>
-                    <span class="text-gray-600">{{ event.start }}</span>
-                </li>
-            </ul>
+        <div class="bg-white shadow rounded-lg p-4">
+            <FullCalendar :options="calendarOptions" />
         </div>
     </AppLayout>
 </template>
+
+<style>
+.fc .fc-button-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+.fc .fc-button-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: #3730a3;
+    border-color: #3730a3;
+}
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: #eef2ff;
+}
+</style>
