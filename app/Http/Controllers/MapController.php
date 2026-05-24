@@ -4,21 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactAddress;
 use App\Http\Requests\Map\MapContactsRequest;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MapController extends Controller
 {
     protected ?string $accessEntity = 'map';
 
-    /**
-     * Display all the geocoded contacts on a map.
-     */
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('map.index', []);
+        return Inertia::render('Map/Index', [
+            'googleMapsKey' => config('contacts.googleMapsKey'),
+        ]);
     }
 
     public function contacts(MapContactsRequest $request): JsonResponse
@@ -50,24 +50,18 @@ class MapController extends Controller
         $markers = [];
 
         foreach ($contactAddresses as $contactAddress) {
-            $tempArray = [
+            $markers[] = [
                 'title' => $contactAddress->contact->fullname,
                 'name' => $contactAddress->name,
-                'latitude' => $contactAddress->latitude,
-                'longitude' => $contactAddress->longitude,
-                'address' => '<p><b>' . $contactAddress->contact->fullname . '</b><br />' . PHP_EOL .
-                    '<b>' . $contactAddress->name . '</b><br />' . PHP_EOL .
-                    $contactAddress->street . '<br />' . PHP_EOL .
-                    $contactAddress->zip . ', ' . $contactAddress->city . '<br />' . PHP_EOL .
-                    $contactAddress->state . '<br />' . PHP_EOL .
-                    $contactAddress->country->country . '<br />' . PHP_EOL .
-                    '<br />' . PHP_EOL .
-                    "<a href='" . route('contacts.show', $contactAddress->contact->slug) . "'>" .
-                    trans('ui.view_contact') .
-                    '</a></p>'
+                'latitude' => (float) $contactAddress->latitude,
+                'longitude' => (float) $contactAddress->longitude,
+                'contact_slug' => $contactAddress->contact->slug,
+                'street' => $contactAddress->street,
+                'zip' => $contactAddress->zip,
+                'city' => $contactAddress->city,
+                'state' => $contactAddress->state,
+                'country' => $contactAddress->country?->country,
             ];
-
-            $markers[] = $tempArray;
         }
 
         return response()->json($markers);

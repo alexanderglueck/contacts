@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactGroup;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\ContactGroup\ContactGroupStoreRequest;
 use App\Http\Requests\ContactGroup\ContactGroupUpdateRequest;
 
@@ -14,34 +15,29 @@ class ContactGroupController extends Controller
 {
     protected ?string $accessEntity = 'contactGroups';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('contact_group.index', [
-            'contactGroups' => ContactGroup::sorted()->paginate(10)
+        return Inertia::render('ContactGroups/Index', [
+            'contactGroups' => ContactGroup::sorted()->paginate(10)->through(fn ($group) => [
+                'id' => $group->id,
+                'slug' => $group->slug,
+                'name' => $group->name,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create contactGroups'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create(): Response
     {
         $this->can('create');
 
-        return view('contact_group.create', [
-            'contactGroups' => ContactGroup::sorted()->get(),
-            'contactGroup' => new ContactGroup()
+        return Inertia::render('ContactGroups/Create', [
+            //
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactGroupStoreRequest $request): RedirectResponse
     {
         $contactGroup = new ContactGroup();
@@ -60,36 +56,44 @@ class ContactGroupController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ContactGroup $contactGroup): View
+    public function show(ContactGroup $contactGroup): Response
     {
         $this->can('view');
 
-        return view('contact_group.show', [
-            'contactGroup' => $contactGroup,
-            'contacts' => $contactGroup->contacts()->paginate(10)
+        $user = Auth::user();
+        $contacts = $contactGroup->contacts()->get(['contacts.id', 'contacts.slug', 'contacts.firstname', 'contacts.lastname']);
+
+        return Inertia::render('ContactGroups/Show', [
+            'contactGroup' => [
+                'id' => $contactGroup->id,
+                'slug' => $contactGroup->slug,
+                'name' => $contactGroup->name,
+            ],
+            'contacts' => $contacts->map(fn ($contact) => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+            ]),
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit contactGroups'),
+                'delete' => $user->checkPermissionTo('delete contactGroups'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ContactGroup $contactGroup): View
+    public function edit(ContactGroup $contactGroup): Response
     {
         $this->can('edit');
 
-        return view('contact_group.edit', [
-            'contactGroup' => $contactGroup,
-            'contactGroups' => ContactGroup::sorted()->get(),
-            'createButtonText' => 'Kontaktgruppe aktualisieren'
+        return Inertia::render('ContactGroups/Edit', [
+            'contactGroup' => [
+                'id' => $contactGroup->id,
+                'slug' => $contactGroup->slug,
+                'name' => $contactGroup->name,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactGroupUpdateRequest $request, ContactGroup $contactGroup): RedirectResponse
     {
         $contactGroup->fill($request->all());
@@ -106,9 +110,6 @@ class ContactGroupController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(ContactGroup $contactGroup): RedirectResponse
     {
         $this->can('delete');
@@ -124,13 +125,16 @@ class ContactGroupController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(ContactGroup $contactGroup): View
+    public function delete(ContactGroup $contactGroup): Response
     {
-        return view('contact_group.delete', [
-            'contactGroup' => $contactGroup
+        $this->can('delete');
+
+        return Inertia::render('ContactGroups/Delete', [
+            'contactGroup' => [
+                'id' => $contactGroup->id,
+                'slug' => $contactGroup->slug,
+                'name' => $contactGroup->name,
+            ],
         ]);
     }
 }

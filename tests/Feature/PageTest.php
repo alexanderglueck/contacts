@@ -19,7 +19,7 @@ class PageTest extends TestCase
         $response = $this->get(route('map.index'));
 
         $response->assertStatus(200);
-        $response->assertSee(trans('ui.map'));
+        $response->assertInertia(fn (Assert $page) => $page->component('Map/Index'));
     }
 
     #[Test]
@@ -30,7 +30,7 @@ class PageTest extends TestCase
         $response = $this->get(route('calendar.index'));
 
         $response->assertStatus(200);
-        $response->assertSee(trans('ui.calendar'));
+        $response->assertInertia(fn (Assert $page) => $page->component('Calendar/Index'));
     }
 
     #[Test]
@@ -41,7 +41,7 @@ class PageTest extends TestCase
         $response = $this->get(route('contact_groups.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontaktgruppen verwalten');
+        $response->assertInertia(fn (Assert $page) => $page->component('ContactGroups/Index'));
     }
 
     #[Test]
@@ -52,7 +52,7 @@ class PageTest extends TestCase
         $response = $this->get(route('contact_groups.create'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontaktgruppe hinzufügen');
+        $response->assertInertia(fn (Assert $page) => $page->component('ContactGroups/Create'));
     }
 
     #[Test]
@@ -63,7 +63,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_lat_lng'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -74,7 +74,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_url'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_number'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -96,7 +96,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_address'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -107,7 +107,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_date'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -118,7 +118,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.no_email'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -129,7 +129,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.wrong_female'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -140,7 +140,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.wrong_male'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -151,7 +151,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.female'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -162,7 +162,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.male'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -173,7 +173,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.inactive'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ergebnis');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/ContactList'));
     }
 
     #[Test]
@@ -184,7 +184,7 @@ class PageTest extends TestCase
         $response = $this->get(route('reports.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Berichte');
+        $response->assertInertia(fn (Assert $page) => $page->component('Reports/Index'));
     }
 
     #[Test]
@@ -195,7 +195,7 @@ class PageTest extends TestCase
         $response = $this->get(route('export.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontakte exportieren');
+        $response->assertInertia(fn (Assert $page) => $page->component('ContactExport/Index'));
     }
 
     #[Test]
@@ -206,7 +206,7 @@ class PageTest extends TestCase
         $response = $this->get(route('import.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontakte importieren');
+        $response->assertInertia(fn (Assert $page) => $page->component('ContactImport/Index'));
     }
 
     #[Test]

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\Permission;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Role\RoleStoreRequest;
 use App\Http\Requests\Role\RoleUpdateRequest;
 
@@ -15,35 +17,33 @@ class RoleController extends Controller
 {
     protected ?string $accessEntity = 'roles';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('role.index', [
-            'roles' => Role::paginate(10)
+        return Inertia::render('Roles/Index', [
+            'roles' => Role::paginate(10)->through(fn ($role) => [
+                'id' => $role->id,
+                'slug' => $role->slug,
+                'name' => $role->name,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create roles'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request): View
+    public function create(Request $request): Response
     {
         $this->can('create');
 
-        return view('role.create', [
-            'permissions' => Permission::all(),
-            'users' => $request->user()->currentTeam->users,
-            'role' => new Role
+        return Inertia::render('Roles/Create', [
+            'permissions' => Permission::all(['id', 'name']),
+            'users' => $request->user()->currentTeam->users->map(fn ($u) => [
+                'id' => $u->id,
+                'name' => $u->name,
+            ])->values(),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(RoleStoreRequest $request): RedirectResponse
     {
         $role = new Role();
@@ -51,9 +51,9 @@ class RoleController extends Controller
         $role->team_id = $request->user()->currentTeam->id;
 
         if ($role->save()) {
-            $role->syncPermissions($request->permissions);
+            $role->syncPermissions($this->normaliseIds($request->permissions));
 
-            $role->syncUsers($request->users);
+            $role->syncUsers($this->normaliseIds($request->users));
 
             Session::flash('alert-success', trans('flash_message.role.created'));
 
@@ -65,43 +65,56 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Role $role): View
+    public function show(Role $role): Response
     {
         $this->can('view');
 
-        return view('role.show', [
-            'role' => $role
+        $user = Auth::user();
+        $permissions = $role->permissions()->get(['permissions.id', 'permissions.name']);
+        $users = $role->users()->get(['users.id', 'users.name']);
+
+        return Inertia::render('Roles/Show', [
+            'role' => [
+                'id' => $role->id,
+                'slug' => $role->slug,
+                'name' => $role->name,
+            ],
+            'permissions' => $permissions->map(fn ($p) => ['id' => $p->id, 'name' => $p->name]),
+            'users' => $users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]),
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit roles'),
+                'delete' => $user->checkPermissionTo('delete roles'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, Role $role): View
+    public function edit(Request $request, Role $role): Response
     {
         $this->can('edit');
 
-        return view('role.edit', [
-            'role' => $role,
-            'createButtonText' => trans('ui.edit_role'),
-            'users' => $request->user()->currentTeam->users,
-            'permissions' => Permission::all()
+        return Inertia::render('Roles/Edit', [
+            'role' => [
+                'id' => $role->id,
+                'slug' => $role->slug,
+                'name' => $role->name,
+                'permissions' => $role->permissions()->pluck('permissions.id')->all(),
+                'users' => $role->users()->pluck('users.id')->all(),
+            ],
+            'permissions' => Permission::all(['id', 'name']),
+            'users' => $request->user()->currentTeam->users->map(fn ($u) => [
+                'id' => $u->id,
+                'name' => $u->name,
+            ])->values(),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
         $role->fill($request->except(['users', 'permissions']));
 
-        $role->syncPermissions($request->permissions);
+        $role->syncPermissions($this->normaliseIds($request->permissions));
 
-        $role->syncUsers($request->users);
+        $role->syncUsers($this->normaliseIds($request->users));
 
         if ($role->save()) {
             Session::flash('alert-success', trans('flash_message.role.updated'));
@@ -114,9 +127,6 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Role $role): RedirectResponse
     {
         $this->can('delete');
@@ -132,15 +142,29 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Role $role): View
+    public function delete(Role $role): Response
     {
         $this->can('delete');
 
-        return view('role.delete', [
-            'role' => $role
+        return Inertia::render('Roles/Delete', [
+            'role' => [
+                'id' => $role->id,
+                'slug' => $role->slug,
+                'name' => $role->name,
+            ],
         ]);
+    }
+
+    private function normaliseIds($value): array
+    {
+        if (is_null($value)) {
+            return [];
+        }
+
+        if (is_array($value)) {
+            return array_values(array_filter($value, fn ($v) => $v !== null && $v !== ''));
+        }
+
+        return [$value];
     }
 }

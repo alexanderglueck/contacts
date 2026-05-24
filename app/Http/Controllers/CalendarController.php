@@ -2,32 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use DateInterval;
-use DateTime;
 use App\Models\Contact;
 use App\Models\ContactDate;
-use Illuminate\Contracts\View\View;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CalendarController extends Controller
 {
     protected ?string $accessEntity = 'calendar';
 
-    /**
-     * Display a listing of the contact dates.
-     */
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('calendar.index', []);
+        return Inertia::render('Calendar/Index');
     }
 
-    /**
-     * Returns a JSON array of contact dates in the given
-     * start and end date range.
-     */
     public function events(Request $request): JsonResponse
     {
         $this->can('view');
@@ -37,11 +31,6 @@ class CalendarController extends Controller
         $fromYear = $fromRaw->format('Y');
         $toYear = $toRaw->format('Y');
 
-        /**
-         * Fetches the contact dates between the given start and end date.
-         * If the start date is greater than the end date the query
-         * fetches dates from two years and changes the query accordingly.
-         */
         $contactDates = ContactDate::datesInRange($fromRaw, $toRaw);
 
         $events = [];
@@ -63,26 +52,9 @@ class CalendarController extends Controller
 
     private function processEvent(&$events, $event, $eventDate, $fromRaw, $toRaw, $fromYear, $toYear): void
     {
-        /**
-         * Check to see if the given date is in the from year or in the to year.
-         */
         if ($fromYear < $toYear) {
-
-            /**
-             * If the concatenated event date with the from year is greater than the raw from date, then the event is in the old year.
-             * Example:
-             *   2016 12 27 > 2016 12 26 && 2016 12 27 < 2017 02 06
-             *      from case true
-             *      event from the old year
-             *   2016 01 01 > 2016 12 26 && 2016 01 01 < 2017 02 06
-             *      from case false
-             *      event from the new year
-             */
-            if (intval($fromYear . $eventDate->format('md')) > intval($fromRaw->format('Ymd')) && intval($fromYear . $eventDate->format('md')) < intval($toRaw->format('Ymd'))) {
-                $fromCase = true;
-            } else {
-                $fromCase = false;
-            }
+            $fromCase = intval($fromYear . $eventDate->format('md')) > intval($fromRaw->format('Ymd'))
+                && intval($fromYear . $eventDate->format('md')) < intval($toRaw->format('Ymd'));
         } else {
             $fromCase = true;
         }
@@ -102,14 +74,11 @@ class CalendarController extends Controller
             'title' => $title,
             'allDay' => true,
             'start' => $start,
-            'url' => $event->getCalendarEventUrl($event)
+            'url' => $event->getCalendarEventUrl($event),
         ];
 
         $tempEvent = $this->handleLeapYear($tempEvent);
 
-        /**
-         * Only display the event if the requested date range is after the event creation.
-         */
         if ($yearDifference >= 0) {
             $events[] = $tempEvent;
         }

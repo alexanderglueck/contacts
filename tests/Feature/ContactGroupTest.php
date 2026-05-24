@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use App\Models\ContactGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class ContactGroupTest extends TestCase
 {
@@ -104,7 +105,7 @@ class ContactGroupTest extends TestCase
             ->get(route('contact_groups.edit', [$contactGroup->slug]));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontaktgruppe bearbeiten');
+        $response->assertInertia(fn (Assert $page) => $page->component('ContactGroups/Edit'));
         $this->assertAuthenticatedAs($user);
     }
 

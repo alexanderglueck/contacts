@@ -3,134 +3,154 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
-use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ReportController extends Controller
 {
     protected ?string $accessEntity = 'reports';
 
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('reports.index', [
+        return Inertia::render('Reports/Index', [
             'reports' => [
-                'inactive' => 'Inaktive Kontakte',
-                'male' => 'Männliche Kontakte',
-                'female' => 'Weibliche Kontakte',
-                'wrong_male' => 'Falsche männliche Kontakte',
-                'wrong_female' => 'Falsche weibliche Kontakte',
-                'no_email' => 'Keine E-Mail Adresse',
-                'no_date' => 'Keine Datumsangabe',
-                'no_address' => 'Keine Adresse',
-                'no_number' => 'Keine Nummer',
-                'no_url' => 'Keine Website',
-                'no_lat_lng' => 'Keine Koordinaten',
-            ]
+                ['key' => 'inactive', 'name' => 'Inactive contacts'],
+                ['key' => 'male', 'name' => 'Male contacts'],
+                ['key' => 'female', 'name' => 'Female contacts'],
+                ['key' => 'wrong_male', 'name' => 'Wrong male contacts'],
+                ['key' => 'wrong_female', 'name' => 'Wrong female contacts'],
+                ['key' => 'no_email', 'name' => 'No email address'],
+                ['key' => 'no_date', 'name' => 'No date'],
+                ['key' => 'no_address', 'name' => 'No address'],
+                ['key' => 'no_number', 'name' => 'No phone number'],
+                ['key' => 'no_url', 'name' => 'No website'],
+                ['key' => 'no_lat_lng', 'name' => 'No coordinates'],
+            ],
         ]);
     }
 
-    /**
-     * Display a listing of inactive contacts.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function inactive(): View
+    public function inactive(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::sorted()->notActive()->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Inactive contacts',
+            Contact::sorted()->notActive()
+        );
     }
 
-    public function maleGender(): View
+    public function maleGender(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::sorted()->active()->where('gender_id', 1)->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Male contacts',
+            Contact::sorted()->active()->where('gender_id', 1)
+        );
     }
 
-    public function femaleGender(): View
+    public function femaleGender(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::sorted()->active()->where('gender_id', 2)->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Female contacts',
+            Contact::sorted()->active()->where('gender_id', 2)
+        );
     }
 
-    public function wrongMaleGender(): View
+    public function wrongMaleGender(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::sorted()->active()->where('gender_id', 1)->where('salutation', 'Frau')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Wrong male contacts',
+            Contact::sorted()->active()->where('gender_id', 1)->where('salutation', 'Frau')
+        );
     }
 
-    public function wrongFemaleGender(): View
+    public function wrongFemaleGender(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::sorted()->active()->where('gender_id', 2)->where('salutation', 'Herr')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Wrong female contacts',
+            Contact::sorted()->active()->where('gender_id', 2)->where('salutation', 'Herr')
+        );
     }
 
-    public function noEmail(): View
+    public function noEmail(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->leftJoin('contact_emails', 'contacts.id', '=', 'contact_emails.contact_id')->whereNull('contact_emails.contact_id')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Contacts without email address',
+            Contact::select('contacts.*')->leftJoin('contact_emails', 'contacts.id', '=', 'contact_emails.contact_id')->whereNull('contact_emails.contact_id')
+        );
     }
 
-    public function noDate(): View
+    public function noDate(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->leftJoin('contact_dates', 'contacts.id', '=', 'contact_dates.contact_id')->whereNull('contact_dates.contact_id')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Contacts without date',
+            Contact::select('contacts.*')->leftJoin('contact_dates', 'contacts.id', '=', 'contact_dates.contact_id')->whereNull('contact_dates.contact_id')
+        );
     }
 
-    public function noAddress(): View
+    public function noAddress(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->leftJoin('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')->whereNull('contact_addresses.contact_id')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Contacts without address',
+            Contact::select('contacts.*')->leftJoin('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')->whereNull('contact_addresses.contact_id')
+        );
     }
 
-    public function noNumber(): View
+    public function noNumber(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->leftJoin('contact_numbers', 'contacts.id', '=', 'contact_numbers.contact_id')->whereNull('contact_numbers.contact_id')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Contacts without phone number',
+            Contact::select('contacts.*')->leftJoin('contact_numbers', 'contacts.id', '=', 'contact_numbers.contact_id')->whereNull('contact_numbers.contact_id')
+        );
     }
 
-    public function noUrl(): View
+    public function noUrl(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->leftJoin('contact_urls', 'contacts.id', '=', 'contact_urls.contact_id')->whereNull('contact_urls.contact_id')->paginate(10)
-        ]);
+        return $this->renderContactList(
+            'Contacts without website',
+            Contact::select('contacts.*')->leftJoin('contact_urls', 'contacts.id', '=', 'contact_urls.contact_id')->whereNull('contact_urls.contact_id')
+        );
     }
 
-    public function noLatLng(): View
+    public function noLatLng(): Response
     {
         $this->can('view');
 
-        return view('reports.show', [
-            'contacts' => Contact::select('contacts.*')->whereNull('latitude')->orWhereNull('longitude')->orderBy('name')->join('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')->paginate(10)
+        return $this->renderContactList(
+            'Contacts without coordinates',
+            Contact::select('contacts.*')->whereNull('latitude')->orWhereNull('longitude')->orderBy('name')->join('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')
+        );
+    }
+
+    private function renderContactList(string $title, Builder $query): Response
+    {
+        return Inertia::render('Reports/ContactList', [
+            'title' => $title,
+            'contacts' => $query->paginate(10)->through(fn ($contact) => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+            ]),
         ]);
     }
 }

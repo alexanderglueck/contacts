@@ -3,23 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
-use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    /**
-     * Returns all the contacts that matched the search criteria.
-     */
-    public function search(Request $request): View
+    public function search(Request $request): RedirectResponse
     {
-        $search = $request->post('search');
-
-        $contacts = Contact::search($search)->paginate();
-
-        return view('contact.index', [
-            'contacts' => $contacts,
-            'search' => $search
-        ]);
+        return redirect()->route('contacts.index', ['q' => $request->post('search')]);
     }
 }

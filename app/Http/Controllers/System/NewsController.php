@@ -6,35 +6,39 @@ use App\Models\System\News;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\News\EditNews;
 use App\Http\Requests\News\DeleteNews;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
+        $mapper = fn ($news) => [
+            'id' => $news->id,
+            'slug' => $news->slug,
+            'title' => $news->title,
+            'is_pinned' => $news->isPinned(),
+        ];
+
+        $data = [
+            'active' => News::active()->paginate(10)->through($mapper),
+            'inactive' => News::inactive()->paginate(10)->through($mapper),
+        ];
+
         if (auth()->check()) {
-            return view('news.index', [
-                'active' => News::active()->paginate(10),
-                'inactive' => News::inactive()->paginate(10),
-                'displayed' => News::displayed($request->user())->paginate(10),
-                'hidden' => News::hidden($request->user())->paginate(10),
-                'read' => News::read($request->user())->paginate(10),
-                'unread' => News::unread($request->user())->paginate(10)
-            ]);
+            $data['displayed'] = News::displayed($request->user())->paginate(10)->through($mapper);
+            $data['hidden'] = News::hidden($request->user())->paginate(10)->through($mapper);
+            $data['read'] = News::read($request->user())->paginate(10)->through($mapper);
+            $data['unread'] = News::unread($request->user())->paginate(10)->through($mapper);
+            $data['canCreate'] = (bool) ($request->user()->admin ?? false);
+        } else {
+            $data['canCreate'] = false;
         }
 
-        return view('news.index', [
-            'active' => News::active()->paginate(10),
-            'inactive' => News::inactive()->paginate(10)
-        ]);
+        return Inertia::render('News/Index', $data);
     }
 
     public function markAsRead(Request $request, News $news): RedirectResponse
@@ -44,25 +48,19 @@ class NewsController extends Controller
         return redirect()->route('news.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create(): Response
     {
-        return view('news.create', [
-            'news' => new News
+        return Inertia::render('News/Create', [
+            //
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(EditNews $request): RedirectResponse
     {
-        $announcement = new News();
-        $announcement->fill($request->all());
+        $news = new News();
+        $news->fill($request->all());
 
-        if ( ! $announcement->save()) {
+        if ( ! $news->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_created'));
 
             return redirect()->route('news.create');
@@ -70,33 +68,46 @@ class NewsController extends Controller
 
         Session::flash('alert-success', trans('flash_message.announcement.created'));
 
-        return redirect()->route('news.show', [$announcement->slug]);
+        return redirect()->route('news.show', [$news->slug]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(News $news): View
+    public function show(News $news): Response
     {
-        return view('news.show', [
-            'news' => $news
+        $user = auth()->user();
+
+        return Inertia::render('News/Show', [
+            'news' => [
+                'id' => $news->id,
+                'slug' => $news->slug,
+                'title' => $news->title,
+                'body' => $news->body,
+                'parsed_body' => $news->parsedBody,
+                'expired_at' => $news->expired_at,
+                'pinned_at' => $news->pinned_at,
+                'is_pinned' => $news->isPinned(),
+            ],
+            'can' => [
+                'edit' => (bool) ($user->admin ?? false),
+                'delete' => (bool) ($user->admin ?? false),
+            ],
+            'isAuthenticated' => auth()->check(),
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(News $news): View
+    public function edit(News $news): Response
     {
-        return view('news.edit', [
-            'news' => $news,
-            'createButtonText' => trans('ui.edit_news'),
+        return Inertia::render('News/Edit', [
+            'news' => [
+                'id' => $news->id,
+                'slug' => $news->slug,
+                'title' => $news->title,
+                'body' => $news->body,
+                'expired_at' => $news->expired_at,
+                'pinned_at' => $news->pinned_at,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(EditNews $request, News $news): RedirectResponse
     {
         $news->fill($request->all());
@@ -112,9 +123,6 @@ class NewsController extends Controller
         return redirect()->route('news.show', [$news->slug]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(DeleteNews $request, News $news): RedirectResponse
     {
         if ( ! $news->delete()) {
@@ -128,13 +136,14 @@ class NewsController extends Controller
         return redirect()->route('news.index');
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(News $news): View
+    public function delete(News $news): Response
     {
-        return view('news.delete', [
-            'news' => $news
+        return Inertia::render('News/Delete', [
+            'news' => [
+                'id' => $news->id,
+                'slug' => $news->slug,
+                'title' => $news->title,
+            ],
         ]);
     }
 }

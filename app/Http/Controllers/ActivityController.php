@@ -3,14 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
-use Illuminate\Contracts\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ActivityController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
-        return view('activities.index', [
-            'activities' => Activity::latest()->paginate(10)
+        $activities = Activity::with('user:id,name')->latest()->get();
+
+        $items = $activities->map(function (Activity $activity) {
+            $object = null;
+            if ($activity->object_type && $activity->object_id) {
+                $model = $activity->object_type::find($activity->object_id);
+                if ($model) {
+                    $object = [
+                        'type' => class_basename($activity->object_type),
+                        'fullname' => $model->fullname ?? null,
+                        'slug' => $model->slug ?? null,
+                    ];
+                }
+            }
+
+            return [
+                'id' => $activity->id,
+                'action' => $activity->action,
+                'body' => $activity->body,
+                'created_at' => optional($activity->created_at)->diffForHumans(),
+                'user' => $activity->user ? ['name' => $activity->user->name] : null,
+                'object' => $object,
+            ];
+        });
+
+        return Inertia::render('Activities/Index', [
+            'activities' => $items,
         ]);
     }
 }

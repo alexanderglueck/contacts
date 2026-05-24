@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Admin\Announcement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class AnnouncementTest extends TestCase
 {
@@ -102,7 +103,7 @@ class AnnouncementTest extends TestCase
             ->get(route('announcements.edit', [$announcement->slug]));
 
         $response->assertStatus(200);
-        $response->assertSee(trans('ui.edit_announcement'));
+        $response->assertInertia(fn (Assert $page) => $page->component('Announcements/Edit'));
         $this->assertAuthenticatedAs($user);
     }
 

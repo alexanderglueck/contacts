@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin\Announcement;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Announcement\StoreAnnouncement;
 use App\Http\Requests\Announcement\DeleteAnnouncement;
 use App\Http\Requests\Announcement\UpdateAnnouncement;
@@ -16,20 +17,26 @@ class AnnouncementController extends Controller
 {
     protected ?string $accessEntity = 'announcements';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->can('view');
 
-        return view('announcement.index', [
-            'active' => Announcement::active()->paginate(10),
-            'inactive' => Announcement::inactive()->paginate(10),
-            'displayed' => Announcement::displayed($request->user())->paginate(10),
-            'hidden' => Announcement::hidden($request->user())->paginate(10),
-            'read' => Announcement::read($request->user())->paginate(10),
-            'unread' => Announcement::unread($request->user())->paginate(10)
+        $user = Auth::user();
+        $mapper = fn ($announcement) => [
+            'id' => $announcement->id,
+            'slug' => $announcement->slug,
+            'title' => $announcement->title,
+            'is_pinned' => $announcement->isPinned(),
+        ];
+
+        return Inertia::render('Announcements/Index', [
+            'active' => Announcement::active()->paginate(10)->through($mapper),
+            'inactive' => Announcement::inactive()->paginate(10)->through($mapper),
+            'displayed' => Announcement::displayed($request->user())->paginate(10)->through($mapper),
+            'hidden' => Announcement::hidden($request->user())->paginate(10)->through($mapper),
+            'read' => Announcement::read($request->user())->paginate(10)->through($mapper),
+            'unread' => Announcement::unread($request->user())->paginate(10)->through($mapper),
+            'canCreate' => $user->checkPermissionTo('create announcements'),
         ]);
     }
 
@@ -40,21 +47,15 @@ class AnnouncementController extends Controller
         return redirect()->route('announcements.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create(): Response
     {
         $this->can('create');
 
-        return view('announcement.create', [
-            'announcement' => new Announcement
+        return Inertia::render('Announcements/Create', [
+            //
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreAnnouncement $request): RedirectResponse
     {
         $announcement = new Announcement();
@@ -72,34 +73,46 @@ class AnnouncementController extends Controller
         return redirect()->route('announcements.show', [$announcement->slug]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Announcement $announcement): View
+    public function show(Announcement $announcement): Response
     {
         $this->can('view');
 
-        return view('announcement.show', [
-            'announcement' => $announcement
+        $user = Auth::user();
+
+        return Inertia::render('Announcements/Show', [
+            'announcement' => [
+                'id' => $announcement->id,
+                'slug' => $announcement->slug,
+                'title' => $announcement->title,
+                'body' => $announcement->body,
+                'parsed_body' => $announcement->parsedBody,
+                'expired_at' => $announcement->expired_at,
+                'pinned_at' => $announcement->pinned_at,
+                'is_pinned' => $announcement->isPinned(),
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit announcements'),
+                'delete' => $user->checkPermissionTo('delete announcements'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Announcement $announcement): View
+    public function edit(Announcement $announcement): Response
     {
         $this->can('edit');
 
-        return view('announcement.edit', [
-            'announcement' => $announcement,
-            'createButtonText' => trans('ui.edit_announcement'),
+        return Inertia::render('Announcements/Edit', [
+            'announcement' => [
+                'id' => $announcement->id,
+                'slug' => $announcement->slug,
+                'title' => $announcement->title,
+                'body' => $announcement->body,
+                'expired_at' => $announcement->expired_at,
+                'pinned_at' => $announcement->pinned_at,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateAnnouncement $request, Announcement $announcement): RedirectResponse
     {
         $announcement->fill($request->all());
@@ -115,9 +128,6 @@ class AnnouncementController extends Controller
         return redirect()->route('announcements.show', [$announcement->slug]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(DeleteAnnouncement $request, Announcement $announcement): RedirectResponse
     {
         if ( ! $announcement->delete()) {
@@ -131,15 +141,16 @@ class AnnouncementController extends Controller
         return redirect()->route('announcements.index');
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Announcement $announcement): View
+    public function delete(Announcement $announcement): Response
     {
         $this->can('delete');
 
-        return view('announcement.delete', [
-            'announcement' => $announcement
+        return Inertia::render('Announcements/Delete', [
+            'announcement' => [
+                'id' => $announcement->id,
+                'slug' => $announcement->slug,
+                'title' => $announcement->title,
+            ],
         ]);
     }
 }

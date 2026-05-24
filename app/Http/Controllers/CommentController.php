@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Contact;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Requests\Comment\DeleteCommentRequest;
 use App\Http\Requests\Comment\UpdateCommentRequest;
@@ -15,9 +16,6 @@ class CommentController extends Controller
 {
     protected ?string $accessEntity = 'comments';
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCommentRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->comments()->create($request->all())) {
@@ -31,22 +29,23 @@ class CommentController extends Controller
         return redirect()->route('contacts.show', [$contact->slug]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, Comment $comment): View
+    public function edit(Contact $contact, Comment $comment): Response
     {
         $this->can('edit');
 
-        return view('comment.edit', [
-            'contact' => $contact,
-            'comment' => $comment
+        return Inertia::render('Comments/Edit', [
+            'contact' => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+            ],
+            'comment' => [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCommentRequest $request, Contact $contact, Comment $comment): RedirectResponse
     {
         if ($comment->update($request->validated())) {
@@ -60,9 +59,6 @@ class CommentController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(DeleteCommentRequest $request, Contact $contact, Comment $comment): RedirectResponse
     {
         if ($comment->delete()) {
