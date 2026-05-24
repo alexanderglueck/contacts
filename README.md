@@ -1,9 +1,6 @@
 # Contacts _(contacts)_
 
-[![Master Build Status][travis-image]][travis-url]
-[![StyleCI][styleci-image]][styleci-url]
-
-> A simple contact management system to keep track of your friends and family. 
+> A simple contact management system to keep track of your friends and family.
 
 Contacts allows you to manage your contacts by managing their/keeping track of
  - addresses
@@ -19,40 +16,72 @@ Contacts allows you to manage your contacts by managing their/keeping track of
 
 ## Install
 
-> Contacts uses [Docker](https://www.docker.com/) to keep the setup at a minimum 
+> Contacts uses [Docker](https://www.docker.com/) to keep the setup at a minimum.
 
-1. Begin by cloning this repository to your machine and starting the containers.
+1. Clone this repository and start the containers.
     ```bash
     git clone https://github.com/alexanderglueck/contacts.git
-    cd contacts && docker-compose -f docker-compose.dist.yml build 
-        && docker-compose -f docker-compose.dist.yml up -d
-    ``` 
+    cd contacts
+    docker compose build
+    docker compose up -d
+    ```
 
-2. First time you start the containers, run the database migrations
+2. The first time you start the containers, run the database migrations:
     ```bash
-    docker exec contacts_app_1 php artisan migrate --seed
-   ```
+    docker exec -w /app contacts-app-1 php artisan migrate --seed
+    ```
 
-3. Visit `/install` to complete your installation
+3. Visit `/install` to complete your installation.
 
-4. Enjoy
+4. Enjoy.
 
-## Setup
+## Development
+
+The `Dockerfile` is multi-stage. `docker compose build` produces the `dev`
+target — php-fpm with xdebug and node, with the source bind-mounted from the
+host. Other targets:
+
+```bash
+docker build --target production -t contacts:prod .
+docker build --target testing    -t contacts:test .
+```
+
+Run any PHP-side command inside the app container so it can reach MySQL,
+Redis, and Meilisearch on the compose network:
+
+```bash
+docker exec -w /app contacts-app-1 php artisan <command>
+docker exec -w /app contacts-app-1 composer <command>
+docker exec -w /app contacts-app-1 vendor/bin/phpunit
+```
+
+Front-end assets are built with Vite:
+
+```bash
+docker exec -w /app contacts-app-1 npm install
+docker exec -w /app contacts-app-1 npm run dev    # HMR
+docker exec -w /app contacts-app-1 npm run build  # production bundle
+```
 
 ## Seeding the database
+
 ```bash
-php artisan tinker
+docker exec -it -w /app contacts-app-1 php artisan tinker
+```
+```php
 Auth::loginUsingId(1);
 config()->set('scout.prefix', 'tenant_1_');
-factory(\App\Models\Contact::class, 1000)->create(['team_id' => 1, 'created_by' => 1, 'updated_by' => 1])
+\App\Models\Contact::factory()
+    ->count(1000)
+    ->create(['team_id' => 1, 'created_by' => 1, 'updated_by' => 1]);
 ```
 
 ## Security
 
-If you discover a security vulnerability within this application, please send an e-mail to Alexander Glück at security@alexanderglueck.at. 
+If you discover a security vulnerability within this application, please send an e-mail to Alexander Glück at security@alexanderglueck.at.
 All security vulnerabilities will be promptly addressed.
 
-Please do not open an issue describing the vulnerability. 
+Please do not open an issue describing the vulnerability.
 
 ## Maintainers
 
@@ -66,12 +95,4 @@ Feel free to dive in! Open an issue or submit PRs.
 
 See [LICENSE.md](LICENSE.md)
 
-[travis-image]: https://travis-ci.org/alexanderglueck/contacts.svg?branch=master
-[travis-url]: https://travis-ci.org/alexanderglueck/contacts
-
-[styleci-image]: https://styleci.io/repos/117006875/shield?branch=master
-[styleci-url]: https://styleci.io/repos/117006875
-
 [maintainer-alexanderglueck]: https://github.com/alexanderglueck
-
-[Stripe]: https://stripe.com
