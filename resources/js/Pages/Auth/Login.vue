@@ -27,7 +27,6 @@ const {
     error: passkeyError,
     isSupported: passkeySupported,
 } = usePasskeyVerify({
-    autofill: true,
     onSuccess: (response) => {
         window.location.href = response.redirect ?? '/';
     },
@@ -47,7 +46,7 @@ const {
                     id="email"
                     type="email"
                     v-model="form.email"
-                    autocomplete="username webauthn"
+                    autocomplete="username"
                     autofocus
                     required
                 />
