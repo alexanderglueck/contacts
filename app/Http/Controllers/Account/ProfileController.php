@@ -22,6 +22,16 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'password_reset_disabled' => (bool) $user->password_reset_disabled,
             ],
+            'passkeys' => fn () => $user->passkeys()
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn ($passkey) => [
+                    'id' => $passkey->id,
+                    'name' => $passkey->name,
+                    'created_at' => $passkey->created_at?->toIso8601String(),
+                    'last_used_at' => $passkey->last_used_at?->toIso8601String(),
+                ])
+                ->all(),
         ]);
     }
 

@@ -6,6 +6,8 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { usePasskeyVerify } from '@laravel/passkeys/vue';
 
 const form = useForm({
     email: '',
@@ -18,6 +20,18 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const {
+    verify: signInWithPasskey,
+    isLoading: passkeyBusy,
+    error: passkeyError,
+    isSupported: passkeySupported,
+} = usePasskeyVerify({
+    autofill: true,
+    onSuccess: (response) => {
+        window.location.href = response.redirect ?? '/';
+    },
+});
 </script>
 
 <template>
@@ -33,7 +47,7 @@ const submit = () => {
                     id="email"
                     type="email"
                     v-model="form.email"
-                    autocomplete="username"
+                    autocomplete="username webauthn"
                     autofocus
                     required
                 />
@@ -69,6 +83,23 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <div v-if="passkeySupported" class="mt-6">
+            <div class="relative flex items-center">
+                <div class="flex-grow border-t border-gray-200"></div>
+                <span class="px-3 text-xs uppercase tracking-wide text-gray-500">or</span>
+                <div class="flex-grow border-t border-gray-200"></div>
+            </div>
+            <SecondaryButton
+                type="button"
+                class="w-full mt-4 justify-center cursor-pointer"
+                :disabled="passkeyBusy"
+                @click="signInWithPasskey"
+            >
+                {{ passkeyBusy ? 'Waiting for passkey…' : 'Sign in with a passkey' }}
+            </SecondaryButton>
+            <InputError :message="passkeyError ?? ''" />
+        </div>
 
         <p class="mt-6 text-sm text-center text-gray-600">
             No account?
