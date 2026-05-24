@@ -162,6 +162,18 @@
             "remove": "Remove picture",
             "drop_or_choose": "Drop an image here or choose a file"
         },
+        "image_editor": {
+            "page_title_contact": "{name} — Image",
+            "page_title_profile": "Profile picture",
+            "section_heading_contact": "Image",
+            "section_heading_profile": "Profile picture",
+            "crop_help": "Drag to reposition, scroll to zoom. Crop is locked to a square.",
+            "crop_preview_alt": "Crop preview",
+            "crop_current": "Crop current",
+            "upload_new": "Upload new",
+            "save_crop": "Save crop",
+            "reset": "Reset to default"
+        },
         "deactivate": {
             "title": "Deactivate account",
             "body": "Deactivating freezes your account. You won't be able to sign in until an admin reactivates you, but your data is kept.",
@@ -294,8 +306,11 @@
             "empty_gift_ideas": "No gift ideas yet.",
             "empty_comments": "No comments yet.",
             "empty_activities": "No activity recorded yet.",
+            "name": "Name",
+            "remove_q": "Permanently remove {item}?",
+            "remove_comment_q": "Permanently remove this comment? Replies stay attached to the contact but lose their parent.",
             "address_fields": {
-                "type": "Type",
+                "type": "Name",
                 "street": "Street",
                 "city": "City",
                 "zip": "Postcode",
@@ -303,38 +318,41 @@
                 "country": "Country"
             },
             "number_fields": {
-                "type": "Type",
-                "number": "Number"
+                "name": "Name",
+                "number": "Phone number"
             },
             "email_fields": {
-                "type": "Type",
-                "email": "Email address"
+                "name": "Name",
+                "email": "Email"
             },
             "url_fields": {
-                "type": "Type",
-                "url": "Website"
+                "name": "Name",
+                "url": "URL"
             },
             "date_fields": {
-                "title": "Occasion",
+                "name": "Name",
                 "date": "Date",
-                "yearly": "Repeats yearly"
+                "skip_year": "Skip year"
             },
             "note_fields": {
+                "name": "Name",
                 "body": "Note"
             },
             "call_fields": {
-                "called_at": "Called at",
-                "body": "What was discussed"
+                "when": "When",
+                "body": "Note"
             },
             "gift_fields": {
-                "title": "Title",
+                "name": "Name",
                 "description": "Description",
-                "due_at": "Due at"
+                "url": "URL",
+                "due_at": "Due"
             },
             "comment_fields": {
                 "body": "Comment",
                 "reply": "Reply",
-                "deleted": "(deleted)"
+                "deleted": "(deleted)",
+                "placeholder": "Write a comment…"
             }
         }
     }

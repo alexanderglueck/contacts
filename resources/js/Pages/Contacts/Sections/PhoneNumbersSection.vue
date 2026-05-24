@@ -158,11 +158,11 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.number_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Number</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.number_fields.number') }}</dt>
                     <dd class="text-gray-900">
                         <a :href="`tel:${selected.number}`" class="text-indigo-600 hover:text-indigo-500">
                             {{ selected.number }}
@@ -180,12 +180,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.number_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-number" value="Phone number *" />
+                <InputLabel for="create-number" :value="`${t('contacts.slideover.number_fields.number')} *`" />
                 <TextInput id="create-number" type="tel" v-model="createForm.number" required />
                 <InputError :message="createForm.errors.number" />
             </div>
@@ -199,12 +199,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.number_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-number" value="Phone number *" />
+                <InputLabel for="edit-number" :value="`${t('contacts.slideover.number_fields.number')} *`" />
                 <TextInput id="edit-number" type="tel" v-model="editForm.number" required />
                 <InputError :message="editForm.errors.number" />
             </div>
@@ -213,7 +213,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.number }})?
+                {{ t('contacts.slideover.remove_q', { item: `${selected.name} (${selected.number})` }) }}
             </p>
         </template>
 

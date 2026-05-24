@@ -154,11 +154,11 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.note_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Note</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.note_fields.body') }}</dt>
                     <dd class="prose-note text-gray-900" v-html="selected.note_html" />
                 </div>
             </dl>
@@ -172,12 +172,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.note_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-note" value="Note *" />
+                <InputLabel for="create-note" :value="`${t('contacts.slideover.note_fields.body')} *`" />
                 <Textarea id="create-note" v-model="createForm.note" :rows="4" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -194,12 +194,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.note_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-note" value="Note *" />
+                <InputLabel for="edit-note" :value="`${t('contacts.slideover.note_fields.body')} *`" />
                 <Textarea id="edit-note" v-model="editForm.note" :rows="4" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -211,7 +211,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong>?
+                {{ t('contacts.slideover.remove_q', { item: selected.name }) }}
             </p>
         </template>
 

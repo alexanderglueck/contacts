@@ -154,11 +154,11 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.email_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Email</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.email_fields.email') }}</dt>
                     <dd class="text-gray-900">
                         <a :href="`mailto:${selected.email}`" class="text-indigo-600 hover:text-indigo-500">
                             {{ selected.email }}
@@ -176,12 +176,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.email_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-email" value="Email *" />
+                <InputLabel for="create-email" :value="`${t('contacts.slideover.email_fields.email')} *`" />
                 <TextInput id="create-email" type="email" v-model="createForm.email" required />
                 <InputError :message="createForm.errors.email" />
             </div>
@@ -195,12 +195,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.email_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-email" value="Email *" />
+                <InputLabel for="edit-email" :value="`${t('contacts.slideover.email_fields.email')} *`" />
                 <TextInput id="edit-email" type="email" v-model="editForm.email" required />
                 <InputError :message="editForm.errors.email" />
             </div>
@@ -209,7 +209,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.email }})?
+                {{ t('contacts.slideover.remove_q', { item: `${selected.name} (${selected.email})` }) }}
             </p>
         </template>
 

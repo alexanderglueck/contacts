@@ -154,15 +154,15 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.date_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Date</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.date_fields.date') }}</dt>
                     <dd class="text-gray-900">{{ selected.formatted_date }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Skip year</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.date_fields.skip_year') }}</dt>
                     <dd class="text-gray-900">{{ selected.skip_year ? 'Yes' : 'No' }}</dd>
                 </div>
             </dl>
@@ -176,17 +176,17 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.date_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-date" value="Date *" />
+                <InputLabel for="create-date" :value="`${t('contacts.slideover.date_fields.date')} *`" />
                 <TextInput id="create-date" type="date" v-model="createForm.date" required />
                 <InputError :message="createForm.errors.date" />
             </div>
             <div>
-                <span class="block text-sm font-medium text-gray-700 mb-1">Skip year</span>
+                <span class="block text-sm font-medium text-gray-700 mb-1">{{ t('contacts.slideover.date_fields.skip_year') }}</span>
                 <label class="inline-flex items-center mr-4">
                     <input
                         type="radio"
@@ -194,7 +194,7 @@ const submitDelete = () =>
                         v-model.number="createForm.skip_year"
                         class="text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span class="ms-2 text-sm text-gray-700">No</span>
+                    <span class="ms-2 text-sm text-gray-700">{{ t('common.no') }}</span>
                 </label>
                 <label class="inline-flex items-center">
                     <input
@@ -203,7 +203,7 @@ const submitDelete = () =>
                         v-model.number="createForm.skip_year"
                         class="text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span class="ms-2 text-sm text-gray-700">Yes</span>
+                    <span class="ms-2 text-sm text-gray-700">{{ t('common.yes') }}</span>
                 </label>
                 <InputError :message="createForm.errors.skip_year" />
             </div>
@@ -217,17 +217,17 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.date_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-date" value="Date *" />
+                <InputLabel for="edit-date" :value="`${t('contacts.slideover.date_fields.date')} *`" />
                 <TextInput id="edit-date" type="date" v-model="editForm.date" required />
                 <InputError :message="editForm.errors.date" />
             </div>
             <div>
-                <span class="block text-sm font-medium text-gray-700 mb-1">Skip year</span>
+                <span class="block text-sm font-medium text-gray-700 mb-1">{{ t('contacts.slideover.date_fields.skip_year') }}</span>
                 <label class="inline-flex items-center mr-4">
                     <input
                         type="radio"
@@ -235,7 +235,7 @@ const submitDelete = () =>
                         v-model.number="editForm.skip_year"
                         class="text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span class="ms-2 text-sm text-gray-700">No</span>
+                    <span class="ms-2 text-sm text-gray-700">{{ t('common.no') }}</span>
                 </label>
                 <label class="inline-flex items-center">
                     <input
@@ -244,7 +244,7 @@ const submitDelete = () =>
                         v-model.number="editForm.skip_year"
                         class="text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span class="ms-2 text-sm text-gray-700">Yes</span>
+                    <span class="ms-2 text-sm text-gray-700">{{ t('common.yes') }}</span>
                 </label>
                 <InputError :message="editForm.errors.skip_year" />
             </div>
@@ -253,7 +253,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.formatted_date }})?
+                {{ t('contacts.slideover.remove_q', { item: `${selected.name} (${selected.formatted_date})` }) }}
             </p>
         </template>
 

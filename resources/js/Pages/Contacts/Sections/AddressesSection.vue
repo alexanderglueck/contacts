@@ -169,23 +169,23 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.address_fields.type') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Street</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.address_fields.street') }}</dt>
                     <dd class="text-gray-900">{{ selected.street }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">City</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.address_fields.city') }}</dt>
                     <dd class="text-gray-900">{{ selected.zip }} {{ selected.city }}</dd>
                 </div>
                 <div v-if="selected.state">
-                    <dt class="font-medium text-gray-700">State / region</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.address_fields.state') }}</dt>
                     <dd class="text-gray-900">{{ selected.state }}</dd>
                 </div>
                 <div v-if="selected.country">
-                    <dt class="font-medium text-gray-700">Country</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.address_fields.country') }}</dt>
                     <dd class="text-gray-900">{{ selected.country }}</dd>
                 </div>
             </dl>
@@ -208,34 +208,34 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.address_fields.type')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-street" value="Street *" />
+                <InputLabel for="create-street" :value="`${t('contacts.slideover.address_fields.street')} *`" />
                 <TextInput id="create-street" v-model="createForm.street" required />
                 <InputError :message="createForm.errors.street" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <InputLabel for="create-zip" value="ZIP *" />
+                    <InputLabel for="create-zip" :value="`${t('contacts.slideover.address_fields.zip')} *`" />
                     <TextInput id="create-zip" v-model="createForm.zip" required />
                     <InputError :message="createForm.errors.zip" />
                 </div>
                 <div class="sm:col-span-2">
-                    <InputLabel for="create-city" value="City *" />
+                    <InputLabel for="create-city" :value="`${t('contacts.slideover.address_fields.city')} *`" />
                     <TextInput id="create-city" v-model="createForm.city" required />
                     <InputError :message="createForm.errors.city" />
                 </div>
             </div>
             <div>
-                <InputLabel for="create-state" value="State / region" />
+                <InputLabel for="create-state" :value="t('contacts.slideover.address_fields.state')" />
                 <TextInput id="create-state" v-model="createForm.state" />
                 <InputError :message="createForm.errors.state" />
             </div>
             <div>
-                <InputLabel for="create-country_id" value="Country *" />
+                <InputLabel for="create-country_id" :value="`${t('contacts.slideover.address_fields.country')} *`" />
                 <Select id="create-country_id" v-model="createForm.country_id" required>
                     <option v-for="country in countries" :key="country.id" :value="country.id">
                         {{ country.country }}
@@ -256,34 +256,34 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.address_fields.type')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-street" value="Street *" />
+                <InputLabel for="edit-street" :value="`${t('contacts.slideover.address_fields.street')} *`" />
                 <TextInput id="edit-street" v-model="editForm.street" required />
                 <InputError :message="editForm.errors.street" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <InputLabel for="edit-zip" value="ZIP *" />
+                    <InputLabel for="edit-zip" :value="`${t('contacts.slideover.address_fields.zip')} *`" />
                     <TextInput id="edit-zip" v-model="editForm.zip" required />
                     <InputError :message="editForm.errors.zip" />
                 </div>
                 <div class="sm:col-span-2">
-                    <InputLabel for="edit-city" value="City *" />
+                    <InputLabel for="edit-city" :value="`${t('contacts.slideover.address_fields.city')} *`" />
                     <TextInput id="edit-city" v-model="editForm.city" required />
                     <InputError :message="editForm.errors.city" />
                 </div>
             </div>
             <div>
-                <InputLabel for="edit-state" value="State / region" />
+                <InputLabel for="edit-state" :value="t('contacts.slideover.address_fields.state')" />
                 <TextInput id="edit-state" v-model="editForm.state" />
                 <InputError :message="editForm.errors.state" />
             </div>
             <div>
-                <InputLabel for="edit-country_id" value="Country *" />
+                <InputLabel for="edit-country_id" :value="`${t('contacts.slideover.address_fields.country')} *`" />
                 <Select id="edit-country_id" v-model="editForm.country_id" required>
                     <option v-for="country in countries" :key="country.id" :value="country.id">
                         {{ country.country }}
@@ -299,7 +299,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.street }}, {{ selected.zip }} {{ selected.city }})?
+                {{ t('contacts.slideover.remove_q', { item: `${selected.name} (${selected.street}, ${selected.zip} ${selected.city})` }) }}
             </p>
         </template>
 

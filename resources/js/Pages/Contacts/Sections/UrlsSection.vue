@@ -153,11 +153,11 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.url_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">URL</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.url_fields.url') }}</dt>
                     <dd class="text-gray-900 break-all">
                         <a
                             :href="selected.url"
@@ -180,12 +180,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.url_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-url" value="URL *" />
+                <InputLabel for="create-url" :value="`${t('contacts.slideover.url_fields.url')} *`" />
                 <TextInput id="create-url" type="url" v-model="createForm.url" required />
                 <InputError :message="createForm.errors.url" />
             </div>
@@ -199,12 +199,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.url_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-url" value="URL *" />
+                <InputLabel for="edit-url" :value="`${t('contacts.slideover.url_fields.url')} *`" />
                 <TextInput id="edit-url" type="url" v-model="editForm.url" required />
                 <InputError :message="editForm.errors.url" />
             </div>
@@ -213,7 +213,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong>?
+                {{ t('contacts.slideover.remove_q', { item: selected.name }) }}
             </p>
         </template>
 

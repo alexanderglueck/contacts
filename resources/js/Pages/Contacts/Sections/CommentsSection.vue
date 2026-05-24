@@ -270,9 +270,9 @@ const submitDelete = () =>
                 <span class="font-medium text-gray-700">{{ t('contacts.slideover.reply_to', { name: selected.owner?.name ?? '' }) }}:</span>
                 <div class="mt-1 prose-note text-gray-700 line-clamp-3" v-html="selected.comment_html" />
             </div>
-            <Textarea v-model="createForm.comment" :rows="4" autofocus placeholder="Write a comment…" />
+            <Textarea v-model="createForm.comment" :rows="4" autofocus :placeholder="t('contacts.slideover.comment_fields.placeholder')" />
             <p class="text-xs text-gray-500">
-                Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                {{ t('contacts.markdown_hint') }}
             </p>
             <InputError :message="createForm.errors.comment" />
         </form>
@@ -286,7 +286,7 @@ const submitDelete = () =>
         >
             <Textarea v-model="editForm.comment" :rows="4" autofocus />
             <p class="text-xs text-gray-500">
-                Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                {{ t('contacts.markdown_hint') }}
             </p>
             <InputError :message="editForm.errors.comment" />
         </form>
@@ -298,7 +298,7 @@ const submitDelete = () =>
                 <div class="mt-1 prose-note text-gray-700 line-clamp-4" v-html="selected.comment_html" />
             </div>
             <p class="text-sm text-gray-700">
-                Permanently remove this comment? Replies stay attached to the contact but lose their parent.
+                {{ t('contacts.slideover.remove_comment_q') }}
             </p>
         </template>
 

@@ -162,6 +162,18 @@
             "remove": "Bild entfernen",
             "drop_or_choose": "Ziehen Sie ein Bild hierher oder wählen Sie eine Datei"
         },
+        "image_editor": {
+            "page_title_contact": "{name} — Bild",
+            "page_title_profile": "Profilbild",
+            "section_heading_contact": "Bild",
+            "section_heading_profile": "Profilbild",
+            "crop_help": "Zum Verschieben ziehen, zum Zoomen scrollen. Der Ausschnitt ist quadratisch.",
+            "crop_preview_alt": "Zuschnitt-Vorschau",
+            "crop_current": "Aktuelles zuschneiden",
+            "upload_new": "Neues hochladen",
+            "save_crop": "Zuschnitt speichern",
+            "reset": "Auf Standard zurücksetzen"
+        },
         "deactivate": {
             "title": "Konto deaktivieren",
             "body": "Beim Deaktivieren wird Ihr Konto eingefroren. Sie können sich nicht mehr anmelden, bis ein Administrator Sie wieder aktiviert, Ihre Daten bleiben jedoch erhalten.",
@@ -294,8 +306,11 @@
             "empty_gift_ideas": "Noch keine Geschenkideen vorhanden.",
             "empty_comments": "Noch keine Kommentare vorhanden.",
             "empty_activities": "Noch keine Aktivitäten aufgezeichnet.",
+            "name": "Name",
+            "remove_q": "{item} endgültig entfernen?",
+            "remove_comment_q": "Diesen Kommentar endgültig entfernen? Antworten bleiben dem Kontakt zugeordnet, verlieren aber ihren übergeordneten Kommentar.",
             "address_fields": {
-                "type": "Typ",
+                "type": "Name",
                 "street": "Straße",
                 "city": "Stadt",
                 "zip": "PLZ",
@@ -303,38 +318,41 @@
                 "country": "Land"
             },
             "number_fields": {
-                "type": "Typ",
-                "number": "Nummer"
+                "name": "Name",
+                "number": "Telefonnummer"
             },
             "email_fields": {
-                "type": "Typ",
-                "email": "E-Mail-Adresse"
+                "name": "Name",
+                "email": "E-Mail"
             },
             "url_fields": {
-                "type": "Typ",
-                "url": "Webseite"
+                "name": "Name",
+                "url": "URL"
             },
             "date_fields": {
-                "title": "Anlass",
+                "name": "Name",
                 "date": "Datum",
-                "yearly": "Wiederholt sich jährlich"
+                "skip_year": "Jahr überspringen"
             },
             "note_fields": {
+                "name": "Name",
                 "body": "Notiz"
             },
             "call_fields": {
-                "called_at": "Angerufen am",
-                "body": "Worüber wurde gesprochen"
+                "when": "Wann",
+                "body": "Notiz"
             },
             "gift_fields": {
-                "title": "Titel",
+                "name": "Name",
                 "description": "Beschreibung",
-                "due_at": "Fällig am"
+                "url": "URL",
+                "due_at": "Fällig"
             },
             "comment_fields": {
                 "body": "Kommentar",
                 "reply": "Antworten",
-                "deleted": "(gelöscht)"
+                "deleted": "(gelöscht)",
+                "placeholder": "Kommentar schreiben…"
             }
         }
     }

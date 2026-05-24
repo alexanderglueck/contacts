@@ -158,15 +158,15 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">Name</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.gift_fields.name') }}</dt>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div v-if="selected.description">
-                    <dt class="font-medium text-gray-700">Description</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.gift_fields.description') }}</dt>
                     <dd class="prose-note text-gray-900" v-html="selected.description_html" />
                 </div>
                 <div v-if="selected.url">
-                    <dt class="font-medium text-gray-700">URL</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.gift_fields.url') }}</dt>
                     <dd class="text-gray-900 break-all">
                         <a
                             :href="selected.url"
@@ -179,7 +179,7 @@ const submitDelete = () =>
                     </dd>
                 </div>
                 <div v-if="selected.formatted_due_at">
-                    <dt class="font-medium text-gray-700">Due</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.gift_fields.due_at') }}</dt>
                     <dd class="text-gray-900">{{ selected.formatted_due_at }}</dd>
                 </div>
             </dl>
@@ -193,12 +193,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-name" value="Name *" />
+                <InputLabel for="create-name" :value="`${t('contacts.slideover.gift_fields.name')} *`" />
                 <TextInput id="create-name" v-model="createForm.name" autofocus required />
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-description" value="Description" />
+                <InputLabel for="create-description" :value="t('contacts.slideover.gift_fields.description')" />
                 <Textarea id="create-description" v-model="createForm.description" :rows="3" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -206,12 +206,12 @@ const submitDelete = () =>
                 <InputError :message="createForm.errors.description" />
             </div>
             <div>
-                <InputLabel for="create-url" value="URL" />
+                <InputLabel for="create-url" :value="t('contacts.slideover.gift_fields.url')" />
                 <TextInput id="create-url" type="url" v-model="createForm.url" />
                 <InputError :message="createForm.errors.url" />
             </div>
             <div>
-                <InputLabel for="create-due_at" value="Due" />
+                <InputLabel for="create-due_at" :value="t('contacts.slideover.gift_fields.due_at')" />
                 <TextInput
                     id="create-due_at"
                     type="date"
@@ -229,12 +229,12 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-name" value="Name *" />
+                <InputLabel for="edit-name" :value="`${t('contacts.slideover.gift_fields.name')} *`" />
                 <TextInput id="edit-name" v-model="editForm.name" autofocus required />
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-description" value="Description" />
+                <InputLabel for="edit-description" :value="t('contacts.slideover.gift_fields.description')" />
                 <Textarea id="edit-description" v-model="editForm.description" :rows="3" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -242,12 +242,12 @@ const submitDelete = () =>
                 <InputError :message="editForm.errors.description" />
             </div>
             <div>
-                <InputLabel for="edit-url" value="URL" />
+                <InputLabel for="edit-url" :value="t('contacts.slideover.gift_fields.url')" />
                 <TextInput id="edit-url" type="url" v-model="editForm.url" />
                 <InputError :message="editForm.errors.url" />
             </div>
             <div>
-                <InputLabel for="edit-due_at" value="Due" />
+                <InputLabel for="edit-due_at" :value="t('contacts.slideover.gift_fields.due_at')" />
                 <TextInput
                     id="edit-due_at"
                     type="date"
@@ -260,7 +260,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong>?
+                {{ t('contacts.slideover.remove_q', { item: selected.name }) }}
             </p>
         </template>
 

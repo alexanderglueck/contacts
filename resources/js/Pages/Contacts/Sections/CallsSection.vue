@@ -154,11 +154,11 @@ const submitDelete = () =>
         <template v-else-if="mode === 'show'">
             <dl class="space-y-3 text-sm">
                 <div>
-                    <dt class="font-medium text-gray-700">When</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.call_fields.when') }}</dt>
                     <dd class="text-gray-900">{{ selected.formatted_called_at }}</dd>
                 </div>
                 <div v-if="selected.note">
-                    <dt class="font-medium text-gray-700">Note</dt>
+                    <dt class="font-medium text-gray-700">{{ t('contacts.slideover.call_fields.body') }}</dt>
                     <dd class="prose-note text-gray-900" v-html="selected.note_html" />
                 </div>
             </dl>
@@ -172,7 +172,7 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="create-called_at" value="When *" />
+                <InputLabel for="create-called_at" :value="`${t('contacts.slideover.call_fields.when')} *`" />
                 <TextInput
                     id="create-called_at"
                     type="datetime-local"
@@ -183,7 +183,7 @@ const submitDelete = () =>
                 <InputError :message="createForm.errors.called_at" />
             </div>
             <div>
-                <InputLabel for="create-note" value="Note" />
+                <InputLabel for="create-note" :value="t('contacts.slideover.call_fields.body')" />
                 <Textarea id="create-note" v-model="createForm.note" :rows="3" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -200,7 +200,7 @@ const submitDelete = () =>
             class="space-y-4"
         >
             <div>
-                <InputLabel for="edit-called_at" value="When *" />
+                <InputLabel for="edit-called_at" :value="`${t('contacts.slideover.call_fields.when')} *`" />
                 <TextInput
                     id="edit-called_at"
                     type="datetime-local"
@@ -211,7 +211,7 @@ const submitDelete = () =>
                 <InputError :message="editForm.errors.called_at" />
             </div>
             <div>
-                <InputLabel for="edit-note" value="Note" />
+                <InputLabel for="edit-note" :value="t('contacts.slideover.call_fields.body')" />
                 <Textarea id="edit-note" v-model="editForm.note" :rows="3" />
                 <p class="mt-1 text-xs text-gray-500">
                     Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
@@ -223,7 +223,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove the call from <strong>{{ selected.formatted_called_at }}</strong>?
+                {{ t('contacts.slideover.remove_q', { item: selected.formatted_called_at }) }}
             </p>
         </template>
 

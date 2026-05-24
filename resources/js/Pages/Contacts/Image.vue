@@ -1,12 +1,15 @@
 <script setup>
 import { nextTick, onBeforeUnmount, ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -24,6 +27,21 @@ const form = useForm({
     file: null,
 });
 
+const initCropper = async () => {
+    await nextTick();
+    destroyCropper();
+    if (! imgEl.value) return;
+    cropper = new Cropper(imgEl.value, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+        background: false,
+        responsive: true,
+        zoomable: true,
+        movable: true,
+    });
+};
+
 const destroyCropper = () => {
     if (cropper) {
         cropper.destroy();
@@ -39,27 +57,24 @@ const clearSelection = () => {
     if (fileInputEl.value) fileInputEl.value.value = '';
 };
 
+const cropCurrent = () => {
+    if (! currentImage.value) return;
+    form.clearErrors();
+    sourceImage.value = `${currentImage.value}?t=${Date.now()}`;
+    initCropper();
+};
+
+const pickNewFile = () => fileInputEl.value?.click();
+
 const onFileChange = (event) => {
     const file = event.target.files?.[0];
     if (! file) return;
-
     form.clearErrors();
 
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
         sourceImage.value = e.target.result;
-        await nextTick();
-        destroyCropper();
-        if (! imgEl.value) return;
-        cropper = new Cropper(imgEl.value, {
-            aspectRatio: 1,
-            viewMode: 1,
-            autoCropArea: 1,
-            background: false,
-            responsive: true,
-            zoomable: true,
-            movable: true,
-        });
+        initCropper();
     };
     reader.readAsDataURL(file);
 };
@@ -87,12 +102,12 @@ onBeforeUnmount(destroyCropper);
 </script>
 
 <template>
-    <AppLayout :title="`${contact.fullname} — Image`">
-        <Head :title="`${contact.fullname} — Image`" />
+    <AppLayout :title="t('settings.image_editor.page_title_contact', { name: contact.fullname })">
+        <Head :title="t('settings.image_editor.page_title_contact', { name: contact.fullname })" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Image</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('settings.image_editor.section_heading_contact') }}</h2>
             </div>
 
             <div class="px-6 py-4 space-y-4">
@@ -101,43 +116,49 @@ onBeforeUnmount(destroyCropper);
                         <img :src="currentImage" :alt="contact.fullname" class="w-48 h-48 object-cover rounded-lg" />
                     </div>
 
-                    <div>
-                        <label for="file" class="block text-sm font-medium text-gray-700 mb-1">Choose image (JPEG/PNG)</label>
-                        <input
-                            id="file"
-                            ref="fileInputEl"
-                            type="file"
-                            accept="image/jpeg,image/png"
-                            class="block w-full text-sm text-gray-700"
-                            @change="onFileChange"
-                        />
-                        <InputError :message="form.errors.file" />
-                    </div>
+                    <input
+                        ref="fileInputEl"
+                        type="file"
+                        accept="image/jpeg,image/png"
+                        class="hidden"
+                        @change="onFileChange"
+                    />
+                    <InputError :message="form.errors.file" />
                 </div>
 
                 <div v-else class="space-y-3">
                     <p class="text-sm text-gray-600">
-                        Drag to reposition, scroll to zoom. Crop is locked to a square.
+                        {{ t('settings.image_editor.crop_help') }}
                     </p>
                     <div class="max-h-[60vh] overflow-hidden">
-                        <img ref="imgEl" :src="sourceImage" alt="Crop preview" class="block max-w-full" />
+                        <img ref="imgEl" :src="sourceImage" :alt="t('settings.image_editor.crop_preview_alt')" class="block max-w-full" />
                     </div>
                     <InputError :message="form.errors.file" />
                 </div>
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+            <div class="px-6 py-4 border-t border-gray-200 flex flex-wrap justify-end gap-2">
                 <template v-if="!sourceImage">
                     <Link :href="route('contacts.show', contact.ulid)">
-                        <SecondaryButton type="button">Back</SecondaryButton>
+                        <SecondaryButton type="button">{{ t('common.back') }}</SecondaryButton>
                     </Link>
+                    <SecondaryButton
+                        v-if="currentImage"
+                        type="button"
+                        @click="cropCurrent"
+                    >
+                        {{ t('settings.image_editor.crop_current') }}
+                    </SecondaryButton>
+                    <PrimaryButton type="button" @click="pickNewFile">
+                        {{ t('settings.image_editor.upload_new') }}
+                    </PrimaryButton>
                 </template>
                 <template v-else>
                     <SecondaryButton type="button" @click="clearSelection" :disabled="form.processing">
-                        Cancel
+                        {{ t('common.cancel') }}
                     </SecondaryButton>
                     <PrimaryButton type="button" @click="submit" :disabled="form.processing" :class="{ 'opacity-50': form.processing }">
-                        Save crop
+                        {{ t('settings.image_editor.save_crop') }}
                     </PrimaryButton>
                 </template>
             </div>
