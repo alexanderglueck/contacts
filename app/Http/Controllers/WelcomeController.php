@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class WelcomeController extends Controller
 {
-    public function index(): RedirectResponse|View
+    public function index(): RedirectResponse|Response
     {
         if (auth()->check()) {
             return redirect()->route('home');
         }
 
-        return view('welcome');
+        return Inertia::render('Welcome', [
+            'canLogin' => true,
+            'canRegister' => true,
+        ]);
     }
 }

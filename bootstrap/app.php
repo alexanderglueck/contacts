@@ -4,6 +4,7 @@ use App\Console\Commands\Notification\SendDailyEmail;
 use App\Console\Commands\Notification\SendWeeklyEmail;
 use App\Http\Middleware\AuthenticateRegister;
 use App\Http\Middleware\ChecksExpiredConfirmationTokens;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\Impersonate;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -44,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->appendToGroup('web', [
             Impersonate::class,
+            HandleInertiaRequests::class,
         ]);
 
         $middleware->group('tenant', [
