@@ -77,14 +77,20 @@ class CreateTenantDatabaseEntry implements ShouldQueue
      */
     protected function setupPermissions(User $user, Tenant $tenant)
     {
-        $role = Role::create([
-            'name' => 'admin',
-            'team_id' => $tenant->id
-        ]);
+        // The listener implements ShouldQueue with $tries=5. firstOrCreate
+        // keeps a retry from creating a second 'admin' role on the same
+        // tenant (we saw this happen — duplicate admin roles in the
+        // tenant-scoped role list, both for the same team_id).
+        $role = Role::withoutGlobalScopes()
+            ->firstOrCreate(
+                ['name' => 'admin', 'team_id' => $tenant->id],
+            );
 
-        $role->permissions()->attach(Permission::pluck('id')->flatten()->toArray());
+        $role->permissions()->sync(Permission::pluck('id')->all());
 
-        $user->assignRole($role);
+        if (! $user->roles()->where('roles.id', $role->id)->exists()) {
+            $user->assignRole($role);
+        }
     }
 
     /**

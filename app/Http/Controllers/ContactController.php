@@ -89,6 +89,7 @@ class ContactController extends Controller
             'dates',
             'notes',
             'calls',
+            'comments',
             'giftIdeas as gift_ideas_count',
         ]);
         $contact->load(['gender:id,gender', 'country:id,country']);
@@ -122,6 +123,7 @@ class ContactController extends Controller
                 'dates_count' => $contact->dates_count,
                 'notes_count' => $contact->notes_count,
                 'calls_count' => $contact->calls_count,
+                'comments_count' => $contact->comments_count,
                 'gift_ideas_count' => $contact->gift_ideas_count,
             ],
             // Lazy props — only loaded when a Section slideover requests them
@@ -172,6 +174,25 @@ class ContactController extends Controller
                 'url' => $g->url,
                 'formatted_due_at' => $g->formatted_due_at,
             ])->values()),
+            'comments' => Inertia::optional(function () use ($contact) {
+                $comments = $contact->comments()
+                    ->with('owner:id,name')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $ulidById = $comments->pluck('ulid', 'id');
+                $authId = Auth::id();
+
+                return $comments->map(fn ($c) => [
+                    'ulid' => $c->ulid,
+                    'parent_ulid' => $c->parent_id ? ($ulidById[$c->parent_id] ?? null) : null,
+                    'comment' => $c->comment,
+                    'comment_html' => $c->comment_html,
+                    'created_at' => optional($c->created_at)->diffForHumans(),
+                    'owner' => $c->owner ? ['name' => $c->owner->name] : null,
+                    'is_mine' => $c->created_by === $authId,
+                ])->values();
+            }),
             'activities' => Inertia::optional(fn () => $contact->activity()
                 ->with('user:id,name')
                 ->latest()
@@ -234,6 +255,10 @@ class ContactController extends Controller
                 'edit_gift_ideas' => $user->checkPermissionTo('edit giftIdeas'),
                 'delete_gift_ideas' => $user->checkPermissionTo('delete giftIdeas'),
                 'view_activities' => $user->checkPermissionTo('view activities'),
+                'view_comments' => $user->checkPermissionTo('view comments'),
+                'create_comments' => $user->checkPermissionTo('create comments'),
+                'edit_comments' => $user->checkPermissionTo('edit comments'),
+                'delete_comments' => $user->checkPermissionTo('delete comments'),
             ],
         ]);
     }
