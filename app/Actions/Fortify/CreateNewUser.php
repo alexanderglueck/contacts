@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -49,6 +50,20 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
             $user->attachTeam($team);
+
+            // Grant a 30-day complimentary subscription to the team-enabled plan
+            // so new sign-ups can try every feature without going through Stripe.
+            // ends_at in the future + stripe_status=active satisfies Cashier's
+            // `active()` check (onGracePeriod = true) for the trial window.
+            $user->subscriptions()->create([
+                'type' => 'main',
+                'stripe_id' => 'trial_'.Str::random(40),
+                'stripe_status' => 'active',
+                'stripe_price' => 'team_month_10',
+                'quantity' => 1,
+                'trial_ends_at' => now()->addDays(30),
+                'ends_at' => now()->addDays(30),
+            ]);
 
             event(new TenantWasCreated($team, $user));
 
