@@ -207,6 +207,11 @@
         "cancelled": "Passkey-Aufforderung wurde abgebrochen oder ist abgelaufen.",
         "register_failed": "Passkey konnte nicht registriert werden."
     },
+    "map": {
+        "title": "Karte",
+        "heading": "Kontakte auf der Karte",
+        "open_contact": "Kontakt öffnen"
+    },
     "reports": {
         "title": "Berichte",
         "none": "Keine Berichte verfügbar.",

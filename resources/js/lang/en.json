@@ -207,6 +207,11 @@
         "cancelled": "Passkey prompt was cancelled or timed out.",
         "register_failed": "Could not register passkey."
     },
+    "map": {
+        "title": "Map",
+        "heading": "Contacts on the map",
+        "open_contact": "Open contact"
+    },
     "reports": {
         "title": "Reports",
         "none": "No reports available.",
