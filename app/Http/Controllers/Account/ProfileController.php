@@ -21,7 +21,9 @@ class ProfileController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'password_reset_disabled' => (bool) $user->password_reset_disabled,
+                'locale' => $user->locale ?? config('app.locale'),
             ],
+            'available_locales' => config('app.available_locales', ['en']),
             'passkeys' => fn () => $user->passkeys()
                 ->orderByDesc('created_at')
                 ->get()
@@ -39,6 +41,12 @@ class ProfileController extends Controller
     {
         $payload = $request->only('name', 'email');
         $payload['password_reset_disabled'] = $request->boolean('password_reset_disabled');
+
+        if ($request->filled('locale')
+            && in_array($request->input('locale'), config('app.available_locales', ['en']), true)
+        ) {
+            $payload['locale'] = $request->input('locale');
+        }
 
         if ($request->user()->update($payload)) {
             Session::flash('alert-success', trans('flash_message.contact.updated'));

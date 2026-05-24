@@ -1,8 +1,9 @@
 import './bootstrap';
 
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { i18n, setLocale } from './i18n';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Contacts';
 
@@ -17,9 +18,17 @@ createInertiaApp({
         return page;
     },
     setup({ el, App, props, plugin }) {
+        setLocale(props.initialPage.props.locale ?? 'en');
+
+        router.on('navigate', (event) => {
+            const next = event.detail.page.props?.locale;
+            if (next) setLocale(next);
+        });
+
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(i18n)
             .mount(el);
     },
     progress: {

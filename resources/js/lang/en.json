@@ -1,0 +1,23 @@
+{
+    "common": {
+        "save": "Save",
+        "update": "Update",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "loading": "Loading…"
+    },
+    "profile": {
+        "title": "Profile",
+        "name": "Name",
+        "email": "Email",
+        "language": "Language",
+        "language_help": "Used for the interface and any emails we send you.",
+        "disable_password_reset": "Disable password reset emails",
+        "disable_password_reset_help": "When checked, the \"forgot password\" flow won't send a reset link to this address. Useful if you sign in with a passkey or SSO and want to make sure the password is the only path in."
+    },
+    "languages": {
+        "en": "English",
+        "de": "German"
+    }
+}

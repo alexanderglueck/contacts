@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         then: function () {
-            Route::middleware(['web', 'auth', 'tenant'])
+            Route::middleware(['web', 'auth', 'tenant', 'enforce_team_2fa'])
                 ->group(base_path('routes/tenant.php'));
         },
     )
@@ -43,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->appendToGroup('web', [
             Impersonate::class,
+            \App\Http\Middleware\SetLocale::class,
             HandleInertiaRequests::class,
         ]);
 
@@ -55,6 +56,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => IsAdmin::class,
             'verify_contact' => VerifyCorrectContact::class,
             'auth.register' => AuthenticateRegister::class,
+            'api_token.query' => \App\Http\Middleware\AcceptApiTokenFromQuery::class,
+            'enforce_team_2fa' => \App\Http\Middleware\EnforceTeamTwoFactor::class,
             'subscription.active' => RedirectIfNotActive::class,
             'subscription.notcancelled' => RedirectIfCancelled::class,
             'subscription.cancelled' => RedirectIfNotCancelled::class,

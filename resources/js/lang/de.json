@@ -1,0 +1,23 @@
+{
+    "common": {
+        "save": "Speichern",
+        "update": "Aktualisieren",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "loading": "Wird geladen…"
+    },
+    "profile": {
+        "title": "Profil",
+        "name": "Name",
+        "email": "E-Mail",
+        "language": "Sprache",
+        "language_help": "Wird für die Oberfläche und alle E-Mails verwendet, die wir Ihnen senden.",
+        "disable_password_reset": "Passwort-Zurücksetzen per E-Mail deaktivieren",
+        "disable_password_reset_help": "Wenn aktiviert, sendet die „Passwort vergessen“-Funktion keinen Link an diese Adresse. Nützlich, wenn Sie sich mit einem Passkey oder SSO anmelden und sicherstellen möchten, dass das Passwort der einzige Zugang ist."
+    },
+    "languages": {
+        "en": "Englisch",
+        "de": "Deutsch"
+    }
+}

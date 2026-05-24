@@ -27,6 +27,7 @@
         "laravel-echo": "^2.3.0",
         "leaflet": "^1.9.4",
         "pusher-js": "^8.5.0",
-        "tailwindcss": "^4.3.0"
+        "tailwindcss": "^4.3.0",
+        "vue-i18n": "^11.4.4"
     }
 }

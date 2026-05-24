@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Domain\Users\Actions\GenerateProfileImageAction;
-use App\Models\Admin\Announcement;
 use App\Models\Concerns\HasUlidRouteKey;
 use App\Models\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
@@ -40,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'password',
         'password_reset_disabled',
         'current_team_id',
+        'locale',
     ];
 
     protected $hidden = [
@@ -141,13 +141,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'id',
             'stripe_price'
         )->orderBy('subscriptions.created_at', 'desc');
-    }
-
-    public function readAnnouncements()
-    {
-        return $this->belongsToMany(
-            Announcement::class
-        );
     }
 
     public function hasImage()

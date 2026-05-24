@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -41,6 +42,23 @@ class HandleInertiaRequests extends Middleware
                         'current_team_id' => $request->user()->current_team_id,
                     ]
                     : null,
+                'is_subscribed' => fn () => $request->user()
+                    ? $request->user()->hasSubscription()
+                    : false,
+                'subscription_cancelled' => fn () => $request->user()
+                    ? $request->user()->hasCancelled()
+                    : false,
+                'can' => fn () => $request->user()
+                    ? [
+                        // Frontend uses snake_case keys; the underlying permission
+                        // strings are space-separated (and partly camelCase for
+                        // contactGroups). Map here so the Vue side stays consistent.
+                        'view_contacts' => $request->user()->checkPermissionTo('view contacts'),
+                        'view_contact_groups' => $request->user()->checkPermissionTo('view contactGroups'),
+                        'view_calendar' => $request->user()->checkPermissionTo('view calendar'),
+                        'view_map' => $request->user()->checkPermissionTo('view map'),
+                    ]
+                    : [],
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('alert-success'),
@@ -52,6 +70,28 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'locale' => fn () => App::getLocale(),
+            'translations' => fn () => $this->loadTranslations(App::getLocale()),
         ];
+    }
+
+    /**
+     * Load the per-page JS message catalog for the active locale.
+     *
+     * The catalog lives at resources/js/lang/{locale}.json so it's a
+     * single source of truth for both server-shared props and the
+     * vue-i18n bundle. Missing files quietly return [] so a freshly
+     * added locale code doesn't 500 the app while its strings are
+     * still being written.
+     */
+    private function loadTranslations(string $locale): array
+    {
+        $path = resource_path("js/lang/{$locale}.json");
+
+        if (! file_exists($path)) {
+            return [];
+        }
+
+        return json_decode(file_get_contents($path), true) ?: [];
     }
 }
