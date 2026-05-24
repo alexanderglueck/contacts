@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     */
-    public function index(): View
+    public function index(): Response
     {
-        return view('home');
+        return Inertia::render('Home');
     }
 }
