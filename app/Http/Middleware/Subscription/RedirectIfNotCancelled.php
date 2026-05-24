@@ -17,6 +17,8 @@ class RedirectIfNotCancelled
     public function handle($request, Closure $next)
     {
         if (auth()->user()->hasNotCancelled()) {
+            flashInfo('That page is only relevant while your subscription is cancelled.');
+
             return redirect()->route('user_settings.profile.show');
         }
 

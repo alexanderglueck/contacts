@@ -17,6 +17,8 @@ class RedirectIfPiggybackSubscription
     public function handle($request, Closure $next)
     {
         if (auth()->user()->hasPiggybackSubscription()) {
+            flashInfo('Subscription management is handled by your team owner.');
+
             return redirect()->route('user_settings.profile.show');
         }
 

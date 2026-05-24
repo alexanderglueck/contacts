@@ -17,6 +17,8 @@ class RedirectIfNotInactive
     public function handle($request, Closure $next)
     {
         if (auth()->user()->hasSubscription()) {
+            flashInfo('You already have an active subscription.');
+
             return redirect()->route('user_settings.profile.show');
         }
 

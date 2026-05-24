@@ -17,6 +17,8 @@ class RedirectIfNotActive
     public function handle($request, Closure $next)
     {
         if ( ! auth()->check() || auth()->user()->hasNoSubscription()) {
+            flashInfo('You need an active subscription to access that page.');
+
             return redirect()->route('user_settings.profile.show');
         }
 

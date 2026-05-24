@@ -17,6 +17,8 @@ class RedirectIfNoTeamPlan
     public function handle($request, Closure $next)
     {
         if (auth()->user()->doesNotHaveTeamSubscription()) {
+            flashInfo('Your current plan does not include team management.');
+
             return redirect()->route('user_settings.profile.show');
         }
 

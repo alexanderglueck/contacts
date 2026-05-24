@@ -17,6 +17,8 @@ class RedirectIfNotCustomer
     public function handle($request, Closure $next)
     {
         if ( ! auth()->user()->isCustomer()) {
+            flashInfo('You need to start a subscription before you can manage billing details.');
+
             return redirect()->route('user_settings.profile.show');
         }
 
