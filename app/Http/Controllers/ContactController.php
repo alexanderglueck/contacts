@@ -172,6 +172,18 @@ class ContactController extends Controller
                 'url' => $g->url,
                 'formatted_due_at' => $g->formatted_due_at,
             ])->values()),
+            'activities' => Inertia::optional(fn () => $contact->activity()
+                ->with('user:id,name')
+                ->latest()
+                ->take(50)
+                ->get()
+                ->map(fn ($activity) => [
+                    'id' => $activity->id,
+                    'action' => $activity->action,
+                    'created_at' => optional($activity->created_at)->diffForHumans(),
+                    'user' => $activity->user ? ['name' => $activity->user->name] : null,
+                ])
+                ->values()),
             'addresses' => Inertia::optional(fn () => $contact->addresses->load('country:id,country')->map(fn ($a) => [
                 'id' => $a->id,
                 'ulid' => $a->ulid,
@@ -221,6 +233,7 @@ class ContactController extends Controller
                 'create_gift_ideas' => $user->checkPermissionTo('create giftIdeas'),
                 'edit_gift_ideas' => $user->checkPermissionTo('edit giftIdeas'),
                 'delete_gift_ideas' => $user->checkPermissionTo('delete giftIdeas'),
+                'view_activities' => $user->checkPermissionTo('view activities'),
             ],
         ]);
     }

@@ -10,6 +10,7 @@ import CallsSection from './Sections/CallsSection.vue';
 import DatesSection from './Sections/DatesSection.vue';
 import GiftIdeasSection from './Sections/GiftIdeasSection.vue';
 import AddressesSection from './Sections/AddressesSection.vue';
+import ActivitySection from './Sections/ActivitySection.vue';
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -30,6 +31,7 @@ const dates = computed(() => page.props.dates ?? []);
 const giftIdeas = computed(() => page.props.gift_ideas ?? []);
 const addresses = computed(() => page.props.addresses ?? []);
 const countries = computed(() => page.props.countries ?? []);
+const activities = computed(() => page.props.activities ?? []);
 
 const activeSection = ref(null); // null | 'numbers' | 'emails' | ...
 
@@ -43,6 +45,7 @@ const sectionDataKey = {
     dates: ['dates'],
     gift_ideas: ['gift_ideas'],
     addresses: ['addresses', 'countries'],
+    activities: ['activities'],
 };
 
 const openSection = (key) => {
@@ -133,6 +136,14 @@ const tiles = computed(() => [
         action: () => openSection('gift_ideas'),
         href: null,
     },
+    {
+        key: 'activities',
+        label: 'Activity',
+        count: null, // not preloaded; opening the tile triggers the fetch
+        canView: props.can.view_activities,
+        action: () => openSection('activities'),
+        href: null,
+    },
 ]);
 </script>
 
@@ -203,7 +214,8 @@ const tiles = computed(() => [
             >
                 <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
                 <p class="mt-1 text-sm text-indigo-600">
-                    Manage ({{ tile.count }})
+                    <template v-if="tile.count !== null">Manage ({{ tile.count }})</template>
+                    <template v-else>View</template>
                 </p>
             </button>
         </div>
@@ -302,6 +314,13 @@ const tiles = computed(() => [
                 edit: can.edit_addresses,
                 delete: can.delete_addresses,
             }"
+            @close="closeSection"
+        />
+
+        <ActivitySection
+            :open="activeSection === 'activities'"
+            :contact="contact"
+            :items="activities"
             @close="closeSection"
         />
     </AppLayout>
