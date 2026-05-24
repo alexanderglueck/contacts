@@ -3,13 +3,14 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PageTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function map_page_works()
     {
         $this->createUser('view map');
@@ -20,7 +21,7 @@ class PageTest extends TestCase
         $response->assertSee(trans('ui.map'));
     }
 
-    /** @test */
+    #[Test]
     public function calendar_page_works()
     {
         $this->createUser('view calendar');
@@ -31,7 +32,7 @@ class PageTest extends TestCase
         $response->assertSee(trans('ui.calendar'));
     }
 
-    /** @test */
+    #[Test]
     public function contact_groups_page_works()
     {
         $this->createUser('view contactGroups');
@@ -42,7 +43,7 @@ class PageTest extends TestCase
         $response->assertSee('Kontaktgruppen verwalten');
     }
 
-    /** @test */
+    #[Test]
     public function contact_groups_create_page_works()
     {
         $this->createUser('create contactGroups');
@@ -53,7 +54,7 @@ class PageTest extends TestCase
         $response->assertSee('Kontaktgruppe hinzufügen');
     }
 
-    /** @test */
+    #[Test]
     public function no_lat_lng_report_page_works()
     {
         $this->createUser('view reports');
@@ -64,7 +65,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function no_url_report_page_works()
     {
         $this->createUser('view reports');
@@ -75,7 +76,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function no_number_report_page_works()
     {
         $this->createUser('view reports');
@@ -86,7 +87,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function no_address_report_page_works()
     {
         $this->createUser('view reports');
@@ -97,7 +98,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function no_date_report_page_works()
     {
         $this->createUser('view reports');
@@ -108,7 +109,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function no_email_report_page_works()
     {
         $this->createUser('view reports');
@@ -119,7 +120,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function wrong_female_report_page_works()
     {
         $this->createUser('view reports');
@@ -130,7 +131,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function wrong_male_report_page_works()
     {
         $this->createUser('view reports');
@@ -141,7 +142,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function female_report_page_works()
     {
         $this->createUser('view reports');
@@ -152,7 +153,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function male_report_page_works()
     {
         $this->createUser('view reports');
@@ -163,7 +164,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function inactive_report_page_works()
     {
         $this->createUser('view reports');
@@ -174,7 +175,7 @@ class PageTest extends TestCase
         $response->assertSee('Ergebnis');
     }
 
-    /** @test */
+    #[Test]
     public function reports_page_works()
     {
         $this->createUser('view reports');
@@ -185,7 +186,7 @@ class PageTest extends TestCase
         $response->assertSee('Berichte');
     }
 
-    /** @test */
+    #[Test]
     public function export_page_works()
     {
         $this->createUser('create export');
@@ -196,7 +197,7 @@ class PageTest extends TestCase
         $response->assertSee('Kontakte exportieren');
     }
 
-    /** @test */
+    #[Test]
     public function import_page_works()
     {
         $this->createUser('create import');
@@ -207,7 +208,7 @@ class PageTest extends TestCase
         $response->assertSee('Kontakte importieren');
     }
 
-    /** @test */
+    #[Test]
     public function create_contacts_page_works()
     {
         $this->createUser('create contacts');
@@ -218,7 +219,7 @@ class PageTest extends TestCase
         $response->assertSee('Kontakt hinzufügen');
     }
 
-    /** @test */
+    #[Test]
     public function contacts_page_works()
     {
         $this->createUser('view contacts');

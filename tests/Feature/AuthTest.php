@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +12,7 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function login_page_works()
     {
         $response = $this->get(route('login'));
@@ -20,7 +21,7 @@ class AuthTest extends TestCase
         $response->assertSee('Login');
     }
 
-    /** @test */
+    #[Test]
     public function a_guest_can_login_with_correct_credentials()
     {
         $user = create(User::class);
@@ -34,7 +35,7 @@ class AuthTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_guest_cannot_login_with_incorrect_credentials()
     {
         $user = create(User::class);
@@ -48,7 +49,7 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_logout()
     {
         $user = create(User::class);

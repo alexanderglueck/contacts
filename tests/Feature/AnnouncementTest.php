@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Admin\Announcement;
@@ -14,7 +15,7 @@ class AnnouncementTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function a_user_can_create_an_announcement()
     {
         $user = $this->createUser('create announcements');
@@ -34,7 +35,7 @@ class AnnouncementTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_an_announcement_created_by_him()
     {
         $user = $this->createUser('view announcements');
@@ -50,7 +51,7 @@ class AnnouncementTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_announcement_delete_view()
     {
         $user = $this->createUser('delete announcements');
@@ -66,7 +67,7 @@ class AnnouncementTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_delete_an_announcement()
     {
         $user = $this->createUser('delete announcements');
@@ -86,7 +87,7 @@ class AnnouncementTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_announcement_edit_view()
     {
         $user = $this->createUser('edit announcements');
@@ -105,7 +106,7 @@ class AnnouncementTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_update_an_announcement()
     {
         Session::start();

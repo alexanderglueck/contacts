@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\ContactGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +12,7 @@ class ContactGroupTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function a_user_can_create_a_contact_group()
     {
         $user = $this->createUser('create contactGroups');
@@ -32,7 +33,7 @@ class ContactGroupTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_a_contact_group()
     {
         $user = $this->createUser('view contactGroups');
@@ -49,7 +50,7 @@ class ContactGroupTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_contact_group_delete_view()
     {
         $user = $this->createUser('delete contactGroups');
@@ -66,7 +67,7 @@ class ContactGroupTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_delete_a_contact_group()
     {
         $user = $this->createUser('delete contactGroups');
@@ -89,7 +90,7 @@ class ContactGroupTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_contact_group_edit_view()
     {
         $user = $this->createUser('edit contactGroups');
@@ -107,7 +108,7 @@ class ContactGroupTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_update_a_contact_group()
     {
         $user = $this->createUser('edit contactGroups');

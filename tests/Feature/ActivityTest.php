@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +12,7 @@ class ActivityTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function creating_a_contact_adds_an_activity_entry()
     {
         $user = $this->createUser('create contacts');
@@ -29,7 +30,7 @@ class ActivityTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function updating_a_contact_adds_an_activity_entry()
     {
         $user = $this->createUser([
@@ -74,7 +75,7 @@ class ActivityTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function deleting_a_contact_adds_an_activity_entry()
     {
         $user = $this->createUser([
@@ -109,7 +110,7 @@ class ActivityTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_activities()
     {
         $user = $this->createUser('view activities');

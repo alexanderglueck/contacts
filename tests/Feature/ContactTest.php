@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -10,7 +11,7 @@ class ContactTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function a_user_can_create_a_contact()
     {
         $user = $this->createUser('create contacts');
@@ -32,7 +33,7 @@ class ContactTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_a_contact_created_by_him()
     {
         $user = $this->createUser('view contacts');
@@ -48,7 +49,7 @@ class ContactTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_contact_delete_view()
     {
         $user = $this->createUser('delete contacts');
@@ -64,7 +65,7 @@ class ContactTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_delete_a_contact()
     {
         $user = $this->createUser('delete contacts');
@@ -87,7 +88,7 @@ class ContactTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_view_the_contact_edit_view()
     {
         $user = $this->createUser('edit contacts');
@@ -104,7 +105,7 @@ class ContactTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_update_a_contact()
     {
         $user = $this->createUser('edit contacts');
