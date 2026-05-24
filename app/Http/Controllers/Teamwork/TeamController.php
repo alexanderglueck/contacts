@@ -114,6 +114,7 @@ class TeamController extends Controller
             'team' => [
                 'uuid' => $team->uuid,
                 'name' => $team->name,
+                'password_reset_disabled' => (bool) $team->password_reset_disabled,
             ],
         ]);
     }
@@ -127,7 +128,12 @@ class TeamController extends Controller
             return redirect()->route('home');
         }
 
+        if ( ! auth()->user()->isOwnerOfTeam($team)) {
+            abort(403);
+        }
+
         $team->name = $request->name;
+        $team->password_reset_disabled = $request->boolean('password_reset_disabled');
         $team->save();
 
         return redirect(route('teams.index'));

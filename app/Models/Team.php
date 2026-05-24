@@ -14,13 +14,15 @@ class Team extends Model implements Tenant
 
     protected $casts = [
         'created' => 'boolean',
+        'password_reset_disabled' => 'boolean',
     ];
 
     protected $fillable = [
         'name',
         'uuid',
         'created',
-        'owner_id'
+        'owner_id',
+        'password_reset_disabled',
     ];
 
     public function owner()
