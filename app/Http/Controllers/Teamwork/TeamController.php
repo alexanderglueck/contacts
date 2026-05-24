@@ -8,9 +8,10 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Events\Tenant\TenantWasCreated;
 use App\Http\Requests\Team\TeamStoreRequest;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TeamController extends Controller
 {
@@ -22,27 +23,38 @@ class TeamController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): View|RedirectResponse
+    public function index(Request $request): Response|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        return view('teamwork.index', [
-            'teams' => $request->user()->teams
+        $user = $request->user();
+        $currentTeamId = $user->currentTeam?->id;
+
+        $teams = $user->teams->map(fn ($team) => [
+            'id' => $team->id,
+            'name' => $team->name,
+            'created' => (bool) $team->created,
+            'is_owner' => $user->isOwnerOfTeam($team),
+            'is_current' => $currentTeamId === $team->id,
+        ])->all();
+
+        return Inertia::render('Teamwork/Teams/Index', [
+            'teams' => $teams,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View|RedirectResponse
+    public function create(): Response|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        return view('teamwork.create');
+        return Inertia::render('Teamwork/Teams/Create');
     }
 
     /**
@@ -88,7 +100,7 @@ class TeamController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Team $team): View|RedirectResponse
+    public function edit(Team $team): Response|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
@@ -98,8 +110,11 @@ class TeamController extends Controller
             abort(403);
         }
 
-        return view('teamwork.edit', [
-            'team' => $team
+        return Inertia::render('Teamwork/Teams/Edit', [
+            'team' => [
+                'id' => $team->id,
+                'name' => $team->name,
+            ],
         ]);
     }
 

@@ -5,21 +5,31 @@ namespace App\Http\Controllers\Subscription;
 use App\Models\Plan;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\SubscriptionStoreRequest;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 
 class SubscriptionController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
-        $plans = Plan::active()->get();
+        $intent = $request->user()->createSetupIntent();
 
-        return view('subscription.index', [
-            'plans' => $plans,
-            'intent' => $request->user()->createSetupIntent()
+        return Inertia::render('Subscription/Index', [
+            'plans' => Plan::active()->get()->map(fn ($plan) => [
+                'gateway_id' => $plan->gateway_id,
+                'slug' => $plan->slug,
+                'name' => $plan->name,
+                'price' => $plan->price,
+            ])->all(),
+            'intent' => [
+                'client_secret' => $intent->client_secret,
+            ],
+            'stripeKey' => config('cashier.key'),
+            'selectedPlan' => $request->query('plan'),
         ]);
     }
 

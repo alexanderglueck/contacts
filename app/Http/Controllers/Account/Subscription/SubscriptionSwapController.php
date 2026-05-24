@@ -6,19 +6,29 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\SubscriptionSwapStoreRequest;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class SubscriptionSwapController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
-        $plans = Plan::except($request->user()->plan->id)->active()->get();
+        $user = $request->user();
+        $plans = Plan::except($user->plan->id)->active()->get();
 
-        return view('user_settings.subscription.swap.index', [
-            'plans' => $plans
+        return Inertia::render('UserSettings/Subscription/Swap', [
+            'plans' => $plans->map(fn ($plan) => [
+                'gateway_id' => $plan->gateway_id,
+                'name' => $plan->name,
+                'price' => $plan->price,
+            ])->all(),
+            'currentPlan' => [
+                'name' => $user->plan->name,
+                'price' => $user->plan->price,
+            ],
         ]);
     }
 

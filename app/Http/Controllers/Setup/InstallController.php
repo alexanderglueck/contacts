@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Setup;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class InstallController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         if (config('contacts.installed')) {
             abort(404);
         }
 
-        return view('setup.install.index');
+        return Inertia::render('Setup/Install', [
+            'mapsKeyPresent' => trim((string) config('contacts.googleMapsKey')) !== '',
+            'stripeKeyPresent' => trim((string) config('services.stripe.key')) !== ''
+                && trim((string) config('services.stripe.secret')) !== '',
+        ]);
     }
 
     public function store(Request $request): RedirectResponse

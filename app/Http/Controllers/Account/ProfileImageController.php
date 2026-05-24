@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers\Account;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Domain\Users\Actions\GenerateProfileImageAction;
 use App\Http\Requests\Account\ProfileImageUpdateRequest;
 
 class ProfileImageController extends Controller
 {
-    public function show(Request $request): View
+    public function show(Request $request): Response
     {
-        return view('user_settings.image.show', [
-            'user' => $request->user()
+        $user = $request->user();
+
+        return Inertia::render('UserSettings/Image', [
+            'user' => [
+                'name' => $user->name,
+                'image' => $user->image,
+                'has_image' => $user->hasImage(),
+            ],
         ]);
     }
 

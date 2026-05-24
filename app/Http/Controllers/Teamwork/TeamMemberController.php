@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Teamwork;
 use App\Mail\TeamInvitation;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Mpociot\Teamwork\TeamInvite;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Mpociot\Teamwork\Facades\Teamwork;
 
@@ -23,14 +25,35 @@ class TeamMemberController extends Controller
     /**
      * Show the members of the given team.
      */
-    public function show(Team $team): View|RedirectResponse
+    public function show(Team $team): Response|RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        return view('teamwork.members.list', [
-            'team' => $team
+        $authUser = Auth::user();
+        $isOwner = $authUser->isOwnerOfTeam($team);
+        $isCurrentTeam = $authUser->currentTeam && $authUser->currentTeam->id === $team->id;
+        $canImpersonate = $authUser->checkPermissionTo('impersonate users');
+
+        return Inertia::render('Teamwork/Members/Show', [
+            'team' => [
+                'id' => $team->id,
+                'name' => $team->name,
+                'users' => $team->users->map(fn ($user) => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                ])->all(),
+                'invites' => $team->invites->map(fn ($invite) => [
+                    'id' => $invite->id,
+                    'email' => $invite->email,
+                ])->all(),
+            ],
+            'auth_user_id' => $authUser->id,
+            'can' => [
+                'manage' => $isOwner,
+                'impersonate' => $canImpersonate && $isCurrentTeam,
+            ],
         ]);
     }
 

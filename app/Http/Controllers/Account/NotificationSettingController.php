@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Account;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\NotificationSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Account\NotificationSettingUpdateRequest;
 
 class NotificationSettingController extends Controller
 {
-    public function show(Request $request): View
+    public function show(Request $request): Response
     {
-        return view('user_settings.notifications.edit', [
-            'user' => $request->user(),
-            'settings' => $request->user()->notificationSettings()
+        $settings = $request->user()->notificationSettings();
+
+        return Inertia::render('UserSettings/Notifications', [
+            'settings' => [
+                'send_daily' => (bool) ($settings->send_daily ?? false),
+                'send_weekly' => (bool) ($settings->send_weekly ?? false),
+            ],
         ]);
     }
 

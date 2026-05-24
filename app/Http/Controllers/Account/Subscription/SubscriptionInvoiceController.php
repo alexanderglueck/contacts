@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\Account\Subscription;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SubscriptionInvoiceController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
-        return view('user_settings.subscription.invoice.index', [
-            'invoices' => $request->user()->invoices()
+        $invoices = collect($request->user()->invoices())->map(fn ($invoice) => [
+            'id' => $invoice->id,
+            'date' => $invoice->date()->toFormattedDateString(),
+            'total' => $invoice->total(),
+        ])->all();
+
+        return Inertia::render('UserSettings/Subscription/Invoices', [
+            'invoices' => $invoices,
         ]);
     }
 

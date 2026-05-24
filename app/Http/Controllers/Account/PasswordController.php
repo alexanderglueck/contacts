@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Events\Auth\UserChangedPassword;
 use App\Http\Requests\Account\PasswordUpdateRequest;
 
 class PasswordController extends Controller
 {
-    public function show(): View
+    public function show(): Response
     {
-        return view('user_settings.password.show');
+        return Inertia::render('UserSettings/Password');
     }
 
     public function update(PasswordUpdateRequest $request): RedirectResponse

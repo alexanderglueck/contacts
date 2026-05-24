@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Account;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DeleteController extends Controller
 {
-    public function show(): View
+    public function show(): Response
     {
-        return view('user_settings.delete.show');
+        return Inertia::render('UserSettings/Delete');
     }
 
     public function destroy(Request $request): RedirectResponse

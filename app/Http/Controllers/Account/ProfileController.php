@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Account\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
-    public function show(): View
+    public function show(): Response
     {
-        return view('user_settings.profile.show');
+        $user = Auth::user();
+
+        return Inertia::render('UserSettings/Profile', [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
     }
 
     public function update(ProfileUpdateRequest $request): RedirectResponse

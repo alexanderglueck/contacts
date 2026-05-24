@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers\Account;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Account\TwoFactorCheckRequest;
 
 class TwoFactorController extends Controller
 {
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param Request   $request
-     * @param Google2FA $google2fa
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, Google2FA $google2fa): View
+    public function edit(Request $request, Google2FA $google2fa): Response
     {
         // Check if 2FA is already enabled
         if ( ! $request->user()->hasTwoFactorAuthentication()) {
@@ -29,29 +25,34 @@ class TwoFactorController extends Controller
             // (google2fa_secret session key available)
             if ($request->session()->has('google2fa_secret')) {
 
-                // Generate a new QR code URL with the secret from the session
+                $secret = $request->session()->get('google2fa_secret');
+
                 $google2fa_url = $google2fa->getQRCodeUrl(
                     config('app.name'),
                     $request->user()->email,
-                    $request->session()->get('google2fa_secret')
+                    $secret
                 );
 
-                return view('user_settings.two_factor.image', [
-                    'image' => $google2fa_url
+                return Inertia::render('UserSettings/TwoFactor', [
+                    'state' => 'activate',
+                    'qrUrl' => $google2fa_url,
+                    'secret' => $secret,
                 ]);
             }
 
-            // 2FA is not enabled
-            // and no session key was found
-            // show the default enable button
-            return view('user_settings.two_factor.activate');
+            // 2FA is not enabled, and no session key was found
+            return Inertia::render('UserSettings/TwoFactor', [
+                'state' => 'inactive',
+            ]);
         }
 
         // The user already has 2fa enabled.
-        // show backup codes and the disable button
-        return view('user_settings.two_factor.edit', [
-            'user' => $request->user(),
-            'backupCodes' => $request->user()->backupCodes
+        return Inertia::render('UserSettings/TwoFactor', [
+            'state' => 'active',
+            'backupCodes' => $request->user()->backupCodes->map(fn ($c) => [
+                'id' => $c->id,
+                'value' => $c->value,
+            ])->all(),
         ]);
     }
 

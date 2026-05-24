@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Account\Subscription;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SubscriptionCancelController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
-        return view('user_settings.subscription.cancel.index');
+        return Inertia::render('UserSettings/Subscription/Cancel');
     }
 
     public function store(Request $request): RedirectResponse
