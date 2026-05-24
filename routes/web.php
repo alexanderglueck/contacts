@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Account\ApiTokenController;
 use App\Http\Controllers\Account\DeactivateController;
 use App\Http\Controllers\Account\DeleteController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\ProfileImageController;
+use App\Http\Controllers\Account\SessionsController;
 use App\Http\Controllers\Account\Subscription\SubscriptionCancelController;
 use App\Http\Controllers\Account\Subscription\SubscriptionCardController;
 use App\Http\Controllers\Account\Subscription\SubscriptionInvoiceController;
@@ -14,7 +16,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Setup\InstallController;
 use App\Http\Controllers\Subscription\PlanController;
 use App\Http\Controllers\Subscription\SubscriptionController;
-use App\Http\Controllers\System\NewsController;
 use App\Http\Controllers\TenantSelectionController;
 use App\Http\Controllers\Webhooks\StripeWebhookController;
 use App\Http\Controllers\WebsocketTestController;
@@ -98,11 +99,38 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     })->name('two_factor.edit');
 
     /**
+     * Sanctum personal access tokens. Listing is plain auth — token names
+     * aren't sensitive. Issuing / revoking are gated by password.confirm
+     * because they give (or revoke) bearer access to the API.
+     */
+    Route::middleware('auth')->get('api-tokens', [ApiTokenController::class, 'index'])
+        ->name('api_token.index');
+    Route::middleware(['auth', 'password.confirm'])->group(function () {
+        Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api_token.store');
+        Route::delete('api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api_token.destroy');
+    });
+
+    /**
      * Profile image
      */
     Route::get('profile/image', [ProfileImageController::class, 'show'])->name('image.show');
     Route::put('profile/image', [ProfileImageController::class, 'update'])->name('image.update');
     Route::delete('profile/image', [ProfileImageController::class, 'destroy'])->name('image.destroy');
+
+    /**
+     * Active browser sessions. Listing is plain auth — the rows are
+     * the caller's own. Destruction is password-confirmed so a
+     * hijacked session can't lock the legitimate owner out.
+     */
+    Route::middleware('auth')->get('sessions', [SessionsController::class, 'index'])
+        ->name('sessions.index');
+    Route::middleware(['auth', 'password.confirm'])->group(function () {
+        Route::delete('sessions/{id}', [SessionsController::class, 'destroy'])
+            ->where('id', '[A-Za-z0-9]+')
+            ->name('sessions.destroy');
+        Route::delete('sessions', [SessionsController::class, 'destroyOthers'])
+            ->name('sessions.destroy_others');
+    });
 
     /**
      * Deactivate account (sensitive — requires password confirmation)
@@ -169,27 +197,10 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
 /**
  * ICal
  */
-Route::get('calendar/ical', [ICalController::class, 'index'])->middleware(['auth:api', 'tenant'])->name('ical');
+Route::get('calendar/ical', [ICalController::class, 'index'])
+    ->middleware(['api_token.query', 'auth:api', 'tenant'])
+    ->name('ical');
 
 
-/**
- * News
- */
-Route::get('news', [NewsController::class, 'index'])->name('news.index');
-
-Route::group(['middleware' => 'admin'], function () {
-    Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
-    Route::post('news', [NewsController::class, 'store'])->name('news.store');
-    Route::get('news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
-    Route::put('news/{news}', [NewsController::class, 'update'])->name('news.update');
-    Route::get('news/{news}/delete', [NewsController::class, 'delete'])->name('news.delete');
-    Route::delete('news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
-});
-
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('news/{news}/read', [NewsController::class, 'markAsRead'])->name('news.mark_as_read');
-});
-
-Route::get('news/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('websocket', [WebsocketTestController::class, 'index'])->name('websocket.test');
