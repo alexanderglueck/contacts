@@ -7,12 +7,11 @@ use App\Scopes\BelongsToTenantScope;
 use App\Models\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Traits\RefreshesPermissionCache;
 
 class Role extends Model
 {
-    use HasUlidRouteKey, Sluggable, HasPermissions, RefreshesPermissionCache, HasFactory;
+    use HasUlidRouteKey, HasPermissions, RefreshesPermissionCache, HasFactory;
 
     protected $fillable = [
         'name',
@@ -48,21 +47,6 @@ class Role extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
-    }
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => ['name'],
-                'reserved' => ['create']
-            ]
-        ];
     }
 
     /**

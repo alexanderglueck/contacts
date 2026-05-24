@@ -9,13 +9,11 @@ use App\Traits\RecordsActivity;
 use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
 use Laravel\Scout\Searchable;
 
 class Contact extends Model implements CalendarInterface
 {
     use HasUlidRouteKey;
-    use Sluggable;
     use RecordsActivity;
     use Searchable;
     use HasFactory;
@@ -390,21 +388,6 @@ class Contact extends Model implements CalendarInterface
     public function calls()
     {
         return $this->hasMany(ContactCall::class);
-    }
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => ['lastname', 'firstname', 'company'],
-                'reserved' => ['create', 'export', 'import']
-            ]
-        ];
     }
 
     public function searchableAs()

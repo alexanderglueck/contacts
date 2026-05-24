@@ -5,11 +5,10 @@ namespace App\Models;
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactEmail extends Model
 {
-    use HasUlidRouteKey, Sluggable, HasFactory;
+    use HasUlidRouteKey, HasFactory;
 
     protected $fillable = ['name', 'email'];
 
@@ -28,21 +27,6 @@ class ContactEmail extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
-    }
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'name',
-                'reserved' => ['create']
-            ]
-        ];
     }
 
     /**

@@ -8,7 +8,6 @@ use App\Models\Concerns\HasUlidRouteKey;
 use App\Models\System\News;
 use App\Models\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,7 +31,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     use HasUlidRouteKey;
     use Notifiable;
     use PasskeyAuthenticatable;
-    use Sluggable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
     use UserHasTeams;
@@ -55,16 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'email_verified_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
     ];
-
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'name',
-                'reserved' => ['create', 'delete', 'edit'],
-            ],
-        ];
-    }
 
     public function contacts()
     {

@@ -9,11 +9,10 @@ use App\Models\User;
 use App\Interfaces\Readable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 class Announcement extends Model implements Readable
 {
-    use HasUlidRouteKey, Sluggable, HasFactory;
+    use HasUlidRouteKey, HasFactory;
 
     protected $fillable = [
         'title',
@@ -161,20 +160,5 @@ class Announcement extends Model implements Readable
             return $query->whereIn('id', (new static)->getReadReadables($user)->pluck('id'))
                 ->whereNull('pinned_at');
         });
-    }
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => ['title'],
-                'reserved' => ['create']
-            ]
-        ];
     }
 }

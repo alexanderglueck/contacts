@@ -25,8 +25,6 @@ class AnnouncementFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'title' => $this->faker->sentence,
             'body' => $this->faker->paragraph(30),
-            'slug' => $this->faker->unique->slug
-
         ];
     }
 }
