@@ -20,10 +20,18 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         setLocale(props.initialPage.props.locale ?? 'en');
 
-        router.on('navigate', (event) => {
-            const next = event.detail.page.props?.locale;
+        // `success` fires before `navigate` in Inertia's visit lifecycle — by
+        // hooking it (and not just `navigate`) we update vue-i18n's locale
+        // BEFORE Vue patches the new props, so the freshly-rendered page is
+        // already in the new language. `navigate` stays as a safety net for
+        // pop-state / back-forward navigations that don't go through a
+        // visit.
+        const applyLocaleFromEvent = (event) => {
+            const next = event.detail?.page?.props?.locale;
             if (next) setLocale(next);
-        });
+        };
+        router.on('success', applyLocaleFromEvent);
+        router.on('navigate', applyLocaleFromEvent);
 
         return createApp({ render: () => h(App, props) })
             .use(plugin)

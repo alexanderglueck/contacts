@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PasskeysCard from '@/Components/Passkeys/PasskeysCard.vue';
+import { setLocale } from '@/i18n';
 
 const props = defineProps({
     user: { type: Object, required: true },
@@ -24,7 +25,13 @@ const form = useForm({
     locale: props.user.locale ?? 'en',
 });
 
-const submit = () => form.put(route('user_settings.profile.update'));
+// Optimistic locale swap on success: the app-level success listener also
+// flips vue-i18n, but here we have the chosen value in hand and can apply
+// it immediately so the redirect's re-render lands already in the new
+// language rather than re-rendering once in the old one first.
+const submit = () => form.put(route('user_settings.profile.update'), {
+    onSuccess: () => setLocale(form.locale),
+});
 </script>
 
 <template>
