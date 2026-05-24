@@ -163,7 +163,7 @@ const submitDelete = () =>
                 </div>
                 <div>
                     <dt class="font-medium text-gray-700">{{ t('contacts.slideover.date_fields.skip_year') }}</dt>
-                    <dd class="text-gray-900">{{ selected.skip_year ? 'Yes' : 'No' }}</dd>
+                    <dd class="text-gray-900">{{ selected.skip_year ? t('common.yes') : t('common.no') }}</dd>
                 </div>
             </dl>
         </template>
@@ -261,7 +261,7 @@ const submitDelete = () =>
             <template v-if="mode === 'list'">
                 <SecondaryButton type="button" @click="emit('close')">{{ t('contacts.slideover.close') }}</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add date
+                    {{ t('contacts.slideover.add_date') }}
                 </PrimaryButton>
             </template>
 
