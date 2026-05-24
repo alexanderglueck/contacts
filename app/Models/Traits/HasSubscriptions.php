@@ -37,7 +37,8 @@ trait HasSubscriptions
 
     public function hasCancelled()
     {
-        return optional($this->subscription('main'))->cancelled();
+        // Cashier 15 renamed cancelled() → canceled() (US spelling).
+        return optional($this->subscription('main'))->canceled();
     }
 
     public function hasNotCancelled()
