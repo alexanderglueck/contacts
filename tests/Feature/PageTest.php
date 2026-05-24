@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class PageTest extends TestCase
 {
@@ -216,7 +217,7 @@ class PageTest extends TestCase
         $response = $this->get(route('contacts.create'));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontakt hinzufügen');
+        $response->assertInertia(fn (Assert $page) => $page->component('Contacts/Create'));
     }
 
     #[Test]
@@ -227,6 +228,6 @@ class PageTest extends TestCase
         $response = $this->get(route('contacts.index'));
 
         $response->assertStatus(200);
-        $response->assertSee(trans('ui.manage_contacts'));
+        $response->assertInertia(fn (Assert $page) => $page->component('Contacts/Index'));
     }
 }

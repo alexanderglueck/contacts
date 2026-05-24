@@ -6,6 +6,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class ContactTest extends TestCase
 {
@@ -101,7 +102,10 @@ class ContactTest extends TestCase
         $response = $this->get(route('contacts.edit', [$contact->slug]));
 
         $response->assertStatus(200);
-        $response->assertSee('Kontakt bearbeiten');
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Contacts/Edit')
+            ->where('contact.slug', $contact->slug)
+        );
         $this->assertAuthenticatedAs($user);
     }
 

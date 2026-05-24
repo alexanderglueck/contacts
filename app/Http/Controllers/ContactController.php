@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gender;
 use App\Models\Comment;
 use App\Models\Contact;
-use App\Models\Country;
 use App\Models\ContactGroup;
-use Illuminate\Contracts\View\View;
+use App\Models\Country;
+use App\Models\Gender;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Intervention\Image\Facades\Image;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\Contact\ContactStoreRequest;
 use App\Http\Requests\Contact\ContactUpdateRequest;
 
@@ -19,36 +21,31 @@ class ContactController extends Controller
 {
     protected ?string $accessEntity = 'contacts';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
+    public function index(): Response
     {
         $this->can('view');
 
-        return view('contact.index', [
-            'contacts' => Contact::sorted()->active()->paginate(10)
+        return Inertia::render('Contacts/Index', [
+            'contacts' => Contact::sorted()->active()->paginate(10)->through(fn ($contact) => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create contacts'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create(): Response
     {
         $this->can('create');
 
-        return view('contact.create', [
-            'contact' => new Contact,
-            'genders' => Gender::all(),
-            'contactGroups' => ContactGroup::sorted()->get(),
-            'countries' => Country::all()
+        return Inertia::render('Contacts/Create', [
+            'genders' => Gender::all(['id', 'gender']),
+            'contactGroups' => ContactGroup::sorted()->get(['id', 'name']),
+            'countries' => Country::all(['id', 'country']),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactStoreRequest $request): RedirectResponse
     {
         $contact = new Contact();
@@ -64,46 +61,110 @@ class ContactController extends Controller
             Session::flash('alert-success', trans('flash_message.contact.created'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact.not_created'));
-
-            return redirect()->route('contacts.create');
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact.not_created'));
+
+        return redirect()->route('contacts.create');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact): View
+    public function show(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact.show', [
-            'contact' => $contact,
-            'comments' => $contact->getThreadedComments(),
-            'newComment' => new Comment()
+        $contact->loadCount([
+            'addresses',
+            'numbers',
+            'emails',
+            'urls',
+            'dates',
+            'notes',
+            'calls',
+            'giftIdeas as gift_ideas_count',
+        ]);
+        $contact->load(['gender:id,gender', 'country:id,country']);
+
+        $user = Auth::user();
+
+        return Inertia::render('Contacts/Show', [
+            'contact' => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+                'salutation' => $contact->salutation,
+                'company' => $contact->company,
+                'job' => $contact->job,
+                'department' => $contact->department,
+                'nickname' => $contact->nickname,
+                'custom_id' => $contact->custom_id,
+                'iban' => $contact->iban,
+                'note' => $contact->note,
+                'first_met' => $contact->first_met,
+                'image' => $contact->image,
+                'formatted_date_of_birth' => $contact->formatted_date_of_birth,
+                'gender' => $contact->gender ? ['gender' => $contact->gender->gender] : null,
+                'nationality' => $contact->country ? ['country' => $contact->country->country] : null,
+                'addresses_count' => $contact->addresses_count,
+                'numbers_count' => $contact->numbers_count,
+                'emails_count' => $contact->emails_count,
+                'urls_count' => $contact->urls_count,
+                'dates_count' => $contact->dates_count,
+                'notes_count' => $contact->notes_count,
+                'calls_count' => $contact->calls_count,
+                'gift_ideas_count' => $contact->gift_ideas_count,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit contacts'),
+                'delete' => $user->checkPermissionTo('delete contacts'),
+                'view_addresses' => $user->checkPermissionTo('view addresses'),
+                'view_numbers' => $user->checkPermissionTo('view numbers'),
+                'view_emails' => $user->checkPermissionTo('view emails'),
+                'view_urls' => $user->checkPermissionTo('view urls'),
+                'view_dates' => $user->checkPermissionTo('view dates'),
+                'view_notes' => $user->checkPermissionTo('view notes'),
+                'view_calls' => $user->checkPermissionTo('view calls'),
+                'view_gift_ideas' => $user->checkPermissionTo('view giftIdeas'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact): View
+    public function edit(Contact $contact): Response
     {
         $this->can('edit');
 
-        return view('contact.edit', [
-            'createButtonText' => 'Kontakt bearbeiten',
-            'contact' => $contact,
-            'genders' => Gender::all(),
-            'contactGroups' => ContactGroup::sorted()->get(),
-            'countries' => Country::all()
+        return Inertia::render('Contacts/Edit', [
+            'contact' => [
+                'id' => $contact->id,
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+                'salutation' => $contact->salutation,
+                'title' => $contact->title,
+                'title_after' => $contact->title_after,
+                'firstname' => $contact->firstname,
+                'lastname' => $contact->lastname,
+                'nickname' => $contact->nickname,
+                'formatted_date_of_birth' => $contact->formatted_date_of_birth,
+                'iban' => $contact->iban,
+                'company' => $contact->company,
+                'vatin' => $contact->vatin,
+                'department' => $contact->department,
+                'job' => $contact->job,
+                'gender_id' => $contact->gender_id,
+                'custom_id' => $contact->custom_id,
+                'contact_groups' => $contact->contactGroups->pluck('id')->all(),
+                'active' => $contact->active,
+                'first_met' => $contact->first_met,
+                'note' => $contact->note,
+                'formatted_died_at' => $contact->formatted_died_at,
+                'died_from' => $contact->died_from,
+                'nationality_id' => $contact->nationality_id,
+            ],
+            'genders' => Gender::all(['id', 'gender']),
+            'contactGroups' => ContactGroup::sorted()->get(['id', 'name']),
+            'countries' => Country::all(['id', 'country']),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactUpdateRequest $request, Contact $contact): RedirectResponse
     {
         if ( ! is_null($request->contact_groups) && is_array($request->contact_groups)) {
@@ -116,16 +177,13 @@ class ContactController extends Controller
             flashSuccess(trans('flash_message.contact.updated'));
 
             return redirect()->route('contacts.show', [$contact->slug]);
-        } else {
-            flashError(trans('flash_message.contact.not_updated'));
-
-            return redirect()->route('contacts.edit', [$contact->slug]);
         }
+
+        flashError(trans('flash_message.contact.not_updated'));
+
+        return redirect()->route('contacts.edit', [$contact->slug]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact): RedirectResponse
     {
         $this->can('delete');
@@ -140,31 +198,35 @@ class ContactController extends Controller
             Session::flash('alert-success', trans('flash_message.contact.deleted'));
 
             return redirect()->route('contacts.index');
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact.not_deleted'));
-
-            return redirect()->route('contacts.delete', [$contact->slug]);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact.not_deleted'));
+
+        return redirect()->route('contacts.delete', [$contact->slug]);
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact): View
+    public function delete(Contact $contact): Response
     {
         $this->can('delete');
 
-        return view('contact.delete', [
-            'contact' => $contact
+        return Inertia::render('Contacts/Delete', [
+            'contact' => [
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+            ],
         ]);
     }
 
-    public function image(Contact $contact): View
+    public function image(Contact $contact): Response
     {
         $this->can('edit');
 
-        return view('contact.image', [
-            'contact' => $contact
+        return Inertia::render('Contacts/Image', [
+            'contact' => [
+                'slug' => $contact->slug,
+                'fullname' => $contact->fullname,
+                'image' => $contact->image,
+            ],
         ]);
     }
 
@@ -173,18 +235,20 @@ class ContactController extends Controller
         $this->can('edit');
 
         $this->validate($request, [
-            'file' => 'required|mimes:jpeg,png'
+            'file' => 'required|mimes:jpeg,png',
         ]);
 
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
             $fileNameOriginal = $request->file('file')->storePublicly('public/contact_images');
 
-            Image::make(storage_path('app/') . $fileNameOriginal)->crop(
-                intval($request->image_height),
-                intval($request->image_width),
-                intval($request->image_x),
-                intval($request->image_y)
-            )->save();
+            if ($request->image_height && $request->image_width) {
+                Image::make(storage_path('app/') . $fileNameOriginal)->crop(
+                    intval($request->image_height),
+                    intval($request->image_width),
+                    intval($request->image_x),
+                    intval($request->image_y)
+                )->save();
+            }
 
             Image::make(storage_path('app/') . $fileNameOriginal)->resize(200, 200)->save();
 
