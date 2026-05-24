@@ -6,6 +6,12 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
+// FullCalendar's own UI strings ("Month / Week / today" buttons, weekday
+// names, the "Wk" column header) come from its bundled locale packs,
+// not from vue-i18n. We pass the active vue-i18n locale via `locale:`
+// and let FullCalendar pick the matching pack from `locales:`. English
+// is FullCalendar's built-in default so we only register `de`.
+import deLocale from '@fullcalendar/core/locales/de';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -69,6 +75,7 @@ const onEventClick = (info) => {
 const calendarOptions = {
     plugins: [dayGridPlugin, listPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
+    locales: [deLocale],
     locale: locale.value,
     headerToolbar: {
         left: 'prev,next today',
