@@ -17,10 +17,6 @@ class ContactDateController extends Controller
     {
         $validated = $request->validated();
 
-        if ($request->skip_year) {
-            $validated['date'] .= 1900;
-        }
-
         if ($contact->contactDates()->create($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.created'));
         } else {
@@ -33,10 +29,6 @@ class ContactDateController extends Controller
     public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate): RedirectResponse
     {
         $validated = $request->validated();
-
-        if ($request->skip_year) {
-            $validated['date'] .= 1900;
-        }
 
         if ($contactDate->update($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.updated'));

@@ -25,7 +25,7 @@ class GiftIdeaUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'due_at' => 'nullable|sometimes|date_format:d.m.Y',
+            'due_at' => 'nullable|sometimes|date_format:Y-m-d,d.m.Y',
             'description' => 'nullable',
             'url' => 'nullable|sometimes|url',
         ];

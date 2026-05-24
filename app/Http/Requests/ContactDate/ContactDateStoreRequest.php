@@ -23,15 +23,10 @@ class ContactDateStoreRequest extends FormRequest
      */
     public function rules()
     {
-        $attachYear = '';
-        if ( ! $this->post('skip_year')) {
-            $attachYear = 'Y';
-        }
-
         return [
             'name' => 'required',
-            'date' => 'required|date_format:d.m.' . $attachYear,
-            'skip_year' => 'boolean'
+            'date' => 'required|date_format:Y-m-d',
+            'skip_year' => 'boolean',
         ];
     }
 }

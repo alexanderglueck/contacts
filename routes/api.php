@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CalendarController;
 use App\Http\Controllers\Api\V1\ContactAddressesController;
 use App\Http\Controllers\Api\V1\ContactCallsController;
+use App\Http\Controllers\Api\V1\ContactCommentsController;
 use App\Http\Controllers\Api\V1\ContactDatesController;
 use App\Http\Controllers\Api\V1\ContactEmailsController;
 use App\Http\Controllers\Api\V1\ContactNotesController;
@@ -62,6 +64,21 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('reference/contact-groups', [ReferenceController::class, 'contactGroups'])
                 ->name('reference.contact_groups');
 
+            // Calendar — read-only event feed plus iCal subscription URL
+            // management. The iCal feed itself is served by the web route
+            // `/calendar/ical` (text/calendar response) authenticated via
+            // the rotating Sanctum token issued here.
+            Route::get('calendar/events', [CalendarController::class, 'events'])
+                ->name('calendar.events');
+            Route::get('calendar/upcoming', [CalendarController::class, 'upcoming'])
+                ->name('calendar.upcoming');
+            Route::get('calendar/sync-url', [CalendarController::class, 'syncUrl'])
+                ->name('calendar.sync_url');
+            Route::post('calendar/sync-url', [CalendarController::class, 'rotateSyncUrl'])
+                ->name('calendar.sync_url.rotate');
+            Route::delete('calendar/sync-url', [CalendarController::class, 'revokeSyncUrl'])
+                ->name('calendar.sync_url.revoke');
+
             Route::get('contacts', [ContactsController::class, 'index'])->name('contacts.index');
             Route::post('contacts', [ContactsController::class, 'store'])->name('contacts.store');
 
@@ -72,6 +89,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('contacts/{contact}', [ContactsController::class, 'show'])->name('contacts.show');
             Route::match(['put', 'patch'], 'contacts/{contact}', [ContactsController::class, 'update'])->name('contacts.update');
             Route::delete('contacts/{contact}', [ContactsController::class, 'destroy'])->name('contacts.destroy');
+
+            // Contact avatar — multipart upload, separate from the JSON update
+            // path so clients can send raw binary without base64-bloating the
+            // body. POST replaces the existing image; DELETE clears it.
+            Route::post('contacts/{contact}/image', [ContactsController::class, 'uploadImage'])
+                ->name('contacts.image.upload');
+            Route::delete('contacts/{contact}/image', [ContactsController::class, 'destroyImage'])
+                ->name('contacts.image.destroy');
 
             // Sub-resources. scopeBindings() makes nested route-model binding
             // verify each child belongs to its {contact} parent — saves us
@@ -86,6 +111,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                     ['dates', 'date', ContactDatesController::class],
                     ['calls', 'call', ContactCallsController::class],
                     ['gift-ideas', 'gift_idea', GiftIdeasController::class],
+                    ['comments', 'comment', ContactCommentsController::class],
                 ] as [$path, $param, $ctrl]) {
                     Route::get("contacts/{contact}/{$path}", [$ctrl, 'index'])
                         ->name("contacts.{$path}.index");

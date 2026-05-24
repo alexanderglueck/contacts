@@ -25,7 +25,10 @@ class ContactCallStoreRequest extends FormRequest
     {
         return [
             'note' => 'nullable',
-            'called_at' => 'required|date_format:d.m.Y H:i'
+            // <input type="datetime-local"> sends Y-m-d\TH:i (with or without
+            // seconds depending on browser); also accept the legacy d.m.Y H:i
+            // payload so historical entries still validate.
+            'called_at' => 'required|date_format:Y-m-d\TH:i,Y-m-d\TH:i:s,d.m.Y H:i',
         ];
     }
 }

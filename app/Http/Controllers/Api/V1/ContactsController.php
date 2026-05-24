@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\ContactImageUploadRequest;
 use App\Http\Requests\Api\V1\ContactsIndexRequest;
 use App\Http\Requests\Api\V1\ContactsStoreRequest;
 use App\Http\Requests\Api\V1\ContactsUpdateRequest;
@@ -11,6 +12,7 @@ use App\Models\Contact;
 use App\Models\ContactNumber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Intervention\Image\Facades\Image;
 
 class ContactsController extends Controller
 {
@@ -114,6 +116,7 @@ class ContactsController extends Controller
             'data' => $matches->map(fn (ContactNumber $n) => [
                 'contact_ulid' => $n->contact->ulid,
                 'fullname' => $n->contact->fullname,
+                'image_url' => $n->contact->image ? url('storage/'.$n->contact->image) : null,
                 'matched_number' => [
                     'name' => $n->name,
                     'number' => $n->number,
@@ -158,6 +161,57 @@ class ContactsController extends Controller
         return response()->json([
             'data' => $this->serializeDetail($this->withRelations($contact)),
         ]);
+    }
+
+    /**
+     * Upload (or replace) a contact's avatar. Accepts a multipart `file`
+     * field (jpeg/png, max 8MB) — the Android client uploads directly,
+     * having optionally cropped client-side. The server downsizes to
+     * 400×400 regardless of input dimensions as a safety net so storage
+     * usage stays predictable. Any prior image file is deleted to avoid
+     * orphans.
+     */
+    public function uploadImage(ContactImageUploadRequest $request, Contact $contact): JsonResponse
+    {
+        // Visibility:public → 0755 dirs so nginx can serve the file through
+        // the public/storage symlink. The default disk would store it
+        // 0700-private and the symlinked URL would 403.
+        $fileName = $request->file('file')->storePublicly('contact_images', 'public');
+
+        Image::make(storage_path('app/public/').$fileName)
+            ->fit(400, 400)
+            ->save();
+
+        if ($contact->image && file_exists(storage_path('app/public/').$contact->image)) {
+            unlink(storage_path('app/public/').$contact->image);
+        }
+
+        $contact->image = $fileName;
+        $contact->save();
+
+        return response()->json([
+            'data' => $this->serializeDetail($this->withRelations($contact)),
+        ]);
+    }
+
+    /**
+     * Remove a contact's avatar — clears the `image` column and deletes
+     * the underlying file. Idempotent: 204 even if there was no image.
+     */
+    public function destroyImage(Contact $contact): Response
+    {
+        $this->can('edit');
+
+        if ($contact->image) {
+            if (file_exists(storage_path('app/public/').$contact->image)) {
+                unlink(storage_path('app/public/').$contact->image);
+            }
+
+            $contact->image = null;
+            $contact->save();
+        }
+
+        return response()->noContent();
     }
 
     public function destroy(Contact $contact): Response
