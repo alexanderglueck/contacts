@@ -104,22 +104,29 @@ class Contact extends Model implements CalendarInterface
 
     public function setDateOfBirthAttribute($value)
     {
-        if ($value == null) {
-            return;
-        }
-
-        $this->attributes['date_of_birth'] = date_create_from_format('d.m.Y', $value)
-            ->format('Y-m-d');
+        $this->attributes['date_of_birth'] = $this->parseDate($value);
     }
 
     public function setDiedAtAttribute($value)
     {
-        if ($value == null) {
-            return;
+        $this->attributes['died_at'] = $this->parseDate($value);
+    }
+
+    /**
+     * Accept either ISO (YYYY-MM-DD, what <input type="date"> emits) or the
+     * legacy d.m.Y format (still in use by imports / older API callers).
+     * Empty or unparseable values store as null.
+     */
+    private function parseDate(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
         }
 
-        $this->attributes['died_at'] = date_create_from_format('d.m.Y', $value)
-            ->format('Y-m-d');
+        $date = date_create_from_format('Y-m-d', $value)
+            ?: date_create_from_format('d.m.Y', $value);
+
+        return $date ? $date->format('Y-m-d') : null;
     }
 
     /**
@@ -444,7 +451,7 @@ class Contact extends Model implements CalendarInterface
                 'zip' => $data['zip'],
                 'city' => $data['city'],
                 'state' => $data['state'],
-                'country' => Country::find($data['country_id'])->country,
+                'country' => optional(Country::find($data['country_id']))->country,
             ];
         })->toArray();
 
@@ -462,7 +469,7 @@ class Contact extends Model implements CalendarInterface
             ];
         })->toArray();
 
-        $array['gender'] = Gender::find($array['gender_id'])->gender;
+        $array['gender'] = optional(Gender::find($array['gender_id'] ?? null))->gender;
 
         unset($array['generate_name']);
 

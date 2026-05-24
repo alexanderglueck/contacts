@@ -6,6 +6,7 @@ use App\Interfaces\CalendarInterface;
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ContactDate extends Model implements CalendarInterface
 {
@@ -39,8 +40,18 @@ class ContactDate extends Model implements CalendarInterface
 
     public function setDateAttribute($value)
     {
-        $this->attributes['date'] = date_create_from_format('d.m.Y', $value)
-            ->format('Y-m-d 00:00:00');
+        if ($value === null || trim((string) $value) === '') {
+            $this->attributes['date'] = null;
+
+            return;
+        }
+
+        $date = date_create_from_format('Y-m-d', $value)
+            ?: date_create_from_format('d.m.Y', $value);
+
+        if ($date) {
+            $this->attributes['date'] = $date->format('Y-m-d 00:00:00');
+        }
     }
 
     public function getCalculatedName($year)
@@ -76,16 +87,17 @@ class ContactDate extends Model implements CalendarInterface
     ) {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
+        $mmdd = self::mmddExpression('date');
 
         return self::select('contact_dates.*')
             ->whereRaw(
                 "(
-                    DATE_FORMAT(date, '%m%d') BETWEEN ? AND ?
+                    {$mmdd} BETWEEN ? AND ?
                     OR (
                         ? > ?
                         AND (
-                            DATE_FORMAT(date, '%m%d') >= ?
-                            OR DATE_FORMAT(date, '%m%d') <= ?
+                            {$mmdd} >= ?
+                            OR {$mmdd} <= ?
                         )
                     )
                 )",
@@ -112,11 +124,24 @@ class ContactDate extends Model implements CalendarInterface
      */
     public static function datesOnDate(\DateTime $date)
     {
+        $mmdd = self::mmddExpression('date');
+
         return self::select('contact_dates.*')
             ->join('contacts', 'contact_id', '=', 'contacts.id')
             ->where('active', 1)
-            ->whereRaw("DATE_FORMAT(date, '%m%d') = ?", [$date->format('md')])
+            ->whereRaw("{$mmdd} = ?", [$date->format('md')])
             ->get();
+    }
+
+    /**
+     * Return a SQL expression that extracts MMDD from a date column,
+     * portable across MySQL and SQLite (which the test suite uses).
+     */
+    private static function mmddExpression(string $column): string
+    {
+        return DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%m%d', {$column})"
+            : "DATE_FORMAT({$column}, '%m%d')";
     }
 
     /**

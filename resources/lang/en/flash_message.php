@@ -3,18 +3,6 @@
 return [
 
     /**
-     * Announcement
-     */
-    'announcement' => [
-        'created' => 'Announcement was created successfully!',
-        'not_created' => 'Announcement could not be created!',
-        'updated' => 'Announcement was updated successfully!',
-        'not_updated' => 'Announcement could not be updated!',
-        'deleted' => 'Announcement was deleted successfully!',
-        'not_deleted' => 'Announcement could not be deleted!',
-    ],
-
-    /**
      * Comment
      */
     'comment' => [

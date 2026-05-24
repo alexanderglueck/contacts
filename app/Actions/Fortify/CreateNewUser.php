@@ -51,10 +51,12 @@ class CreateNewUser implements CreatesNewUsers
 
             $user->attachTeam($team);
 
-            // Grant a 30-day complimentary subscription to the team-enabled plan
-            // so new sign-ups can try every feature without going through Stripe.
-            // ends_at in the future + stripe_status=active satisfies Cashier's
-            // `active()` check (onGracePeriod = true) for the trial window.
+            // Grant a 30-day complimentary trial so new sign-ups can try every
+            // feature without going through Stripe. trial_ends_at + status=active
+            // is what Cashier's onTrial()/valid() rely on. ends_at MUST stay
+            // null — any value there makes canceled() return true, putting the
+            // user into a "trial that's been pre-canceled" state that confuses
+            // every subscription-state middleware downstream.
             $user->subscriptions()->create([
                 'type' => 'main',
                 'stripe_id' => 'trial_'.Str::random(40),
@@ -62,7 +64,6 @@ class CreateNewUser implements CreatesNewUsers
                 'stripe_price' => 'team_month_10',
                 'quantity' => 1,
                 'trial_ends_at' => now()->addDays(30),
-                'ends_at' => now()->addDays(30),
             ]);
 
             event(new TenantWasCreated($team, $user));

@@ -14,6 +14,22 @@ class ContactUrlsController extends Controller
 {
     protected ?string $accessEntity = 'urls';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->urls->map(fn (ContactUrl $u) => $this->serialize($u))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactUrl $url): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($url)]);
+    }
+
     public function store(StoreContactUrlRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

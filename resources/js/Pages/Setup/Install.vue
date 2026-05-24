@@ -7,12 +7,10 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 defineProps({
-    mapsKeyPresent: { type: Boolean, default: false },
     stripeKeyPresent: { type: Boolean, default: false },
 });
 
 const form = useForm({
-    maps_api_key: '',
     stripe_api_key: '',
     stripe_api_secret: '',
 });
@@ -28,26 +26,7 @@ const submit = () => form.post(route('install.store'));
 
         <form @submit.prevent="submit" class="space-y-6">
             <section>
-                <h2 class="font-medium text-gray-900">1. Google Maps API</h2>
-                <p v-if="mapsKeyPresent" class="text-sm text-green-700 mt-1">Configured.</p>
-                <template v-else>
-                    <a
-                        href="https://developers.google.com/maps/documentation/javascript/get-api-key"
-                        target="_blank"
-                        class="inline-block mt-2 text-sm text-indigo-600 hover:text-indigo-500 underline"
-                    >
-                        Get a Google Maps API key
-                    </a>
-                    <div class="mt-3">
-                        <InputLabel for="maps_api_key" value="GOOGLE_MAPS_GEOCODING_KEY" />
-                        <TextInput id="maps_api_key" v-model="form.maps_api_key" required />
-                        <InputError :message="form.errors.maps_api_key" />
-                    </div>
-                </template>
-            </section>
-
-            <section>
-                <h2 class="font-medium text-gray-900">2. Stripe API</h2>
+                <h2 class="font-medium text-gray-900">1. Stripe API</h2>
                 <p v-if="stripeKeyPresent" class="text-sm text-green-700 mt-1">Configured.</p>
                 <template v-else>
                     <a

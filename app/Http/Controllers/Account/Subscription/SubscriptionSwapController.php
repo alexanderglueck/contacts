@@ -17,7 +17,7 @@ class SubscriptionSwapController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $plans = Plan::except($user->plan->id)->active()->get();
+        $plans = Plan::where('id', '!=', $user->plan->id)->active()->get();
 
         return Inertia::render('UserSettings/Subscription/Swap', [
             'plans' => $plans->map(fn ($plan) => [

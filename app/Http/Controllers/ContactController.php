@@ -155,6 +155,9 @@ class ContactController extends Controller
             ])->values()),
             'calls' => Inertia::optional(fn () => $contact->calls->map(fn ($c) => [
                 'ulid' => $c->ulid,
+                // Raw value for <input type="datetime-local"> (drop the seconds);
+                // formatted version is for display.
+                'called_at' => $c->called_at ? substr($c->called_at, 0, 16) : null,
                 'formatted_called_at' => $c->formatted_called_at,
                 'note' => $c->note,
                 'note_html' => $c->note_html,
@@ -163,6 +166,7 @@ class ContactController extends Controller
                 'id' => $d->id,
                 'ulid' => $d->ulid,
                 'name' => $d->name,
+                'date' => $d->date ? substr($d->date, 0, 10) : null,
                 'formatted_date' => $d->formatted_date,
                 'skip_year' => (bool) $d->skip_year,
             ])->values()),
@@ -172,6 +176,7 @@ class ContactController extends Controller
                 'description' => $g->description,
                 'description_html' => $g->description_html,
                 'url' => $g->url,
+                'due_at' => $g->due_at,
                 'formatted_due_at' => $g->formatted_due_at,
             ])->values()),
             'comments' => Inertia::optional(function () use ($contact) {
@@ -287,7 +292,7 @@ class ContactController extends Controller
                 'firstname' => $contact->firstname,
                 'lastname' => $contact->lastname,
                 'nickname' => $contact->nickname,
-                'formatted_date_of_birth' => $contact->formatted_date_of_birth,
+                'date_of_birth' => $contact->date_of_birth,
                 'iban' => $contact->iban,
                 'company' => $contact->company,
                 'vatin' => $contact->vatin,
@@ -299,7 +304,7 @@ class ContactController extends Controller
                 'active' => $contact->active,
                 'first_met' => $contact->first_met,
                 'note' => $contact->note,
-                'formatted_died_at' => $contact->formatted_died_at,
+                'died_at' => $contact->died_at,
                 'died_from' => $contact->died_from,
                 'nationality_id' => $contact->nationality_id,
             ],

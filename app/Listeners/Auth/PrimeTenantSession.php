@@ -15,6 +15,13 @@ class PrimeTenantSession
             return;
         }
 
+        // The same Login event fires for token-authed API requests (mobile),
+        // where no session middleware ran. Skip the write rather than throw —
+        // those clients pass tenant context explicitly per request.
+        if (! Session::isStarted()) {
+            return;
+        }
+
         Session::put('tenant', $user->currentTeam->uuid);
     }
 }

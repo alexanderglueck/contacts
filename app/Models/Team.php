@@ -15,6 +15,7 @@ class Team extends Model implements Tenant
     protected $casts = [
         'created' => 'boolean',
         'password_reset_disabled' => 'boolean',
+        'two_factor_required' => 'boolean',
     ];
 
     protected $fillable = [
@@ -23,6 +24,7 @@ class Team extends Model implements Tenant
         'created',
         'owner_id',
         'password_reset_disabled',
+        'two_factor_required',
     ];
 
     public function owner()

@@ -14,6 +14,22 @@ class GiftIdeasController extends Controller
 {
     protected ?string $accessEntity = 'giftIdeas';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->giftIdeas->map(fn (GiftIdea $g) => $this->serialize($g))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, GiftIdea $gift_idea): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($gift_idea)]);
+    }
+
     public function store(StoreGiftIdeaRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

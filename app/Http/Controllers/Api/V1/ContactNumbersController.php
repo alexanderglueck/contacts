@@ -21,6 +21,22 @@ class ContactNumbersController extends Controller
 {
     protected ?string $accessEntity = 'numbers';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->numbers->map(fn (ContactNumber $n) => $this->serialize($n))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactNumber $number): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($number)]);
+    }
+
     public function store(StoreContactNumberRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

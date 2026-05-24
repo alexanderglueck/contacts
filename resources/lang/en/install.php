@@ -2,9 +2,6 @@
 
 return [
     'install' => 'Install',
-    'maps_api' => 'Make sure you have a Google Maps API key',
-    'maps_api_get' => 'Get a Google Maps API key',
-    'maps_api_done' => 'Done! Your API key was found',
 
     'stripe_api' => 'Make sure you have a Stripe API key and Stripe API secret',
     'stripe_api_get' => 'Get a Stripe API key',

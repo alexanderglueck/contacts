@@ -26,12 +26,18 @@ class GiftIdea extends Model
 
     public function setDueAtAttribute($value)
     {
-        if ($value == null) {
+        if ($value === null || trim((string) $value) === '') {
+            $this->attributes['due_at'] = null;
+
             return;
         }
 
-        $this->attributes['due_at'] = date_create_from_format('d.m.Y', $value)
-            ->format('Y-m-d');
+        $date = date_create_from_format('Y-m-d', $value)
+            ?: date_create_from_format('d.m.Y', $value);
+
+        if ($date) {
+            $this->attributes['due_at'] = $date->format('Y-m-d');
+        }
     }
 
     /**

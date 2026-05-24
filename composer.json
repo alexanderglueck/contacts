@@ -7,8 +7,10 @@
     "require": {
         "php": "^8.2",
         "bugsnag/bugsnag-laravel": "^2.30",
+        "dedoc/scramble": "^0.13.23",
         "diglactic/laravel-breadcrumbs": "^10.1",
         "eluceo/ical": "^2.16",
+        "giggsey/libphonenumber-for-php-lite": "^9.0",
         "globalcitizen/php-iban": "^4.2",
         "guzzlehttp/guzzle": "^7.10",
         "http-interop/http-factory-guzzle": "^1.2",

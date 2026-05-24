@@ -15,11 +15,43 @@ class CalendarController extends Controller
 {
     protected ?string $accessEntity = 'calendar';
 
-    public function index(): Response
+    public const SYNC_TOKEN_NAME = 'Calendar sync';
+
+    public function index(Request $request): Response
     {
         $this->can('view');
 
-        return Inertia::render('Calendar/Index');
+        return Inertia::render('Calendar/Index', [
+            'hasCalendarSyncToken' => $request->user()
+                ->tokens()
+                ->where('name', self::SYNC_TOKEN_NAME)
+                ->exists(),
+        ]);
+    }
+
+    /**
+     * Issue (or rotate) a Sanctum token dedicated to the iCal subscription
+     * feed and return the full subscription URL. The plaintext token is
+     * only available in this response — Sanctum stores its hash, so we
+     * can't recover the URL later. Calling this again revokes the old
+     * token and produces a fresh URL, which is the only way to recover
+     * if the user lost it.
+     */
+    public function rotateSyncToken(Request $request): JsonResponse
+    {
+        $this->can('view');
+
+        $user = $request->user();
+
+        $user->tokens()->where('name', self::SYNC_TOKEN_NAME)->delete();
+        $token = $user->createToken(self::SYNC_TOKEN_NAME);
+
+        return response()->json([
+            'url' => route('ical', [
+                'api_token' => $token->plainTextToken,
+                'tenant' => $user->currentTeam?->uuid,
+            ]),
+        ]);
     }
 
     public function events(Request $request): JsonResponse

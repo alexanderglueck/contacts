@@ -14,6 +14,22 @@ class ContactEmailsController extends Controller
 {
     protected ?string $accessEntity = 'emails';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->emails->map(fn (ContactEmail $e) => $this->serialize($e))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactEmail $email): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($email)]);
+    }
+
     public function store(StoreContactEmailRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

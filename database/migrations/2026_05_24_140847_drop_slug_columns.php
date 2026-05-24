@@ -14,8 +14,6 @@ return new class extends Migration {
         'contacts',
         'users',
         'roles',
-        'announcements',
-        'news',
         'contact_groups',
         'contact_addresses',
         'contact_numbers',

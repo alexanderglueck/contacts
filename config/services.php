@@ -40,4 +40,12 @@ return [
         ],
     ],
 
+    'nominatim' => [
+        'endpoint' => env('NOMINATIM_ENDPOINT', 'https://nominatim.openstreetmap.org/search'),
+        // Nominatim's usage policy requires a User-Agent that identifies the
+        // application and includes a contact (email or URL). Heavy traffic
+        // should self-host or switch to a paid provider.
+        'user_agent' => env('NOMINATIM_USER_AGENT', 'Contacts/1.0 (+'.env('APP_URL').')'),
+    ],
+
 ];

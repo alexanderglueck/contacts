@@ -18,7 +18,6 @@ class InstallController extends Controller
         }
 
         return Inertia::render('Setup/Install', [
-            'mapsKeyPresent' => trim((string) config('contacts.googleMapsKey')) !== '',
             'stripeKeyPresent' => trim((string) config('services.stripe.key')) !== ''
                 && trim((string) config('services.stripe.secret')) !== '',
         ]);
@@ -26,10 +25,6 @@ class InstallController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if (trim($request->maps_api_key) !== '') {
-            $this->writeToEnv('GOOGLE_MAPS_GEOCODING_KEY', $request->maps_api_key);
-        }
-
         if (trim($request->stripe_api_key) !== '') {
             $this->writeToEnv('STRIPE_KEY', $request->stripe_api_key);
         }
@@ -39,8 +34,7 @@ class InstallController extends Controller
         }
 
         if (
-            (config('contacts.googleMapsKey') || trim($request->maps_api_key) !== '')
-            && (config('services.stripe.key') || trim($request->stripe_api_key) !== '')
+            (config('services.stripe.key') || trim($request->stripe_api_key) !== '')
             && (config('services.stripe.secret') || trim($request->stripe_api_secret) !== '')
         ) {
             $this->writeToEnv('CONTACTS_INSTALLED', 'true');

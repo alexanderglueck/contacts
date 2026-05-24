@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Imports\MappingHolder;
+use App\Models\ContactAddress;
+use App\Observers\ContactAddressObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -42,5 +44,12 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
+
+        // Throttle Nominatim geocoding to its public usage policy (1 req/sec).
+        // The GeocodeContactAddress job opts into this limiter via its
+        // middleware(); over-quota jobs are released back to the queue.
+        RateLimiter::for('nominatim', fn () => Limit::perSecond(1));
+
+        ContactAddress::observe(ContactAddressObserver::class);
     }
 }

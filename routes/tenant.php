@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Account\NotificationSettingController;
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactAddressController;
@@ -138,6 +137,7 @@ Route::group(['middleware' => 'subscription.active'], function () {
      */
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::post('calendar/sync-token', [CalendarController::class, 'rotateSyncToken'])->name('calendar.sync_token');
 
     /**
      * Map
@@ -165,19 +165,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::get('reports/no-number', [ReportController::class, 'noNumber'])->name('reports.no_number');
     Route::get('reports/no-url', [ReportController::class, 'noUrl'])->name('reports.no_url');
     Route::get('reports/no-lat-lng', [ReportController::class, 'noLatLng'])->name('reports.no_lat_lng');
-
-    /**
-     * Announcements
-     */
-    Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
-    Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
-    Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
-    Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
-    Route::get('announcements/{announcement}/read', [AnnouncementController::class, 'markAsRead'])->name('announcements.mark_as_read');
-    Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
-    Route::put('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
-    Route::get('announcements/{announcement}/delete', [AnnouncementController::class, 'delete'])->name('announcements.delete');
-    Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
     /**
      * Comments

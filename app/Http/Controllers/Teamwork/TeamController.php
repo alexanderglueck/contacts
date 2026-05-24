@@ -115,6 +115,7 @@ class TeamController extends Controller
                 'uuid' => $team->uuid,
                 'name' => $team->name,
                 'password_reset_disabled' => (bool) $team->password_reset_disabled,
+                'two_factor_required' => (bool) $team->two_factor_required,
             ],
         ]);
     }
@@ -134,6 +135,7 @@ class TeamController extends Controller
 
         $team->name = $request->name;
         $team->password_reset_disabled = $request->boolean('password_reset_disabled');
+        $team->two_factor_required = $request->boolean('two_factor_required');
         $team->save();
 
         return redirect(route('teams.index'));

@@ -14,6 +14,26 @@ class ContactAddressesController extends Controller
 {
     protected ?string $accessEntity = 'addresses';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        // Eager-load country once for the whole collection rather than letting
+        // loadMissing fire per-row inside serialize().
+        $contact->loadMissing('addresses.country:id,country');
+
+        return response()->json([
+            'data' => $contact->addresses->map(fn (ContactAddress $a) => $this->serialize($a))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactAddress $address): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($address)]);
+    }
+
     public function store(StoreContactAddressRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

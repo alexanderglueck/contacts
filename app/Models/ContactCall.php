@@ -37,12 +37,21 @@ class ContactCall extends Model
 
     public function setCalledAtAttribute($value)
     {
-        if ($value == null) {
+        if ($value === null || trim((string) $value) === '') {
+            $this->attributes['called_at'] = null;
+
             return;
         }
 
-        $this->attributes['called_at'] = date_create_from_format('d.m.Y H:i', $value)
-            ->format('Y-m-d H:i:s');
+        // Accept ISO from <input type="datetime-local"> (2026-05-24T14:30 or
+        // 2026-05-24T14:30:00) plus the legacy d.m.Y H:i format.
+        $date = date_create_from_format('Y-m-d\TH:i:s', $value)
+            ?: date_create_from_format('Y-m-d\TH:i', $value)
+            ?: date_create_from_format('d.m.Y H:i', $value);
+
+        if ($date) {
+            $this->attributes['called_at'] = $date->format('Y-m-d H:i:s');
+        }
     }
 
     /**

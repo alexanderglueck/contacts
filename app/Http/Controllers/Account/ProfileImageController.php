@@ -30,10 +30,14 @@ class ProfileImageController extends Controller
     public function update(ProfileImageUpdateRequest $request): RedirectResponse
     {
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image')->storePublicly('public/profile_images');
+            // Route through the 'public' disk (visibility: public → 0755 dirs
+            // so nginx can serve the file via the public/storage symlink).
+            $file = $request->file('image')->storePublicly('profile_images', 'public');
 
-            Image::make(storage_path('app/') . $file)
-                ->resize(50, 50)
+            // Cap server-side to 400x400 even if the client uploaded larger.
+            // The Vue cropper already produces 400x400 PNG, this is a safety net.
+            Image::make(storage_path('app/public/') . $file)
+                ->fit(400, 400)
                 ->save();
 
             if ($request->user()->image) {

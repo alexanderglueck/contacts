@@ -16,9 +16,7 @@ class MapController extends Controller
     {
         $this->can('view');
 
-        return Inertia::render('Map/Index', [
-            'googleMapsKey' => config('contacts.googleMapsKey'),
-        ]);
+        return Inertia::render('Map/Index');
     }
 
     public function contacts(MapContactsRequest $request): JsonResponse

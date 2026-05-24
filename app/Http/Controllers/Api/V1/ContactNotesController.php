@@ -14,6 +14,22 @@ class ContactNotesController extends Controller
 {
     protected ?string $accessEntity = 'notes';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->notes->map(fn (ContactNote $n) => $this->serialize($n))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactNote $note): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($note)]);
+    }
+
     public function store(StoreContactNoteRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');

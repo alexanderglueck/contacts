@@ -2,67 +2,52 @@
 
 namespace App\Http\Middleware\Tenant;
 
-use Closure;
-use App\Models\Team;
-use Illuminate\Http\Request;
 use App\Events\Tenant\TenantIdentified;
+use App\Models\Team;
+use Closure;
+use Illuminate\Http\Request;
 
 class SetTenant
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param Request $request
-     * @param Closure $next
-     *
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next)
     {
-        /*
-         * Try to find a tenant that matches the UUID stored in the session
-         */
-        $tenant = $this->resolveTenant(session('tenant'));
+        $user = $request->user();
 
-        if ( ! $tenant && $request->has('tenant')) {
-            $tenant = $this->resolveTenant($request->get('tenant'));
+        // Resolution order:
+        //   1) session('tenant') — set by PrimeTenantSession on web login
+        //   2) ?tenant=UUID query  — used by URL-only API clients (iCal feed)
+        //   3) user's currentTeam  — fallback for stateless API requests so
+        //      mobile clients don't have to send ?tenant on every call
+        $tenant = $this->resolveTenant(session('tenant'))
+            ?? ($request->has('tenant') ? $this->resolveTenant($request->get('tenant')) : null)
+            ?? $user?->currentTeam;
+
+        if (! $tenant) {
+            return $this->reject($request, 'No tenant context available.', 400);
         }
 
-        if ( ! $tenant) {
-            /*
-             * If no matching tenant could be found redirect to the select tenant
-             * page
-             */
-            return redirect()->route('tenant.index');
+        if (! $user || ! $user->teams->contains('id', $tenant->id)) {
+            return $this->reject($request, 'You are not a member of that team.', 403);
         }
 
-        if ( ! auth()->user()->teams->contains('id', $tenant->id)) {
-            /*
-             * The users team was deleted or the user was kicked out
-             * of the team. Redirect to the select tenant page
-             */
-            return redirect()->route('tenant.index');
-        }
-
-        if ( ! auth()->user()->currentTeam) {
-            /*
-             * The user does not have a team assigned. Redirect to select tenant
-             * page to prevent issues on other pages
-             */
-            return redirect()->route('tenant.index');
-        }
-
-        /*
-         * The tenant exists, the user has access to the tenant and has a
-         * tenant set as current tenant
-         */
         event(new TenantIdentified($tenant));
 
         return $next($request);
     }
 
-    protected function resolveTenant($uuid)
+    protected function resolveTenant($uuid): ?Team
     {
-        return Team::where('uuid', $uuid)->first();
+        return $uuid ? Team::where('uuid', $uuid)->first() : null;
+    }
+
+    private function reject(Request $request, string $message, int $apiStatus)
+    {
+        // API / fetch clients can't follow our /select redirect — return
+        // JSON so Android can surface a sensible error to the user.
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message], $apiStatus);
+        }
+
+        return redirect()->route('tenant.index');
     }
 }

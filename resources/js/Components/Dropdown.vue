@@ -28,7 +28,7 @@ defineProps({
                     `w-${width}`,
                 ]"
             >
-                <div class="py-1">
+                <div class="py-1 flex flex-col">
                     <slot name="content" />
                 </div>
             </MenuItems>

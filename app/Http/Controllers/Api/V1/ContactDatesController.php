@@ -14,6 +14,22 @@ class ContactDatesController extends Controller
 {
     protected ?string $accessEntity = 'dates';
 
+    public function index(Contact $contact): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json([
+            'data' => $contact->dates->map(fn (ContactDate $d) => $this->serialize($d))->values(),
+        ]);
+    }
+
+    public function show(Contact $contact, ContactDate $date): JsonResponse
+    {
+        $this->can('view');
+
+        return response()->json(['data' => $this->serialize($date)]);
+    }
+
     public function store(StoreContactDateRequest $request, Contact $contact): JsonResponse
     {
         $this->can('create');
