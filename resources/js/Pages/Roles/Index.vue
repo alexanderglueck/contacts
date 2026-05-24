@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PageJumper from '@/Components/PageJumper.vue';
 
 defineProps({
     roles: { type: Object, required: true },
@@ -36,27 +37,32 @@ defineProps({
                 </li>
             </ul>
 
-            <div v-if="roles.links && roles.last_page > 1" class="border-t border-gray-200 px-6 py-3 flex justify-between items-center">
+            <div v-if="roles.total > 0" class="border-t border-gray-200 px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Page {{ roles.current_page }} of {{ roles.last_page }}
+                    Showing <span class="font-medium">{{ roles.from }}</span>–<span class="font-medium">{{ roles.to }}</span>
+                    of <span class="font-medium">{{ roles.total }}</span>
+                    {{ roles.total === 1 ? 'role' : 'roles' }}
                 </p>
-                <div class="flex gap-1">
-                    <template v-for="link in roles.links" :key="link.label">
-                        <Link
-                            v-if="link.url"
-                            :href="link.url"
-                            class="inline-flex items-center px-3 py-1 rounded text-sm"
-                            :class="link.active
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50'"
-                            v-html="link.label"
-                        />
-                        <span
-                            v-else
-                            class="inline-flex items-center px-3 py-1 rounded text-sm text-gray-400"
-                            v-html="link.label"
-                        />
-                    </template>
+                <div v-if="roles.last_page > 1" class="flex flex-wrap items-center gap-2">
+                    <PageJumper :current-page="roles.current_page" :last-page="roles.last_page" />
+                    <div class="flex gap-1">
+                        <template v-for="link in roles.links" :key="link.label">
+                            <Link
+                                v-if="link.url"
+                                :href="link.url"
+                                class="inline-flex items-center px-3 py-1 rounded text-sm"
+                                :class="link.active
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50'"
+                                v-html="link.label"
+                            />
+                            <span
+                                v-else
+                                class="inline-flex items-center px-3 py-1 rounded text-sm text-gray-400"
+                                v-html="link.label"
+                            />
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import PageJumper from '@/Components/PageJumper.vue';
 
 defineProps({
     title: { type: String, required: true },
@@ -38,10 +39,12 @@ defineProps({
                 </li>
             </ul>
 
-            <div v-if="contacts.links && contacts.last_page > 1" class="border-t border-gray-200 px-6 py-3 flex justify-between items-center">
+            <div v-if="contacts.links && contacts.last_page > 1" class="border-t border-gray-200 px-6 py-3 flex flex-wrap justify-between items-center gap-2">
                 <p class="text-sm text-gray-600">
                     Page {{ contacts.current_page }} of {{ contacts.last_page }}
                 </p>
+                <div class="flex flex-wrap items-center gap-2">
+                <PageJumper :current-page="contacts.current_page" :last-page="contacts.last_page" />
                 <div class="flex gap-1">
                     <template v-for="link in contacts.links" :key="link.label">
                         <Link
@@ -59,6 +62,7 @@ defineProps({
                             v-html="link.label"
                         />
                     </template>
+                </div>
                 </div>
             </div>
         </div>

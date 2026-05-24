@@ -4,6 +4,8 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PageJumper from '@/Components/PageJumper.vue';
 
 const props = defineProps({
     contacts: { type: Object, required: true },
@@ -61,6 +63,12 @@ const clearSearch = () => { search.value = ''; };
                         </button>
                     </div>
 
+                    <Link :href="route('import.index')">
+                        <SecondaryButton type="button">Import</SecondaryButton>
+                    </Link>
+                    <Link :href="route('export.index')">
+                        <SecondaryButton type="button">Export</SecondaryButton>
+                    </Link>
                     <Link v-if="canCreate" :href="route('contacts.create')">
                         <PrimaryButton type="button">Create</PrimaryButton>
                     </Link>
@@ -83,11 +91,15 @@ const clearSearch = () => { search.value = ''; };
                 </li>
             </ul>
 
-            <div v-if="contacts.links && contacts.last_page > 1" class="border-t border-gray-200 px-6 py-3 flex justify-between items-center">
+            <div v-if="contacts.total > 0" class="border-t border-gray-200 px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Page {{ contacts.current_page }} of {{ contacts.last_page }}
+                    Showing <span class="font-medium">{{ contacts.from }}</span>–<span class="font-medium">{{ contacts.to }}</span>
+                    of <span class="font-medium">{{ contacts.total }}</span>
+                    {{ contacts.total === 1 ? 'contact' : 'contacts' }}
                 </p>
-                <div class="flex gap-1">
+                <div v-if="contacts.last_page > 1" class="flex flex-wrap items-center gap-2">
+                    <PageJumper :current-page="contacts.current_page" :last-page="contacts.last_page" />
+                    <div class="flex gap-1">
                     <template v-for="link in contacts.links" :key="link.label">
                         <Link
                             v-if="link.url"
@@ -104,6 +116,7 @@ const clearSearch = () => { search.value = ''; };
                             v-html="link.label"
                         />
                     </template>
+                    </div>
                 </div>
             </div>
         </div>
