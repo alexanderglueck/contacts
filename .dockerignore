@@ -1,5 +1,16 @@
-bootstrap/cache/services.php
+# Built/installed artifacts — each stage produces these fresh.
+node_modules
+vendor
+public/build
+public/hot
 
+# Local caches that would poison the image.
+bootstrap/cache/*.php
+.phpunit.cache
+.phpunit.result.cache
+phpunit.xml.bak
+
+# Runtime state — must not be baked in.
 storage/app/*
 storage/framework/cache/*
 storage/framework/sessions/*
@@ -7,9 +18,25 @@ storage/framework/views/*
 storage/logs/*
 storage/tmp/*
 
-node_modules
-.docker
-Dockerfile
-docker-compose.yml
-.git/
+# Secrets.
 .env
+.env.backup
+
+# VCS / tooling.
+.git
+.github
+.idea
+.vscode
+
+# Compose & docs that don't belong in the image.
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile
+Dockerfile.dist
+README.md
+CHANGELOG.md
+LICENSE.md
+
+# Misc log files.
+npm-debug.log
+yarn-error.log
