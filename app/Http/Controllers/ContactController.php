@@ -21,16 +21,25 @@ class ContactController extends Controller
 {
     protected ?string $accessEntity = 'contacts';
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $this->can('view');
 
+        $query = trim((string) $request->query('q', ''));
+
+        if ($query !== '') {
+            $contacts = Contact::search($query)->paginate(10);
+        } else {
+            $contacts = Contact::sorted()->active()->paginate(10);
+        }
+
         return Inertia::render('Contacts/Index', [
-            'contacts' => Contact::sorted()->active()->paginate(10)->through(fn ($contact) => [
+            'contacts' => $contacts->withQueryString()->through(fn ($contact) => [
                 'id' => $contact->id,
                 'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ]),
+            'q' => $query,
             'canCreate' => Auth::user()->checkPermissionTo('create contacts'),
         ]);
     }
