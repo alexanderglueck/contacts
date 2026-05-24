@@ -43,8 +43,8 @@ const clearSearch = () => { search.value = ''; };
             <div class="border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
                 <h2 class="text-lg font-medium text-gray-900">{{ t('contacts.title') }}</h2>
 
-                <div class="flex items-center gap-2 flex-1 sm:max-w-sm sm:ms-6">
-                    <div class="relative flex-1">
+                <div class="flex items-center gap-2 flex-1 sm:ms-6">
+                    <div class="relative flex-1 min-w-0">
                         <TextInput
                             id="search"
                             type="search"
