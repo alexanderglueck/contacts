@@ -113,11 +113,22 @@ class ContactController extends Controller
                 'calls_count' => $contact->calls_count,
                 'gift_ideas_count' => $contact->gift_ideas_count,
             ],
+            // Lazy props — only loaded when a Section slideover requests them
+            // via router.reload({ only: ['numbers'] }) etc.
+            'numbers' => Inertia::optional(fn () => $contact->numbers->map(fn ($n) => [
+                'id' => $n->id,
+                'ulid' => $n->ulid,
+                'name' => $n->name,
+                'number' => $n->number,
+            ])->values()),
             'can' => [
                 'edit' => $user->checkPermissionTo('edit contacts'),
                 'delete' => $user->checkPermissionTo('delete contacts'),
                 'view_addresses' => $user->checkPermissionTo('view addresses'),
                 'view_numbers' => $user->checkPermissionTo('view numbers'),
+                'create_numbers' => $user->checkPermissionTo('create numbers'),
+                'edit_numbers' => $user->checkPermissionTo('edit numbers'),
+                'delete_numbers' => $user->checkPermissionTo('delete numbers'),
                 'view_emails' => $user->checkPermissionTo('view emails'),
                 'view_urls' => $user->checkPermissionTo('view urls'),
                 'view_dates' => $user->checkPermissionTo('view dates'),
@@ -189,8 +200,8 @@ class ContactController extends Controller
         $this->can('delete');
 
         if ($contact->image) {
-            if (file_exists(storage_path('app/') . $contact->image)) {
-                unlink(storage_path('app/') . $contact->image);
+            if (file_exists(storage_path('app/public/') . $contact->image)) {
+                unlink(storage_path('app/public/') . $contact->image);
             }
         }
 
@@ -239,18 +250,15 @@ class ContactController extends Controller
         ]);
 
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
-            $fileNameOriginal = $request->file('file')->storePublicly('public/contact_images');
+            // Route through the 'public' disk (visibility: public → 0755 dirs
+            // so nginx can serve the file via the public/storage symlink).
+            $fileNameOriginal = $request->file('file')->storePublicly('contact_images', 'public');
 
-            if ($request->image_height && $request->image_width) {
-                Image::make(storage_path('app/') . $fileNameOriginal)->crop(
-                    intval($request->image_height),
-                    intval($request->image_width),
-                    intval($request->image_x),
-                    intval($request->image_y)
-                )->save();
-            }
-
-            Image::make(storage_path('app/') . $fileNameOriginal)->resize(200, 200)->save();
+            // Cap server-side to 400x400 even if the client uploaded larger.
+            // The Vue cropper already produces 400x400 PNG; this is a safety net.
+            Image::make(storage_path('app/public/') . $fileNameOriginal)
+                ->fit(400, 400)
+                ->save();
 
             if ($contact->image) {
                 if (file_exists(storage_path('app/public/') . $contact->image)) {

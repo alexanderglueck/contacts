@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import PhoneNumbersSection from './Sections/PhoneNumbersSection.vue';
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -10,6 +11,24 @@ const props = defineProps({
 
 const page = usePage();
 const imageUrl = computed(() => (props.contact.image ? `/storage/${props.contact.image}` : null));
+
+// Sub-resource lists are lazy props — populated when the section slideover
+// opens and asks for `only: ['numbers']` etc.
+const numbers = computed(() => page.props.numbers ?? []);
+
+const activeSection = ref(null); // null | 'numbers' (more sections to come)
+
+// Which Inertia lazy prop to pull for each section.
+const sectionDataKey = { numbers: 'numbers' };
+
+const openSection = (key) => {
+    activeSection.value = key;
+    const dataKey = sectionDataKey[key];
+    if (dataKey) {
+        router.reload({ only: [dataKey] });
+    }
+};
+const closeSection = () => { activeSection.value = null; };
 
 const detailFields = computed(() => [
     { label: 'Name', value: props.contact.fullname },
@@ -23,6 +42,73 @@ const detailFields = computed(() => [
     { label: 'IBAN', value: props.contact.iban },
     { label: 'Nationality', value: props.contact.nationality?.country },
     { label: 'Custom ID', value: props.contact.custom_id },
+]);
+
+const tiles = computed(() => [
+    {
+        key: 'addresses',
+        label: 'Addresses',
+        count: props.contact.addresses_count ?? 0,
+        canView: props.can.view_addresses,
+        action: () => null, // placeholder — still routes to legacy index page
+        href: route('contact_addresses.index', props.contact.ulid),
+    },
+    {
+        key: 'numbers',
+        label: 'Phone numbers',
+        count: props.contact.numbers_count ?? 0,
+        canView: props.can.view_numbers,
+        action: () => openSection('numbers'),
+        href: null,
+    },
+    {
+        key: 'emails',
+        label: 'Emails',
+        count: props.contact.emails_count ?? 0,
+        canView: props.can.view_emails,
+        action: () => null,
+        href: route('contact_emails.index', props.contact.ulid),
+    },
+    {
+        key: 'urls',
+        label: 'Websites',
+        count: props.contact.urls_count ?? 0,
+        canView: props.can.view_urls,
+        action: () => null,
+        href: route('contact_urls.index', props.contact.ulid),
+    },
+    {
+        key: 'dates',
+        label: 'Important dates',
+        count: props.contact.dates_count ?? 0,
+        canView: props.can.view_dates,
+        action: () => null,
+        href: route('contact_dates.index', props.contact.ulid),
+    },
+    {
+        key: 'notes',
+        label: 'Notes',
+        count: props.contact.notes_count ?? 0,
+        canView: props.can.view_notes,
+        action: () => null,
+        href: route('contact_notes.index', props.contact.ulid),
+    },
+    {
+        key: 'calls',
+        label: 'Calls',
+        count: props.contact.calls_count ?? 0,
+        canView: props.can.view_calls,
+        action: () => null,
+        href: route('contact_calls.index', props.contact.ulid),
+    },
+    {
+        key: 'gift_ideas',
+        label: 'Gift ideas',
+        count: props.contact.gift_ideas_count ?? 0,
+        canView: props.can.view_gift_ideas,
+        action: () => null,
+        href: route('gift_ideas.index', props.contact.ulid),
+    },
 ]);
 </script>
 
@@ -83,54 +169,41 @@ const detailFields = computed(() => [
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div v-if="can.view_addresses" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Addresses</h3>
-                <Link :href="route('contact_addresses.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage addresses ({{ contact.addresses_count ?? 0 }})
+            <template v-for="tile in tiles" :key="tile.key">
+                <button
+                    v-if="tile.canView && tile.action !== null && !tile.href"
+                    type="button"
+                    class="bg-white shadow rounded-lg p-4 text-left hover:ring-2 hover:ring-indigo-500 hover:bg-indigo-50 transition"
+                    @click="tile.action"
+                >
+                    <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
+                    <p class="mt-1 text-sm text-indigo-600">
+                        Manage ({{ tile.count }})
+                    </p>
+                </button>
+                <Link
+                    v-else-if="tile.canView && tile.href"
+                    :href="tile.href"
+                    class="bg-white shadow rounded-lg p-4 hover:ring-2 hover:ring-indigo-500 hover:bg-indigo-50 transition"
+                >
+                    <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
+                    <p class="mt-1 text-sm text-indigo-600">
+                        Manage ({{ tile.count }})
+                    </p>
                 </Link>
-            </div>
-            <div v-if="can.view_numbers" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Phone numbers</h3>
-                <Link :href="route('contact_numbers.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage phone numbers ({{ contact.numbers_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_emails" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Emails</h3>
-                <Link :href="route('contact_emails.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage emails ({{ contact.emails_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_urls" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Websites</h3>
-                <Link :href="route('contact_urls.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage websites ({{ contact.urls_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_dates" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Important dates</h3>
-                <Link :href="route('contact_dates.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage dates ({{ contact.dates_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_notes" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Notes</h3>
-                <Link :href="route('contact_notes.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage notes ({{ contact.notes_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_calls" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Calls</h3>
-                <Link :href="route('contact_calls.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage calls ({{ contact.calls_count ?? 0 }})
-                </Link>
-            </div>
-            <div v-if="can.view_gift_ideas" class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-900 mb-2">Gift ideas</h3>
-                <Link :href="route('gift_ideas.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
-                    Manage gift ideas ({{ contact.gift_ideas_count ?? 0 }})
-                </Link>
-            </div>
+            </template>
         </div>
+
+        <PhoneNumbersSection
+            :open="activeSection === 'numbers'"
+            :contact="contact"
+            :items="numbers"
+            :can="{
+                create: can.create_numbers,
+                edit: can.edit_numbers,
+                delete: can.delete_numbers,
+            }"
+            @close="closeSection"
+        />
     </AppLayout>
 </template>

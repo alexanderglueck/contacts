@@ -20,6 +20,8 @@ class ContactNumberController extends Controller
     {
         $this->can('view');
 
+        $user = Auth::user();
+
         return Inertia::render('ContactNumbers/Index', [
             'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->numbers->map(fn ($n) => [
@@ -28,7 +30,11 @@ class ContactNumberController extends Controller
                 'name' => $n->name,
                 'number' => $n->number,
             ]),
-            'canCreate' => Auth::user()->checkPermissionTo('create numbers'),
+            'can' => [
+                'create' => $user->checkPermissionTo('create numbers'),
+                'edit' => $user->checkPermissionTo('edit numbers'),
+                'delete' => $user->checkPermissionTo('delete numbers'),
+            ],
         ]);
     }
 
@@ -95,12 +101,12 @@ class ContactNumberController extends Controller
         if ($contactNumber->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_number.updated'));
 
-            return redirect()->route('contact_numbers.show', [$contact->ulid, $contactNumber->ulid]);
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact_number.not_updated'));
-
-            return redirect()->route('contact_numbers.edit', [$contact->ulid, $contactNumber->ulid]);
+            return redirect()->route('contact_numbers.index', [$contact->ulid]);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact_number.not_updated'));
+
+        return redirect()->route('contact_numbers.edit', [$contact->ulid, $contactNumber->ulid]);
     }
 
     public function destroy(Contact $contact, ContactNumber $contactNumber): RedirectResponse
