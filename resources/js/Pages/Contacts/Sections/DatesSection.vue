@@ -18,15 +18,13 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-// 'list' | 'show' | 'create' | 'edit' | 'delete'
 const mode = ref('list');
 const selected = ref(null);
 
-const createForm = useForm({ name: '', number: '' });
-const editForm = useForm({ name: '', number: '' });
+const createForm = useForm({ name: '', date: '', skip_year: 0 });
+const editForm = useForm({ name: '', date: '', skip_year: 0 });
 const deleteForm = useForm({});
 
-// When the slideover opens fresh, always start at list mode and clear state.
 watch(
     () => props.open,
     (isOpen) => {
@@ -43,11 +41,11 @@ watch(
 
 const title = computed(() => {
     switch (mode.value) {
-        case 'create': return 'Add phone number';
-        case 'show': return selected.value?.name ?? 'Phone number';
+        case 'create': return 'Add important date';
+        case 'show': return selected.value?.name ?? 'Important date';
         case 'edit': return `Edit ${selected.value?.name}`;
         case 'delete': return `Delete ${selected.value?.name}?`;
-        default: return 'Phone numbers';
+        default: return 'Important dates';
     }
 });
 
@@ -75,7 +73,8 @@ const openShow = (item) => {
 const openEdit = (item) => {
     selected.value = item;
     editForm.name = item.name;
-    editForm.number = item.number;
+    editForm.date = item.formatted_date;
+    editForm.skip_year = item.skip_year ? 1 : 0;
     editForm.clearErrors();
     mode.value = 'edit';
 };
@@ -85,11 +84,8 @@ const openDelete = (item) => {
     mode.value = 'delete';
 };
 
-const refreshItems = () => router.reload({ only: ['numbers'] });
+const refreshItems = () => router.reload({ only: ['dates'] });
 
-// X button in the slideover header: in list mode it closes the whole
-// slideover (delegates up to the parent); inside any sub-mode it steps
-// back one level instead of dropping the user back on the contact page.
 const handleHeaderClose = () => {
     switch (mode.value) {
         case 'create':
@@ -107,14 +103,14 @@ const handleHeaderClose = () => {
 };
 
 const submitCreate = () =>
-    createForm.post(route('contact_numbers.store', props.contact.ulid), {
+    createForm.post(route('contact_dates.store', props.contact.ulid), {
         preserveScroll: true,
         onSuccess: () => { refreshItems(); backToList(); },
     });
 
 const submitEdit = () =>
     editForm.put(
-        route('contact_numbers.update', [props.contact.ulid, selected.value.ulid]),
+        route('contact_dates.update', [props.contact.ulid, selected.value.ulid]),
         {
             preserveScroll: true,
             onSuccess: () => { refreshItems(); backToList(); },
@@ -123,7 +119,7 @@ const submitEdit = () =>
 
 const submitDelete = () =>
     deleteForm.delete(
-        route('contact_numbers.destroy', [props.contact.ulid, selected.value.ulid]),
+        route('contact_dates.destroy', [props.contact.ulid, selected.value.ulid]),
         {
             preserveScroll: true,
             onSuccess: () => { refreshItems(); backToList(); },
@@ -136,7 +132,7 @@ const submitDelete = () =>
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
-                No phone numbers yet.
+                No important dates yet.
             </div>
             <ul v-else class="divide-y divide-gray-200 -mx-6">
                 <li v-for="item in items" :key="item.id">
@@ -146,7 +142,7 @@ const submitDelete = () =>
                         @click="openShow(item)"
                     >
                         <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
-                        <div class="text-sm text-gray-600">{{ item.number }}</div>
+                        <div class="text-sm text-gray-600">{{ item.formatted_date }}</div>
                     </button>
                 </li>
             </ul>
@@ -160,12 +156,12 @@ const submitDelete = () =>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Number</dt>
-                    <dd class="text-gray-900">
-                        <a :href="`tel:${selected.number}`" class="text-indigo-600 hover:text-indigo-500">
-                            {{ selected.number }}
-                        </a>
-                    </dd>
+                    <dt class="font-medium text-gray-700">Date</dt>
+                    <dd class="text-gray-900">{{ selected.formatted_date }}</dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-700">Skip year</dt>
+                    <dd class="text-gray-900">{{ selected.skip_year ? 'Yes' : 'No' }}</dd>
                 </div>
             </dl>
         </template>
@@ -173,7 +169,7 @@ const submitDelete = () =>
         <!-- Create -->
         <form
             v-else-if="mode === 'create'"
-            id="phone-create-form"
+            id="date-create-form"
             @submit.prevent="submitCreate"
             class="space-y-4"
         >
@@ -183,16 +179,38 @@ const submitDelete = () =>
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-number" value="Phone number *" />
-                <TextInput id="create-number" type="tel" v-model="createForm.number" required />
-                <InputError :message="createForm.errors.number" />
+                <InputLabel for="create-date" value="Date (DD.MM.YYYY) *" />
+                <TextInput id="create-date" v-model="createForm.date" placeholder="01.01.1990" required />
+                <InputError :message="createForm.errors.date" />
+            </div>
+            <div>
+                <span class="block text-sm font-medium text-gray-700 mb-1">Skip year</span>
+                <label class="inline-flex items-center mr-4">
+                    <input
+                        type="radio"
+                        :value="0"
+                        v-model.number="createForm.skip_year"
+                        class="text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span class="ms-2 text-sm text-gray-700">No</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input
+                        type="radio"
+                        :value="1"
+                        v-model.number="createForm.skip_year"
+                        class="text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span class="ms-2 text-sm text-gray-700">Yes</span>
+                </label>
+                <InputError :message="createForm.errors.skip_year" />
             </div>
         </form>
 
         <!-- Edit -->
         <form
             v-else-if="mode === 'edit'"
-            id="phone-edit-form"
+            id="date-edit-form"
             @submit.prevent="submitEdit"
             class="space-y-4"
         >
@@ -202,16 +220,38 @@ const submitDelete = () =>
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-number" value="Phone number *" />
-                <TextInput id="edit-number" type="tel" v-model="editForm.number" required />
-                <InputError :message="editForm.errors.number" />
+                <InputLabel for="edit-date" value="Date (DD.MM.YYYY) *" />
+                <TextInput id="edit-date" v-model="editForm.date" placeholder="01.01.1990" required />
+                <InputError :message="editForm.errors.date" />
+            </div>
+            <div>
+                <span class="block text-sm font-medium text-gray-700 mb-1">Skip year</span>
+                <label class="inline-flex items-center mr-4">
+                    <input
+                        type="radio"
+                        :value="0"
+                        v-model.number="editForm.skip_year"
+                        class="text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span class="ms-2 text-sm text-gray-700">No</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input
+                        type="radio"
+                        :value="1"
+                        v-model.number="editForm.skip_year"
+                        class="text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span class="ms-2 text-sm text-gray-700">Yes</span>
+                </label>
+                <InputError :message="editForm.errors.skip_year" />
             </div>
         </form>
 
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.number }})?
+                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.formatted_date }})?
             </p>
         </template>
 
@@ -219,7 +259,7 @@ const submitDelete = () =>
             <template v-if="mode === 'list'">
                 <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add phone number
+                    Add date
                 </PrimaryButton>
             </template>
 
@@ -237,7 +277,7 @@ const submitDelete = () =>
                 <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
                 <PrimaryButton
                     type="submit"
-                    form="phone-create-form"
+                    form="date-create-form"
                     :disabled="createForm.processing"
                     :class="{ 'opacity-50': createForm.processing }"
                 >
@@ -249,7 +289,7 @@ const submitDelete = () =>
                 <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
                 <PrimaryButton
                     type="submit"
-                    form="phone-edit-form"
+                    form="date-edit-form"
                     :disabled="editForm.processing"
                     :class="{ 'opacity-50': editForm.processing }"
                 >

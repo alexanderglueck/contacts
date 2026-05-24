@@ -98,7 +98,7 @@ class ContactDate extends Model implements CalendarInterface
 
     public function getCalendarEventUrl()
     {
-        return route('contact_dates.show', [$this->contact->ulid, $this->ulid]);
+        return route('contacts.show', $this->contact->ulid);
     }
 
     /**

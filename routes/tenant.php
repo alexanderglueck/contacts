@@ -59,101 +59,65 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::put('contacts/{contact}/image', [ContactController::class, 'updateImage'])->name('contacts.update_image');
 
     /**
-     * Contact Addresses
+     * Contact Addresses (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-addresses/{contact}', [ContactAddressController::class, 'index'])->name('contact_addresses.index');
-    Route::get('contact-addresses/{contact}/create', [ContactAddressController::class, 'create'])->name('contact_addresses.create');
     Route::post('contact-addresses/{contact}', [ContactAddressController::class, 'store'])->name('contact_addresses.store');
-
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'show'])->name('contact_addresses.show');
-        Route::get('contact-addresses/{contact}/{contactAddress}/edit', [ContactAddressController::class, 'edit'])->name('contact_addresses.edit');
         Route::put('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'update'])->name('contact_addresses.update');
-        Route::get('contact-addresses/{contact}/{contactAddress}/delete', [ContactAddressController::class, 'delete'])->name('contact_addresses.delete');
         Route::delete('contact-addresses/{contact}/{contactAddress}', [ContactAddressController::class, 'destroy'])->name('contact_addresses.destroy');
     });
 
     /**
-     * Contact Dates
+     * Contact Dates (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-dates/{contact}', [ContactDateController::class, 'index'])->name('contact_dates.index');
-    Route::get('contact-dates/{contact}/create', [ContactDateController::class, 'create'])->name('contact_dates.create');
     Route::post('contact-dates/{contact}', [ContactDateController::class, 'store'])->name('contact_dates.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'show'])->name('contact_dates.show');
-        Route::get('contact-dates/{contact}/{contactDate}/edit', [ContactDateController::class, 'edit'])->name('contact_dates.edit');
         Route::put('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'update'])->name('contact_dates.update');
-        Route::get('contact-dates/{contact}/{contactDate}/delete', [ContactDateController::class, 'delete'])->name('contact_dates.delete');
         Route::delete('contact-dates/{contact}/{contactDate}', [ContactDateController::class, 'destroy'])->name('contact_dates.destroy');
     });
 
     /**
-     * Contact Emails
+     * Contact Emails (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-emails/{contact}', [ContactEmailController::class, 'index'])->name('contact_emails.index');
-    Route::get('contact-emails/{contact}/create', [ContactEmailController::class, 'create'])->name('contact_emails.create');
     Route::post('contact-emails/{contact}', [ContactEmailController::class, 'store'])->name('contact_emails.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'show'])->name('contact_emails.show');
-        Route::get('contact-emails/{contact}/{contactEmail}/edit', [ContactEmailController::class, 'edit'])->name('contact_emails.edit');
         Route::put('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'update'])->name('contact_emails.update');
-        Route::get('contact-emails/{contact}/{contactEmail}/delete', [ContactEmailController::class, 'delete'])->name('contact_emails.delete');
         Route::delete('contact-emails/{contact}/{contactEmail}', [ContactEmailController::class, 'destroy'])->name('contact_emails.destroy');
     });
 
     /**
-     * Contact Numbers
+     * Contact Numbers (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-numbers/{contact}', [ContactNumberController::class, 'index'])->name('contact_numbers.index');
-    Route::get('contact-numbers/{contact}/create', [ContactNumberController::class, 'create'])->name('contact_numbers.create');
     Route::post('contact-numbers/{contact}', [ContactNumberController::class, 'store'])->name('contact_numbers.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'show'])->name('contact_numbers.show');
-        Route::get('contact-numbers/{contact}/{contactNumber}/edit', [ContactNumberController::class, 'edit'])->name('contact_numbers.edit');
         Route::put('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'update'])->name('contact_numbers.update');
-        Route::get('contact-numbers/{contact}/{contactNumber}/delete', [ContactNumberController::class, 'delete'])->name('contact_numbers.delete');
         Route::delete('contact-numbers/{contact}/{contactNumber}', [ContactNumberController::class, 'destroy'])->name('contact_numbers.destroy');
     });
 
     /**
-     * Contact Urls
+     * Contact Urls (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-urls/{contact}', [ContactUrlController::class, 'index'])->name('contact_urls.index');
-    Route::get('contact-urls/{contact}/create', [ContactUrlController::class, 'create'])->name('contact_urls.create');
     Route::post('contact-urls/{contact}', [ContactUrlController::class, 'store'])->name('contact_urls.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'show'])->name('contact_urls.show');
-        Route::get('contact-urls/{contact}/{contactUrl}/edit', [ContactUrlController::class, 'edit'])->name('contact_urls.edit');
         Route::put('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'update'])->name('contact_urls.update');
-        Route::get('contact-urls/{contact}/{contactUrl}/delete', [ContactUrlController::class, 'delete'])->name('contact_urls.delete');
         Route::delete('contact-urls/{contact}/{contactUrl}', [ContactUrlController::class, 'destroy'])->name('contact_urls.destroy');
     });
 
     /**
-     * Contact Notes
+     * Contact Notes (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-notes/{contact}', [ContactNoteController::class, 'index'])->name('contact_notes.index');
-    Route::get('contact-notes/{contact}/create', [ContactNoteController::class, 'create'])->name('contact_notes.create');
     Route::post('contact-notes/{contact}', [ContactNoteController::class, 'store'])->name('contact_notes.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'show'])->name('contact_notes.show');
-        Route::get('contact-notes/{contact}/{contactNote}/edit', [ContactNoteController::class, 'edit'])->name('contact_notes.edit');
         Route::put('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'update'])->name('contact_notes.update');
-        Route::get('contact-notes/{contact}/{contactNote}/delete', [ContactNoteController::class, 'delete'])->name('contact_notes.delete');
         Route::delete('contact-notes/{contact}/{contactNote}', [ContactNoteController::class, 'destroy'])->name('contact_notes.destroy');
     });
 
     /**
-     * Contact Calls
+     * Contact Calls (managed inline via Contacts/Show slideover)
      */
-    Route::get('contact-calls/{contact}', [ContactCallController::class, 'index'])->name('contact_calls.index');
-    Route::get('contact-calls/{contact}/create', [ContactCallController::class, 'create'])->name('contact_calls.create');
     Route::post('contact-calls/{contact}', [ContactCallController::class, 'store'])->name('contact_calls.store');
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'show'])->name('contact_calls.show');
-        Route::get('contact-calls/{contact}/{contactCall}/edit', [ContactCallController::class, 'edit'])->name('contact_calls.edit');
         Route::put('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'update'])->name('contact_calls.update');
-        Route::get('contact-calls/{contact}/{contactCall}/delete', [ContactCallController::class, 'delete'])->name('contact_calls.delete');
         Route::delete('contact-calls/{contact}/{contactCall}', [ContactCallController::class, 'destroy'])->name('contact_calls.destroy');
     });
 
@@ -224,17 +188,11 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::delete('comments/{contact}/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     /**
-     * Gift Ideas
+     * Gift Ideas (managed inline via Contacts/Show slideover)
      */
-    Route::get('gift-ideas/{contact}', [GiftIdeaController::class, 'index'])->name('gift_ideas.index');
-    Route::get('gift-ideas/{contact}/create', [GiftIdeaController::class, 'create'])->name('gift_ideas.create');
     Route::post('gift-ideas/{contact}', [GiftIdeaController::class, 'store'])->name('gift_ideas.store');
-
     Route::group(['middleware' => ['verify_contact']], function () {
-        Route::get('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'show'])->name('gift_ideas.show');
-        Route::get('gift-ideas/{contact}/{giftIdea}/edit', [GiftIdeaController::class, 'edit'])->name('gift_ideas.edit');
         Route::put('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'update'])->name('gift_ideas.update');
-        Route::get('gift-ideas/{contact}/{giftIdea}/delete', [GiftIdeaController::class, 'delete'])->name('gift_ideas.delete');
         Route::delete('gift-ideas/{contact}/{giftIdea}', [GiftIdeaController::class, 'destroy'])->name('gift_ideas.destroy');
     });
 

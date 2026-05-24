@@ -3,6 +3,13 @@ import { computed, ref } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PhoneNumbersSection from './Sections/PhoneNumbersSection.vue';
+import EmailsSection from './Sections/EmailsSection.vue';
+import UrlsSection from './Sections/UrlsSection.vue';
+import NotesSection from './Sections/NotesSection.vue';
+import CallsSection from './Sections/CallsSection.vue';
+import DatesSection from './Sections/DatesSection.vue';
+import GiftIdeasSection from './Sections/GiftIdeasSection.vue';
+import AddressesSection from './Sections/AddressesSection.vue';
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -13,19 +20,36 @@ const page = usePage();
 const imageUrl = computed(() => (props.contact.image ? `/storage/${props.contact.image}` : null));
 
 // Sub-resource lists are lazy props — populated when the section slideover
-// opens and asks for `only: ['numbers']` etc.
+// opens and asks for `only: [...]`.
 const numbers = computed(() => page.props.numbers ?? []);
+const emails = computed(() => page.props.emails ?? []);
+const urls = computed(() => page.props.urls ?? []);
+const notes = computed(() => page.props.notes ?? []);
+const calls = computed(() => page.props.calls ?? []);
+const dates = computed(() => page.props.dates ?? []);
+const giftIdeas = computed(() => page.props.gift_ideas ?? []);
+const addresses = computed(() => page.props.addresses ?? []);
+const countries = computed(() => page.props.countries ?? []);
 
-const activeSection = ref(null); // null | 'numbers' (more sections to come)
+const activeSection = ref(null); // null | 'numbers' | 'emails' | ...
 
-// Which Inertia lazy prop to pull for each section.
-const sectionDataKey = { numbers: 'numbers' };
+// Which Inertia lazy prop(s) to pull for each section.
+const sectionDataKey = {
+    numbers: ['numbers'],
+    emails: ['emails'],
+    urls: ['urls'],
+    notes: ['notes'],
+    calls: ['calls'],
+    dates: ['dates'],
+    gift_ideas: ['gift_ideas'],
+    addresses: ['addresses', 'countries'],
+};
 
 const openSection = (key) => {
     activeSection.value = key;
-    const dataKey = sectionDataKey[key];
-    if (dataKey) {
-        router.reload({ only: [dataKey] });
+    const dataKeys = sectionDataKey[key];
+    if (dataKeys && dataKeys.length) {
+        router.reload({ only: dataKeys });
     }
 };
 const closeSection = () => { activeSection.value = null; };
@@ -50,8 +74,8 @@ const tiles = computed(() => [
         label: 'Addresses',
         count: props.contact.addresses_count ?? 0,
         canView: props.can.view_addresses,
-        action: () => null, // placeholder — still routes to legacy index page
-        href: route('contact_addresses.index', props.contact.ulid),
+        action: () => openSection('addresses'),
+        href: null,
     },
     {
         key: 'numbers',
@@ -66,48 +90,48 @@ const tiles = computed(() => [
         label: 'Emails',
         count: props.contact.emails_count ?? 0,
         canView: props.can.view_emails,
-        action: () => null,
-        href: route('contact_emails.index', props.contact.ulid),
+        action: () => openSection('emails'),
+        href: null,
     },
     {
         key: 'urls',
         label: 'Websites',
         count: props.contact.urls_count ?? 0,
         canView: props.can.view_urls,
-        action: () => null,
-        href: route('contact_urls.index', props.contact.ulid),
+        action: () => openSection('urls'),
+        href: null,
     },
     {
         key: 'dates',
         label: 'Important dates',
         count: props.contact.dates_count ?? 0,
         canView: props.can.view_dates,
-        action: () => null,
-        href: route('contact_dates.index', props.contact.ulid),
+        action: () => openSection('dates'),
+        href: null,
     },
     {
         key: 'notes',
         label: 'Notes',
         count: props.contact.notes_count ?? 0,
         canView: props.can.view_notes,
-        action: () => null,
-        href: route('contact_notes.index', props.contact.ulid),
+        action: () => openSection('notes'),
+        href: null,
     },
     {
         key: 'calls',
         label: 'Calls',
         count: props.contact.calls_count ?? 0,
         canView: props.can.view_calls,
-        action: () => null,
-        href: route('contact_calls.index', props.contact.ulid),
+        action: () => openSection('calls'),
+        href: null,
     },
     {
         key: 'gift_ideas',
         label: 'Gift ideas',
         count: props.contact.gift_ideas_count ?? 0,
         canView: props.can.view_gift_ideas,
-        action: () => null,
-        href: route('gift_ideas.index', props.contact.ulid),
+        action: () => openSection('gift_ideas'),
+        href: null,
     },
 ]);
 </script>
@@ -169,29 +193,19 @@ const tiles = computed(() => [
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <template v-for="tile in tiles" :key="tile.key">
-                <button
-                    v-if="tile.canView && tile.action !== null && !tile.href"
-                    type="button"
-                    class="bg-white shadow rounded-lg p-4 text-left hover:ring-2 hover:ring-indigo-500 hover:bg-indigo-50 transition"
-                    @click="tile.action"
-                >
-                    <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
-                    <p class="mt-1 text-sm text-indigo-600">
-                        Manage ({{ tile.count }})
-                    </p>
-                </button>
-                <Link
-                    v-else-if="tile.canView && tile.href"
-                    :href="tile.href"
-                    class="bg-white shadow rounded-lg p-4 hover:ring-2 hover:ring-indigo-500 hover:bg-indigo-50 transition"
-                >
-                    <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
-                    <p class="mt-1 text-sm text-indigo-600">
-                        Manage ({{ tile.count }})
-                    </p>
-                </Link>
-            </template>
+            <button
+                v-for="tile in tiles"
+                v-show="tile.canView"
+                :key="tile.key"
+                type="button"
+                class="bg-white shadow rounded-lg p-4 text-left cursor-pointer hover:ring-2 hover:ring-indigo-500 hover:bg-indigo-50 transition"
+                @click="tile.action"
+            >
+                <h3 class="text-sm font-semibold text-gray-900">{{ tile.label }}</h3>
+                <p class="mt-1 text-sm text-indigo-600">
+                    Manage ({{ tile.count }})
+                </p>
+            </button>
         </div>
 
         <PhoneNumbersSection
@@ -202,6 +216,91 @@ const tiles = computed(() => [
                 create: can.create_numbers,
                 edit: can.edit_numbers,
                 delete: can.delete_numbers,
+            }"
+            @close="closeSection"
+        />
+
+        <EmailsSection
+            :open="activeSection === 'emails'"
+            :contact="contact"
+            :items="emails"
+            :can="{
+                create: can.create_emails,
+                edit: can.edit_emails,
+                delete: can.delete_emails,
+            }"
+            @close="closeSection"
+        />
+
+        <UrlsSection
+            :open="activeSection === 'urls'"
+            :contact="contact"
+            :items="urls"
+            :can="{
+                create: can.create_urls,
+                edit: can.edit_urls,
+                delete: can.delete_urls,
+            }"
+            @close="closeSection"
+        />
+
+        <NotesSection
+            :open="activeSection === 'notes'"
+            :contact="contact"
+            :items="notes"
+            :can="{
+                create: can.create_notes,
+                edit: can.edit_notes,
+                delete: can.delete_notes,
+            }"
+            @close="closeSection"
+        />
+
+        <CallsSection
+            :open="activeSection === 'calls'"
+            :contact="contact"
+            :items="calls"
+            :can="{
+                create: can.create_calls,
+                edit: can.edit_calls,
+                delete: can.delete_calls,
+            }"
+            @close="closeSection"
+        />
+
+        <DatesSection
+            :open="activeSection === 'dates'"
+            :contact="contact"
+            :items="dates"
+            :can="{
+                create: can.create_dates,
+                edit: can.edit_dates,
+                delete: can.delete_dates,
+            }"
+            @close="closeSection"
+        />
+
+        <GiftIdeasSection
+            :open="activeSection === 'gift_ideas'"
+            :contact="contact"
+            :items="giftIdeas"
+            :can="{
+                create: can.create_gift_ideas,
+                edit: can.edit_gift_ideas,
+                delete: can.delete_gift_ideas,
+            }"
+            @close="closeSection"
+        />
+
+        <AddressesSection
+            :open="activeSection === 'addresses'"
+            :contact="contact"
+            :items="addresses"
+            :countries="countries"
+            :can="{
+                create: can.create_addresses,
+                edit: can.edit_addresses,
+                delete: can.delete_addresses,
             }"
             @close="closeSection"
         />

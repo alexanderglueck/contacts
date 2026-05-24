@@ -18,15 +18,13 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-// 'list' | 'show' | 'create' | 'edit' | 'delete'
 const mode = ref('list');
 const selected = ref(null);
 
-const createForm = useForm({ name: '', number: '' });
-const editForm = useForm({ name: '', number: '' });
+const createForm = useForm({ name: '', url: '' });
+const editForm = useForm({ name: '', url: '' });
 const deleteForm = useForm({});
 
-// When the slideover opens fresh, always start at list mode and clear state.
 watch(
     () => props.open,
     (isOpen) => {
@@ -43,11 +41,11 @@ watch(
 
 const title = computed(() => {
     switch (mode.value) {
-        case 'create': return 'Add phone number';
-        case 'show': return selected.value?.name ?? 'Phone number';
+        case 'create': return 'Add website';
+        case 'show': return selected.value?.name ?? 'Website';
         case 'edit': return `Edit ${selected.value?.name}`;
         case 'delete': return `Delete ${selected.value?.name}?`;
-        default: return 'Phone numbers';
+        default: return 'Websites';
     }
 });
 
@@ -75,7 +73,7 @@ const openShow = (item) => {
 const openEdit = (item) => {
     selected.value = item;
     editForm.name = item.name;
-    editForm.number = item.number;
+    editForm.url = item.url;
     editForm.clearErrors();
     mode.value = 'edit';
 };
@@ -85,11 +83,8 @@ const openDelete = (item) => {
     mode.value = 'delete';
 };
 
-const refreshItems = () => router.reload({ only: ['numbers'] });
+const refreshItems = () => router.reload({ only: ['urls'] });
 
-// X button in the slideover header: in list mode it closes the whole
-// slideover (delegates up to the parent); inside any sub-mode it steps
-// back one level instead of dropping the user back on the contact page.
 const handleHeaderClose = () => {
     switch (mode.value) {
         case 'create':
@@ -107,14 +102,14 @@ const handleHeaderClose = () => {
 };
 
 const submitCreate = () =>
-    createForm.post(route('contact_numbers.store', props.contact.ulid), {
+    createForm.post(route('contact_urls.store', props.contact.ulid), {
         preserveScroll: true,
         onSuccess: () => { refreshItems(); backToList(); },
     });
 
 const submitEdit = () =>
     editForm.put(
-        route('contact_numbers.update', [props.contact.ulid, selected.value.ulid]),
+        route('contact_urls.update', [props.contact.ulid, selected.value.ulid]),
         {
             preserveScroll: true,
             onSuccess: () => { refreshItems(); backToList(); },
@@ -123,7 +118,7 @@ const submitEdit = () =>
 
 const submitDelete = () =>
     deleteForm.delete(
-        route('contact_numbers.destroy', [props.contact.ulid, selected.value.ulid]),
+        route('contact_urls.destroy', [props.contact.ulid, selected.value.ulid]),
         {
             preserveScroll: true,
             onSuccess: () => { refreshItems(); backToList(); },
@@ -136,7 +131,7 @@ const submitDelete = () =>
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
-                No phone numbers yet.
+                No websites yet.
             </div>
             <ul v-else class="divide-y divide-gray-200 -mx-6">
                 <li v-for="item in items" :key="item.id">
@@ -146,7 +141,7 @@ const submitDelete = () =>
                         @click="openShow(item)"
                     >
                         <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
-                        <div class="text-sm text-gray-600">{{ item.number }}</div>
+                        <div class="text-sm text-gray-600 truncate">{{ item.url }}</div>
                     </button>
                 </li>
             </ul>
@@ -160,10 +155,15 @@ const submitDelete = () =>
                     <dd class="text-gray-900">{{ selected.name }}</dd>
                 </div>
                 <div>
-                    <dt class="font-medium text-gray-700">Number</dt>
-                    <dd class="text-gray-900">
-                        <a :href="`tel:${selected.number}`" class="text-indigo-600 hover:text-indigo-500">
-                            {{ selected.number }}
+                    <dt class="font-medium text-gray-700">URL</dt>
+                    <dd class="text-gray-900 break-all">
+                        <a
+                            :href="selected.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-indigo-600 hover:text-indigo-500"
+                        >
+                            {{ selected.url }}
                         </a>
                     </dd>
                 </div>
@@ -173,7 +173,7 @@ const submitDelete = () =>
         <!-- Create -->
         <form
             v-else-if="mode === 'create'"
-            id="phone-create-form"
+            id="url-create-form"
             @submit.prevent="submitCreate"
             class="space-y-4"
         >
@@ -183,16 +183,16 @@ const submitDelete = () =>
                 <InputError :message="createForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="create-number" value="Phone number *" />
-                <TextInput id="create-number" type="tel" v-model="createForm.number" required />
-                <InputError :message="createForm.errors.number" />
+                <InputLabel for="create-url" value="URL *" />
+                <TextInput id="create-url" type="url" v-model="createForm.url" required />
+                <InputError :message="createForm.errors.url" />
             </div>
         </form>
 
         <!-- Edit -->
         <form
             v-else-if="mode === 'edit'"
-            id="phone-edit-form"
+            id="url-edit-form"
             @submit.prevent="submitEdit"
             class="space-y-4"
         >
@@ -202,16 +202,16 @@ const submitDelete = () =>
                 <InputError :message="editForm.errors.name" />
             </div>
             <div>
-                <InputLabel for="edit-number" value="Phone number *" />
-                <TextInput id="edit-number" type="tel" v-model="editForm.number" required />
-                <InputError :message="editForm.errors.number" />
+                <InputLabel for="edit-url" value="URL *" />
+                <TextInput id="edit-url" type="url" v-model="editForm.url" required />
+                <InputError :message="editForm.errors.url" />
             </div>
         </form>
 
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                Permanently remove <strong>{{ selected.name }}</strong> ({{ selected.number }})?
+                Permanently remove <strong>{{ selected.name }}</strong>?
             </p>
         </template>
 
@@ -219,7 +219,7 @@ const submitDelete = () =>
             <template v-if="mode === 'list'">
                 <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add phone number
+                    Add website
                 </PrimaryButton>
             </template>
 
@@ -237,7 +237,7 @@ const submitDelete = () =>
                 <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
                 <PrimaryButton
                     type="submit"
-                    form="phone-create-form"
+                    form="url-create-form"
                     :disabled="createForm.processing"
                     :class="{ 'opacity-50': createForm.processing }"
                 >
@@ -249,7 +249,7 @@ const submitDelete = () =>
                 <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
                 <PrimaryButton
                     type="submit"
-                    form="phone-edit-form"
+                    form="url-edit-form"
                     :disabled="editForm.processing"
                     :class="{ 'opacity-50': editForm.processing }"
                 >
