@@ -122,12 +122,15 @@ const tiles = computed(() => [
 
             <div v-if="contact.note" class="px-6 py-4 border-t border-gray-200">
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">{{ t('contacts.section.general_notes') }}</h3>
-                <p class="text-sm text-gray-700 whitespace-pre-line">{{ contact.note }}</p>
+                <!-- *_html variants come pre-rendered + Symfony-sanitized
+                     from RendersMarkdown; using v-html on the raw note
+                     instead would leave Markdown unparsed. -->
+                <div class="prose-note text-sm text-gray-700" v-html="contact.note_html" />
             </div>
 
             <div v-if="contact.first_met" class="px-6 py-4 border-t border-gray-200">
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">{{ t('contacts.section.first_met') }}</h3>
-                <p class="text-sm text-gray-700 whitespace-pre-line">{{ contact.first_met }}</p>
+                <div class="prose-note text-sm text-gray-700" v-html="contact.first_met_html" />
             </div>
         </div>
 
