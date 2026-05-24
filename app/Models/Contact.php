@@ -171,16 +171,27 @@ class Contact extends Model implements CalendarInterface
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
     )
     {
+        $query = self::select('contacts.*')
+            ->where('active', 1)
+            ->whereNotNull('date_of_birth');
+
+        // FullCalendar's listYear view requests start..end spanning a full
+        // year (e.g. 2026-01-01 → 2027-01-01). Both MMDDs come out '0101',
+        // so the naive BETWEEN collapses to "only Jan 1" and the view
+        // appears empty. When the requested span is 365+ days, every MMDD
+        // qualifies — skip the filter.
+        if ($startDate->diff($endDate)->days >= 365) {
+            return $query->get();
+        }
+
         $from = $startDate->format('md');
         $to = $endDate->format('md');
         $mmdd = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite'
             ? "strftime('%m%d', date_of_birth)"
             : "DATE_FORMAT(date_of_birth, '%m%d')";
 
-        return self::select('contacts.*')
+        return $query
             ->whereRaw("({$mmdd} BETWEEN ? AND ?)", [$from, $to])
-            ->where('active', 1)
-            ->whereNotNull('date_of_birth')
             ->get();
     }
 

@@ -85,11 +85,23 @@ class ContactDate extends Model implements CalendarInterface
     public static function datesInRange(
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
     ) {
+        $query = self::select('contact_dates.*')
+            ->join('contacts', 'contact_id', '=', 'contacts.id')
+            ->where('active', 1);
+
+        // FullCalendar's listYear view requests start..end spanning a full
+        // year, which collapses both MMDDs to the same value and makes the
+        // BETWEEN match exactly one day. When the range is 365+ days every
+        // MMDD qualifies, so skip the filter entirely.
+        if ($startDate->diff($endDate)->days >= 365) {
+            return $query->get();
+        }
+
         $from = $startDate->format('md');
         $to = $endDate->format('md');
         $mmdd = self::mmddExpression('date');
 
-        return self::select('contact_dates.*')
+        return $query
             ->whereRaw(
                 "(
                     {$mmdd} BETWEEN ? AND ?
@@ -103,8 +115,6 @@ class ContactDate extends Model implements CalendarInterface
                 )",
                 [$from, $to, $from, $to, $from, $to]
             )
-            ->join('contacts', 'contact_id', '=', 'contacts.id')
-            ->where('active', 1)
             ->get();
     }
 
