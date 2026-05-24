@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Domain\Users\Actions\GenerateProfileImageAction;
 use App\Models\Admin\Announcement;
+use App\Models\Concerns\HasUlidRouteKey;
 use App\Models\System\News;
 use App\Models\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
@@ -28,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     use HasFactory;
     use HasRoles;
     use HasSubscriptions;
+    use HasUlidRouteKey;
     use Notifiable;
     use PasskeyAuthenticatable;
     use Sluggable;
@@ -53,11 +55,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'email_verified_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
     ];
-
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 
     public function sluggable(): array
     {

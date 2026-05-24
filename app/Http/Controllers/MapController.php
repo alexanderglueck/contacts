@@ -55,7 +55,7 @@ class MapController extends Controller
                 'name' => $contactAddress->name,
                 'latitude' => (float) $contactAddress->latitude,
                 'longitude' => (float) $contactAddress->longitude,
-                'contact_slug' => $contactAddress->contact->slug,
+                'contact_ulid' => $contactAddress->contact->ulid,
                 'street' => $contactAddress->street,
                 'zip' => $contactAddress->zip,
                 'city' => $contactAddress->city,

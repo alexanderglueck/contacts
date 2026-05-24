@@ -77,12 +77,25 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // Form-host pages for Fortify-managed flows. The pages POST/PUT to Fortify
-    // endpoints (e.g. PUT /user/password, POST /user/two-factor-authentication).
-    Route::get('password', fn () => \Inertia\Inertia::render('UserSettings/Password'))->name('password.show');
-    Route::get('two-factor', fn () => \Inertia\Inertia::render('UserSettings/TwoFactor', [
-        'twoFactorEnabled' => (bool) auth()->user()->two_factor_secret,
-        'twoFactorConfirmed' => auth()->user()->two_factor_confirmed_at !== null,
-    ]))->name('two_factor.edit');
+    // endpoints (PUT /user/password, POST /user/two-factor-authentication, etc.).
+    Route::middleware('auth')->get('password', fn () => \Inertia\Inertia::render('UserSettings/Password'))
+        ->name('password.show');
+
+    Route::middleware(['auth', 'password.confirm'])->get('two-factor', function () {
+        $user = auth()->user();
+        $enabled = (bool) $user->two_factor_secret;
+        $confirmed = $user->two_factor_confirmed_at !== null;
+
+        return \Inertia\Inertia::render('UserSettings/TwoFactor', [
+            'twoFactorEnabled' => $enabled,
+            'twoFactorConfirmed' => $confirmed,
+            'qrSvg' => $enabled && ! $confirmed ? $user->twoFactorQrCodeSvg() : null,
+            'secretKey' => $enabled && ! $confirmed ? decrypt($user->two_factor_secret) : null,
+            'recoveryCodes' => $confirmed && $user->two_factor_recovery_codes
+                ? json_decode(decrypt($user->two_factor_recovery_codes), true)
+                : [],
+        ]);
+    })->name('two_factor.edit');
 
     /**
      * Profile image

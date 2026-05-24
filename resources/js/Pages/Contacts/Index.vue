@@ -28,7 +28,7 @@ defineProps({
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="contact in contacts.data" :key="contact.id">
                     <Link
-                        :href="route('contacts.show', contact.slug)"
+                        :href="route('contacts.show', contact.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900"
                     >
                         {{ contact.fullname }}

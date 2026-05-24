@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Interfaces\CalendarInterface;
+use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactDate extends Model implements CalendarInterface
 {
-    use Sluggable, HasFactory;
+    use HasUlidRouteKey, Sluggable, HasFactory;
 
     protected $fillable = ['name', 'date', 'skip_year'];
 
@@ -98,7 +99,7 @@ class ContactDate extends Model implements CalendarInterface
 
     public function getCalendarEventUrl()
     {
-        return route('contact_dates.show', [$this->contact->slug, $this->slug]);
+        return route('contact_dates.show', [$this->contact->ulid, $this->ulid]);
     }
 
     /**
@@ -127,16 +128,6 @@ class ContactDate extends Model implements CalendarInterface
     public function contact()
     {
         return $this->belongsTo(Contact::class);
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

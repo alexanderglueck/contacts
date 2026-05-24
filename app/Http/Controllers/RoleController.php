@@ -24,7 +24,7 @@ class RoleController extends Controller
         return Inertia::render('Roles/Index', [
             'roles' => Role::paginate(10)->through(fn ($role) => [
                 'id' => $role->id,
-                'slug' => $role->slug,
+                'ulid' => $role->ulid,
                 'name' => $role->name,
             ]),
             'canCreate' => Auth::user()->checkPermissionTo('create roles'),
@@ -57,7 +57,7 @@ class RoleController extends Controller
 
             Session::flash('alert-success', trans('flash_message.role.created'));
 
-            return redirect()->route('roles.show', [$role->slug]);
+            return redirect()->route('roles.show', [$role->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.role.not_created'));
 
@@ -76,7 +76,7 @@ class RoleController extends Controller
         return Inertia::render('Roles/Show', [
             'role' => [
                 'id' => $role->id,
-                'slug' => $role->slug,
+                'ulid' => $role->ulid,
                 'name' => $role->name,
             ],
             'permissions' => $permissions->map(fn ($p) => ['id' => $p->id, 'name' => $p->name]),
@@ -95,7 +95,7 @@ class RoleController extends Controller
         return Inertia::render('Roles/Edit', [
             'role' => [
                 'id' => $role->id,
-                'slug' => $role->slug,
+                'ulid' => $role->ulid,
                 'name' => $role->name,
                 'permissions' => $role->permissions()->pluck('permissions.id')->all(),
                 'users' => $role->users()->pluck('users.id')->all(),
@@ -119,11 +119,11 @@ class RoleController extends Controller
         if ($role->save()) {
             Session::flash('alert-success', trans('flash_message.role.updated'));
 
-            return redirect()->route('roles.show', [$role->slug]);
+            return redirect()->route('roles.show', [$role->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.role.not_updated'));
 
-            return redirect()->route('roles.edit', [$role->slug]);
+            return redirect()->route('roles.edit', [$role->ulid]);
         }
     }
 
@@ -138,7 +138,7 @@ class RoleController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.role.not_deleted'));
 
-            return redirect()->route('roles.delete', [$role->slug]);
+            return redirect()->route('roles.delete', [$role->ulid]);
         }
     }
 
@@ -149,7 +149,7 @@ class RoleController extends Controller
         return Inertia::render('Roles/Delete', [
             'role' => [
                 'id' => $role->id,
-                'slug' => $role->slug,
+                'ulid' => $role->ulid,
                 'name' => $role->name,
             ],
         ]);

@@ -28,7 +28,7 @@ defineProps({
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="group in contactGroups.data" :key="group.id">
                     <Link
-                        :href="route('contact_groups.show', group.slug)"
+                        :href="route('contact_groups.show', group.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900"
                     >
                         {{ group.name }}

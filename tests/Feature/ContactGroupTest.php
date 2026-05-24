@@ -45,7 +45,7 @@ class ContactGroupTest extends TestCase
         ]);
 
         $response = $this
-            ->get(route('contact_groups.show', [$contactGroup->slug]));
+            ->get(route('contact_groups.show', [$contactGroup->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -62,7 +62,7 @@ class ContactGroupTest extends TestCase
         ]);
 
         $response = $this
-            ->get(route('contact_groups.delete', [$contactGroup->slug]));
+            ->get(route('contact_groups.delete', [$contactGroup->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -81,7 +81,7 @@ class ContactGroupTest extends TestCase
         $this->assertModelExists($contactGroup);
 
         $response = $this
-            ->delete(route('contact_groups.destroy', [$contactGroup->slug]), [
+            ->delete(route('contact_groups.destroy', [$contactGroup->ulid]), [
                 '_token' => csrf_token()
             ]);
 
@@ -102,7 +102,7 @@ class ContactGroupTest extends TestCase
         ]);
 
         $response = $this
-            ->get(route('contact_groups.edit', [$contactGroup->slug]));
+            ->get(route('contact_groups.edit', [$contactGroup->ulid]));
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page->component('ContactGroups/Edit'));
@@ -130,7 +130,7 @@ class ContactGroupTest extends TestCase
         unset($contactGroup->updated_by);
 
         $response = $this
-            ->put(route('contact_groups.update', [$contactGroup->slug]),
+            ->put(route('contact_groups.update', [$contactGroup->ulid]),
                 array_merge($contactGroup2->toArray(),
                     ['_token' => csrf_token()]
                 ));

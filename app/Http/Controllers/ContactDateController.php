@@ -21,10 +21,10 @@ class ContactDateController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactDates/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->dates->map(fn ($d) => [
                 'id' => $d->id,
-                'slug' => $d->slug,
+                'ulid' => $d->ulid,
                 'name' => $d->name,
                 'formatted_date' => $d->formatted_date,
                 'skip_year' => (bool) $d->skip_year,
@@ -38,7 +38,7 @@ class ContactDateController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactDates/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -53,11 +53,11 @@ class ContactDateController extends Controller
         if ($contact->contactDates()->create($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.created'));
 
-            return redirect()->route('contact_dates.index', [$contact->slug]);
+            return redirect()->route('contact_dates.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_date.not_created'));
 
-            return redirect()->route('contact_dates.create', [$contact->slug]);
+            return redirect()->route('contact_dates.create', [$contact->ulid]);
         }
     }
 
@@ -68,10 +68,10 @@ class ContactDateController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactDates/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactDate->id,
-                'slug' => $contactDate->slug,
+                'ulid' => $contactDate->ulid,
                 'name' => $contactDate->name,
                 'formatted_date' => $contactDate->formatted_date,
                 'skip_year' => (bool) $contactDate->skip_year,
@@ -88,10 +88,10 @@ class ContactDateController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactDates/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactDate->id,
-                'slug' => $contactDate->slug,
+                'ulid' => $contactDate->ulid,
                 'name' => $contactDate->name,
                 'date' => $contactDate->formatted_date,
                 'skip_year' => (int) $contactDate->skip_year,
@@ -110,11 +110,11 @@ class ContactDateController extends Controller
         if ($contactDate->update($validated)) {
             Session::flash('alert-success', trans('flash_message.contact_date.updated'));
 
-            return redirect()->route('contact_dates.show', [$contact->slug, $contactDate->slug]);
+            return redirect()->route('contact_dates.show', [$contact->ulid, $contactDate->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_date.not_updated'));
 
-            return redirect()->route('contact_dates.edit', [$contact->slug, $contactDate->slug]);
+            return redirect()->route('contact_dates.edit', [$contact->ulid, $contactDate->ulid]);
         }
     }
 
@@ -125,11 +125,11 @@ class ContactDateController extends Controller
         if ($contactDate->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_date.deleted'));
 
-            return redirect()->route('contact_dates.index', [$contact->slug]);
+            return redirect()->route('contact_dates.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_date.not_deleted'));
 
-            return redirect()->route('contact_dates.delete', [$contact->slug, $contactDate->slug]);
+            return redirect()->route('contact_dates.delete', [$contact->ulid, $contactDate->ulid]);
         }
     }
 
@@ -138,10 +138,10 @@ class ContactDateController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactDates/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactDate->id,
-                'slug' => $contactDate->slug,
+                'ulid' => $contactDate->ulid,
                 'name' => $contactDate->name,
                 'formatted_date' => $contactDate->formatted_date,
             ],

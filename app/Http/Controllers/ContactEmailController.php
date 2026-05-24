@@ -21,10 +21,10 @@ class ContactEmailController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactEmails/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->emails->map(fn ($e) => [
                 'id' => $e->id,
-                'slug' => $e->slug,
+                'ulid' => $e->ulid,
                 'name' => $e->name,
                 'email' => $e->email,
             ]),
@@ -37,7 +37,7 @@ class ContactEmailController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactEmails/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -46,11 +46,11 @@ class ContactEmailController extends Controller
         if ($contact->emails()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.created'));
 
-            return redirect()->route('contact_emails.index', [$contact->slug]);
+            return redirect()->route('contact_emails.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_email.not_created'));
 
-            return redirect()->route('contact_emails.create', [$contact->slug]);
+            return redirect()->route('contact_emails.create', [$contact->ulid]);
         }
     }
 
@@ -61,10 +61,10 @@ class ContactEmailController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactEmails/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactEmail->id,
-                'slug' => $contactEmail->slug,
+                'ulid' => $contactEmail->ulid,
                 'name' => $contactEmail->name,
                 'email' => $contactEmail->email,
             ],
@@ -80,10 +80,10 @@ class ContactEmailController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactEmails/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactEmail->id,
-                'slug' => $contactEmail->slug,
+                'ulid' => $contactEmail->ulid,
                 'name' => $contactEmail->name,
                 'email' => $contactEmail->email,
             ],
@@ -95,11 +95,11 @@ class ContactEmailController extends Controller
         if ($contactEmail->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_email.updated'));
 
-            return redirect()->route('contact_emails.show', [$contact->slug, $contactEmail->slug]);
+            return redirect()->route('contact_emails.show', [$contact->ulid, $contactEmail->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_email.not_updated'));
 
-            return redirect()->route('contact_emails.edit', [$contact->slug, $contactEmail->slug]);
+            return redirect()->route('contact_emails.edit', [$contact->ulid, $contactEmail->ulid]);
         }
     }
 
@@ -110,11 +110,11 @@ class ContactEmailController extends Controller
         if ($contactEmail->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_email.deleted'));
 
-            return redirect()->route('contact_emails.index', [$contact->slug]);
+            return redirect()->route('contact_emails.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_email.not_deleted'));
 
-            return redirect()->route('contact_emails.delete', [$contact->slug, $contactEmail->slug]);
+            return redirect()->route('contact_emails.delete', [$contact->ulid, $contactEmail->ulid]);
         }
     }
 
@@ -123,10 +123,10 @@ class ContactEmailController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactEmails/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactEmail->id,
-                'slug' => $contactEmail->slug,
+                'ulid' => $contactEmail->ulid,
                 'name' => $contactEmail->name,
                 'email' => $contactEmail->email,
             ],

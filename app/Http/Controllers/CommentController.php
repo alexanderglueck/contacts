@@ -21,12 +21,12 @@ class CommentController extends Controller
         if ($contact->comments()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.comment.created'));
 
-            return redirect()->route('contacts.show', [$contact->slug]);
+            return redirect()->route('contacts.show', [$contact->ulid]);
         }
 
         Session::flash('alert-danger', trans('flash_message.comment.not_created'));
 
-        return redirect()->route('contacts.show', [$contact->slug]);
+        return redirect()->route('contacts.show', [$contact->ulid]);
     }
 
     public function edit(Contact $contact, Comment $comment): Response
@@ -36,7 +36,7 @@ class CommentController extends Controller
         return Inertia::render('Comments/Edit', [
             'contact' => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ],
             'comment' => [
@@ -51,11 +51,11 @@ class CommentController extends Controller
         if ($comment->update($request->validated())) {
             Session::flash('alert-success', trans('flash_message.comment.updated'));
 
-            return redirect()->route('contacts.show', [$contact->slug]);
+            return redirect()->route('contacts.show', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.comment.not_updated'));
 
-            return redirect()->route('comments.edit', [$contact->slug, $comment->ulid]);
+            return redirect()->route('comments.edit', [$contact->ulid, $comment->ulid]);
         }
     }
 
@@ -64,11 +64,11 @@ class CommentController extends Controller
         if ($comment->delete()) {
             Session::flash('alert-success', trans('flash_message.comment.deleted'));
 
-            return redirect()->route('contacts.show', [$contact->slug]);
+            return redirect()->route('contacts.show', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.comment.not_deleted'));
 
-            return redirect()->route('comments.edit', [$contact->slug, $comment->ulid]);
+            return redirect()->route('comments.edit', [$contact->ulid, $comment->ulid]);
         }
     }
 }

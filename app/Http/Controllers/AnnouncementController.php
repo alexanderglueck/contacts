@@ -24,7 +24,7 @@ class AnnouncementController extends Controller
         $user = Auth::user();
         $mapper = fn ($announcement) => [
             'id' => $announcement->id,
-            'slug' => $announcement->slug,
+            'ulid' => $announcement->ulid,
             'title' => $announcement->title,
             'is_pinned' => $announcement->isPinned(),
         ];
@@ -70,7 +70,7 @@ class AnnouncementController extends Controller
 
         Session::flash('alert-success', trans('flash_message.announcement.created'));
 
-        return redirect()->route('announcements.show', [$announcement->slug]);
+        return redirect()->route('announcements.show', [$announcement->ulid]);
     }
 
     public function show(Announcement $announcement): Response
@@ -82,7 +82,7 @@ class AnnouncementController extends Controller
         return Inertia::render('Announcements/Show', [
             'announcement' => [
                 'id' => $announcement->id,
-                'slug' => $announcement->slug,
+                'ulid' => $announcement->ulid,
                 'title' => $announcement->title,
                 'body' => $announcement->body,
                 'parsed_body' => $announcement->parsedBody,
@@ -104,7 +104,7 @@ class AnnouncementController extends Controller
         return Inertia::render('Announcements/Edit', [
             'announcement' => [
                 'id' => $announcement->id,
-                'slug' => $announcement->slug,
+                'ulid' => $announcement->ulid,
                 'title' => $announcement->title,
                 'body' => $announcement->body,
                 'expired_at' => $announcement->expired_at,
@@ -120,12 +120,12 @@ class AnnouncementController extends Controller
         if ( ! $announcement->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_updated'));
 
-            return redirect()->route('announcements.edit', [$announcement->slug]);
+            return redirect()->route('announcements.edit', [$announcement->ulid]);
         }
 
         Session::flash('alert-success', trans('flash_message.announcement.updated'));
 
-        return redirect()->route('announcements.show', [$announcement->slug]);
+        return redirect()->route('announcements.show', [$announcement->ulid]);
     }
 
     public function destroy(DeleteAnnouncement $request, Announcement $announcement): RedirectResponse
@@ -133,7 +133,7 @@ class AnnouncementController extends Controller
         if ( ! $announcement->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
 
-            return redirect()->route('announcements.delete', [$announcement->slug]);
+            return redirect()->route('announcements.delete', [$announcement->ulid]);
         }
 
         Session::flash('alert-success', trans('flash_message.announcement.deleted'));
@@ -148,7 +148,7 @@ class AnnouncementController extends Controller
         return Inertia::render('Announcements/Delete', [
             'announcement' => [
                 'id' => $announcement->id,
-                'slug' => $announcement->slug,
+                'ulid' => $announcement->ulid,
                 'title' => $announcement->title,
             ],
         ]);

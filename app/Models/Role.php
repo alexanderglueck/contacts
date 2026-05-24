@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUlidRouteKey;
 use App\Scopes\BelongsToTenantScope;
 use App\Models\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use App\Models\Traits\RefreshesPermissionCache;
 
 class Role extends Model
 {
-    use Sluggable, HasPermissions, RefreshesPermissionCache, HasFactory;
+    use HasUlidRouteKey, Sluggable, HasPermissions, RefreshesPermissionCache, HasFactory;
 
     protected $fillable = [
         'name',
@@ -47,16 +48,6 @@ class Role extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

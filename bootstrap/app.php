@@ -6,7 +6,6 @@ use App\Http\Middleware\AuthenticateRegister;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\Impersonate;
 use App\Http\Middleware\IsAdmin;
-use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\Subscription\RedirectIfCancelled;
 use App\Http\Middleware\Subscription\RedirectIfNoTeamPlan;
 use App\Http\Middleware\Subscription\RedirectIfNotActive;
@@ -54,7 +53,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => IsAdmin::class,
-            'guest' => RedirectIfAuthenticated::class,
             'verify_contact' => VerifyCorrectContact::class,
             'auth.register' => AuthenticateRegister::class,
             'subscription.active' => RedirectIfNotActive::class,

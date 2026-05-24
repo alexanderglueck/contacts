@@ -21,10 +21,10 @@ class ContactNumberController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactNumbers/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->numbers->map(fn ($n) => [
                 'id' => $n->id,
-                'slug' => $n->slug,
+                'ulid' => $n->ulid,
                 'name' => $n->name,
                 'number' => $n->number,
             ]),
@@ -37,7 +37,7 @@ class ContactNumberController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactNumbers/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -46,11 +46,11 @@ class ContactNumberController extends Controller
         if ($contact->numbers()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_number.created'));
 
-            return redirect()->route('contact_numbers.index', [$contact->slug]);
+            return redirect()->route('contact_numbers.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_number.not_created'));
 
-            return redirect()->route('contact_numbers.create', [$contact->slug]);
+            return redirect()->route('contact_numbers.create', [$contact->ulid]);
         }
     }
 
@@ -61,10 +61,10 @@ class ContactNumberController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactNumbers/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNumber->id,
-                'slug' => $contactNumber->slug,
+                'ulid' => $contactNumber->ulid,
                 'name' => $contactNumber->name,
                 'number' => $contactNumber->number,
             ],
@@ -80,10 +80,10 @@ class ContactNumberController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactNumbers/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNumber->id,
-                'slug' => $contactNumber->slug,
+                'ulid' => $contactNumber->ulid,
                 'name' => $contactNumber->name,
                 'number' => $contactNumber->number,
             ],
@@ -95,11 +95,11 @@ class ContactNumberController extends Controller
         if ($contactNumber->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_number.updated'));
 
-            return redirect()->route('contact_numbers.show', [$contact->slug, $contactNumber->slug]);
+            return redirect()->route('contact_numbers.show', [$contact->ulid, $contactNumber->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_number.not_updated'));
 
-            return redirect()->route('contact_numbers.edit', [$contact->slug, $contactNumber->slug]);
+            return redirect()->route('contact_numbers.edit', [$contact->ulid, $contactNumber->ulid]);
         }
     }
 
@@ -110,11 +110,11 @@ class ContactNumberController extends Controller
         if ($contactNumber->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_number.deleted'));
 
-            return redirect()->route('contact_numbers.index', [$contact->slug]);
+            return redirect()->route('contact_numbers.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_number.not_deleted'));
 
-            return redirect()->route('contact_numbers.delete', [$contact->slug, $contactNumber->slug]);
+            return redirect()->route('contact_numbers.delete', [$contact->ulid, $contactNumber->ulid]);
         }
     }
 
@@ -123,10 +123,10 @@ class ContactNumberController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactNumbers/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNumber->id,
-                'slug' => $contactNumber->slug,
+                'ulid' => $contactNumber->ulid,
                 'name' => $contactNumber->name,
                 'number' => $contactNumber->number,
             ],

@@ -15,7 +15,7 @@ const form = useForm({
     name: props.contactGroup.name ?? '',
 });
 
-const submit = () => form.put(route('contact_groups.update', props.contactGroup.slug));
+const submit = () => form.put(route('contact_groups.update', props.contactGroup.ulid));
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const submit = () => form.put(route('contact_groups.update', props.contactGroup.
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contact_groups.show', contactGroup.slug)">
+                <Link :href="route('contact_groups.show', contactGroup.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

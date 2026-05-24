@@ -16,7 +16,7 @@ const form = useForm({
     number: '',
 });
 
-const submit = () => form.post(route('contact_numbers.store', props.contact.slug));
+const submit = () => form.post(route('contact_numbers.store', props.contact.ulid));
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const submit = () => form.post(route('contact_numbers.store', props.contact.slug
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contact_numbers.index', contact.slug)">
+                <Link :href="route('contact_numbers.index', contact.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

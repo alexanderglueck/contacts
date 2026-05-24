@@ -20,7 +20,7 @@ class ActivityController extends Controller
                     $object = [
                         'type' => class_basename($activity->object_type),
                         'fullname' => $model->fullname ?? null,
-                        'slug' => $model->slug ?? null,
+                        'ulid' => $model->ulid ?? null,
                     ];
                 }
             }

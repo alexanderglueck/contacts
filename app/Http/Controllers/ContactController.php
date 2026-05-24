@@ -28,7 +28,7 @@ class ContactController extends Controller
         return Inertia::render('Contacts/Index', [
             'contacts' => Contact::sorted()->active()->paginate(10)->through(fn ($contact) => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ]),
             'canCreate' => Auth::user()->checkPermissionTo('create contacts'),
@@ -60,7 +60,7 @@ class ContactController extends Controller
 
             Session::flash('alert-success', trans('flash_message.contact.created'));
 
-            return redirect()->route('contacts.show', [$contact->slug]);
+            return redirect()->route('contacts.show', [$contact->ulid]);
         }
 
         Session::flash('alert-danger', trans('flash_message.contact.not_created'));
@@ -89,7 +89,7 @@ class ContactController extends Controller
         return Inertia::render('Contacts/Show', [
             'contact' => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
                 'salutation' => $contact->salutation,
                 'company' => $contact->company,
@@ -135,7 +135,7 @@ class ContactController extends Controller
         return Inertia::render('Contacts/Edit', [
             'contact' => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
                 'salutation' => $contact->salutation,
                 'title' => $contact->title,
@@ -176,12 +176,12 @@ class ContactController extends Controller
         if ($contact->update($request->all())) {
             flashSuccess(trans('flash_message.contact.updated'));
 
-            return redirect()->route('contacts.show', [$contact->slug]);
+            return redirect()->route('contacts.show', [$contact->ulid]);
         }
 
         flashError(trans('flash_message.contact.not_updated'));
 
-        return redirect()->route('contacts.edit', [$contact->slug]);
+        return redirect()->route('contacts.edit', [$contact->ulid]);
     }
 
     public function destroy(Contact $contact): RedirectResponse
@@ -202,7 +202,7 @@ class ContactController extends Controller
 
         Session::flash('alert-danger', trans('flash_message.contact.not_deleted'));
 
-        return redirect()->route('contacts.delete', [$contact->slug]);
+        return redirect()->route('contacts.delete', [$contact->ulid]);
     }
 
     public function delete(Contact $contact): Response
@@ -211,7 +211,7 @@ class ContactController extends Controller
 
         return Inertia::render('Contacts/Delete', [
             'contact' => [
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ],
         ]);
@@ -223,7 +223,7 @@ class ContactController extends Controller
 
         return Inertia::render('Contacts/Image', [
             'contact' => [
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
                 'image' => $contact->image,
             ],
@@ -263,12 +263,12 @@ class ContactController extends Controller
             if ($contact->save()) {
                 Session::flash('alert-success', trans('flash_message.contact.updated'));
 
-                return redirect()->route('contacts.show', $contact->slug);
+                return redirect()->route('contacts.show', $contact->ulid);
             }
         }
 
         Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
 
-        return redirect()->route('contacts.image', $contact->slug);
+        return redirect()->route('contacts.image', $contact->ulid);
     }
 }

@@ -23,21 +23,21 @@ defineProps({
                 <h2 class="text-lg font-medium text-gray-900">{{ announcement.title }}</h2>
                 <div class="flex gap-3 text-sm">
                     <Link
-                        :href="route('announcements.mark_as_read', announcement.slug)"
+                        :href="route('announcements.mark_as_read', announcement.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Mark as read
                     </Link>
                     <Link
                         v-if="can.edit"
-                        :href="route('announcements.edit', announcement.slug)"
+                        :href="route('announcements.edit', announcement.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('announcements.delete', announcement.slug)"
+                        :href="route('announcements.delete', announcement.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete

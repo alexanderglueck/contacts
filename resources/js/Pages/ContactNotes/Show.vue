@@ -14,7 +14,7 @@ defineProps({
         <Head :title="`${item.name} — ${contact.fullname}`" />
 
         <div class="text-sm">
-            <Link :href="route('contact_notes.index', contact.slug)" class="text-indigo-600 hover:text-indigo-500">
+            <Link :href="route('contact_notes.index', contact.ulid)" class="text-indigo-600 hover:text-indigo-500">
                 &larr; Back to notes
             </Link>
         </div>
@@ -25,14 +25,14 @@ defineProps({
                 <div class="flex gap-2 text-sm">
                     <Link
                         v-if="can.edit"
-                        :href="route('contact_notes.edit', [contact.slug, item.slug])"
+                        :href="route('contact_notes.edit', [contact.ulid, item.ulid])"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('contact_notes.delete', [contact.slug, item.slug])"
+                        :href="route('contact_notes.delete', [contact.ulid, item.ulid])"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete

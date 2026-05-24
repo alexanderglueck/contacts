@@ -56,7 +56,7 @@ class ActivityTest extends TestCase
         unset($attributes['date_of_birth']);
 
         $request = $this->put(
-            route('contacts.update', $contact->slug),
+            route('contacts.update', $contact->ulid),
             $attributes
         );
 
@@ -95,7 +95,7 @@ class ActivityTest extends TestCase
             'object_type' => get_class($contact)
         ]);
 
-        $this->delete(route('contacts.destroy', $contact->slug));
+        $this->delete(route('contacts.destroy', $contact->ulid));
 
         $this->assertDatabaseHas('activities', [
             'action' => 'deleted_contact',

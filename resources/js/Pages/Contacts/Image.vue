@@ -34,7 +34,7 @@ const onFileChange = (event) => {
 };
 
 const submit = () => {
-    form.post(route('contacts.update_image', props.contact.slug), {
+    form.post(route('contacts.update_image', props.contact.ulid), {
         forceFormData: true,
     });
 };
@@ -69,7 +69,7 @@ const submit = () => {
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contacts.show', contact.slug)">
+                <Link :href="route('contacts.show', contact.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing || !form.file" :class="{ 'opacity-50': form.processing || !form.file }">

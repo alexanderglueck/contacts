@@ -28,7 +28,7 @@ defineProps({
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="role in roles.data" :key="role.id">
                     <Link
-                        :href="route('roles.show', role.slug)"
+                        :href="route('roles.show', role.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900"
                     >
                         {{ role.name }}

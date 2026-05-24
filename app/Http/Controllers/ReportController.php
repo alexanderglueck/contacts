@@ -148,7 +148,7 @@ class ReportController extends Controller
             'title' => $title,
             'contacts' => $query->paginate(10)->through(fn ($contact) => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ]),
         ]);

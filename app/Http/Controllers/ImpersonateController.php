@@ -13,7 +13,7 @@ class ImpersonateController extends Controller
 
     public function store(ImpersonateStoreRequest $request): RedirectResponse
     {
-        $target = User::where('slug', $request->userSlug)->firstOrFail();
+        $target = User::where('ulid', $request->userUlid)->firstOrFail();
 
         abort_unless(
             $request->user()->currentTeam->hasUser($target),

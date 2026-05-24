@@ -21,10 +21,10 @@ class ContactNoteController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactNotes/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->notes->map(fn ($n) => [
                 'id' => $n->id,
-                'slug' => $n->slug,
+                'ulid' => $n->ulid,
                 'name' => $n->name,
                 'note' => $n->note,
             ]),
@@ -37,7 +37,7 @@ class ContactNoteController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactNotes/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -46,11 +46,11 @@ class ContactNoteController extends Controller
         if ($contact->notes()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.created'));
 
-            return redirect()->route('contact_notes.index', [$contact->slug]);
+            return redirect()->route('contact_notes.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_note.not_created'));
 
-            return redirect()->route('contact_notes.create', [$contact->slug]);
+            return redirect()->route('contact_notes.create', [$contact->ulid]);
         }
     }
 
@@ -61,10 +61,10 @@ class ContactNoteController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactNotes/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNote->id,
-                'slug' => $contactNote->slug,
+                'ulid' => $contactNote->ulid,
                 'name' => $contactNote->name,
                 'note' => $contactNote->note,
             ],
@@ -80,10 +80,10 @@ class ContactNoteController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactNotes/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNote->id,
-                'slug' => $contactNote->slug,
+                'ulid' => $contactNote->ulid,
                 'name' => $contactNote->name,
                 'note' => $contactNote->note,
             ],
@@ -95,11 +95,11 @@ class ContactNoteController extends Controller
         if ($contactNote->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_note.updated'));
 
-            return redirect()->route('contact_notes.show', [$contact->slug, $contactNote->slug]);
+            return redirect()->route('contact_notes.show', [$contact->ulid, $contactNote->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_note.not_updated'));
 
-            return redirect()->route('contact_notes.edit', [$contact->slug, $contactNote->slug]);
+            return redirect()->route('contact_notes.edit', [$contact->ulid, $contactNote->ulid]);
         }
     }
 
@@ -110,11 +110,11 @@ class ContactNoteController extends Controller
         if ($contactNote->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_note.deleted'));
 
-            return redirect()->route('contact_notes.index', [$contact->slug]);
+            return redirect()->route('contact_notes.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_note.not_deleted'));
 
-            return redirect()->route('contact_notes.delete', [$contact->slug, $contactNote->slug]);
+            return redirect()->route('contact_notes.delete', [$contact->ulid, $contactNote->ulid]);
         }
     }
 
@@ -123,10 +123,10 @@ class ContactNoteController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactNotes/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactNote->id,
-                'slug' => $contactNote->slug,
+                'ulid' => $contactNote->ulid,
                 'name' => $contactNote->name,
                 'note' => $contactNote->note,
             ],

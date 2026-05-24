@@ -10,7 +10,7 @@ const props = defineProps({
 
 const form = useForm({});
 
-const submit = () => form.delete(route('contacts.destroy', props.contact.slug));
+const submit = () => form.delete(route('contacts.destroy', props.contact.ulid));
 </script>
 
 <template>
@@ -27,7 +27,7 @@ const submit = () => form.delete(route('contacts.destroy', props.contact.slug));
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contacts.show', contact.slug)">
+                <Link :href="route('contacts.show', contact.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <DangerButton type="submit" :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

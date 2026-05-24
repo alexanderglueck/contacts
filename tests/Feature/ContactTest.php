@@ -44,7 +44,7 @@ class ContactTest extends TestCase
             'updated_by' => $user->id
         ]);
 
-        $response = $this->get(route('contacts.show', [$contact->slug]));
+        $response = $this->get(route('contacts.show', [$contact->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -60,7 +60,7 @@ class ContactTest extends TestCase
             'updated_by' => $user->id
         ]);
 
-        $response = $this->get(route('contacts.delete', [$contact->slug]));
+        $response = $this->get(route('contacts.delete', [$contact->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -79,7 +79,7 @@ class ContactTest extends TestCase
         $this->assertModelExists($contact);
 
         $response = $this
-            ->delete(route('contacts.destroy', [$contact->slug]), [
+            ->delete(route('contacts.destroy', [$contact->ulid]), [
                 '_token' => csrf_token()
             ]);
 
@@ -99,12 +99,12 @@ class ContactTest extends TestCase
             'updated_by' => $user->id
         ]);
 
-        $response = $this->get(route('contacts.edit', [$contact->slug]));
+        $response = $this->get(route('contacts.edit', [$contact->ulid]));
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Contacts/Edit')
-            ->where('contact.slug', $contact->slug)
+            ->where('contact.ulid', $contact->ulid)
         );
         $this->assertAuthenticatedAs($user);
     }
@@ -137,7 +137,7 @@ class ContactTest extends TestCase
         unset($editedContact['updated_by']);
 
         $response = $this->actingAs($user)
-            ->put(route('contacts.update', [$contact->slug]),
+            ->put(route('contacts.update', [$contact->ulid]),
                 $parameters);
 
 

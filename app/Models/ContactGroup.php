@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class ContactGroup extends Model
 {
-    use Sluggable, HasFactory;
+    use HasUlidRouteKey, Sluggable, HasFactory;
 
     protected $fillable = ['name', 'parent_id', 'created_by', 'updated_by'];
 
@@ -33,16 +34,6 @@ class ContactGroup extends Model
     public function contacts()
     {
         return $this->belongsToMany(Contact::class)->sorted()->active();
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

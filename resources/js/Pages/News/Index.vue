@@ -50,7 +50,7 @@ const sections = computed(() => {
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="item in section.data.data" :key="item.id">
                     <Link
-                        :href="route('news.show', item.slug)"
+                        :href="route('news.show', item.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900 flex justify-between items-center"
                     >
                         <span>{{ item.title }}</span>

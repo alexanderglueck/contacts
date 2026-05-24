@@ -18,7 +18,7 @@ class NewsController extends Controller
     {
         $mapper = fn ($news) => [
             'id' => $news->id,
-            'slug' => $news->slug,
+            'ulid' => $news->ulid,
             'title' => $news->title,
             'is_pinned' => $news->isPinned(),
         ];
@@ -68,7 +68,7 @@ class NewsController extends Controller
 
         Session::flash('alert-success', trans('flash_message.announcement.created'));
 
-        return redirect()->route('news.show', [$news->slug]);
+        return redirect()->route('news.show', [$news->ulid]);
     }
 
     public function show(News $news): Response
@@ -78,7 +78,7 @@ class NewsController extends Controller
         return Inertia::render('News/Show', [
             'news' => [
                 'id' => $news->id,
-                'slug' => $news->slug,
+                'ulid' => $news->ulid,
                 'title' => $news->title,
                 'body' => $news->body,
                 'parsed_body' => $news->parsedBody,
@@ -99,7 +99,7 @@ class NewsController extends Controller
         return Inertia::render('News/Edit', [
             'news' => [
                 'id' => $news->id,
-                'slug' => $news->slug,
+                'ulid' => $news->ulid,
                 'title' => $news->title,
                 'body' => $news->body,
                 'expired_at' => $news->expired_at,
@@ -115,12 +115,12 @@ class NewsController extends Controller
         if ( ! $news->save()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_updated'));
 
-            return redirect()->route('news.edit', [$news->slug]);
+            return redirect()->route('news.edit', [$news->ulid]);
         }
 
         Session::flash('alert-success', trans('flash_message.announcement.updated'));
 
-        return redirect()->route('news.show', [$news->slug]);
+        return redirect()->route('news.show', [$news->ulid]);
     }
 
     public function destroy(DeleteNews $request, News $news): RedirectResponse
@@ -128,7 +128,7 @@ class NewsController extends Controller
         if ( ! $news->delete()) {
             Session::flash('alert-danger', trans('flash_message.announcement.not_deleted'));
 
-            return redirect()->route('news.delete', [$news->slug]);
+            return redirect()->route('news.delete', [$news->ulid]);
         }
 
         Session::flash('alert-success', trans('flash_message.announcement.deleted'));
@@ -141,7 +141,7 @@ class NewsController extends Controller
         return Inertia::render('News/Delete', [
             'news' => [
                 'id' => $news->id,
-                'slug' => $news->slug,
+                'ulid' => $news->ulid,
                 'title' => $news->title,
             ],
         ]);

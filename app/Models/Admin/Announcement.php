@@ -4,6 +4,7 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use App\Models\Concerns\HasUlidRouteKey;
 use App\Models\User;
 use App\Interfaces\Readable;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 
 class Announcement extends Model implements Readable
 {
-    use Sluggable, HasFactory;
+    use HasUlidRouteKey, Sluggable, HasFactory;
 
     protected $fillable = [
         'title',
@@ -160,16 +161,6 @@ class Announcement extends Model implements Readable
             return $query->whereIn('id', (new static)->getReadReadables($user)->pluck('id'))
                 ->whereNull('pinned_at');
         });
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

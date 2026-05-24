@@ -16,7 +16,7 @@ defineProps({
         <div class="bg-white shadow rounded-lg">
             <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div>
-                    <Link :href="route('contact_addresses.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    <Link :href="route('contact_addresses.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                         ← Addresses
                     </Link>
                     <h2 class="text-lg font-medium text-gray-900">{{ item.name }}</h2>
@@ -24,14 +24,14 @@ defineProps({
                 <div class="flex gap-2 text-sm">
                     <Link
                         v-if="can.edit"
-                        :href="route('contact_addresses.edit', [contact.slug, item.slug])"
+                        :href="route('contact_addresses.edit', [contact.ulid, item.ulid])"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('contact_addresses.delete', [contact.slug, item.slug])"
+                        :href="route('contact_addresses.delete', [contact.ulid, item.ulid])"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete

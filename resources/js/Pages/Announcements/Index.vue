@@ -46,7 +46,7 @@ const sections = [
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="announcement in $props[section.key].data" :key="announcement.id">
                     <Link
-                        :href="route('announcements.show', announcement.slug)"
+                        :href="route('announcements.show', announcement.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900 flex justify-between items-center"
                     >
                         <span>{{ announcement.title }}</span>

@@ -22,7 +22,7 @@ class ContactGroupController extends Controller
         return Inertia::render('ContactGroups/Index', [
             'contactGroups' => ContactGroup::sorted()->paginate(10)->through(fn ($group) => [
                 'id' => $group->id,
-                'slug' => $group->slug,
+                'ulid' => $group->ulid,
                 'name' => $group->name,
             ]),
             'canCreate' => Auth::user()->checkPermissionTo('create contactGroups'),
@@ -61,17 +61,17 @@ class ContactGroupController extends Controller
         $this->can('view');
 
         $user = Auth::user();
-        $contacts = $contactGroup->contacts()->get(['contacts.id', 'contacts.slug', 'contacts.firstname', 'contacts.lastname']);
+        $contacts = $contactGroup->contacts()->get(['contacts.id', 'contacts.ulid', 'contacts.firstname', 'contacts.lastname']);
 
         return Inertia::render('ContactGroups/Show', [
             'contactGroup' => [
                 'id' => $contactGroup->id,
-                'slug' => $contactGroup->slug,
+                'ulid' => $contactGroup->ulid,
                 'name' => $contactGroup->name,
             ],
             'contacts' => $contacts->map(fn ($contact) => [
                 'id' => $contact->id,
-                'slug' => $contact->slug,
+                'ulid' => $contact->ulid,
                 'fullname' => $contact->fullname,
             ]),
             'can' => [
@@ -88,7 +88,7 @@ class ContactGroupController extends Controller
         return Inertia::render('ContactGroups/Edit', [
             'contactGroup' => [
                 'id' => $contactGroup->id,
-                'slug' => $contactGroup->slug,
+                'ulid' => $contactGroup->ulid,
                 'name' => $contactGroup->name,
             ],
         ]);
@@ -102,11 +102,11 @@ class ContactGroupController extends Controller
         if ($contactGroup->save()) {
             Session::flash('alert-success', trans('flash_message.contact_group.updated'));
 
-            return redirect()->route('contact_groups.show', [$contactGroup->slug]);
+            return redirect()->route('contact_groups.show', [$contactGroup->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_group.not_updated'));
 
-            return redirect()->route('contact_groups.edit', [$contactGroup->slug]);
+            return redirect()->route('contact_groups.edit', [$contactGroup->ulid]);
         }
     }
 
@@ -121,7 +121,7 @@ class ContactGroupController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_group.not_deleted'));
 
-            return redirect()->route('contact_groups.delete', $contactGroup->slug);
+            return redirect()->route('contact_groups.delete', $contactGroup->ulid);
         }
     }
 
@@ -132,7 +132,7 @@ class ContactGroupController extends Controller
         return Inertia::render('ContactGroups/Delete', [
             'contactGroup' => [
                 'id' => $contactGroup->id,
-                'slug' => $contactGroup->slug,
+                'ulid' => $contactGroup->ulid,
                 'name' => $contactGroup->name,
             ],
         ]);

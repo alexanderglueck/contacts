@@ -25,21 +25,21 @@ defineProps({
                 <div class="flex gap-3 text-sm">
                     <Link
                         v-if="isAuthenticated"
-                        :href="route('news.mark_as_read', news.slug)"
+                        :href="route('news.mark_as_read', news.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Mark as read
                     </Link>
                     <Link
                         v-if="can.edit"
-                        :href="route('news.edit', news.slug)"
+                        :href="route('news.edit', news.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('news.delete', news.slug)"
+                        :href="route('news.delete', news.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete

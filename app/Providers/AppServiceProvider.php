@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Imports\MappingHolder;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,5 +38,9 @@ class AppServiceProvider extends ServiceProvider
          */
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
+
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }

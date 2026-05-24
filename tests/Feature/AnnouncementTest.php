@@ -46,7 +46,7 @@ class AnnouncementTest extends TestCase
         ]);
 
         $response = $this
-            ->get(route('announcements.show', [$announcement->slug]));
+            ->get(route('announcements.show', [$announcement->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -62,7 +62,7 @@ class AnnouncementTest extends TestCase
         ]);
 
         $response = $this
-            ->get(route('announcements.delete', [$announcement->slug]));
+            ->get(route('announcements.delete', [$announcement->ulid]));
 
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($user);
@@ -80,7 +80,7 @@ class AnnouncementTest extends TestCase
         $this->assertModelExists( $announcement);
 
         $response = $this
-            ->delete(route('announcements.destroy', [$announcement->slug]));
+            ->delete(route('announcements.destroy', [$announcement->ulid]));
 
         $response->assertStatus(302);
         $response->assertSessionMissing('alert-danger');
@@ -100,7 +100,7 @@ class AnnouncementTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->get(route('announcements.edit', [$announcement->slug]));
+            ->get(route('announcements.edit', [$announcement->ulid]));
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page->component('Announcements/Edit'));
@@ -136,7 +136,7 @@ class AnnouncementTest extends TestCase
         unset($differentAnnouncement['updated_by']);
 
         $response = $this->actingAs($user)
-            ->put(route('announcements.update', [$announcement->slug]),
+            ->put(route('announcements.update', [$announcement->ulid]),
                 array_merge($parameters,
                     ['_token' => csrf_token()]
                 ));

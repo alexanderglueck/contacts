@@ -21,10 +21,10 @@ class ContactUrlController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactUrls/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->urls->map(fn ($u) => [
                 'id' => $u->id,
-                'slug' => $u->slug,
+                'ulid' => $u->ulid,
                 'name' => $u->name,
                 'url' => $u->url,
             ]),
@@ -37,7 +37,7 @@ class ContactUrlController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactUrls/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -46,11 +46,11 @@ class ContactUrlController extends Controller
         if ($contact->urls()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.created'));
 
-            return redirect()->route('contact_urls.index', [$contact->slug]);
+            return redirect()->route('contact_urls.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_url.not_created'));
 
-            return redirect()->route('contact_urls.create', [$contact->slug]);
+            return redirect()->route('contact_urls.create', [$contact->ulid]);
         }
     }
 
@@ -61,10 +61,10 @@ class ContactUrlController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactUrls/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactUrl->id,
-                'slug' => $contactUrl->slug,
+                'ulid' => $contactUrl->ulid,
                 'name' => $contactUrl->name,
                 'url' => $contactUrl->url,
             ],
@@ -80,10 +80,10 @@ class ContactUrlController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactUrls/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactUrl->id,
-                'slug' => $contactUrl->slug,
+                'ulid' => $contactUrl->ulid,
                 'name' => $contactUrl->name,
                 'url' => $contactUrl->url,
             ],
@@ -95,11 +95,11 @@ class ContactUrlController extends Controller
         if ($contactUrl->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_url.updated'));
 
-            return redirect()->route('contact_urls.show', [$contact->slug, $contactUrl->slug]);
+            return redirect()->route('contact_urls.show', [$contact->ulid, $contactUrl->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_url.not_updated'));
 
-            return redirect()->route('contact_urls.edit', [$contact->slug, $contactUrl->slug]);
+            return redirect()->route('contact_urls.edit', [$contact->ulid, $contactUrl->ulid]);
         }
     }
 
@@ -110,11 +110,11 @@ class ContactUrlController extends Controller
         if ($contactUrl->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_url.deleted'));
 
-            return redirect()->route('contact_urls.index', [$contact->slug]);
+            return redirect()->route('contact_urls.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_url.not_deleted'));
 
-            return redirect()->route('contact_urls.delete', [$contact->slug, $contactUrl->slug]);
+            return redirect()->route('contact_urls.delete', [$contact->ulid, $contactUrl->ulid]);
         }
     }
 
@@ -123,10 +123,10 @@ class ContactUrlController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactUrls/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'id' => $contactUrl->id,
-                'slug' => $contactUrl->slug,
+                'ulid' => $contactUrl->ulid,
                 'name' => $contactUrl->name,
                 'url' => $contactUrl->url,
             ],

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Concerns\HasUlidRouteKey;
 use App\Traits\RecordsActivity;
 use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
@@ -13,6 +14,7 @@ use Laravel\Scout\Searchable;
 
 class Contact extends Model implements CalendarInterface
 {
+    use HasUlidRouteKey;
     use Sluggable;
     use RecordsActivity;
     use Searchable;
@@ -187,7 +189,7 @@ class Contact extends Model implements CalendarInterface
 
     public function getCalendarEventUrl()
     {
-        return route('contacts.show', [$this->slug]);
+        return route('contacts.show', [$this->ulid]);
     }
 
     /**
@@ -388,16 +390,6 @@ class Contact extends Model implements CalendarInterface
     public function calls()
     {
         return $this->hasMany(ContactCall::class);
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

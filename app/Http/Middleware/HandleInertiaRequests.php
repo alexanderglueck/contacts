@@ -36,7 +36,7 @@ class HandleInertiaRequests extends Middleware
                         'id' => $request->user()->id,
                         'name' => $request->user()->name,
                         'email' => $request->user()->email,
-                        'slug' => $request->user()->slug,
+                        'ulid' => $request->user()->ulid,
                         'image' => $request->user()->image,
                         'current_team_id' => $request->user()->current_team_id,
                     ]

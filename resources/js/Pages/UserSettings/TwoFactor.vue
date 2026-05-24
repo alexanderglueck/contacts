@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -6,40 +7,49 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
-    state: { type: String, required: true },
-    qrUrl: { type: String, default: null },
-    secret: { type: String, default: null },
-    backupCodes: { type: Array, default: () => [] },
+    twoFactorEnabled: { type: Boolean, required: true },
+    twoFactorConfirmed: { type: Boolean, required: true },
+    qrSvg: { type: String, default: null },
+    secretKey: { type: String, default: null },
+    recoveryCodes: { type: Array, default: () => [] },
 });
 
-// QR code rendered via an external image service that consumes otpauth:// URLs.
-// TODO: replace with client-side renderer once a QR lib is added.
-const qrImage = (url) =>
-    `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
+const stage = computed(() => {
+    if (! props.twoFactorEnabled) return 'inactive';
+    if (! props.twoFactorConfirmed) return 'setup';
+    return 'active';
+});
 
 const enableForm = useForm({});
-const enable = () => enableForm.post(route('user_settings.two_factor.enable'));
+const enable = () => enableForm.post(route('two-factor.enable'), { preserveScroll: true });
 
-const checkForm = useForm({ secret: '' });
-const check = () => checkForm.post(route('user_settings.two_factor.check'));
+const confirmForm = useForm({ code: '' });
+const confirm = () => confirmForm.post(route('two-factor.confirm'), {
+    preserveScroll: true,
+    onSuccess: () => confirmForm.reset(),
+});
 
 const disableForm = useForm({});
-const disable = () => disableForm.delete(route('user_settings.two_factor.destroy'));
+const disable = () => disableForm.delete(route('two-factor.disable'), { preserveScroll: true });
+
+const regenerateForm = useForm({});
+const regenerate = () => regenerateForm.post(route('two-factor.regenerate-recovery-codes'), { preserveScroll: true });
 </script>
 
 <template>
     <AppLayout title="Two-factor authentication">
         <Head title="Two-factor authentication" />
 
-        <div v-if="state === 'inactive'" class="bg-white shadow rounded-lg">
+        <div v-if="stage === 'inactive'" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-lg font-medium text-gray-900">Two-factor authentication</h2>
             </div>
             <form @submit.prevent="enable" class="px-6 py-4 space-y-4">
                 <p class="text-sm text-gray-600">
-                    Click the button to enable two-factor authentication.
+                    Add an extra layer of security by requiring a one-time code from your authenticator app on every login.
                 </p>
                 <PrimaryButton :disabled="enableForm.processing" :class="{ 'opacity-50': enableForm.processing }">
                     Enable 2FA
@@ -47,52 +57,62 @@ const disable = () => disableForm.delete(route('user_settings.two_factor.destroy
             </form>
         </div>
 
-        <div v-else-if="state === 'activate'" class="bg-white shadow rounded-lg">
+        <div v-else-if="stage === 'setup'" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Scan QR code</h2>
+                <h2 class="text-lg font-medium text-gray-900">Finish setting up two-factor authentication</h2>
             </div>
-            <form @submit.prevent="check" class="px-6 py-4 space-y-4">
+            <form @submit.prevent="confirm" class="px-6 py-4 space-y-4">
                 <p class="text-sm text-gray-600">
-                    Scan this QR code with your authenticator app, then enter the generated code below to confirm.
+                    Scan the QR code with your authenticator app, then enter the generated code below to confirm.
                 </p>
 
-                <div class="flex justify-center">
-                    <img :src="qrImage(qrUrl)" alt="2FA QR code" class="w-56 h-56" />
-                </div>
+                <div class="flex justify-center" v-html="qrSvg" />
 
                 <div class="text-center">
                     <p class="text-xs text-gray-500">If you cannot scan the code, enter this secret manually:</p>
-                    <code class="text-sm break-all">{{ secret }}</code>
+                    <code class="text-sm break-all">{{ secretKey }}</code>
                 </div>
 
                 <div>
-                    <InputLabel for="secret" value="Authentication code" />
+                    <InputLabel for="code" value="Authentication code" />
                     <TextInput
-                        id="secret"
-                        v-model="checkForm.secret"
+                        id="code"
+                        v-model="confirmForm.code"
+                        inputmode="numeric"
                         autocomplete="one-time-code"
                         autofocus
                         required
                     />
-                    <InputError :message="checkForm.errors.secret" />
+                    <InputError :message="confirmForm.errors.code" />
                 </div>
 
-                <div class="flex justify-end">
-                    <PrimaryButton :disabled="checkForm.processing" :class="{ 'opacity-50': checkForm.processing }">
+                <div class="flex justify-between">
+                    <DangerButton type="button" @click="disable" :disabled="disableForm.processing">
+                        Cancel
+                    </DangerButton>
+                    <PrimaryButton :disabled="confirmForm.processing" :class="{ 'opacity-50': confirmForm.processing }">
                         Activate
                     </PrimaryButton>
                 </div>
             </form>
         </div>
 
-        <div v-else-if="state === 'active'" class="space-y-4">
+        <div v-else class="space-y-4">
             <div class="bg-white shadow rounded-lg">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Backup codes</h2>
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-medium text-gray-900">Recovery codes</h2>
+                    <form @submit.prevent="regenerate">
+                        <SecondaryButton :disabled="regenerateForm.processing">
+                            Regenerate
+                        </SecondaryButton>
+                    </form>
                 </div>
                 <div class="px-6 py-4">
+                    <p class="text-sm text-gray-600 mb-3">
+                        Store these recovery codes in a safe place. Each one can be used once to access your account if you lose your authenticator device.
+                    </p>
                     <ol class="list-decimal list-inside space-y-1 text-sm font-mono text-gray-800">
-                        <li v-for="code in backupCodes" :key="code.id">{{ code.value }}</li>
+                        <li v-for="code in recoveryCodes" :key="code">{{ code }}</li>
                     </ol>
                 </div>
             </div>

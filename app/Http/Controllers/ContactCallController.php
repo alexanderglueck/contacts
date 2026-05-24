@@ -21,7 +21,7 @@ class ContactCallController extends Controller
         $this->can('view');
 
         return Inertia::render('ContactCalls/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->calls->map(fn ($c) => [
                 'ulid' => $c->ulid,
                 'formatted_called_at' => $c->formatted_called_at,
@@ -36,7 +36,7 @@ class ContactCallController extends Controller
         $this->can('create');
 
         return Inertia::render('ContactCalls/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -45,11 +45,11 @@ class ContactCallController extends Controller
         if ($contact->calls()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.created'));
 
-            return redirect()->route('contact_calls.index', [$contact->slug]);
+            return redirect()->route('contact_calls.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_created'));
 
-            return redirect()->route('contact_calls.create', [$contact->slug]);
+            return redirect()->route('contact_calls.create', [$contact->ulid]);
         }
     }
 
@@ -60,7 +60,7 @@ class ContactCallController extends Controller
         $user = Auth::user();
 
         return Inertia::render('ContactCalls/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $contactCall->ulid,
                 'formatted_called_at' => $contactCall->formatted_called_at,
@@ -78,7 +78,7 @@ class ContactCallController extends Controller
         $this->can('edit');
 
         return Inertia::render('ContactCalls/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $contactCall->ulid,
                 'called_at' => $contactCall->formatted_called_at,
@@ -92,11 +92,11 @@ class ContactCallController extends Controller
         if ($contactCall->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.updated'));
 
-            return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->ulid]);
+            return redirect()->route('contact_calls.show', [$contact->ulid, $contactCall->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_updated'));
 
-            return redirect()->route('contact_calls.edit', [$contact->slug, $contactCall->ulid]);
+            return redirect()->route('contact_calls.edit', [$contact->ulid, $contactCall->ulid]);
         }
     }
 
@@ -107,11 +107,11 @@ class ContactCallController extends Controller
         if ($contactCall->delete()) {
             Session::flash('alert-success', trans('flash_message.contact_call.deleted'));
 
-            return redirect()->route('contact_calls.index', [$contact->slug]);
+            return redirect()->route('contact_calls.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_deleted'));
 
-            return redirect()->route('contact_calls.delete', [$contact->slug, $contactCall->ulid]);
+            return redirect()->route('contact_calls.delete', [$contact->ulid, $contactCall->ulid]);
         }
     }
 
@@ -120,7 +120,7 @@ class ContactCallController extends Controller
         $this->can('delete');
 
         return Inertia::render('ContactCalls/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $contactCall->ulid,
                 'formatted_called_at' => $contactCall->formatted_called_at,

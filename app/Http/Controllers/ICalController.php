@@ -77,7 +77,7 @@ class ICalController extends Controller
                 'title' => $title,
                 'allDay' => true,
                 'start' => $start,
-                'url' => route('contact_dates.show', [$event->contact->slug, $event->slug])
+                'url' => route('contact_dates.show', [$event->contact->ulid, $event->ulid])
             ];
 
             /**

@@ -22,7 +22,7 @@ const form = useForm({
     longitude: props.item.longitude ?? '',
 });
 
-const submit = () => form.put(route('contact_addresses.update', [props.contact.slug, props.item.slug]));
+const submit = () => form.put(route('contact_addresses.update', [props.contact.ulid, props.item.ulid]));
 </script>
 
 <template>
@@ -39,7 +39,7 @@ const submit = () => form.put(route('contact_addresses.update', [props.contact.s
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contact_addresses.show', [contact.slug, item.slug])">
+                <Link :href="route('contact_addresses.show', [contact.ulid, item.ulid])">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

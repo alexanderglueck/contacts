@@ -20,7 +20,7 @@ const form = useForm({
     due_at: props.item.due_at ?? '',
 });
 
-const submit = () => form.put(route('gift_ideas.update', [props.contact.slug, props.item.ulid]));
+const submit = () => form.put(route('gift_ideas.update', [props.contact.ulid, props.item.ulid]));
 </script>
 
 <template>
@@ -56,7 +56,7 @@ const submit = () => form.put(route('gift_ideas.update', [props.contact.slug, pr
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('gift_ideas.show', [contact.slug, item.ulid])">
+                <Link :href="route('gift_ideas.show', [contact.ulid, item.ulid])">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

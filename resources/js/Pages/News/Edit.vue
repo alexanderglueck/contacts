@@ -23,7 +23,7 @@ const togglePinned = (event) => {
     form.pinned_at = event.target.checked ? new Date().toISOString().slice(0, 19).replace('T', ' ') : '';
 };
 
-const submit = () => form.put(route('news.update', props.news.slug));
+const submit = () => form.put(route('news.update', props.news.ulid));
 </script>
 
 <template>
@@ -66,7 +66,7 @@ const submit = () => form.put(route('news.update', props.news.slug));
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('news.show', news.slug)">
+                <Link :href="route('news.show', news.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

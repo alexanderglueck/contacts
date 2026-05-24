@@ -25,11 +25,11 @@ const submitInvite = () => {
 
 const removeMember = (user) => {
     if (!confirm(`Remove ${user.name} from the team?`)) return;
-    router.delete(route('teams.members.destroy', [props.team.uuid, user.slug]));
+    router.delete(route('teams.members.destroy', [props.team.uuid, user.ulid]));
 };
 
-const impersonate = (slug) => {
-    router.post(route('user.impersonate'), { userSlug: slug });
+const impersonate = (ulid) => {
+    router.post(route('user.impersonate'), { userUlid: ulid });
 };
 </script>
 
@@ -55,7 +55,7 @@ const impersonate = (slug) => {
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="user in team.users" :key="user.slug">
+                        <tr v-for="user in team.users" :key="user.ulid">
                             <td class="px-6 py-3 text-sm text-gray-900">{{ user.name }}</td>
                             <td class="px-6 py-3 text-right">
                                 <DangerButton
@@ -70,7 +70,7 @@ const impersonate = (slug) => {
                                 <SecondaryButton
                                     v-if="!user.is_self"
                                     type="button"
-                                    @click="impersonate(user.slug)"
+                                    @click="impersonate(user.ulid)"
                                 >
                                     Impersonate
                                 </SecondaryButton>

@@ -17,7 +17,7 @@ const form = useForm({
     users: props.role.users ?? [],
 });
 
-const submit = () => form.put(route('roles.update', props.role.slug));
+const submit = () => form.put(route('roles.update', props.role.ulid));
 </script>
 
 <template>
@@ -34,7 +34,7 @@ const submit = () => form.put(route('roles.update', props.role.slug));
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('roles.show', role.slug)">
+                <Link :href="route('roles.show', role.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

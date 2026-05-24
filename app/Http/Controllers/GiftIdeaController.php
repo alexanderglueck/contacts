@@ -21,7 +21,7 @@ class GiftIdeaController extends Controller
         $this->can('view');
 
         return Inertia::render('GiftIdeas/Index', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'items' => $contact->giftIdeas->map(fn ($g) => [
                 'ulid' => $g->ulid,
                 'name' => $g->name,
@@ -38,7 +38,7 @@ class GiftIdeaController extends Controller
         $this->can('create');
 
         return Inertia::render('GiftIdeas/Create', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
         ]);
     }
 
@@ -47,11 +47,11 @@ class GiftIdeaController extends Controller
         if ($contact->giftIdeas()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.created'));
 
-            return redirect()->route('gift_ideas.index', [$contact->slug]);
+            return redirect()->route('gift_ideas.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.gift_idea.not_created'));
 
-            return redirect()->route('gift_ideas.create', [$contact->slug]);
+            return redirect()->route('gift_ideas.create', [$contact->ulid]);
         }
     }
 
@@ -62,7 +62,7 @@ class GiftIdeaController extends Controller
         $user = Auth::user();
 
         return Inertia::render('GiftIdeas/Show', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,
@@ -82,7 +82,7 @@ class GiftIdeaController extends Controller
         $this->can('edit');
 
         return Inertia::render('GiftIdeas/Edit', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,
@@ -98,11 +98,11 @@ class GiftIdeaController extends Controller
         if ($giftIdea->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.updated'));
 
-            return redirect()->route('gift_ideas.show', [$contact->slug, $giftIdea->ulid]);
+            return redirect()->route('gift_ideas.show', [$contact->ulid, $giftIdea->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.gift_idea.not_updated'));
 
-            return redirect()->route('gift_ideas.edit', [$contact->slug, $giftIdea->ulid]);
+            return redirect()->route('gift_ideas.edit', [$contact->ulid, $giftIdea->ulid]);
         }
     }
 
@@ -113,11 +113,11 @@ class GiftIdeaController extends Controller
         if ($giftIdea->delete()) {
             Session::flash('alert-success', trans('flash_message.gift_idea.deleted'));
 
-            return redirect()->route('gift_ideas.index', [$contact->slug]);
+            return redirect()->route('gift_ideas.index', [$contact->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.gift_idea.not_deleted'));
 
-            return redirect()->route('gift_ideas.delete', [$contact->slug, $giftIdea->ulid]);
+            return redirect()->route('gift_ideas.delete', [$contact->ulid, $giftIdea->ulid]);
         }
     }
 
@@ -126,7 +126,7 @@ class GiftIdeaController extends Controller
         $this->can('delete');
 
         return Inertia::render('GiftIdeas/Delete', [
-            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'contact' => ['ulid' => $contact->ulid, 'fullname' => $contact->fullname],
             'item' => [
                 'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,

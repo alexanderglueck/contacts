@@ -7,14 +7,16 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const form = useForm({
-    password_current: '',
+    current_password: '',
     password: '',
     password_confirmation: '',
 });
 
 const submit = () => {
-    form.put(route('user_settings.password.update'), {
-        onFinish: () => form.reset('password_current', 'password', 'password_confirmation'),
+    form.put(route('user-password.update'), {
+        errorBag: 'updatePassword',
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
     });
 };
 </script>
@@ -30,15 +32,15 @@ const submit = () => {
 
             <div class="px-6 py-4 space-y-4">
                 <div>
-                    <InputLabel for="password_current" value="Current password" />
+                    <InputLabel for="current_password" value="Current password" />
                     <TextInput
-                        id="password_current"
+                        id="current_password"
                         type="password"
-                        v-model="form.password_current"
+                        v-model="form.current_password"
                         autocomplete="current-password"
                         required
                     />
-                    <InputError :message="form.errors.password_current" />
+                    <InputError :message="form.errors.current_password" />
                 </div>
 
                 <div>

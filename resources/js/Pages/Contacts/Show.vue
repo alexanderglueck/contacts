@@ -36,21 +36,21 @@ const detailFields = computed(() => [
                 <div class="flex gap-2 text-sm">
                     <Link
                         v-if="can.edit"
-                        :href="route('contacts.edit', contact.slug)"
+                        :href="route('contacts.edit', contact.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.edit"
-                        :href="route('contacts.image', contact.slug)"
+                        :href="route('contacts.image', contact.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Image
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('contacts.delete', contact.slug)"
+                        :href="route('contacts.delete', contact.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete
@@ -85,49 +85,49 @@ const detailFields = computed(() => [
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-if="can.view_addresses" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Addresses</h3>
-                <Link :href="route('contact_addresses.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_addresses.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage addresses ({{ contact.addresses_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_numbers" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Phone numbers</h3>
-                <Link :href="route('contact_numbers.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_numbers.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage phone numbers ({{ contact.numbers_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_emails" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Emails</h3>
-                <Link :href="route('contact_emails.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_emails.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage emails ({{ contact.emails_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_urls" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Websites</h3>
-                <Link :href="route('contact_urls.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_urls.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage websites ({{ contact.urls_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_dates" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Important dates</h3>
-                <Link :href="route('contact_dates.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_dates.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage dates ({{ contact.dates_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_notes" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Notes</h3>
-                <Link :href="route('contact_notes.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_notes.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage notes ({{ contact.notes_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_calls" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Calls</h3>
-                <Link :href="route('contact_calls.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('contact_calls.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage calls ({{ contact.calls_count ?? 0 }})
                 </Link>
             </div>
             <div v-if="can.view_gift_ideas" class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-gray-900 mb-2">Gift ideas</h3>
-                <Link :href="route('gift_ideas.index', contact.slug)" class="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link :href="route('gift_ideas.index', contact.ulid)" class="text-sm text-indigo-600 hover:text-indigo-500">
                     Manage gift ideas ({{ contact.gift_ideas_count ?? 0 }})
                 </Link>
             </div>

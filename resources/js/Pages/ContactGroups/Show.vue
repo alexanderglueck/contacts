@@ -25,14 +25,14 @@ defineProps({
                 <div class="flex gap-2 text-sm">
                     <Link
                         v-if="can.edit"
-                        :href="route('contact_groups.edit', contactGroup.slug)"
+                        :href="route('contact_groups.edit', contactGroup.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('contact_groups.delete', contactGroup.slug)"
+                        :href="route('contact_groups.delete', contactGroup.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete
@@ -64,7 +64,7 @@ defineProps({
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="contact in contacts" :key="contact.id">
                     <Link
-                        :href="route('contacts.show', contact.slug)"
+                        :href="route('contacts.show', contact.ulid)"
                         class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900"
                     >
                         {{ contact.fullname }}

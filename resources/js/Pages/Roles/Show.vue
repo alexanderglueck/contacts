@@ -26,14 +26,14 @@ defineProps({
                 <div class="flex gap-2 text-sm">
                     <Link
                         v-if="can.edit"
-                        :href="route('roles.edit', role.slug)"
+                        :href="route('roles.edit', role.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
                         Edit
                     </Link>
                     <Link
                         v-if="can.delete"
-                        :href="route('roles.delete', role.slug)"
+                        :href="route('roles.delete', role.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
                         Delete

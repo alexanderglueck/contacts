@@ -19,9 +19,9 @@ const editForm = useForm({
 
 const deleteForm = useForm({});
 
-const submit = () => editForm.put(route('comments.update', [props.contact.slug, props.comment.ulid]));
+const submit = () => editForm.put(route('comments.update', [props.contact.ulid, props.comment.ulid]));
 
-const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.slug, props.comment.ulid]));
+const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.ulid, props.comment.ulid]));
 </script>
 
 <template>
@@ -29,7 +29,7 @@ const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.
         <Head title="Edit comment" />
 
         <div class="text-sm">
-            <Link :href="route('contacts.show', contact.slug)" class="text-indigo-600 hover:text-indigo-500">
+            <Link :href="route('contacts.show', contact.ulid)" class="text-indigo-600 hover:text-indigo-500">
                 &larr; Back to {{ contact.fullname }}
             </Link>
         </div>
@@ -48,7 +48,7 @@ const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contacts.show', contact.slug)">
+                <Link :href="route('contacts.show', contact.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="editForm.processing" :class="{ 'opacity-50': editForm.processing }">

@@ -41,7 +41,7 @@ class TeamMemberController extends Controller
                 'uuid' => $team->uuid,
                 'name' => $team->name,
                 'users' => $team->users->map(fn ($user) => [
-                    'slug' => $user->slug,
+                    'ulid' => $user->ulid,
                     'name' => $user->name,
                     'is_self' => $user->id === $authUser->id,
                 ])->all(),
