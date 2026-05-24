@@ -64,11 +64,28 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
      */
     public function sendPasswordResetNotification($token): void
     {
-        if ($this->password_reset_disabled) {
+        if ($this->passwordResetIsDisabled()) {
             return;
         }
 
         parent::sendPasswordResetNotification($token);
+    }
+
+    /**
+     * Strictest setting wins: a team owner can enforce "no password reset"
+     * across all their members, overriding whatever each member set
+     * individually. So we suppress the email if either the user's own
+     * flag is set OR any team they belong to has the flag set.
+     */
+    public function passwordResetIsDisabled(): bool
+    {
+        if ($this->password_reset_disabled) {
+            return true;
+        }
+
+        return $this->teams()
+            ->where('teams.password_reset_disabled', true)
+            ->exists();
     }
 
     public function contacts()
