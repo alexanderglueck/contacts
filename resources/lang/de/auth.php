@@ -1,33 +1,37 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
-
-    'failed' => 'Zu den angegeben Zugangsdaten konnte kein Eintrag gefunden werden.',
+    'failed' => 'Diese Zugangsdaten stimmen nicht mit unseren Aufzeichnungen überein.',
+    'password' => 'Das angegebene Passwort ist falsch.',
     'throttle' => 'Zu viele Anmeldeversuche. Bitte versuchen Sie es in :seconds Sekunden erneut.',
     'login' => [
-        'title' => 'Login',
+        'title' => 'Anmelden',
         'fields' => [
-            'email' => 'E-Mail Adresse',
+            'email' => 'E-Mail-Adresse',
             'password' => 'Passwort',
-            'remember' => 'Angemeldet bleiben'
+            'remember' => 'Angemeldet bleiben',
         ],
         'actions' => [
-            'default' => 'Login',
+            'default' => 'Anmelden',
             'password' => [
-                'reset' => 'Passwort vergessen?'
-            ]
-        ]
-    ]
-
+                'request' => 'Passwort vergessen?',
+            ],
+            'activation' => [
+                'resend' => 'Aktivierungs-E-Mail erneut senden',
+            ],
+        ],
+    ],
+    'register' => [
+        'title' => 'Registrieren',
+        'fields' => [
+            'name' => 'Name',
+            'email' => 'E-Mail-Adresse',
+            'password' => 'Passwort',
+            'password_confirm' => 'Passwort bestätigen',
+            'terms_of_service' => 'Ich akzeptiere die <a target="_blank" href=":tos_url">Nutzungsbedingungen</a>',
+        ],
+        'actions' => [
+            'default' => 'Registrieren',
+        ],
+    ],
 ];

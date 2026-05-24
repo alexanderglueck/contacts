@@ -1,11 +1,14 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FlashBanner from '@/Components/FlashBanner.vue';
+
+const { t } = useI18n();
 
 defineProps({
     title: String,
@@ -37,19 +40,19 @@ const isActive = (name) => {
 
                         <div class="hidden sm:-my-px sm:ms-10 sm:flex space-x-8">
                             <NavLink :href="route('contacts.index')" :active="isActive('contacts.*')">
-                                Contacts
+                                {{ t('nav.contacts') }}
                             </NavLink>
                             <NavLink :href="route('contact_groups.index')" :active="isActive('contact_groups.*')">
-                                Groups
+                                {{ t('nav.groups') }}
                             </NavLink>
                             <NavLink :href="route('calendar.index')" :active="isActive('calendar.*')">
-                                Calendar
+                                {{ t('nav.calendar') }}
                             </NavLink>
                             <NavLink :href="route('map.index')" :active="isActive('map.*')">
-                                Map
+                                {{ t('nav.map') }}
                             </NavLink>
                             <NavLink :href="route('reports.index')" :active="isActive('reports.*')">
-                                Reports
+                                {{ t('nav.reports') }}
                             </NavLink>
                         </div>
                     </div>
@@ -57,19 +60,35 @@ const isActive = (name) => {
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                         <Dropdown v-if="user" align="right" width="48">
                             <template #trigger>
-                                <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
-                                    {{ user.name }}
-                                    <svg class="ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <button class="inline-flex items-center gap-2 px-2 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
+                                    <img
+                                        v-if="user.image"
+                                        :src="`/storage/${user.image}`"
+                                        :alt="user.name"
+                                        class="h-8 w-8 rounded-full object-cover ring-1 ring-gray-200"
+                                    />
+                                    <span
+                                        v-else
+                                        class="h-8 w-8 rounded-full bg-indigo-600 text-white text-xs font-semibold flex items-center justify-center"
+                                        aria-hidden="true"
+                                    >
+                                        {{ user.name?.charAt(0)?.toUpperCase() }}
+                                    </span>
+                                    <span>{{ user.name }}</span>
+                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 011.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
                             </template>
                             <template #content>
-                                <DropdownLink :href="route('user_settings.profile.show')">Profile</DropdownLink>
-                                <DropdownLink :href="route('user_settings.password.show')">Password</DropdownLink>
-                                <DropdownLink :href="route('user_settings.two_factor.edit')">Two-factor auth</DropdownLink>
-                                <DropdownLink :href="route('teams.index')">Teams</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">Log out</DropdownLink>
+                                <DropdownLink :href="route('user_settings.profile.show')">{{ t('nav.profile') }}</DropdownLink>
+                                <DropdownLink :href="route('user_settings.password.show')">{{ t('nav.password') }}</DropdownLink>
+                                <DropdownLink :href="route('user_settings.two_factor.edit')">{{ t('nav.two_factor') }}</DropdownLink>
+                                <DropdownLink :href="route('teams.index')">{{ t('nav.teams') }}</DropdownLink>
+                                <DropdownLink :href="route('roles.index')">{{ t('nav.roles') }}</DropdownLink>
+                                <DropdownLink :href="route('activities.index')">{{ t('nav.activities') }}</DropdownLink>
+                                <DropdownLink :href="route('logs.index')">{{ t('nav.audit_log') }}</DropdownLink>
+                                <DropdownLink :href="route('logout')" method="post" as="button">{{ t('nav.logout') }}</DropdownLink>
                             </template>
                         </Dropdown>
                     </div>

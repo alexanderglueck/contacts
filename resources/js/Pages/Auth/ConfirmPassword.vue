@@ -9,42 +9,43 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const { t } = useI18n();
 
-defineProps({
-    status: String,
-});
-
 const form = useForm({
-    email: '',
+    password: '',
 });
 
 const submit = () => {
-    form.post(route('password.email'));
+    form.post(route('password.confirm.store'), {
+        onFinish: () => form.reset(),
+    });
 };
 </script>
 
 <template>
     <GuestLayout>
-        <Head :title="t('auth.reset_password')" />
+        <Head :title="t('auth.confirm_password_title')" />
 
-        <h1 class="text-xl font-semibold text-gray-900 mb-2">{{ t('auth.reset_password') }}</h1>
+        <h1 class="text-xl font-semibold text-gray-900 mb-2">{{ t('auth.confirm_password_title') }}</h1>
         <p class="text-sm text-gray-600 mb-4">
-            {{ t('auth.forgot_password_help') }}
+            {{ t('auth.confirm_password_help') }}
         </p>
-
-        <div v-if="status" class="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-800 ring-1 ring-inset ring-green-200">
-            {{ status }}
-        </div>
 
         <form @submit.prevent="submit" class="space-y-4">
             <div>
-                <InputLabel for="email" :value="t('auth.email')" />
-                <TextInput id="email" type="email" v-model="form.email" autocomplete="username" autofocus required />
-                <InputError :message="form.errors.email" />
+                <InputLabel for="password" :value="t('auth.password')" />
+                <TextInput
+                    id="password"
+                    type="password"
+                    v-model="form.password"
+                    autocomplete="current-password"
+                    autofocus
+                    required
+                />
+                <InputError :message="form.errors.password" />
             </div>
 
             <div class="flex items-center justify-end">
                 <PrimaryButton :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
-                    {{ t('auth.email_password_reset_link') }}
+                    {{ t('common.confirm') }}
                 </PrimaryButton>
             </div>
         </form>

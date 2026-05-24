@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -8,6 +9,8 @@ import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { usePasskeyVerify } from '@laravel/passkeys/vue';
+
+const { t } = useI18n();
 
 const form = useForm({
     email: '',
@@ -35,13 +38,13 @@ const {
 
 <template>
     <GuestLayout>
-        <Head title="Login" />
+        <Head :title="t('auth.login')" />
 
-        <h1 class="text-xl font-semibold text-gray-900 mb-4">Login</h1>
+        <h1 class="text-xl font-semibold text-gray-900 mb-4">{{ t('auth.login') }}</h1>
 
         <form @submit.prevent="submit" class="space-y-4">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="t('auth.email')" />
                 <TextInput
                     id="email"
                     type="email"
@@ -54,7 +57,7 @@ const {
             </div>
 
             <div>
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" :value="t('auth.password')" />
                 <TextInput
                     id="password"
                     type="password"
@@ -67,7 +70,7 @@ const {
 
             <label class="flex items-center">
                 <Checkbox v-model:checked="form.remember" />
-                <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                <span class="ms-2 text-sm text-gray-600">{{ t('auth.remember') }}</span>
             </label>
 
             <div class="flex items-center justify-end gap-4 pt-2">
@@ -75,10 +78,10 @@ const {
                     :href="route('password.request')"
                     class="text-sm text-gray-600 hover:text-gray-900 underline"
                 >
-                    Forgot your password?
+                    {{ t('auth.forgot_password') }}
                 </Link>
                 <PrimaryButton :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
-                    Login
+                    {{ t('auth.login') }}
                 </PrimaryButton>
             </div>
         </form>
@@ -86,7 +89,7 @@ const {
         <div v-if="passkeySupported" class="mt-6">
             <div class="relative flex items-center">
                 <div class="flex-grow border-t border-gray-200"></div>
-                <span class="px-3 text-xs uppercase tracking-wide text-gray-500">or</span>
+                <span class="px-3 text-xs uppercase tracking-wide text-gray-500">{{ t('auth.or') }}</span>
                 <div class="flex-grow border-t border-gray-200"></div>
             </div>
             <SecondaryButton
@@ -95,15 +98,15 @@ const {
                 :disabled="passkeyBusy"
                 @click="signInWithPasskey"
             >
-                {{ passkeyBusy ? 'Waiting for passkey…' : 'Sign in with a passkey' }}
+                {{ passkeyBusy ? t('auth.waiting_for_passkey') : t('auth.sign_in_with_passkey') }}
             </SecondaryButton>
             <InputError :message="passkeyError ?? ''" />
         </div>
 
         <p class="mt-6 text-sm text-center text-gray-600">
-            No account?
+            {{ t('auth.no_account') }}
             <Link :href="route('register')" class="text-indigo-600 hover:text-indigo-500 underline">
-                Register
+                {{ t('auth.register') }}
             </Link>
         </p>
     </GuestLayout>

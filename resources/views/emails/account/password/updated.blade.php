@@ -1,8 +1,8 @@
 @component('mail::message')
-# Password updated
+# {{ __('mail.password_updated.heading') }}
 
-We're just letting you know that your password was updated.
+{{ __('mail.password_updated.body') }}
 
-Thanks,<br>
+{{ __('mail.thanks') }},<br>
 {{ config('app.name') }}
 @endcomponent

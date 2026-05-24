@@ -1,10 +1,10 @@
 @component('mail::message')
-# Please activate your account
+# {{ __('mail.activation.heading') }}
 
 @component('mail::button', ['url' => route('activation.activate', $token)])
-Activate
+{{ __('mail.activation.action') }}
 @endcomponent
 
-Thanks,<br>
+{{ __('mail.thanks') }},<br>
 {{ config('app.name') }}
 @endcomponent

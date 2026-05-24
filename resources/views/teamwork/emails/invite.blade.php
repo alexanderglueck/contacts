@@ -1,2 +1,2 @@
-You have been invited to join team {{$team->name}}.<br>
-Click here to join: <a href="{{route('teams.accept_invite', $invite->accept_token)}}">{{route('teams.accept_invite', $invite->accept_token)}}</a>
+{{ __('mail.team_invite.body', ['team' => $team->name]) }}<br>
+{{ __('mail.team_invite.cta') }} <a href="{{route('teams.accept_invite', $invite->accept_token)}}">{{route('teams.accept_invite', $invite->accept_token)}}</a>

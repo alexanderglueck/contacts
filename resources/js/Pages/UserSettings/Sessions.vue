@@ -1,12 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import SettingsLayout from '@/Layouts/SettingsLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     sessions: { type: Array, required: true },
@@ -45,7 +48,7 @@ const cancelLogoutOthers = () => {
 };
 
 const revoke = (session) => {
-    if (!confirm('Sign this browser out?')) return;
+    if (!confirm(t('settings.sessions.sign_out_this'))) return;
     router.delete(route('user_settings.sessions.destroy', session.id), {
         preserveScroll: true,
     });
@@ -53,25 +56,23 @@ const revoke = (session) => {
 </script>
 
 <template>
-    <SettingsLayout title="Active sessions">
-        <Head title="Active sessions" />
+    <SettingsLayout :title="t('settings.sessions.title')">
+        <Head :title="t('settings.sessions.title')" />
 
         <section class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Active sessions</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('settings.sessions.title') }}</h2>
                 <p class="text-xs text-gray-600 mt-0.5">
-                    Browsers and devices currently signed in to your account. Sign out anything
-                    you don't recognise.
+                    {{ t('settings.sessions.subtitle') }}
                 </p>
             </div>
 
             <div v-if="driver !== 'database'" class="px-6 py-4 text-sm text-amber-700 bg-amber-50 border-b border-amber-200">
-                Session listing requires <code>SESSION_DRIVER=database</code>. Update your
-                <code>.env</code> and run <code>php artisan session:table &amp;&amp; php artisan migrate</code>.
+                {{ t('settings.sessions.driver_warning') }}
             </div>
 
             <div v-else-if="sessions.length === 0" class="px-6 py-4 text-sm text-gray-600">
-                No active sessions found.
+                {{ t('settings.sessions.none') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
@@ -91,17 +92,17 @@ const revoke = (session) => {
                         </div>
                         <div class="text-sm">
                             <div class="font-medium text-gray-900">
-                                {{ session.browser }} on {{ session.platform }}
+                                {{ session.browser }} · {{ session.platform }}
                                 <span
                                     v-if="session.is_current"
                                     class="ml-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5 align-middle"
                                 >
-                                    This device
+                                    {{ t('settings.sessions.this_device') }}
                                 </span>
                             </div>
                             <div class="text-xs text-gray-500">
-                                {{ session.ip_address ?? 'unknown IP' }}
-                                · Last active {{ session.last_active }}
+                                {{ session.ip_address ?? t('settings.sessions.unknown_ip') }}
+                                · {{ t('settings.sessions.last_active') }} {{ session.last_active }}
                             </div>
                         </div>
                     </div>
@@ -112,7 +113,7 @@ const revoke = (session) => {
                         class="text-sm text-red-600 hover:text-red-700 cursor-pointer"
                         @click="revoke(session)"
                     >
-                        Sign out
+                        {{ t('settings.sessions.sign_out') }}
                     </button>
                 </li>
             </ul>
@@ -123,16 +124,16 @@ const revoke = (session) => {
             >
                 <div v-if="!confirmingLogoutOthers">
                     <SecondaryButton type="button" class="cursor-pointer" @click="confirmLogoutOthers">
-                        Sign out all other browsers
+                        {{ t('settings.sessions.sign_out_others') }}
                     </SecondaryButton>
                 </div>
 
                 <form v-else @submit.prevent="submitLogoutOthers" class="space-y-3">
                     <p class="text-sm text-gray-700">
-                        Re-enter your password to sign out every browser other than this one.
+                        {{ t('settings.sessions.sign_out_others_confirm') }}
                     </p>
                     <div>
-                        <InputLabel for="password" value="Password" />
+                        <InputLabel for="password" :value="t('auth.password')" />
                         <TextInput
                             id="password"
                             ref="passwordInput"
@@ -145,14 +146,14 @@ const revoke = (session) => {
                     </div>
                     <div class="flex gap-2 justify-end">
                         <SecondaryButton type="button" class="cursor-pointer" @click="cancelLogoutOthers">
-                            Cancel
+                            {{ t('common.cancel') }}
                         </SecondaryButton>
                         <PrimaryButton
                             type="submit"
                             :disabled="logoutForm.processing"
                             :class="{ 'opacity-50': logoutForm.processing }"
                         >
-                            Sign out other browsers
+                            {{ t('settings.sessions.sign_out_others_action') }}
                         </PrimaryButton>
                     </div>
                 </form>
