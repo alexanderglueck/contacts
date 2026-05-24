@@ -10,7 +10,6 @@ import DangerButton from '@/Components/DangerButton.vue';
 
 const props = defineProps({
     team: { type: Object, required: true },
-    auth_user_id: { type: Number, required: true },
     can: { type: Object, default: () => ({}) },
 });
 
@@ -19,18 +18,18 @@ const inviteForm = useForm({
 });
 
 const submitInvite = () => {
-    inviteForm.post(route('teams.members.invite', props.team.id), {
+    inviteForm.post(route('teams.members.invite', props.team.uuid), {
         onSuccess: () => inviteForm.reset('email'),
     });
 };
 
 const removeMember = (user) => {
     if (!confirm(`Remove ${user.name} from the team?`)) return;
-    router.delete(route('teams.members.destroy', [props.team.id, user.id]));
+    router.delete(route('teams.members.destroy', [props.team.uuid, user.slug]));
 };
 
-const impersonate = (userId) => {
-    router.post(route('user.impersonate'), { userId });
+const impersonate = (slug) => {
+    router.post(route('user.impersonate'), { userSlug: slug });
 };
 </script>
 
@@ -56,11 +55,11 @@ const impersonate = (userId) => {
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="user in team.users" :key="user.id">
+                        <tr v-for="user in team.users" :key="user.slug">
                             <td class="px-6 py-3 text-sm text-gray-900">{{ user.name }}</td>
                             <td class="px-6 py-3 text-right">
                                 <DangerButton
-                                    v-if="can.manage && user.id !== auth_user_id"
+                                    v-if="can.manage && !user.is_self"
                                     type="button"
                                     @click="removeMember(user)"
                                 >
@@ -69,9 +68,9 @@ const impersonate = (userId) => {
                             </td>
                             <td v-if="can.impersonate" class="px-6 py-3 text-right">
                                 <SecondaryButton
-                                    v-if="user.id !== auth_user_id"
+                                    v-if="!user.is_self"
                                     type="button"
-                                    @click="impersonate(user.id)"
+                                    @click="impersonate(user.slug)"
                                 >
                                     Impersonate
                                 </SecondaryButton>
@@ -98,10 +97,10 @@ const impersonate = (userId) => {
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="invite in team.invites" :key="invite.id">
+                        <tr v-for="invite in team.invites" :key="invite.ulid">
                             <td class="px-6 py-3 text-sm text-gray-900">{{ invite.email }}</td>
                             <td class="px-6 py-3 text-right">
-                                <Link :href="route('teams.members.resend_invite', invite.id)">
+                                <Link :href="route('teams.members.resend_invite', invite.ulid)">
                                     <SecondaryButton type="button">Resend invite</SecondaryButton>
                                 </Link>
                             </td>

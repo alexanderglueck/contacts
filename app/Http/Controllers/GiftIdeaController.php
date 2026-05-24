@@ -23,7 +23,7 @@ class GiftIdeaController extends Controller
         return Inertia::render('GiftIdeas/Index', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'items' => $contact->giftIdeas->map(fn ($g) => [
-                'id' => $g->id,
+                'ulid' => $g->ulid,
                 'name' => $g->name,
                 'description' => $g->description,
                 'url' => $g->url,
@@ -64,7 +64,7 @@ class GiftIdeaController extends Controller
         return Inertia::render('GiftIdeas/Show', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $giftIdea->id,
+                'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,
                 'description' => $giftIdea->description,
                 'url' => $giftIdea->url,
@@ -84,7 +84,7 @@ class GiftIdeaController extends Controller
         return Inertia::render('GiftIdeas/Edit', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $giftIdea->id,
+                'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,
                 'description' => $giftIdea->description,
                 'url' => $giftIdea->url,
@@ -98,11 +98,11 @@ class GiftIdeaController extends Controller
         if ($giftIdea->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.gift_idea.updated'));
 
-            return redirect()->route('gift_ideas.show', [$contact->slug, $giftIdea->id]);
+            return redirect()->route('gift_ideas.show', [$contact->slug, $giftIdea->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.gift_idea.not_updated'));
 
-            return redirect()->route('gift_ideas.edit', [$contact->slug, $giftIdea->id]);
+            return redirect()->route('gift_ideas.edit', [$contact->slug, $giftIdea->ulid]);
         }
     }
 
@@ -117,7 +117,7 @@ class GiftIdeaController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.gift_idea.not_deleted'));
 
-            return redirect()->route('gift_ideas.delete', [$contact->slug, $giftIdea->id]);
+            return redirect()->route('gift_ideas.delete', [$contact->slug, $giftIdea->ulid]);
         }
     }
 
@@ -128,7 +128,7 @@ class GiftIdeaController extends Controller
         return Inertia::render('GiftIdeas/Delete', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $giftIdea->id,
+                'ulid' => $giftIdea->ulid,
                 'name' => $giftIdea->name,
                 'description' => $giftIdea->description,
                 'url' => $giftIdea->url,

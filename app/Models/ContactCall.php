@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactCall extends Model
 {
+    use HasUlidRouteKey;
+
     protected $fillable = ['note', 'called_at'];
 
     /**

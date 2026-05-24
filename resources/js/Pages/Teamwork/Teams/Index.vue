@@ -11,7 +11,7 @@ defineProps({
 
 const destroy = (team) => {
     if (!confirm(`Delete team "${team.name}"?`)) return;
-    router.delete(route('teams.destroy', team.id));
+    router.delete(route('teams.destroy', team.uuid));
 };
 </script>
 
@@ -36,7 +36,7 @@ const destroy = (team) => {
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="team in teams" :key="team.id">
+                    <tr v-for="team in teams" :key="team.uuid">
                         <td class="px-6 py-3 text-sm text-gray-900">{{ team.name }}</td>
                         <td class="px-6 py-3 text-sm">
                             <span
@@ -59,16 +59,16 @@ const destroy = (team) => {
                             >
                                 Current team
                             </span>
-                            <Link v-else-if="team.created" :href="route('teams.switch', team.id)">
+                            <Link v-else-if="team.created" :href="route('teams.switch', team.uuid)">
                                 <SecondaryButton type="button">Switch</SecondaryButton>
                             </Link>
 
-                            <Link :href="route('teams.members.show', team.id)">
+                            <Link :href="route('teams.members.show', team.uuid)">
                                 <SecondaryButton type="button">Members</SecondaryButton>
                             </Link>
 
                             <template v-if="team.is_owner">
-                                <Link :href="route('teams.edit', team.id)">
+                                <Link :href="route('teams.edit', team.uuid)">
                                     <SecondaryButton type="button">Edit</SecondaryButton>
                                 </Link>
                                 <DangerButton type="button" @click="destroy(team)">Delete</DangerButton>

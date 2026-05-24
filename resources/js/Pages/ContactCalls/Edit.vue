@@ -18,7 +18,7 @@ const form = useForm({
     note: props.item.note ?? '',
 });
 
-const submit = () => form.put(route('contact_calls.update', [props.contact.slug, props.item.id]));
+const submit = () => form.put(route('contact_calls.update', [props.contact.slug, props.item.ulid]));
 </script>
 
 <template>
@@ -44,7 +44,7 @@ const submit = () => form.put(route('contact_calls.update', [props.contact.slug,
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-                <Link :href="route('contact_calls.show', [contact.slug, item.id])">
+                <Link :href="route('contact_calls.show', [contact.slug, item.ulid])">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">

@@ -30,7 +30,7 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="space-y-4">
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Full name" />
                 <TextInput id="name" v-model="form.name" autocomplete="name" autofocus required />
                 <InputError :message="form.errors.name" />
             </div>
@@ -68,9 +68,9 @@ const submit = () => {
                 <Checkbox v-model:checked="form.terms" />
                 <span class="ms-2 text-sm text-gray-600">
                     I accept the
-                    <Link :href="route('pages.terms_of_service')" class="text-indigo-600 hover:text-indigo-500 underline">
+                    <a :href="route('pages.terms_of_service')" target="_blank" rel="noopener" class="text-indigo-600 hover:text-indigo-500 underline">
                         terms of service
-                    </Link>.
+                    </a>.
                 </span>
             </label>
             <InputError :message="form.errors.terms" />

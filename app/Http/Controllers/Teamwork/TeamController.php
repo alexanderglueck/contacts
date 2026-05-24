@@ -33,7 +33,7 @@ class TeamController extends Controller
         $currentTeamId = $user->currentTeam?->id;
 
         $teams = $user->teams->map(fn ($team) => [
-            'id' => $team->id,
+            'uuid' => $team->uuid,
             'name' => $team->name,
             'created' => (bool) $team->created,
             'is_owner' => $user->isOwnerOfTeam($team),
@@ -112,7 +112,7 @@ class TeamController extends Controller
 
         return Inertia::render('Teamwork/Teams/Edit', [
             'team' => [
-                'id' => $team->id,
+                'uuid' => $team->uuid,
                 'name' => $team->name,
             ],
         ]);

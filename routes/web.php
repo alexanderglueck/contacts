@@ -76,9 +76,13 @@ Route::group(['namespace' => 'Account', 'as' => 'user_settings.', 'prefix' => 's
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Password change is handled by Fortify (PUT /user/password).
-    // 2FA management is handled by Fortify (/user/two-factor-* + /two-factor-challenge).
-    // Personal access tokens are handled directly by Sanctum's API.
+    // Form-host pages for Fortify-managed flows. The pages POST/PUT to Fortify
+    // endpoints (e.g. PUT /user/password, POST /user/two-factor-authentication).
+    Route::get('password', fn () => \Inertia\Inertia::render('UserSettings/Password'))->name('password.show');
+    Route::get('two-factor', fn () => \Inertia\Inertia::render('UserSettings/TwoFactor', [
+        'twoFactorEnabled' => (bool) auth()->user()->two_factor_secret,
+        'twoFactorConfirmed' => auth()->user()->two_factor_confirmed_at !== null,
+    ]))->name('two_factor.edit');
 
     /**
      * Profile image

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Model;
 
 class GiftIdea extends Model
 {
+    use HasUlidRouteKey;
+
     protected $fillable = [
         'contact_id',
         'name',

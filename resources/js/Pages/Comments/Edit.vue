@@ -19,9 +19,9 @@ const editForm = useForm({
 
 const deleteForm = useForm({});
 
-const submit = () => editForm.put(route('comments.update', [props.contact.slug, props.comment.id]));
+const submit = () => editForm.put(route('comments.update', [props.contact.slug, props.comment.ulid]));
 
-const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.slug, props.comment.id]));
+const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.slug, props.comment.ulid]));
 </script>
 
 <template>

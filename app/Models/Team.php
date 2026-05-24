@@ -42,4 +42,9 @@ class Team extends Model implements Tenant
     {
         return $this->hasMany(Config::get('teamwork.invite_model'), 'team_id', 'id');
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 }

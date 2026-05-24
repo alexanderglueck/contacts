@@ -75,7 +75,7 @@ return [
     | Update the team if it is in a different namespace.
     |
     */
-    'invite_model' => Mpociot\Teamwork\TeamInvite::class,
+    'invite_model' => App\Models\TeamInvite::class,
 
     /*
     |--------------------------------------------------------------------------

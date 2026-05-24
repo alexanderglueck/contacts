@@ -23,7 +23,7 @@ class ContactCallController extends Controller
         return Inertia::render('ContactCalls/Index', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'items' => $contact->calls->map(fn ($c) => [
-                'id' => $c->id,
+                'ulid' => $c->ulid,
                 'formatted_called_at' => $c->formatted_called_at,
                 'note' => $c->note,
             ]),
@@ -62,7 +62,7 @@ class ContactCallController extends Controller
         return Inertia::render('ContactCalls/Show', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $contactCall->id,
+                'ulid' => $contactCall->ulid,
                 'formatted_called_at' => $contactCall->formatted_called_at,
                 'note' => $contactCall->note,
             ],
@@ -80,7 +80,7 @@ class ContactCallController extends Controller
         return Inertia::render('ContactCalls/Edit', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $contactCall->id,
+                'ulid' => $contactCall->ulid,
                 'called_at' => $contactCall->formatted_called_at,
                 'note' => $contactCall->note,
             ],
@@ -92,11 +92,11 @@ class ContactCallController extends Controller
         if ($contactCall->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.updated'));
 
-            return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->id]);
+            return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->ulid]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_updated'));
 
-            return redirect()->route('contact_calls.edit', [$contact->slug, $contactCall->id]);
+            return redirect()->route('contact_calls.edit', [$contact->slug, $contactCall->ulid]);
         }
     }
 
@@ -111,7 +111,7 @@ class ContactCallController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_deleted'));
 
-            return redirect()->route('contact_calls.delete', [$contact->slug, $contactCall->id]);
+            return redirect()->route('contact_calls.delete', [$contact->slug, $contactCall->ulid]);
         }
     }
 
@@ -122,7 +122,7 @@ class ContactCallController extends Controller
         return Inertia::render('ContactCalls/Delete', [
             'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
             'item' => [
-                'id' => $contactCall->id,
+                'ulid' => $contactCall->ulid,
                 'formatted_called_at' => $contactCall->formatted_called_at,
                 'note' => $contactCall->note,
             ],

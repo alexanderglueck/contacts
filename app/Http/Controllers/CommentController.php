@@ -40,7 +40,7 @@ class CommentController extends Controller
                 'fullname' => $contact->fullname,
             ],
             'comment' => [
-                'id' => $comment->id,
+                'ulid' => $comment->ulid,
                 'comment' => $comment->comment,
             ],
         ]);
@@ -55,7 +55,7 @@ class CommentController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.comment.not_updated'));
 
-            return redirect()->route('comments.edit', [$contact->slug, $comment->id]);
+            return redirect()->route('comments.edit', [$contact->slug, $comment->ulid]);
         }
     }
 
@@ -68,7 +68,7 @@ class CommentController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.comment.not_deleted'));
 
-            return redirect()->route('comments.edit', [$contact->slug, $comment->id]);
+            return redirect()->route('comments.edit', [$contact->slug, $comment->ulid]);
         }
     }
 }

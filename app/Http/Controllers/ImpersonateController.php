@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Impersonate\ImpersonateStoreRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Http\Requests\Impersonate\ImpersonateStoreRequest;
 
 class ImpersonateController extends Controller
 {
@@ -13,11 +13,15 @@ class ImpersonateController extends Controller
 
     public function store(ImpersonateStoreRequest $request): RedirectResponse
     {
-        abort_unless($request->user()->currentTeam->hasUser(
-            User::find($request->userId)
-        ), 403, 'Stop right there, criminal scum!');
+        $target = User::where('slug', $request->userSlug)->firstOrFail();
 
-        $request->session()->put('impersonate', $request->userId);
+        abort_unless(
+            $request->user()->currentTeam->hasUser($target),
+            403,
+            'Stop right there, criminal scum!'
+        );
+
+        $request->session()->put('impersonate', $target->id);
 
         return redirect()->route('home');
     }

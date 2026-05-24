@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Mpociot\Teamwork\TeamInvite;
+use App\Models\TeamInvite;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -38,18 +38,18 @@ class TeamMemberController extends Controller
 
         return Inertia::render('Teamwork/Members/Show', [
             'team' => [
-                'id' => $team->id,
+                'uuid' => $team->uuid,
                 'name' => $team->name,
                 'users' => $team->users->map(fn ($user) => [
-                    'id' => $user->id,
+                    'slug' => $user->slug,
                     'name' => $user->name,
+                    'is_self' => $user->id === $authUser->id,
                 ])->all(),
                 'invites' => $team->invites->map(fn ($invite) => [
-                    'id' => $invite->id,
+                    'ulid' => $invite->ulid,
                     'email' => $invite->email,
                 ])->all(),
             ],
-            'auth_user_id' => $authUser->id,
             'can' => [
                 'manage' => $isOwner,
                 'impersonate' => $canImpersonate && $isCurrentTeam,
@@ -102,7 +102,7 @@ class TeamMemberController extends Controller
             ]);
         }
 
-        return redirect(route('teams.members.show', $team->id));
+        return redirect(route('teams.members.show', $team->uuid));
     }
 
     /**
@@ -116,6 +116,6 @@ class TeamMemberController extends Controller
 
         Mail::to($invite->email)->send(new TeamInvitation($invite));
 
-        return redirect(route('teams.members.show', $invite->team));
+        return redirect(route('teams.members.show', $invite->team->uuid));
     }
 }

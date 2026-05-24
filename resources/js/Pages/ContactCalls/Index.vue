@@ -33,9 +33,9 @@ defineProps({
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
-                <li v-for="item in items" :key="item.id">
+                <li v-for="item in items" :key="item.ulid">
                     <Link
-                        :href="route('contact_calls.show', [contact.slug, item.id])"
+                        :href="route('contact_calls.show', [contact.slug, item.ulid])"
                         class="block px-6 py-3 hover:bg-gray-50"
                     >
                         <div class="text-sm font-medium text-gray-900">{{ item.formatted_called_at }}</div>

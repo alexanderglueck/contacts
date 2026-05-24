@@ -15,7 +15,7 @@ const form = useForm({
     name: props.team.name ?? '',
 });
 
-const submit = () => form.put(route('teams.update', props.team.id));
+const submit = () => form.put(route('teams.update', props.team.uuid));
 </script>
 
 <template>

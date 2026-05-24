@@ -24,7 +24,7 @@ class ImpersonateStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'userId' => 'required|exists:users,id'
+            'userSlug' => 'required|exists:users,slug',
         ];
     }
 }
