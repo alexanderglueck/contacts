@@ -30,7 +30,12 @@ class AuthController extends Controller
         // fire identically here. The RegisterRequest typehint exists so
         // Scramble can document the body schema; the action validates again
         // internally to protect the web path that doesn't go through it.
-        $user = $creator->create($request->validated());
+        //
+        // Pass `all()` rather than `validated()` — `password_confirmation`
+        // isn't a top-level rule key (Laravel's `confirmed` rule resolves
+        // it by convention) so `validated()` strips it, leaving the
+        // action's internal Validator with nothing to compare against.
+        $user = $creator->create($request->all());
 
         return response()->json([
             'user' => $this->serialize($user),
