@@ -87,6 +87,25 @@ const openDelete = (item) => {
 
 const refreshItems = () => router.reload({ only: ['numbers'] });
 
+// X button in the slideover header: in list mode it closes the whole
+// slideover (delegates up to the parent); inside any sub-mode it steps
+// back one level instead of dropping the user back on the contact page.
+const handleHeaderClose = () => {
+    switch (mode.value) {
+        case 'create':
+        case 'show':
+            backToList();
+            break;
+        case 'edit':
+        case 'delete':
+            mode.value = 'show';
+            break;
+        case 'list':
+        default:
+            emit('close');
+    }
+};
+
 const submitCreate = () =>
     createForm.post(route('contact_numbers.store', props.contact.ulid), {
         preserveScroll: true,
@@ -113,7 +132,7 @@ const submitDelete = () =>
 </script>
 
 <template>
-    <SlideOver :open="open" :title="title" @close="emit('close')">
+    <SlideOver :open="open" :title="title" @close="handleHeaderClose">
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
