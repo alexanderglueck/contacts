@@ -1,13 +1,16 @@
 <script setup>
 import { computed } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from 'vue-i18n';
+import SettingsLayout from '@/Layouts/SettingsLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     twoFactorEnabled: { type: Boolean, required: true },
@@ -40,41 +43,41 @@ const regenerate = () => regenerateForm.post(route('two-factor.regenerate-recove
 </script>
 
 <template>
-    <AppLayout title="Two-factor authentication">
-        <Head title="Two-factor authentication" />
+    <SettingsLayout :title="t('settings.two_factor.title')">
+        <Head :title="t('settings.two_factor.title')" />
 
         <div v-if="stage === 'inactive'" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Two-factor authentication</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('settings.two_factor.title') }}</h2>
             </div>
             <form @submit.prevent="enable" class="px-6 py-4 space-y-4">
                 <p class="text-sm text-gray-600">
-                    Add an extra layer of security by requiring a one-time code from your authenticator app on every login.
+                    {{ t('settings.two_factor.intro') }}
                 </p>
                 <PrimaryButton :disabled="enableForm.processing" :class="{ 'opacity-50': enableForm.processing }">
-                    Enable 2FA
+                    {{ t('settings.two_factor.enable_2fa') }}
                 </PrimaryButton>
             </form>
         </div>
 
         <div v-else-if="stage === 'setup'" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Finish setting up two-factor authentication</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('settings.two_factor.finish_setup_title') }}</h2>
             </div>
             <form @submit.prevent="confirm" class="px-6 py-4 space-y-4">
                 <p class="text-sm text-gray-600">
-                    Scan the QR code with your authenticator app, then enter the generated code below to confirm.
+                    {{ t('settings.two_factor.scan_help') }}
                 </p>
 
                 <div class="flex justify-center" v-html="qrSvg" />
 
                 <div class="text-center">
-                    <p class="text-xs text-gray-500">If you cannot scan the code, enter this secret manually:</p>
+                    <p class="text-xs text-gray-500">{{ t('settings.two_factor.secret_help') }}</p>
                     <code class="text-sm break-all">{{ secretKey }}</code>
                 </div>
 
                 <div>
-                    <InputLabel for="code" value="Authentication code" />
+                    <InputLabel for="code" :value="t('settings.two_factor.code_label')" />
                     <TextInput
                         id="code"
                         v-model="confirmForm.code"
@@ -88,10 +91,10 @@ const regenerate = () => regenerateForm.post(route('two-factor.regenerate-recove
 
                 <div class="flex justify-between">
                     <DangerButton type="button" @click="disable" :disabled="disableForm.processing">
-                        Cancel
+                        {{ t('settings.two_factor.cancel') }}
                     </DangerButton>
                     <PrimaryButton :disabled="confirmForm.processing" :class="{ 'opacity-50': confirmForm.processing }">
-                        Activate
+                        {{ t('settings.two_factor.activate') }}
                     </PrimaryButton>
                 </div>
             </form>
@@ -100,16 +103,16 @@ const regenerate = () => regenerateForm.post(route('two-factor.regenerate-recove
         <div v-else class="space-y-4">
             <div class="bg-white shadow rounded-lg">
                 <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-medium text-gray-900">Recovery codes</h2>
+                    <h2 class="text-lg font-medium text-gray-900">{{ t('settings.two_factor.recovery_codes_title') }}</h2>
                     <form @submit.prevent="regenerate">
                         <SecondaryButton :disabled="regenerateForm.processing">
-                            Regenerate
+                            {{ t('settings.two_factor.regenerate') }}
                         </SecondaryButton>
                     </form>
                 </div>
                 <div class="px-6 py-4">
                     <p class="text-sm text-gray-600 mb-3">
-                        Store these recovery codes in a safe place. Each one can be used once to access your account if you lose your authenticator device.
+                        {{ t('settings.two_factor.recovery_codes_body') }}
                     </p>
                     <ol class="list-decimal list-inside space-y-1 text-sm font-mono text-gray-800">
                         <li v-for="code in recoveryCodes" :key="code">{{ code }}</li>
@@ -120,10 +123,10 @@ const regenerate = () => regenerateForm.post(route('two-factor.regenerate-recove
             <form @submit.prevent="disable" class="bg-white shadow rounded-lg">
                 <div class="px-6 py-4 flex justify-end">
                     <DangerButton :disabled="disableForm.processing" :class="{ 'opacity-50': disableForm.processing }">
-                        Deactivate 2FA
+                        {{ t('settings.two_factor.disable_2fa') }}
                     </DangerButton>
                 </div>
             </form>
         </div>
-    </AppLayout>
+    </SettingsLayout>
 </template>
