@@ -82,11 +82,17 @@ const openCreate = () => {
     mode.value = 'create';
 };
 
-const openReply = (parent) => {
-    selected.value = parent;
+const openReply = (target) => {
+    // Threads stay one level deep visually. When you reply to a reply, the
+    // new comment is still data-attached to the original root (the reply's
+    // own parent), so it shows up alongside its siblings — no third-level
+    // indentation. The "Replying to X" badge still names whoever you
+    // actually clicked, which is the conversational signal the user wants.
+    const rootParentUlid = target.parent_ulid ?? target.ulid;
+    selected.value = target;
     createForm.reset();
     createForm.clearErrors();
-    createForm.parent_ulid = parent.ulid;
+    createForm.parent_ulid = rootParentUlid;
     mode.value = 'create';
 };
 
@@ -204,11 +210,19 @@ const submitDelete = () =>
                                 <div class="prose-note text-gray-800" v-html="reply.comment_html" />
 
                                 <footer
-                                    v-if="reply.is_mine && (can.edit || can.delete)"
+                                    v-if="can.create || (reply.is_mine && (can.edit || can.delete))"
                                     class="mt-1 flex gap-3 text-xs"
                                 >
                                     <button
-                                        v-if="can.edit"
+                                        v-if="can.create"
+                                        type="button"
+                                        class="text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                                        @click="openReply(reply)"
+                                    >
+                                        Reply
+                                    </button>
+                                    <button
+                                        v-if="reply.is_mine && can.edit"
                                         type="button"
                                         class="text-gray-600 hover:text-gray-900 cursor-pointer"
                                         @click="openEdit(reply)"
@@ -216,7 +230,7 @@ const submitDelete = () =>
                                         Edit
                                     </button>
                                     <button
-                                        v-if="can.delete"
+                                        v-if="reply.is_mine && can.delete"
                                         type="button"
                                         class="text-red-600 hover:text-red-500 cursor-pointer"
                                         @click="openDelete(reply)"
