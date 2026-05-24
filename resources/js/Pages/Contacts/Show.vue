@@ -11,6 +11,7 @@ import DatesSection from './Sections/DatesSection.vue';
 import GiftIdeasSection from './Sections/GiftIdeasSection.vue';
 import AddressesSection from './Sections/AddressesSection.vue';
 import ActivitySection from './Sections/ActivitySection.vue';
+import CommentsSection from './Sections/CommentsSection.vue';
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -32,6 +33,7 @@ const giftIdeas = computed(() => page.props.gift_ideas ?? []);
 const addresses = computed(() => page.props.addresses ?? []);
 const countries = computed(() => page.props.countries ?? []);
 const activities = computed(() => page.props.activities ?? []);
+const comments = computed(() => page.props.comments ?? []);
 
 const activeSection = ref(null); // null | 'numbers' | 'emails' | ...
 
@@ -46,6 +48,7 @@ const sectionDataKey = {
     gift_ideas: ['gift_ideas'],
     addresses: ['addresses', 'countries'],
     activities: ['activities'],
+    comments: ['comments'],
 };
 
 const openSection = (key) => {
@@ -134,6 +137,14 @@ const tiles = computed(() => [
         count: props.contact.gift_ideas_count ?? 0,
         canView: props.can.view_gift_ideas,
         action: () => openSection('gift_ideas'),
+        href: null,
+    },
+    {
+        key: 'comments',
+        label: 'Comments',
+        count: props.contact.comments_count ?? 0,
+        canView: props.can.view_comments,
+        action: () => openSection('comments'),
         href: null,
     },
     {
@@ -321,6 +332,18 @@ const tiles = computed(() => [
             :open="activeSection === 'activities'"
             :contact="contact"
             :items="activities"
+            @close="closeSection"
+        />
+
+        <CommentsSection
+            :open="activeSection === 'comments'"
+            :contact="contact"
+            :items="comments"
+            :can="{
+                create: can.create_comments,
+                edit: can.edit_comments,
+                delete: can.delete_comments,
+            }"
             @close="closeSection"
         />
     </AppLayout>

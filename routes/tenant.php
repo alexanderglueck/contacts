@@ -183,7 +183,6 @@ Route::group(['middleware' => 'subscription.active'], function () {
      * Comments
      */
     Route::post('comments/{contact}', [CommentController::class, 'store'])->name('comments.store');
-    Route::get('comments/{contact}/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
     Route::put('comments/{contact}/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('comments/{contact}/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
