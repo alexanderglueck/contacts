@@ -2,51 +2,25 @@
 
 namespace App\Notifications;
 
-use DateTime;
-use DateInterval;
+use App\Models\Contact;
 use App\Models\ContactDate;
+use DateInterval;
+use DateTime;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class WeeksDates extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed $notifiable
-     * @return array
-     */
     public function via($notifiable)
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
     public function toMail($notifiable)
     {
-        // Start and end day before the interval is added
-        $startDate = DateTime::createFromFormat('Ymd', date('Ymd'));
-        $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
-
-        // Date Intervals
         $oneWeek = DateInterval::createFromDateString('1 week');
         $twoWeeks = DateInterval::createFromDateString('2 weeks');
         $oneDay = DateInterval::createFromDateString('1 day');
@@ -55,109 +29,139 @@ class WeeksDates extends Notification
             ->from('service@gdev.at', config('app.name'))
             ->subject('Bevorstehende Ereignisse');
 
-        // events this week
-        $endDate->add($oneWeek)->sub($oneDay);
+        // ───── This week: today … today + 6 days ─────
+        $thisWeekStart = DateTime::createFromFormat('Ymd', date('Ymd'));
+        $thisWeekEnd = DateTime::createFromFormat('Ymd', date('Ymd'))
+            ->add($oneWeek)
+            ->sub($oneDay);
 
-        $events = ContactDate::datesInRange($startDate, $endDate);
-
-        $this->buildMail(
+        $this->buildSection(
             $mailMessage,
-            $events,
-            $startDate->format('Y'),
-            $endDate->format('Y'),
-            $startDate,
-            $endDate
+            ContactDate::datesInRange($thisWeekStart, $thisWeekEnd),
+            $this->loadBirthdays($thisWeekStart, $thisWeekEnd),
+            $thisWeekStart,
+            $thisWeekEnd,
+            isThisWeek: true,
+            includeGiftIdeas: false,
         );
 
-        // Reset end date (we added one week above)
-        $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
+        // ───── Next week: today + 7 … today + 13 days ─────
+        // (the "1 week before" gift-idea reminder window)
+        $nextWeekStart = DateTime::createFromFormat('Ymd', date('Ymd'))->add($oneWeek);
+        $nextWeekEnd = DateTime::createFromFormat('Ymd', date('Ymd'))->add($twoWeeks)->sub($oneDay);
 
-        // Add the intervals to the dates
-        $startDate->add($oneWeek);
-        $endDate->add($twoWeeks)->sub($oneDay);
-
-        $fromYear = $startDate->format('Y');
-        $toYear = $endDate->format('Y');
-
-        $events = ContactDate::datesInRange($startDate, $endDate);
-
-        $this->buildMail(
+        $this->buildSection(
             $mailMessage,
-            $events,
-            $fromYear,
-            $toYear,
-            $startDate,
-            $endDate,
-            false
+            ContactDate::datesInRange($nextWeekStart, $nextWeekEnd),
+            $this->loadBirthdays($nextWeekStart, $nextWeekEnd),
+            $nextWeekStart,
+            $nextWeekEnd,
+            isThisWeek: false,
+            includeGiftIdeas: true,
         );
 
         return $mailMessage;
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    private function buildMail($mailMessage, $events, $fromYear, $toYear, $startDate, $endDate, $thisWeek = true)
+    /**
+     * Birthdays whose month-day falls in the given range, eager-loading
+     * giftIdeas so the next-week section can list them without N+1.
+     */
+    private function loadBirthdays(DateTime $start, DateTime $end)
     {
-        if (count($events) > 0) {
-            if (count($events) > 1) {
-                if ($thisWeek) {
-                    $mailMessage->line('Diese Woche stehen diese Ereignisse bevor: ');
-                } else {
-                    $mailMessage->line('Nächste Woche stehen diese Ereignisse bevor: ');
-                }
-            } else {
-                if ($thisWeek) {
-                    $mailMessage->line('Diese Woche steht dieses Ereignis bevor: ');
-                } else {
-                    $mailMessage->line('Nächste Woche steht dieses Ereignis bevor: ');
-                }
-            }
+        return Contact::datesInRange($start, $end)->load('giftIdeas');
+    }
 
-            foreach ($events as $event) {
-                if ($fromYear < $toYear) {
+    private function buildSection(
+        MailMessage $mailMessage,
+        $contactDates,
+        $birthdays,
+        DateTime $startDate,
+        DateTime $endDate,
+        bool $isThisWeek,
+        bool $includeGiftIdeas,
+    ): void {
+        $totalEvents = count($contactDates) + count($birthdays);
 
-                    /**
-                     * If the concatenated event date with the from year is greater than the raw from date, then the event is in the old year.
-                     * Example:
-                     *   2016 12 27 > 2016 12 26 && 2016 12 27 < 2017 02 06
-                     *      from case true
-                     *      event from the old year
-                     *   2016 01 01 > 2016 12 26 && 2016 01 01 < 2017 02 06
-                     *      from case false
-                     *      event from the new year
-                     */
-                    if (intval($fromYear . $event->format('md')) > intval($startDate->format('Ymd')) && intval($fromYear . $event->format('md')) < intval($endDate->format('Ymd'))) {
-                        $fromCase = true;
-                    } else {
-                        $fromCase = false;
-                    }
-                } else {
-                    $fromCase = true;
-                }
+        if ($totalEvents === 0) {
+            $mailMessage->line($isThisWeek
+                ? 'Diese Woche steht kein Ereignis bevor.'
+                : 'Nächste Woche steht kein Ereignis bevor.');
 
-                if ($fromCase) {
-                    $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName($fromYear) . ' - ' . $event->formattedDate);
-                } else {
-                    $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName($toYear) . ' - ' . $event->formattedDate);
-                }
-            }
+            return;
+        }
+
+        if ($totalEvents > 1) {
+            $mailMessage->line($isThisWeek
+                ? 'Diese Woche stehen diese Ereignisse bevor:'
+                : 'Nächste Woche stehen diese Ereignisse bevor:');
         } else {
-            if ($thisWeek) {
-                $mailMessage->line('Diese Woche steht kein Ereignis bevor.');
-            } else {
-                $mailMessage->line('Nächste Woche steht kein Ereignis bevor.');
+            $mailMessage->line($isThisWeek
+                ? 'Diese Woche steht dieses Ereignis bevor:'
+                : 'Nächste Woche steht dieses Ereignis bevor:');
+        }
+
+        $fromYear = (int) $startDate->format('Y');
+        $toYear = (int) $endDate->format('Y');
+
+        foreach ($contactDates as $event) {
+            $year = $this->resolveEventYear($event->date, $startDate, $endDate, $fromYear, $toYear);
+            $mailMessage->line(
+                $event->contact->fullname.' - '.$event->getCalculatedName($year).' - '.$event->formattedDate,
+            );
+        }
+
+        foreach ($birthdays as $contact) {
+            $year = $this->resolveEventYear($contact->date_of_birth, $startDate, $endDate, $fromYear, $toYear);
+            // getCalculatedName returns e.g. "31. Geburtstag\nFullname";
+            // peel the name off so we can build a single line ourselves.
+            $title = trim(str_replace($contact->fullname, '', $contact->getCalculatedName($year)));
+            $mailMessage->line(
+                $contact->fullname.' - '.$title.' - '.$contact->formatted_date_of_birth,
+            );
+
+            if ($includeGiftIdeas && $contact->giftIdeas->isNotEmpty()) {
+                $mailMessage->line('Geschenkideen:');
+                foreach ($contact->giftIdeas as $idea) {
+                    $line = '• '.$idea->name;
+                    if ($idea->description) {
+                        $line .= ' — '.$idea->description;
+                    }
+                    if ($idea->url) {
+                        $line .= ' ('.$idea->url.')';
+                    }
+                    $mailMessage->line($line);
+                }
             }
         }
+    }
+
+    /**
+     * Pick which calendar year to display the recurring event in. When the
+     * range spans a year boundary (Dec → Jan), an event with an early-year
+     * MMDD belongs in the to-year; otherwise it sits in the from-year.
+     */
+    private function resolveEventYear(
+        string $rawDate, DateTime $startDate, DateTime $endDate, int $fromYear, int $toYear,
+    ): int {
+        if ($fromYear === $toYear) {
+            return $fromYear;
+        }
+
+        $eventDate = date_create_from_format('Y-m-d H:i:s', $rawDate)
+            ?: date_create_from_format('Y-m-d', $rawDate);
+
+        $mmdd = $eventDate ? $eventDate->format('md') : '';
+        $stamp = intval($fromYear.$mmdd);
+
+        return $stamp >= intval($startDate->format('Ymd'))
+            && $stamp <= intval($endDate->format('Ymd'))
+            ? $fromYear
+            : $toYear;
     }
 }
