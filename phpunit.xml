@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache">
-  <testsuites>
-    <testsuite name="Unit">
-      <directory suffix="Test.php">./tests/Unit</directory>
-    </testsuite>
-    <testsuite name="Feature">
-      <directory suffix="Test.php">./tests/Feature</directory>
-    </testsuite>
-  </testsuites>
-  <php>
-    <server name="APP_ENV" value="testing"/>
-    <server name="APP_KEY" value="base64:Q+s3u7CAGl0xTkPuzoW0J3R7zfzBe/MXI/crKCibk2w="/>
-    <server name="BCRYPT_ROUNDS" value="4"/>
-    <server name="CACHE_DRIVER" value="array"/>
-    <server name="SCOUT_DRIVER" value="collection"/>
-    <server name="DB_DATABASE" value=":memory:"/>
-    <server name="DB_CONNECTION" value="sqlite"/>
-    <server name="CONTACTS_TENANT_PREFIX" value="ct_"/>
-    <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
-    <!-- <server name="DB_DATABASE" value=":memory:"/> -->
-    <server name="MAIL_MAILER" value="array"/>
-    <server name="QUEUE_CONNECTION" value="sync"/>
-    <server name="SESSION_DRIVER" value="array"/>
-    <server name="TELESCOPE_ENABLED" value="false"/>
-  </php>
-  <source>
-    <include>
-      <directory suffix=".php">./app</directory>
-    </include>
-  </source>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:Q+s3u7CAGl0xTkPuzoW0J3R7zfzBe/MXI/crKCibk2w="/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="SCOUT_DRIVER" value="collection"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="CONTACTS_TENANT_PREFIX" value="ct_"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+    </php>
 </phpunit>

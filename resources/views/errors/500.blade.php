@@ -15,8 +15,7 @@
     </title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/vendor.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
 <body class="gray-bg">
