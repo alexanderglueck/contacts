@@ -8,6 +8,7 @@ use App\Models\Permission;
 use App\Tenant\Models\Tenant;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use MeiliSearch\Client;
 use MeiliSearch\Exceptions\ApiException;
@@ -77,20 +78,30 @@ class CreateTenantDatabaseEntry implements ShouldQueue
      */
     protected function setupPermissions(User $user, Tenant $tenant)
     {
-        // The listener implements ShouldQueue with $tries=5. firstOrCreate
-        // keeps a retry from creating a second 'admin' role on the same
-        // tenant (we saw this happen — duplicate admin roles in the
-        // tenant-scoped role list, both for the same team_id).
+        // The listener implements ShouldQueue with $tries=5. Every step in
+        // here has to be re-entrant — a retry mustn't double-insert.
+
+        // firstOrCreate keeps a retry from creating a second 'admin' role on
+        // the same tenant. withoutGlobalScopes because the user's
+        // current_team_id may still be the OLD team at this point (the
+        // controller hasn't switched them over yet), and Role has a
+        // BelongsToTenantScope that filters by current_team_id.
         $role = Role::withoutGlobalScopes()
-            ->firstOrCreate(
-                ['name' => 'admin', 'team_id' => $tenant->id],
-            );
+            ->firstOrCreate(['name' => 'admin', 'team_id' => $tenant->id]);
 
         $role->permissions()->sync(Permission::pluck('id')->all());
 
-        if (! $user->roles()->where('roles.id', $role->id)->exists()) {
-            $user->assignRole($role);
-        }
+        // assignRole() does a raw attach() which would PK-violate on retry.
+        // We can't use $user->roles()->syncWithoutDetaching([$role->id])
+        // either: its internal "what's currently attached?" select goes
+        // through the Role model and trips the BelongsToTenantScope.
+        // Hitting the pivot table directly sidesteps both problems.
+        DB::table('role_user')->updateOrInsert(
+            ['role_id' => $role->id, 'user_id' => $user->id],
+            [],
+        );
+
+        $user->forgetCachedPermissions();
     }
 
     /**
