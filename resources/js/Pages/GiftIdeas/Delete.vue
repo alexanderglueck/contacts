@@ -15,8 +15,8 @@ const submit = () => form.delete(route('gift_ideas.destroy', [props.contact.ulid
 </script>
 
 <template>
-    <AppLayout :title="`Delete ${item.name}`">
-        <Head :title="`Delete ${item.name}`" />
+    <AppLayout :title="`${contact.fullname} — Delete ${item.name}`">
+        <Head :title="`${contact.fullname} — Delete ${item.name}`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

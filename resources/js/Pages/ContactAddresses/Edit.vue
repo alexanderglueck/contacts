@@ -26,8 +26,8 @@ const submit = () => form.put(route('contact_addresses.update', [props.contact.u
 </script>
 
 <template>
-    <AppLayout :title="`Edit address — ${contact.fullname}`">
-        <Head :title="`Edit address — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Edit address`">
+        <Head :title="`${contact.fullname} — Edit address`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

@@ -21,8 +21,8 @@ const submit = () => form.post(route('contact_notes.store', props.contact.ulid))
 </script>
 
 <template>
-    <AppLayout :title="`Add note — ${contact.fullname}`">
-        <Head :title="`Add note — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Add note`">
+        <Head :title="`${contact.fullname} — Add note`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

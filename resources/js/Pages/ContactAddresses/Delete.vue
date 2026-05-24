@@ -15,8 +15,8 @@ const submit = () => form.delete(route('contact_addresses.destroy', [props.conta
 </script>
 
 <template>
-    <AppLayout :title="`Delete address — ${contact.fullname}`">
-        <Head :title="`Delete address — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Delete address`">
+        <Head :title="`${contact.fullname} — Delete address`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

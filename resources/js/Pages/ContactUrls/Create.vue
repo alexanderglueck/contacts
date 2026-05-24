@@ -20,8 +20,8 @@ const submit = () => form.post(route('contact_urls.store', props.contact.ulid));
 </script>
 
 <template>
-    <AppLayout :title="`Add website — ${contact.fullname}`">
-        <Head :title="`Add website — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Add website`">
+        <Head :title="`${contact.fullname} — Add website`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

@@ -20,8 +20,8 @@ const submit = () => form.post(route('contact_numbers.store', props.contact.ulid
 </script>
 
 <template>
-    <AppLayout :title="`Add phone number — ${contact.fullname}`">
-        <Head :title="`Add phone number — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Add phone number`">
+        <Head :title="`${contact.fullname} — Add phone number`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

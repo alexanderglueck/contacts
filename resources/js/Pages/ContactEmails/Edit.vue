@@ -21,8 +21,8 @@ const submit = () => form.put(route('contact_emails.update', [props.contact.ulid
 </script>
 
 <template>
-    <AppLayout :title="`Edit email — ${contact.fullname}`">
-        <Head :title="`Edit email — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Edit email`">
+        <Head :title="`${contact.fullname} — Edit email`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

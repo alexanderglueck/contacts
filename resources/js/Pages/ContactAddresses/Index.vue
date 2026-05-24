@@ -11,8 +11,8 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout :title="`Addresses — ${contact.fullname}`">
-        <Head :title="`Addresses — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Addresses`">
+        <Head :title="`${contact.fullname} — Addresses`" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">

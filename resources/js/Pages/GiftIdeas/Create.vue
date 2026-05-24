@@ -23,8 +23,8 @@ const submit = () => form.post(route('gift_ideas.store', props.contact.ulid));
 </script>
 
 <template>
-    <AppLayout :title="`Add gift idea — ${contact.fullname}`">
-        <Head :title="`Add gift idea — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Add gift idea`">
+        <Head :title="`${contact.fullname} — Add gift idea`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

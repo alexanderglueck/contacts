@@ -41,8 +41,8 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout :title="`Image — ${contact.fullname}`">
-        <Head :title="`Image — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Image`">
+        <Head :title="`${contact.fullname} — Image`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">

@@ -21,8 +21,8 @@ const submit = () => form.post(route('contact_dates.store', props.contact.ulid))
 </script>
 
 <template>
-    <AppLayout :title="`Add date — ${contact.fullname}`">
-        <Head :title="`Add date — ${contact.fullname}`" />
+    <AppLayout :title="`${contact.fullname} — Add date`">
+        <Head :title="`${contact.fullname} — Add date`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
