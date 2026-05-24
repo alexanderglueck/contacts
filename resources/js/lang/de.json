@@ -207,6 +207,13 @@
         "cancelled": "Passkey-Aufforderung wurde abgebrochen oder ist abgelaufen.",
         "register_failed": "Passkey konnte nicht registriert werden."
     },
+    "reports": {
+        "title": "Berichte",
+        "none": "Keine Berichte verfügbar.",
+        "no_contacts": "Keine Kontakte gefunden.",
+        "back_to_reports": "← Zurück zu den Berichten",
+        "page_of": "Seite {current} von {last}"
+    },
     "contacts": {
         "title": "Kontakte",
         "create": "Kontakt erstellen",

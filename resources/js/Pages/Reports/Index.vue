@@ -1,6 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+const { t } = useI18n();
 
 defineProps({
     reports: { type: Array, default: () => [] },
@@ -8,16 +11,16 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Reports">
-        <Head title="Reports" />
+    <AppLayout :title="t('reports.title')">
+        <Head :title="t('reports.title')" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Reports</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('reports.title') }}</h2>
             </div>
 
             <div v-if="reports.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No reports available.
+                {{ t('reports.none') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">

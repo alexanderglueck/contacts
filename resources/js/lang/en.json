@@ -207,6 +207,13 @@
         "cancelled": "Passkey prompt was cancelled or timed out.",
         "register_failed": "Could not register passkey."
     },
+    "reports": {
+        "title": "Reports",
+        "none": "No reports available.",
+        "no_contacts": "No contacts found.",
+        "back_to_reports": "← Back to reports",
+        "page_of": "Page {current} of {last}"
+    },
     "contacts": {
         "title": "Contacts",
         "create": "Create contact",

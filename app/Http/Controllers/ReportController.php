@@ -15,20 +15,16 @@ class ReportController extends Controller
     {
         $this->can('view');
 
+        $entries = [
+            'inactive', 'male', 'female', 'wrong_male', 'wrong_female',
+            'no_email', 'no_date', 'no_address', 'no_number', 'no_url', 'no_lat_lng',
+        ];
+
         return Inertia::render('Reports/Index', [
-            'reports' => [
-                ['key' => 'inactive', 'name' => 'Inactive contacts'],
-                ['key' => 'male', 'name' => 'Male contacts'],
-                ['key' => 'female', 'name' => 'Female contacts'],
-                ['key' => 'wrong_male', 'name' => 'Wrong male contacts'],
-                ['key' => 'wrong_female', 'name' => 'Wrong female contacts'],
-                ['key' => 'no_email', 'name' => 'No email address'],
-                ['key' => 'no_date', 'name' => 'No date'],
-                ['key' => 'no_address', 'name' => 'No address'],
-                ['key' => 'no_number', 'name' => 'No phone number'],
-                ['key' => 'no_url', 'name' => 'No website'],
-                ['key' => 'no_lat_lng', 'name' => 'No coordinates'],
-            ],
+            'reports' => array_map(
+                fn ($key) => ['key' => $key, 'name' => __("reports.{$key}")],
+                $entries,
+            ),
         ]);
     }
 
@@ -37,7 +33,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Inactive contacts',
+            __('reports.titles.inactive'),
             Contact::sorted()->notActive()
         );
     }
@@ -47,7 +43,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Male contacts',
+            __('reports.titles.male'),
             Contact::sorted()->active()->where('gender_id', 1)
         );
     }
@@ -57,7 +53,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Female contacts',
+            __('reports.titles.female'),
             Contact::sorted()->active()->where('gender_id', 2)
         );
     }
@@ -67,7 +63,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Wrong male contacts',
+            __('reports.titles.wrong_male'),
             Contact::sorted()->active()->where('gender_id', 1)->where('salutation', 'Frau')
         );
     }
@@ -77,7 +73,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Wrong female contacts',
+            __('reports.titles.wrong_female'),
             Contact::sorted()->active()->where('gender_id', 2)->where('salutation', 'Herr')
         );
     }
@@ -87,7 +83,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without email address',
+            __('reports.titles.no_email'),
             Contact::select('contacts.*')->leftJoin('contact_emails', 'contacts.id', '=', 'contact_emails.contact_id')->whereNull('contact_emails.contact_id')
         );
     }
@@ -97,7 +93,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without date',
+            __('reports.titles.no_date'),
             Contact::select('contacts.*')->leftJoin('contact_dates', 'contacts.id', '=', 'contact_dates.contact_id')->whereNull('contact_dates.contact_id')
         );
     }
@@ -107,7 +103,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without address',
+            __('reports.titles.no_address'),
             Contact::select('contacts.*')->leftJoin('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')->whereNull('contact_addresses.contact_id')
         );
     }
@@ -117,7 +113,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without phone number',
+            __('reports.titles.no_number'),
             Contact::select('contacts.*')->leftJoin('contact_numbers', 'contacts.id', '=', 'contact_numbers.contact_id')->whereNull('contact_numbers.contact_id')
         );
     }
@@ -127,7 +123,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without website',
+            __('reports.titles.no_url'),
             Contact::select('contacts.*')->leftJoin('contact_urls', 'contacts.id', '=', 'contact_urls.contact_id')->whereNull('contact_urls.contact_id')
         );
     }
@@ -137,7 +133,7 @@ class ReportController extends Controller
         $this->can('view');
 
         return $this->renderContactList(
-            'Contacts without coordinates',
+            __('reports.titles.no_lat_lng'),
             Contact::select('contacts.*')->whereNull('latitude')->orWhereNull('longitude')->orderBy('name')->join('contact_addresses', 'contacts.id', '=', 'contact_addresses.contact_id')
         );
     }

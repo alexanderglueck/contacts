@@ -1,7 +1,10 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageJumper from '@/Components/PageJumper.vue';
+
+const { t } = useI18n();
 
 defineProps({
     title: { type: String, required: true },
@@ -15,7 +18,7 @@ defineProps({
 
         <div class="text-sm">
             <Link :href="route('reports.index')" class="text-indigo-600 hover:text-indigo-500">
-                &larr; Back to reports
+                {{ t('reports.back_to_reports') }}
             </Link>
         </div>
 
@@ -25,7 +28,7 @@ defineProps({
             </div>
 
             <div v-if="contacts.data.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No contacts found.
+                {{ t('reports.no_contacts') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
@@ -41,7 +44,7 @@ defineProps({
 
             <div v-if="contacts.links && contacts.last_page > 1" class="border-t border-gray-200 px-6 py-3 flex flex-wrap justify-between items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Page {{ contacts.current_page }} of {{ contacts.last_page }}
+                    {{ t('reports.page_of', { current: contacts.current_page, last: contacts.last_page }) }}
                 </p>
                 <div class="flex flex-wrap items-center gap-2">
                 <PageJumper :current-page="contacts.current_page" :last-page="contacts.last_page" />
