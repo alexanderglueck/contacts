@@ -1,7 +1,10 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageJumper from '@/Components/PageJumper.vue';
+
+const { t } = useI18n();
 
 defineProps({
     activities: { type: Object, required: true },
@@ -9,22 +12,22 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Activities">
-        <Head title="Activities" />
+    <AppLayout :title="t('activities.title')">
+        <Head :title="t('activities.title')" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Activities</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('activities.title') }}</h2>
             </div>
 
             <div v-if="activities.data.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No activities yet.
+                {{ t('activities.none') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="activity in activities.data" :key="activity.id" class="px-6 py-3 text-sm">
                     <div class="text-gray-900">
-                        <span class="font-medium">{{ activity.user ? activity.user.name : 'Unknown user' }}</span>
+                        <span class="font-medium">{{ activity.user ? activity.user.name : t('activities.unknown_user') }}</span>
                         <span class="text-gray-600"> {{ activity.action }} </span>
                         <span v-if="activity.object && activity.object.fullname" class="font-medium">{{ activity.object.fullname }}</span>
                         <span class="text-gray-500"> &middot; {{ activity.created_at }}</span>
@@ -35,9 +38,9 @@ defineProps({
 
             <div v-if="activities.total > 0" class="border-t border-gray-200 px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Showing <span class="font-medium">{{ activities.from }}</span>–<span class="font-medium">{{ activities.to }}</span>
-                    of <span class="font-medium">{{ activities.total }}</span>
-                    {{ activities.total === 1 ? 'activity' : 'activities' }}
+                    {{ t(activities.total === 1 ? 'activities.showing_one' : 'activities.showing_many', {
+                        from: activities.from, to: activities.to, total: activities.total,
+                    }) }}
                 </p>
                 <div v-if="activities.last_page > 1" class="flex flex-wrap items-center gap-2">
                     <PageJumper :current-page="activities.current_page" :last-page="activities.last_page" />

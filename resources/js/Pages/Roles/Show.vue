@@ -1,6 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+const { t } = useI18n();
 
 defineProps({
     role: { type: Object, required: true },
@@ -17,7 +20,7 @@ defineProps({
 
         <div class="text-sm">
             <Link :href="route('roles.index')" class="text-indigo-600 hover:text-indigo-500">
-                &larr; Back to roles
+                {{ t('roles.back') }}
             </Link>
         </div>
 
@@ -30,29 +33,29 @@ defineProps({
                         :href="route('roles.edit', role.ulid)"
                         class="text-indigo-600 hover:text-indigo-500"
                     >
-                        Edit
+                        {{ t('common.edit') }}
                     </Link>
                     <Link
                         v-if="can.delete"
                         :href="route('roles.delete', role.ulid)"
                         class="text-red-600 hover:text-red-500"
                     >
-                        Delete
+                        {{ t('common.delete') }}
                     </Link>
                     <span
                         v-else-if="deletion_blocked_reason"
                         class="text-gray-400 cursor-not-allowed"
                         :title="deletion_blocked_reason"
                     >
-                        Delete
+                        {{ t('common.delete') }}
                     </span>
                 </div>
             </div>
 
             <div class="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                 <div>
-                    <h3 class="font-medium text-gray-700 mb-2">Permissions</h3>
-                    <p v-if="permissions.length === 0" class="text-gray-500">No permissions assigned.</p>
+                    <h3 class="font-medium text-gray-700 mb-2">{{ t('roles.permissions') }}</h3>
+                    <p v-if="permissions.length === 0" class="text-gray-500">{{ t('roles.no_permissions_assigned') }}</p>
                     <ul v-else class="space-y-1">
                         <li v-for="permission in permissions" :key="permission.id" class="text-gray-900">
                             {{ permission.name }}
@@ -60,8 +63,8 @@ defineProps({
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-medium text-gray-700 mb-2">Users</h3>
-                    <p v-if="users.length === 0" class="text-gray-500">No users assigned.</p>
+                    <h3 class="font-medium text-gray-700 mb-2">{{ t('roles.users') }}</h3>
+                    <p v-if="users.length === 0" class="text-gray-500">{{ t('roles.no_users_assigned') }}</p>
                     <ul v-else class="space-y-1">
                         <li v-for="user in users" :key="user.id" class="text-gray-900">
                             {{ user.name }}

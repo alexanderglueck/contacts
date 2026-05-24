@@ -1,8 +1,11 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PageJumper from '@/Components/PageJumper.vue';
+
+const { t } = useI18n();
 
 defineProps({
     roles: { type: Object, required: true },
@@ -11,19 +14,19 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Roles">
-        <Head title="Roles" />
+    <AppLayout :title="t('roles.title')">
+        <Head :title="t('roles.title')" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                <h2 class="text-lg font-medium text-gray-900">Roles</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('roles.title') }}</h2>
                 <Link v-if="canCreate" :href="route('roles.create')">
-                    <PrimaryButton type="button">Create role</PrimaryButton>
+                    <PrimaryButton type="button">{{ t('roles.create') }}</PrimaryButton>
                 </Link>
             </div>
 
             <div v-if="roles.data.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No roles yet.
+                {{ t('roles.none') }}
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
@@ -39,9 +42,9 @@ defineProps({
 
             <div v-if="roles.total > 0" class="border-t border-gray-200 px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Showing <span class="font-medium">{{ roles.from }}</span>–<span class="font-medium">{{ roles.to }}</span>
-                    of <span class="font-medium">{{ roles.total }}</span>
-                    {{ roles.total === 1 ? 'role' : 'roles' }}
+                    {{ t(roles.total === 1 ? 'roles.showing_one' : 'roles.showing_many', {
+                        from: roles.from, to: roles.to, total: roles.total,
+                    }) }}
                 </p>
                 <div v-if="roles.last_page > 1" class="flex flex-wrap items-center gap-2">
                     <PageJumper :current-page="roles.current_page" :last-page="roles.last_page" />

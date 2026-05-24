@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -7,6 +8,8 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     team: { type: Object, required: true },
@@ -24,7 +27,7 @@ const submitInvite = () => {
 };
 
 const removeMember = (user) => {
-    if (!confirm(`Remove ${user.name} from the team?`)) return;
+    if (!confirm(t('teams.remove_member_confirm', { name: user.name }))) return;
     router.delete(route('teams.members.destroy', [props.team.uuid, user.ulid]));
 };
 
@@ -34,22 +37,22 @@ const impersonate = (ulid) => {
 </script>
 
 <template>
-    <AppLayout :title="`Members — ${team.name}`">
-        <Head :title="`Members — ${team.name}`" />
+    <AppLayout :title="`${t('teams.members')} — ${team.name}`">
+        <Head :title="`${t('teams.members')} — ${team.name}`" />
 
         <div class="space-y-4">
             <div class="bg-white shadow rounded-lg overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-lg font-medium text-gray-900">Members of "{{ team.name }}"</h2>
+                    <h2 class="text-lg font-medium text-gray-900">{{ t('teams.members_of', { name: team.name }) }}</h2>
                     <Link :href="route('teams.index')">
-                        <SecondaryButton type="button">Back</SecondaryButton>
+                        <SecondaryButton type="button">{{ t('teams.back') }}</SecondaryButton>
                     </Link>
                 </div>
 
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('teams.name') }}</th>
                             <th class="px-6 py-3"></th>
                             <th v-if="can.impersonate" class="px-6 py-3"></th>
                         </tr>
@@ -63,7 +66,7 @@ const impersonate = (ulid) => {
                                     type="button"
                                     @click="removeMember(user)"
                                 >
-                                    Delete
+                                    {{ t('common.delete') }}
                                 </DangerButton>
                             </td>
                             <td v-if="can.impersonate" class="px-6 py-3 text-right">
@@ -72,7 +75,7 @@ const impersonate = (ulid) => {
                                     type="button"
                                     @click="impersonate(user.ulid)"
                                 >
-                                    Impersonate
+                                    {{ t('teams.impersonate') }}
                                 </SecondaryButton>
                             </td>
                         </tr>
@@ -82,17 +85,17 @@ const impersonate = (ulid) => {
 
             <div class="bg-white shadow rounded-lg overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Pending invitations</h2>
+                    <h2 class="text-lg font-medium text-gray-900">{{ t('teams.pending_invitations') }}</h2>
                 </div>
 
                 <div v-if="team.invites.length === 0" class="px-6 py-4 text-sm text-gray-600">
-                    No pending invitations.
+                    {{ t('teams.no_pending_invitations') }}
                 </div>
 
                 <table v-else class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('teams.email_label') }}</th>
                             <th class="px-6 py-3"></th>
                         </tr>
                     </thead>
@@ -101,7 +104,7 @@ const impersonate = (ulid) => {
                             <td class="px-6 py-3 text-sm text-gray-900">{{ invite.email }}</td>
                             <td class="px-6 py-3 text-right">
                                 <Link :href="route('teams.members.resend_invite', invite.ulid)">
-                                    <SecondaryButton type="button">Resend invite</SecondaryButton>
+                                    <SecondaryButton type="button">{{ t('teams.resend_invite') }}</SecondaryButton>
                                 </Link>
                             </td>
                         </tr>
@@ -111,12 +114,12 @@ const impersonate = (ulid) => {
 
             <form @submit.prevent="submitInvite" class="bg-white shadow rounded-lg">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Invite to "{{ team.name }}"</h2>
+                    <h2 class="text-lg font-medium text-gray-900">{{ t('teams.invite_to', { name: team.name }) }}</h2>
                 </div>
 
                 <div class="px-6 py-4 space-y-4">
                     <div>
-                        <InputLabel for="email" value="Email address" />
+                        <InputLabel for="email" :value="t('teams.email_label')" />
                         <TextInput
                             id="email"
                             type="email"
@@ -129,7 +132,7 @@ const impersonate = (ulid) => {
 
                 <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
                     <PrimaryButton :disabled="inviteForm.processing" :class="{ 'opacity-50': inviteForm.processing }">
-                        Invite to team
+                        {{ t('teams.invite_action') }}
                     </PrimaryButton>
                 </div>
             </form>

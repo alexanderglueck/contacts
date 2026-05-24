@@ -1,7 +1,10 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
+
+const { t } = useI18n();
 
 defineProps({
     form: { type: Object, required: true },
@@ -13,13 +16,13 @@ defineProps({
 <template>
     <div class="space-y-4">
         <div>
-            <InputLabel for="name" value="Name *" />
+            <InputLabel for="name" :value="`${t('roles.name_label')} *`" />
             <TextInput id="name" v-model="form.name" required autofocus />
             <InputError :message="form.errors.name" />
         </div>
 
         <div>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Permissions</span>
+            <span class="block text-sm font-medium text-gray-700 mb-1">{{ t('roles.permissions') }}</span>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 max-h-72 overflow-y-auto rounded border border-gray-200 p-3">
                 <label v-for="permission in permissions" :key="permission.id" class="inline-flex items-center">
                     <input
@@ -35,7 +38,7 @@ defineProps({
         </div>
 
         <div>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Users</span>
+            <span class="block text-sm font-medium text-gray-700 mb-1">{{ t('roles.users') }}</span>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 max-h-72 overflow-y-auto rounded border border-gray-200 p-3">
                 <label v-for="user in users" :key="user.id" class="inline-flex items-center">
                     <input

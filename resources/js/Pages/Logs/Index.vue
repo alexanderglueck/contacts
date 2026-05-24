@@ -1,7 +1,10 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageJumper from '@/Components/PageJumper.vue';
+
+const { t } = useI18n();
 
 defineProps({
     logs: { type: Object, required: true },
@@ -9,24 +12,24 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Logs">
-        <Head title="Logs" />
+    <AppLayout :title="t('logs.title')">
+        <Head :title="t('logs.title')" />
 
         <div class="bg-white shadow rounded-lg">
             <div class="border-b border-gray-200 px-6 py-4">
-                <h2 class="text-lg font-medium text-gray-900">Activity log</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('logs.heading') }}</h2>
             </div>
 
             <div v-if="logs.data.length === 0" class="px-6 py-8 text-center text-sm text-gray-500">
-                No logs yet.
+                {{ t('logs.none') }}
             </div>
 
             <table v-else class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">Event</th>
-                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">IP</th>
-                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">Recorded at</th>
+                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">{{ t('logs.event') }}</th>
+                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">{{ t('logs.ip') }}</th>
+                        <th class="px-6 py-2 text-left text-xs font-semibold uppercase text-gray-500">{{ t('logs.recorded_at') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -40,9 +43,9 @@ defineProps({
 
             <div v-if="logs.total > 0" class="border-t border-gray-200 px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <p class="text-sm text-gray-600">
-                    Showing <span class="font-medium">{{ logs.from }}</span>–<span class="font-medium">{{ logs.to }}</span>
-                    of <span class="font-medium">{{ logs.total }}</span>
-                    {{ logs.total === 1 ? 'entry' : 'entries' }}
+                    {{ t(logs.total === 1 ? 'logs.showing_one' : 'logs.showing_many', {
+                        from: logs.from, to: logs.to, total: logs.total,
+                    }) }}
                 </p>
                 <div v-if="logs.last_page > 1" class="flex flex-wrap items-center gap-2">
                     <PageJumper :current-page="logs.current_page" :last-page="logs.last_page" />

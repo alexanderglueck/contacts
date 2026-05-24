@@ -1,37 +1,40 @@
 <script setup>
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+
+const { t } = useI18n();
 
 defineProps({
     teams: { type: Array, default: () => [] },
 });
 
 const destroy = (team) => {
-    if (!confirm(`Delete team "${team.name}"?`)) return;
+    if (!confirm(t('teams.delete_confirm', { name: team.name }))) return;
     router.delete(route('teams.destroy', team.uuid));
 };
 </script>
 
 <template>
-    <AppLayout title="Teams">
-        <Head title="Teams" />
+    <AppLayout :title="t('teams.title')">
+        <Head :title="t('teams.title')" />
 
         <div class="bg-white shadow rounded-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-lg font-medium text-gray-900">Teams</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('teams.title') }}</h2>
                 <Link :href="route('teams.create')">
-                    <PrimaryButton type="button">Create team</PrimaryButton>
+                    <PrimaryButton type="button">{{ t('teams.create') }}</PrimaryButton>
                 </Link>
             </div>
 
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('teams.name') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('teams.status') }}</th>
                         <th class="px-6 py-3"></th>
                     </tr>
                 </thead>
@@ -43,13 +46,13 @@ const destroy = (team) => {
                                 v-if="team.is_owner"
                                 class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"
                             >
-                                Owner
+                                {{ t('teams.owner') }}
                             </span>
                             <span
                                 v-else
                                 class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800"
                             >
-                                Member
+                                {{ t('teams.member') }}
                             </span>
                         </td>
                         <td class="px-6 py-3 text-sm text-right space-x-2">
@@ -57,21 +60,21 @@ const destroy = (team) => {
                                 v-if="team.is_current"
                                 class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
                             >
-                                Current team
+                                {{ t('teams.current_team') }}
                             </span>
                             <Link v-else-if="team.created" :href="route('teams.switch', team.uuid)">
-                                <SecondaryButton type="button">Switch</SecondaryButton>
+                                <SecondaryButton type="button">{{ t('teams.switch') }}</SecondaryButton>
                             </Link>
 
                             <Link :href="route('teams.members.show', team.uuid)">
-                                <SecondaryButton type="button">Members</SecondaryButton>
+                                <SecondaryButton type="button">{{ t('teams.members') }}</SecondaryButton>
                             </Link>
 
                             <template v-if="team.is_owner">
                                 <Link :href="route('teams.edit', team.uuid)">
-                                    <SecondaryButton type="button">Edit</SecondaryButton>
+                                    <SecondaryButton type="button">{{ t('common.edit') }}</SecondaryButton>
                                 </Link>
-                                <DangerButton type="button" @click="destroy(team)">Delete</DangerButton>
+                                <DangerButton type="button" @click="destroy(team)">{{ t('common.delete') }}</DangerButton>
                             </template>
                         </td>
                     </tr>
