@@ -6,43 +6,41 @@ use App\Http\Requests\ContactEmail\ContactEmailStoreRequest;
 use App\Http\Requests\ContactEmail\ContactEmailUpdateRequest;
 use App\Models\Contact;
 use App\Models\ContactEmail;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactEmailController extends Controller
 {
     protected ?string $accessEntity = 'emails';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_email.index', [
-            'contact' => $contact,
-            'contactEmails' => $contact->emails
+        return Inertia::render('ContactEmails/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->emails->map(fn ($e) => [
+                'id' => $e->id,
+                'slug' => $e->slug,
+                'name' => $e->name,
+                'email' => $e->email,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create emails'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_email.create', [
-            'contact' => $contact,
-            'contactEmail' => new ContactEmail()
+        return Inertia::render('ContactEmails/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactEmailStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->emails()->create($request->all())) {
@@ -56,36 +54,42 @@ class ContactEmailController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactEmail $contactEmail): View
+    public function show(Contact $contact, ContactEmail $contactEmail): Response
     {
         $this->can('view');
 
-        return view('contact_email.show', [
-            'contact' => $contact,
-            'contactEmail' => $contactEmail
+        $user = Auth::user();
+
+        return Inertia::render('ContactEmails/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactEmail->id,
+                'slug' => $contactEmail->slug,
+                'name' => $contactEmail->name,
+                'email' => $contactEmail->email,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit emails'),
+                'delete' => $user->checkPermissionTo('delete emails'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactEmail $contactEmail): View
+    public function edit(Contact $contact, ContactEmail $contactEmail): Response
     {
         $this->can('edit');
 
-        return view('contact_email.edit', [
-            'contact' => $contact,
-            'contactEmail' => $contactEmail,
-            'createButtonText' => 'E-Mail Adresse aktualisieren'
+        return Inertia::render('ContactEmails/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactEmail->id,
+                'slug' => $contactEmail->slug,
+                'name' => $contactEmail->name,
+                'email' => $contactEmail->email,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactEmailUpdateRequest $request, Contact $contact, ContactEmail $contactEmail): RedirectResponse
     {
         if ($contactEmail->update($request->all())) {
@@ -99,9 +103,6 @@ class ContactEmailController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactEmail $contactEmail): RedirectResponse
     {
         $this->can('delete');
@@ -117,16 +118,18 @@ class ContactEmailController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactEmail $contactEmail): View
+    public function delete(Contact $contact, ContactEmail $contactEmail): Response
     {
         $this->can('delete');
 
-        return view('contact_email.delete', [
-            'contact' => $contact,
-            'contactEmail' => $contactEmail
+        return Inertia::render('ContactEmails/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactEmail->id,
+                'slug' => $contactEmail->slug,
+                'name' => $contactEmail->name,
+                'email' => $contactEmail->email,
+            ],
         ]);
     }
 }

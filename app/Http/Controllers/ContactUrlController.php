@@ -2,47 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactUrl;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactUrl\ContactUrlStoreRequest;
 use App\Http\Requests\ContactUrl\ContactUrlUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactUrl;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactUrlController extends Controller
 {
     protected ?string $accessEntity = 'urls';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_url.index', [
-            'contact' => $contact,
-            'contactUrls' => $contact->urls
+        return Inertia::render('ContactUrls/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->urls->map(fn ($u) => [
+                'id' => $u->id,
+                'slug' => $u->slug,
+                'name' => $u->name,
+                'url' => $u->url,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create urls'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_url.create', [
-            'contact' => $contact,
-            'contactUrl' => new ContactUrl()
+        return Inertia::render('ContactUrls/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactUrlStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->urls()->create($request->all())) {
@@ -56,36 +54,42 @@ class ContactUrlController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactUrl $contactUrl): View
+    public function show(Contact $contact, ContactUrl $contactUrl): Response
     {
         $this->can('view');
 
-        return view('contact_url.show', [
-            'contact' => $contact,
-            'contactUrl' => $contactUrl
+        $user = Auth::user();
+
+        return Inertia::render('ContactUrls/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactUrl->id,
+                'slug' => $contactUrl->slug,
+                'name' => $contactUrl->name,
+                'url' => $contactUrl->url,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit urls'),
+                'delete' => $user->checkPermissionTo('delete urls'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactUrl $contactUrl): View
+    public function edit(Contact $contact, ContactUrl $contactUrl): Response
     {
         $this->can('edit');
 
-        return view('contact_url.edit', [
-            'contact' => $contact,
-            'contactUrl' => $contactUrl,
-            'createButtonText' => 'Website aktualisieren'
+        return Inertia::render('ContactUrls/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactUrl->id,
+                'slug' => $contactUrl->slug,
+                'name' => $contactUrl->name,
+                'url' => $contactUrl->url,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactUrlUpdateRequest $request, Contact $contact, ContactUrl $contactUrl): RedirectResponse
     {
         if ($contactUrl->update($request->all())) {
@@ -99,9 +103,6 @@ class ContactUrlController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactUrl $contactUrl): RedirectResponse
     {
         $this->can('delete');
@@ -117,16 +118,18 @@ class ContactUrlController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactUrl $contactUrl): View
+    public function delete(Contact $contact, ContactUrl $contactUrl): Response
     {
         $this->can('delete');
 
-        return view('contact_url.delete', [
-            'contact' => $contact,
-            'contactUrl' => $contactUrl
+        return Inertia::render('ContactUrls/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactUrl->id,
+                'slug' => $contactUrl->slug,
+                'name' => $contactUrl->name,
+                'url' => $contactUrl->url,
+            ],
         ]);
     }
 }

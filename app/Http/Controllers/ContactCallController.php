@@ -2,47 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactCall;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactCall\ContactCallStoreRequest;
 use App\Http\Requests\ContactCall\ContactCallUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactCall;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactCallController extends Controller
 {
     protected ?string $accessEntity = 'calls';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_call.index', [
-            'contact' => $contact,
-            'contactCalls' => $contact->calls
+        return Inertia::render('ContactCalls/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->calls->map(fn ($c) => [
+                'id' => $c->id,
+                'formatted_called_at' => $c->formatted_called_at,
+                'note' => $c->note,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create calls'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_call.create', [
-            'contact' => $contact,
-            'contactCall' => new ContactCall()
+        return Inertia::render('ContactCalls/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactCallStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->calls()->create($request->all())) {
@@ -56,52 +53,53 @@ class ContactCallController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactCall $contactCall): View
+    public function show(Contact $contact, ContactCall $contactCall): Response
     {
         $this->can('view');
 
-        return view('contact_call.show', [
-            'contact' => $contact,
-            'contactCall' => $contactCall
+        $user = Auth::user();
+
+        return Inertia::render('ContactCalls/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactCall->id,
+                'formatted_called_at' => $contactCall->formatted_called_at,
+                'note' => $contactCall->note,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit calls'),
+                'delete' => $user->checkPermissionTo('delete calls'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactCall $contactCall): View
+    public function edit(Contact $contact, ContactCall $contactCall): Response
     {
         $this->can('edit');
 
-        return view('contact_call.edit', [
-            'contact' => $contact,
-            'contactCall' => $contactCall,
-            'createButtonText' => 'Website aktualisieren'
+        return Inertia::render('ContactCalls/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactCall->id,
+                'called_at' => $contactCall->formatted_called_at,
+                'note' => $contactCall->note,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactCallUpdateRequest $request, Contact $contact, ContactCall $contactCall): RedirectResponse
     {
         if ($contactCall->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_call.updated'));
 
-            return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->slug]);
+            return redirect()->route('contact_calls.show', [$contact->slug, $contactCall->id]);
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_updated'));
 
-            return redirect()->route('contact_calls.edit', [$contact->slug, $contactCall->slug]);
+            return redirect()->route('contact_calls.edit', [$contact->slug, $contactCall->id]);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactCall $contactCall): RedirectResponse
     {
         $this->can('delete');
@@ -113,20 +111,21 @@ class ContactCallController extends Controller
         } else {
             Session::flash('alert-danger', trans('flash_message.contact_call.not_deleted'));
 
-            return redirect()->route('contact_calls.delete', [$contact->slug, $contactCall->slug]);
+            return redirect()->route('contact_calls.delete', [$contact->slug, $contactCall->id]);
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactCall $contactCall): View
+    public function delete(Contact $contact, ContactCall $contactCall): Response
     {
         $this->can('delete');
 
-        return view('contact_call.delete', [
-            'contact' => $contact,
-            'contactCall' => $contactCall
+        return Inertia::render('ContactCalls/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactCall->id,
+                'formatted_called_at' => $contactCall->formatted_called_at,
+                'note' => $contactCall->note,
+            ],
         ]);
     }
 }

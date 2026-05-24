@@ -2,47 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\GiftIdea;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\GiftIdea\GiftIdeaStoreRequest;
 use App\Http\Requests\GiftIdea\GiftIdeaUpdateRequest;
+use App\Models\Contact;
+use App\Models\GiftIdea;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class GiftIdeaController extends Controller
 {
     protected ?string $accessEntity = 'giftIdeas';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('gift_idea.index', [
-            'contact' => $contact,
-            'giftIdeas' => $contact->giftIdeas
+        return Inertia::render('GiftIdeas/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->giftIdeas->map(fn ($g) => [
+                'id' => $g->id,
+                'name' => $g->name,
+                'description' => $g->description,
+                'url' => $g->url,
+                'formatted_due_at' => $g->formatted_due_at,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create giftIdeas'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('gift_idea.create', [
-            'contact' => $contact,
-            'giftIdea' => new GiftIdea()
+        return Inertia::render('GiftIdeas/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(GiftIdeaStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->giftIdeas()->create($request->all())) {
@@ -56,36 +55,44 @@ class GiftIdeaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, GiftIdea $giftIdea): View
+    public function show(Contact $contact, GiftIdea $giftIdea): Response
     {
         $this->can('view');
 
-        return view('gift_idea.show', [
-            'contact' => $contact,
-            'giftIdea' => $giftIdea
+        $user = Auth::user();
+
+        return Inertia::render('GiftIdeas/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $giftIdea->id,
+                'name' => $giftIdea->name,
+                'description' => $giftIdea->description,
+                'url' => $giftIdea->url,
+                'formatted_due_at' => $giftIdea->formatted_due_at,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit giftIdeas'),
+                'delete' => $user->checkPermissionTo('delete giftIdeas'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, GiftIdea $giftIdea): View
+    public function edit(Contact $contact, GiftIdea $giftIdea): Response
     {
         $this->can('edit');
 
-        return view('gift_idea.edit', [
-            'contact' => $contact,
-            'giftIdea' => $giftIdea,
-            'createButtonText' => trans('ui.edit_gift_idea')
+        return Inertia::render('GiftIdeas/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $giftIdea->id,
+                'name' => $giftIdea->name,
+                'description' => $giftIdea->description,
+                'url' => $giftIdea->url,
+                'due_at' => $giftIdea->formatted_due_at,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(GiftIdeaUpdateRequest $request, Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
         if ($giftIdea->update($request->all())) {
@@ -99,9 +106,6 @@ class GiftIdeaController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, GiftIdea $giftIdea): RedirectResponse
     {
         $this->can('delete');
@@ -117,16 +121,19 @@ class GiftIdeaController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, GiftIdea $giftIdea): View
+    public function delete(Contact $contact, GiftIdea $giftIdea): Response
     {
         $this->can('delete');
 
-        return view('gift_idea.delete', [
-            'contact' => $contact,
-            'giftIdea' => $giftIdea
+        return Inertia::render('GiftIdeas/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $giftIdea->id,
+                'name' => $giftIdea->name,
+                'description' => $giftIdea->description,
+                'url' => $giftIdea->url,
+                'formatted_due_at' => $giftIdea->formatted_due_at,
+            ],
         ]);
     }
 }

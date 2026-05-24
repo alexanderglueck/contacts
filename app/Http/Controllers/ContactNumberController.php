@@ -2,47 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactNumber;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactNumber\ContactNumberStoreRequest;
 use App\Http\Requests\ContactNumber\ContactNumberUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactNumber;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactNumberController extends Controller
 {
     protected ?string $accessEntity = 'numbers';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_number.index', [
-            'contact' => $contact,
-            'contactNumbers' => $contact->numbers
+        return Inertia::render('ContactNumbers/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->numbers->map(fn ($n) => [
+                'id' => $n->id,
+                'slug' => $n->slug,
+                'name' => $n->name,
+                'number' => $n->number,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create numbers'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_number.create', [
-            'contact' => $contact,
-            'contactNumber' => new ContactNumber()
+        return Inertia::render('ContactNumbers/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactNumberStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->numbers()->create($request->all())) {
@@ -56,36 +54,42 @@ class ContactNumberController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactNumber $contactNumber): View
+    public function show(Contact $contact, ContactNumber $contactNumber): Response
     {
         $this->can('view');
 
-        return view('contact_number.show', [
-            'contact' => $contact,
-            'contactNumber' => $contactNumber
+        $user = Auth::user();
+
+        return Inertia::render('ContactNumbers/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactNumber->id,
+                'slug' => $contactNumber->slug,
+                'name' => $contactNumber->name,
+                'number' => $contactNumber->number,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit numbers'),
+                'delete' => $user->checkPermissionTo('delete numbers'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactNumber $contactNumber): View
+    public function edit(Contact $contact, ContactNumber $contactNumber): Response
     {
         $this->can('edit');
 
-        return view('contact_number.edit', [
-            'contact' => $contact,
-            'contactNumber' => $contactNumber,
-            'createButtonText' => 'Nummer aktualisieren'
+        return Inertia::render('ContactNumbers/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactNumber->id,
+                'slug' => $contactNumber->slug,
+                'name' => $contactNumber->name,
+                'number' => $contactNumber->number,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactNumberUpdateRequest $request, Contact $contact, ContactNumber $contactNumber): RedirectResponse
     {
         if ($contactNumber->update($request->all())) {
@@ -99,9 +103,6 @@ class ContactNumberController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactNumber $contactNumber): RedirectResponse
     {
         $this->can('delete');
@@ -117,16 +118,18 @@ class ContactNumberController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactNumber $contactNumber): View
+    public function delete(Contact $contact, ContactNumber $contactNumber): Response
     {
         $this->can('delete');
 
-        return view('contact_number.delete', [
-            'contact' => $contact,
-            'contactNumber' => $contactNumber
+        return Inertia::render('ContactNumbers/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactNumber->id,
+                'slug' => $contactNumber->slug,
+                'name' => $contactNumber->name,
+                'number' => $contactNumber->number,
+            ],
         ]);
     }
 }

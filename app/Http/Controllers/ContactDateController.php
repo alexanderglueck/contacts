@@ -2,47 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\ContactDate;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactDate\ContactDateStoreRequest;
 use App\Http\Requests\ContactDate\ContactDateUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactDate;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactDateController extends Controller
 {
     protected ?string $accessEntity = 'dates';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_date.index', [
-            'contact' => $contact,
-            'contactDates' => $contact->dates
+        return Inertia::render('ContactDates/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->dates->map(fn ($d) => [
+                'id' => $d->id,
+                'slug' => $d->slug,
+                'name' => $d->name,
+                'formatted_date' => $d->formatted_date,
+                'skip_year' => (bool) $d->skip_year,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create dates'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_date.create', [
-            'contact' => $contact,
-            'contactDate' => new ContactDate()
+        return Inertia::render('ContactDates/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactDateStoreRequest $request, Contact $contact): RedirectResponse
     {
         $validated = $request->validated();
@@ -62,36 +61,44 @@ class ContactDateController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactDate $contactDate): View
+    public function show(Contact $contact, ContactDate $contactDate): Response
     {
         $this->can('view');
 
-        return view('contact_date.show', [
-            'contact' => $contact,
-            'contactDate' => $contactDate
+        $user = Auth::user();
+
+        return Inertia::render('ContactDates/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactDate->id,
+                'slug' => $contactDate->slug,
+                'name' => $contactDate->name,
+                'formatted_date' => $contactDate->formatted_date,
+                'skip_year' => (bool) $contactDate->skip_year,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit dates'),
+                'delete' => $user->checkPermissionTo('delete dates'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactDate $contactDate): View
+    public function edit(Contact $contact, ContactDate $contactDate): Response
     {
         $this->can('edit');
 
-        return view('contact_date.edit', [
-            'contact' => $contact,
-            'contactDate' => $contactDate,
-            'createButtonText' => 'Datum bearbeiten'
+        return Inertia::render('ContactDates/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactDate->id,
+                'slug' => $contactDate->slug,
+                'name' => $contactDate->name,
+                'date' => $contactDate->formatted_date,
+                'skip_year' => (int) $contactDate->skip_year,
+            ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactDateUpdateRequest $request, Contact $contact, ContactDate $contactDate): RedirectResponse
     {
         $validated = $request->validated();
@@ -111,9 +118,6 @@ class ContactDateController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactDate $contactDate): RedirectResponse
     {
         $this->can('delete');
@@ -129,16 +133,18 @@ class ContactDateController extends Controller
         }
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactDate $contactDate): View
+    public function delete(Contact $contact, ContactDate $contactDate): Response
     {
         $this->can('delete');
 
-        return view('contact_date.delete', [
-            'contact' => $contact,
-            'contactDate' => $contactDate
+        return Inertia::render('ContactDates/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactDate->id,
+                'slug' => $contactDate->slug,
+                'name' => $contactDate->name,
+                'formatted_date' => $contactDate->formatted_date,
+            ],
         ]);
     }
 }
