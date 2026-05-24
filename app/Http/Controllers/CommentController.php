@@ -8,6 +8,7 @@ use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Contact;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class CommentController extends Controller
@@ -48,13 +49,47 @@ class CommentController extends Controller
         return redirect()->route('contacts.show', [$contact->ulid]);
     }
 
+    /**
+     * Delete a comment, but if it still has replies, tombstone it instead
+     * — the thread needs the parent row so the children can keep rendering
+     * underneath. After a hard-delete (leaf removal), walk up the parent
+     * chain and hard-delete any tombstoned ancestor that no longer has
+     * children. So the only way a tombstoned row sticks around is while
+     * it's still carrying replies.
+     */
     public function destroy(DeleteCommentRequest $request, Contact $contact, Comment $comment): RedirectResponse
     {
+        $ok = DB::transaction(function () use ($comment) {
+            if ($comment->replies()->exists()) {
+                // Tombstone — keep row so children still render.
+                return $comment->update([
+                    'comment' => null,
+                    'tombstoned_at' => now(),
+                ]);
+            }
+
+            // Leaf — hard delete, then walk up cleaning tombstoned ancestors.
+            $parent = $comment->parent;
+            $deleted = $comment->delete();
+            $this->cleanupAncestors($parent);
+
+            return $deleted;
+        });
+
         Session::flash(
-            $comment->delete() ? 'alert-success' : 'alert-danger',
-            trans('flash_message.comment.deleted'),
+            $ok ? 'alert-success' : 'alert-danger',
+            trans($ok ? 'flash_message.comment.deleted' : 'flash_message.comment.not_deleted'),
         );
 
         return redirect()->route('contacts.show', [$contact->ulid]);
+    }
+
+    private function cleanupAncestors(?Comment $parent): void
+    {
+        while ($parent && $parent->isTombstoned() && ! $parent->replies()->exists()) {
+            $grandparent = $parent->parent;
+            $parent->delete();
+            $parent = $grandparent;
+        }
     }
 }

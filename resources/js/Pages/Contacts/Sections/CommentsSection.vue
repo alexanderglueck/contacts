@@ -157,15 +157,20 @@ const submitDelete = () =>
             <ul v-else class="space-y-4">
                 <li v-for="comment in tree.roots" :key="comment.ulid">
                     <article class="text-sm">
-                        <header class="flex items-baseline justify-between gap-2 mb-1">
-                            <span class="font-medium text-gray-900">{{ comment.owner?.name ?? 'Unknown' }}</span>
-                            <span class="text-xs text-gray-500">{{ comment.created_at }}</span>
-                        </header>
+                        <template v-if="comment.is_deleted">
+                            <div class="italic text-gray-400">(deleted)</div>
+                        </template>
+                        <template v-else>
+                            <header class="flex items-baseline justify-between gap-2 mb-1">
+                                <span class="font-medium text-gray-900">{{ comment.owner?.name ?? 'Unknown' }}</span>
+                                <span class="text-xs text-gray-500">{{ comment.created_at }}</span>
+                            </header>
 
-                        <div class="prose-note text-gray-800" v-html="comment.comment_html" />
+                            <div class="prose-note text-gray-800" v-html="comment.comment_html" />
+                        </template>
 
                         <footer
-                            v-if="can.create || (comment.is_mine && (can.edit || can.delete))"
+                            v-if="!comment.is_deleted && (can.create || (comment.is_mine && (can.edit || can.delete)))"
                             class="mt-1 flex gap-3 text-xs"
                         >
                             <button
@@ -202,15 +207,20 @@ const submitDelete = () =>
                     >
                         <li v-for="reply in repliesOf(comment.ulid)" :key="reply.ulid">
                             <article class="text-sm">
-                                <header class="flex items-baseline justify-between gap-2 mb-1">
-                                    <span class="font-medium text-gray-900">{{ reply.owner?.name ?? 'Unknown' }}</span>
-                                    <span class="text-xs text-gray-500">{{ reply.created_at }}</span>
-                                </header>
+                                <template v-if="reply.is_deleted">
+                                    <div class="italic text-gray-400">(deleted)</div>
+                                </template>
+                                <template v-else>
+                                    <header class="flex items-baseline justify-between gap-2 mb-1">
+                                        <span class="font-medium text-gray-900">{{ reply.owner?.name ?? 'Unknown' }}</span>
+                                        <span class="text-xs text-gray-500">{{ reply.created_at }}</span>
+                                    </header>
 
-                                <div class="prose-note text-gray-800" v-html="reply.comment_html" />
+                                    <div class="prose-note text-gray-800" v-html="reply.comment_html" />
+                                </template>
 
                                 <footer
-                                    v-if="can.create || (reply.is_mine && (can.edit || can.delete))"
+                                    v-if="!reply.is_deleted && (can.create || (reply.is_mine && (can.edit || can.delete)))"
                                     class="mt-1 flex gap-3 text-xs"
                                 >
                                     <button

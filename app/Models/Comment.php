@@ -18,12 +18,22 @@ class Comment extends Model
         'parent_id',
         'created_at',
         'updated_at',
-        'contact_id'
+        'tombstoned_at',
+        'contact_id',
+    ];
+
+    protected $casts = [
+        'tombstoned_at' => 'datetime',
     ];
 
     public function getCommentHtmlAttribute(): string
     {
         return $this->renderMarkdown($this->comment);
+    }
+
+    public function isTombstoned(): bool
+    {
+        return $this->tombstoned_at !== null;
     }
 
     public function contact()
@@ -34,6 +44,16 @@ class Comment extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     /**

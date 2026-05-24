@@ -183,15 +183,24 @@ class ContactController extends Controller
                 $ulidById = $comments->pluck('ulid', 'id');
                 $authId = Auth::id();
 
-                return $comments->map(fn ($c) => [
-                    'ulid' => $c->ulid,
-                    'parent_ulid' => $c->parent_id ? ($ulidById[$c->parent_id] ?? null) : null,
-                    'comment' => $c->comment,
-                    'comment_html' => $c->comment_html,
-                    'created_at' => optional($c->created_at)->diffForHumans(),
-                    'owner' => $c->owner ? ['name' => $c->owner->name] : null,
-                    'is_mine' => $c->created_by === $authId,
-                ])->values();
+                return $comments->map(function ($c) use ($ulidById, $authId) {
+                    $isDeleted = $c->isTombstoned();
+
+                    return [
+                        'ulid' => $c->ulid,
+                        'parent_ulid' => $c->parent_id ? ($ulidById[$c->parent_id] ?? null) : null,
+                        // Hide content + author for tombstoned rows; we only
+                        // keep them around so their replies can render.
+                        'comment' => $isDeleted ? null : $c->comment,
+                        'comment_html' => $isDeleted ? '' : $c->comment_html,
+                        'created_at' => optional($c->created_at)->diffForHumans(),
+                        'owner' => $isDeleted
+                            ? null
+                            : ($c->owner ? ['name' => $c->owner->name] : null),
+                        'is_mine' => ! $isDeleted && $c->created_by === $authId,
+                        'is_deleted' => $isDeleted,
+                    ];
+                })->values();
             }),
             'activities' => Inertia::optional(fn () => $contact->activity()
                 ->with('user:id,name')
