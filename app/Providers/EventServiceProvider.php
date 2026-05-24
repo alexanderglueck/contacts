@@ -5,31 +5,29 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * The event listener mappings for the application.
-     *
-     * @var array
-     */
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        \App\Events\TwoFactor\TwoFactorSuccess::class => [
-            \App\Listeners\Log\LogTwoFactorSuccess::class,
-        ],
-        \App\Events\TwoFactor\TwoFactorFailure::class => [
-            \App\Listeners\Log\LogTwoFactorFailure::class,
-        ],
+
         \Illuminate\Auth\Events\Login::class => [
+            \App\Listeners\Auth\PrimeTenantSession::class,
             \App\Listeners\Log\LogSuccessfulLogin::class,
         ],
 
         \Illuminate\Auth\Events\Failed::class => [
             \App\Listeners\Log\LogFailedLogin::class,
+        ],
+
+        \Laravel\Fortify\Events\ValidTwoFactorAuthenticationCodeProvided::class => [
+            \App\Listeners\Log\LogTwoFactorSuccess::class,
+        ],
+
+        \Laravel\Fortify\Events\TwoFactorAuthenticationFailed::class => [
+            \App\Listeners\Log\LogTwoFactorFailure::class,
         ],
 
         \App\Events\Tenant\TenantIdentified::class => [
@@ -41,14 +39,6 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Tenant\CreateTenantDatabaseEntry::class,
         ],
 
-        \App\Events\Auth\UserSignedUp::class => [
-            \App\Listeners\Auth\SendActivationEmail::class,
-        ],
-
-        \App\Events\Auth\UserRequestedActivationEmail::class => [
-            \App\Listeners\Auth\SendActivationEmail::class,
-        ],
-
         \Illuminate\Auth\Events\PasswordReset::class => [
             \App\Listeners\Auth\SendPasswordChangedEmail::class,
         ],
@@ -58,15 +48,10 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\WebsocketTest::class => [
-            \App\Listeners\SendEventToBrowser::class
-        ]
+            \App\Listeners\SendEventToBrowser::class,
+        ],
     ];
 
-    /**
-     * Register any events for your application.
-     *
-     * @return void
-     */
     public function boot()
     {
         //

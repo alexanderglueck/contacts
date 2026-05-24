@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Permission;
 use App\Tenant\Models\Tenant;
-use App\Events\Auth\UserSignedUp;
 use App\Events\Tenant\TenantWasCreated;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -56,15 +55,6 @@ class CreateTenantDatabaseEntry implements ShouldQueue
         $event->tenant->update([
             'created' => true
         ]);
-
-        /*
-         * If the user is not activated the event was fired in the
-         * RegisterController. We should now notify the user that his account
-         * was set up.
-         */
-        if ($event->user->isNotActivated()) {
-            event(new UserSignedUp($event->user));
-        }
     }
 
     /**

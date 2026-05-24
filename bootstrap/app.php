@@ -3,7 +3,6 @@
 use App\Console\Commands\Notification\SendDailyEmail;
 use App\Console\Commands\Notification\SendWeeklyEmail;
 use App\Http\Middleware\AuthenticateRegister;
-use App\Http\Middleware\ChecksExpiredConfirmationTokens;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\Impersonate;
 use App\Http\Middleware\IsAdmin;
@@ -57,7 +56,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => IsAdmin::class,
             'guest' => RedirectIfAuthenticated::class,
             'verify_contact' => VerifyCorrectContact::class,
-            'confirmation_token.expired' => ChecksExpiredConfirmationTokens::class,
             'auth.register' => AuthenticateRegister::class,
             'subscription.active' => RedirectIfNotActive::class,
             'subscription.notcancelled' => RedirectIfCancelled::class,

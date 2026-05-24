@@ -26,7 +26,7 @@ class AuthTest extends TestCase
     {
         $user = create(User::class);
 
-        $response = $this->post(route('login.check'), [
+        $response = $this->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'password'
         ]);
@@ -40,7 +40,7 @@ class AuthTest extends TestCase
     {
         $user = create(User::class);
 
-        $response = $this->post(route('login.check'), [
+        $response = $this->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'invalid'
         ]);

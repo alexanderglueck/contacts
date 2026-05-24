@@ -4,18 +4,11 @@ namespace App\Listeners\Log;
 
 use App\Models\LogEntry;
 use Illuminate\Support\Facades\Request;
-use App\Events\TwoFactor\TwoFactorFailure;
+use Laravel\Fortify\Events\TwoFactorAuthenticationFailed;
 
 class LogTwoFactorFailure
 {
-    /**
-     * Handle the event.
-     *
-     * @param  TwoFactorFailure $event
-     *
-     * @return void
-     */
-    public function handle(TwoFactorFailure $event)
+    public function handle(TwoFactorAuthenticationFailed $event): void
     {
         $logEntry = new LogEntry();
         $logEntry->event = 'auth.2fa_failed';
