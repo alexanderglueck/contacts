@@ -108,7 +108,9 @@ class ContactController extends Controller
                 'custom_id' => $contact->custom_id,
                 'iban' => $contact->iban,
                 'note' => $contact->note,
+                'note_html' => $contact->note_html,
                 'first_met' => $contact->first_met,
+                'first_met_html' => $contact->first_met_html,
                 'image' => $contact->image,
                 'formatted_date_of_birth' => $contact->formatted_date_of_birth,
                 'gender' => $contact->gender ? ['gender' => $contact->gender->gender] : null,
@@ -147,6 +149,7 @@ class ContactController extends Controller
                 'ulid' => $n->ulid,
                 'name' => $n->name,
                 'note' => $n->note,
+                'note_html' => $n->note_html,
             ])->values()),
             'calls' => Inertia::optional(fn () => $contact->calls->map(fn ($c) => [
                 'ulid' => $c->ulid,

@@ -26,6 +26,7 @@
         "meilisearch/meilisearch-php": "^1.16",
         "mpociot/teamwork": "^10.0",
         "pusher/pusher-php-server": "^7.2",
+        "symfony/html-sanitizer": "^8.0",
         "tightenco/ziggy": "^2.6"
     },
     "require-dev": {

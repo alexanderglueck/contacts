@@ -1,2 +1,60 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
+
+/* Minimal typography for rendered markdown notes. Mirrors the subset
+   the server's HtmlSanitizer permits (RendersMarkdown trait): no
+   headings/images/tables, so this only styles paragraphs, emphasis,
+   links, code, lists, and blockquotes. */
+.prose-note p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.prose-note p:first-child {
+    margin-top: 0;
+}
+.prose-note p:last-child {
+    margin-bottom: 0;
+}
+.prose-note strong {
+    font-weight: 600;
+}
+.prose-note em {
+    font-style: italic;
+}
+.prose-note a {
+    color: #4f46e5;
+    text-decoration: underline;
+}
+.prose-note a:hover {
+    color: #4338ca;
+}
+.prose-note code {
+    background-color: #f3f4f6;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.875em;
+}
+.prose-note ul {
+    list-style-type: disc;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+}
+.prose-note ol {
+    list-style-type: decimal;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+}
+.prose-note li {
+    margin-top: 0.125rem;
+    margin-bottom: 0.125rem;
+}
+.prose-note blockquote {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 0.75rem;
+    color: #4b5563;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}

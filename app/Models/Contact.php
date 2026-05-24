@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Concerns\HasUlidRouteKey;
+use App\Models\Concerns\RendersMarkdown;
 use App\Traits\RecordsActivity;
 use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
@@ -15,8 +16,19 @@ class Contact extends Model implements CalendarInterface
 {
     use HasUlidRouteKey;
     use RecordsActivity;
+    use RendersMarkdown;
     use Searchable;
     use HasFactory;
+
+    public function getNoteHtmlAttribute(): string
+    {
+        return $this->renderMarkdown($this->note);
+    }
+
+    public function getFirstMetHtmlAttribute(): string
+    {
+        return $this->renderMarkdown($this->first_met);
+    }
 
     protected $fillable = [
         'firstname',
@@ -154,14 +166,12 @@ class Contact extends Model implements CalendarInterface
     {
         $from = $startDate->format('md');
         $to = $endDate->format('md');
+        $mmdd = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%m%d', date_of_birth)"
+            : "DATE_FORMAT(date_of_birth, '%m%d')";
 
         return self::select('contacts.*')
-            ->whereRaw(
-                "(
-                    DATE_FORMAT(date_of_birth, '%m%d') BETWEEN ? AND ?
-                )",
-                [$from, $to]
-            )
+            ->whereRaw("({$mmdd} BETWEEN ? AND ?)", [$from, $to])
             ->where('active', 1)
             ->whereNotNull('date_of_birth')
             ->get();

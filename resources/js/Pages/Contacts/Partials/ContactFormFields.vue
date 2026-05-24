@@ -157,12 +157,18 @@ defineProps({
             <div>
                 <InputLabel for="first_met" value="First met (notes)" />
                 <Textarea id="first_met" v-model="form.first_met" rows="2" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="form.errors.first_met" />
             </div>
 
             <div>
                 <InputLabel for="note" value="General notes" />
                 <Textarea id="note" v-model="form.note" rows="3" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="form.errors.note" />
             </div>
 

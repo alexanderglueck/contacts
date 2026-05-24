@@ -3,13 +3,20 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
+use App\Models\Concerns\RendersMarkdown;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactNote extends Model
 {
     use HasUlidRouteKey;
+    use RendersMarkdown;
 
     protected $fillable = ['name', 'note'];
+
+    public function getNoteHtmlAttribute(): string
+    {
+        return $this->renderMarkdown($this->note);
+    }
 
     /**
      * All of the relationships to be touched.
