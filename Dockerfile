@@ -102,9 +102,8 @@ RUN --mount=type=cache,target=/tmp/composer-cache \
 FROM php:${PHP_VERSION}-fpm AS base
 WORKDIR /app
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions \
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions \
         bcmath \
         exif \
         gd \
