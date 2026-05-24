@@ -12,6 +12,8 @@ use App\Events\TwoFactor\TwoFactorFailure;
 use App\Events\TwoFactor\TwoFactorSuccess;
 use App\Http\Requests\Login\LoginCheckRequest;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LoginController extends Controller
 {
@@ -45,6 +47,11 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
     }
 
+    public function showLoginForm(): Response
+    {
+        return Inertia::render('Auth/Login');
+    }
+
     /**
      * The user has been authenticated.
      */
@@ -75,7 +82,7 @@ class LoginController extends Controller
         return redirect()->intended($this->redirectPath());
     }
 
-    public function token(Request $request)
+    public function token(Request $request): RedirectResponse|Response
     {
         if ( ! $request->session()->has('token-user-id')) {
             Auth::logout();
@@ -83,7 +90,7 @@ class LoginController extends Controller
             return redirect()->route('login');
         }
 
-        return view('auth.token');
+        return Inertia::render('Auth/Token');
     }
 
     public function check(LoginCheckRequest $request, Google2FA $google2fa): RedirectResponse
