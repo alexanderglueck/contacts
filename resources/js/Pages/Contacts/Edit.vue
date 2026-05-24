@@ -1,9 +1,12 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ContactFormFields from './Partials/ContactFormFields.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -19,7 +22,7 @@ const form = useForm({
     firstname: props.contact.firstname ?? '',
     lastname: props.contact.lastname ?? '',
     nickname: props.contact.nickname ?? '',
-    date_of_birth: props.contact.formatted_date_of_birth ?? '',
+    date_of_birth: props.contact.date_of_birth ?? '',
     iban: props.contact.iban ?? '',
     company: props.contact.company ?? '',
     vatin: props.contact.vatin ?? '',
@@ -31,7 +34,7 @@ const form = useForm({
     active: props.contact.active ? 1 : 0,
     first_met: props.contact.first_met ?? '',
     note: props.contact.note ?? '',
-    died_at: props.contact.formatted_died_at ?? '',
+    died_at: props.contact.died_at ?? '',
     died_from: props.contact.died_from ?? '',
     nationality_id: props.contact.nationality_id ?? null,
 });
@@ -40,12 +43,12 @@ const submit = () => form.put(route('contacts.update', props.contact.ulid));
 </script>
 
 <template>
-    <AppLayout :title="`Edit ${contact.fullname}`">
-        <Head :title="`Edit ${contact.fullname}`" />
+    <AppLayout :title="`${t('contacts.edit')} – ${contact.fullname}`">
+        <Head :title="`${t('contacts.edit')} – ${contact.fullname}`" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Edit contact</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{ t('contacts.edit') }}</h2>
             </div>
 
             <div class="px-6 py-4">
@@ -59,10 +62,10 @@ const submit = () => form.put(route('contacts.update', props.contact.ulid));
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
                 <Link :href="route('contacts.show', contact.ulid)">
-                    <SecondaryButton type="button">Cancel</SecondaryButton>
+                    <SecondaryButton type="button">{{ t('common.cancel') }}</SecondaryButton>
                 </Link>
                 <PrimaryButton :disabled="form.processing" :class="{ 'opacity-50': form.processing }">
-                    Save
+                    {{ t('common.save') }}
                 </PrimaryButton>
             </div>
         </form>

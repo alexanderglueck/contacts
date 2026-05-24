@@ -1,7 +1,10 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SlideOver from '@/Components/SlideOver.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     open: { type: Boolean, required: true },
@@ -11,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const title = computed(() => 'Activity');
+const title = computed(() => t('contacts.section.activities'));
 
 // "created_contact" → "Created contact". Cosmetic only; the underlying
 // action string is what's stored.
@@ -26,7 +29,7 @@ const humanize = (action) => {
 <template>
     <SlideOver :open="open" :title="title" @close="emit('close')">
         <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
-            No activity recorded yet.
+            {{ t('contacts.slideover.empty_activities') }}
         </div>
 
         <ol v-else class="relative -mx-6 divide-y divide-gray-200">
@@ -42,7 +45,7 @@ const humanize = (action) => {
         </ol>
 
         <template #footer>
-            <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
+            <SecondaryButton type="button" @click="emit('close')">{{ t('contacts.slideover.close') }}</SecondaryButton>
         </template>
     </SlideOver>
 </template>

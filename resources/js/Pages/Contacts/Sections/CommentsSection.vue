@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import SlideOver from '@/Components/SlideOver.vue';
 import Textarea from '@/Components/Textarea.vue';
 import InputError from '@/Components/InputError.vue';
@@ -16,6 +17,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const { t } = useI18n();
 
 // 'list' | 'create' | 'edit' | 'delete'
 // (no 'show' — the list IS the detail view for comments)
@@ -43,13 +45,15 @@ watch(
 const title = computed(() => {
     switch (mode.value) {
         case 'create':
-            return selected.value ? `Reply to ${selected.value.owner?.name ?? 'comment'}` : 'Add comment';
+            return selected.value
+                ? t('contacts.slideover.reply_to', { name: selected.value.owner?.name ?? '' })
+                : t('contacts.slideover.add_comment');
         case 'edit':
-            return 'Edit comment';
+            return `${t('contacts.slideover.edit')} ${t('contacts.fields.note').toLowerCase()}`;
         case 'delete':
-            return 'Delete comment?';
+            return `${t('contacts.slideover.delete')} ${t('contacts.section.comments').toLowerCase()}?`;
         default:
-            return 'Comments';
+            return t('contacts.section.comments');
     }
 });
 
@@ -151,14 +155,14 @@ const submitDelete = () =>
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="tree.roots.length === 0" class="text-sm text-gray-500 text-center py-6">
-                No comments yet.
+                {{ t('contacts.slideover.empty_comments') }}
             </div>
 
             <ul v-else class="space-y-4">
                 <li v-for="comment in tree.roots" :key="comment.ulid">
                     <article class="text-sm">
                         <template v-if="comment.is_deleted">
-                            <div class="italic text-gray-400">(deleted)</div>
+                            <div class="italic text-gray-400">{{ t('contacts.slideover.comment_fields.deleted') }}</div>
                         </template>
                         <template v-else>
                             <header class="flex items-baseline justify-between gap-2 mb-1">
@@ -179,7 +183,7 @@ const submitDelete = () =>
                                 class="text-indigo-600 hover:text-indigo-500 cursor-pointer"
                                 @click="openReply(comment)"
                             >
-                                Reply
+                                {{ t('contacts.slideover.comment_fields.reply') }}
                             </button>
                             <button
                                 v-if="comment.is_mine && can.edit"
@@ -187,7 +191,7 @@ const submitDelete = () =>
                                 class="text-gray-600 hover:text-gray-900 cursor-pointer"
                                 @click="openEdit(comment)"
                             >
-                                Edit
+                                {{ t('common.edit') }}
                             </button>
                             <button
                                 v-if="comment.is_mine && can.delete"
@@ -195,7 +199,7 @@ const submitDelete = () =>
                                 class="text-red-600 hover:text-red-500 cursor-pointer"
                                 @click="openDelete(comment)"
                             >
-                                Delete
+                                {{ t('common.delete') }}
                             </button>
                         </footer>
                     </article>
@@ -208,7 +212,7 @@ const submitDelete = () =>
                         <li v-for="reply in repliesOf(comment.ulid)" :key="reply.ulid">
                             <article class="text-sm">
                                 <template v-if="reply.is_deleted">
-                                    <div class="italic text-gray-400">(deleted)</div>
+                                    <div class="italic text-gray-400">{{ t('contacts.slideover.comment_fields.deleted') }}</div>
                                 </template>
                                 <template v-else>
                                     <header class="flex items-baseline justify-between gap-2 mb-1">
@@ -229,7 +233,7 @@ const submitDelete = () =>
                                         class="text-indigo-600 hover:text-indigo-500 cursor-pointer"
                                         @click="openReply(reply)"
                                     >
-                                        Reply
+                                        {{ t('contacts.slideover.comment_fields.reply') }}
                                     </button>
                                     <button
                                         v-if="reply.is_mine && can.edit"
@@ -237,7 +241,7 @@ const submitDelete = () =>
                                         class="text-gray-600 hover:text-gray-900 cursor-pointer"
                                         @click="openEdit(reply)"
                                     >
-                                        Edit
+                                        {{ t('common.edit') }}
                                     </button>
                                     <button
                                         v-if="reply.is_mine && can.delete"
@@ -245,7 +249,7 @@ const submitDelete = () =>
                                         class="text-red-600 hover:text-red-500 cursor-pointer"
                                         @click="openDelete(reply)"
                                     >
-                                        Delete
+                                        {{ t('common.delete') }}
                                     </button>
                                 </footer>
                             </article>
@@ -263,7 +267,7 @@ const submitDelete = () =>
             class="space-y-3"
         >
             <div v-if="selected" class="rounded-md bg-gray-50 ring-1 ring-gray-200 px-3 py-2 text-xs text-gray-600">
-                <span class="font-medium text-gray-700">Replying to {{ selected.owner?.name ?? 'comment' }}:</span>
+                <span class="font-medium text-gray-700">{{ t('contacts.slideover.reply_to', { name: selected.owner?.name ?? '' }) }}:</span>
                 <div class="mt-1 prose-note text-gray-700 line-clamp-3" v-html="selected.comment_html" />
             </div>
             <Textarea v-model="createForm.comment" :rows="4" autofocus placeholder="Write a comment…" />
@@ -300,45 +304,45 @@ const submitDelete = () =>
 
         <template #footer>
             <template v-if="mode === 'list'">
-                <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
+                <SecondaryButton type="button" @click="emit('close')">{{ t('contacts.slideover.close') }}</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add comment
+                    {{ t('contacts.slideover.add_comment') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'create'">
-                <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="comment-create-form"
                     :disabled="createForm.processing || !createForm.comment.trim()"
                     :class="{ 'opacity-50': createForm.processing || !createForm.comment.trim() }"
                 >
-                    {{ selected ? 'Reply' : 'Post' }}
+                    {{ selected ? t('contacts.slideover.comment_fields.reply') : t('contacts.slideover.create') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'edit'">
-                <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="comment-edit-form"
                     :disabled="editForm.processing || !editForm.comment.trim()"
                     :class="{ 'opacity-50': editForm.processing || !editForm.comment.trim() }"
                 >
-                    Save
+                    {{ t('contacts.slideover.save') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'delete'">
-                <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <DangerButton
                     type="button"
                     :disabled="deleteForm.processing"
                     :class="{ 'opacity-50': deleteForm.processing }"
                     @click="submitDelete"
                 >
-                    Delete
+                    {{ t('contacts.slideover.delete') }}
                 </DangerButton>
             </template>
         </template>

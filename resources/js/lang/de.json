@@ -194,5 +194,148 @@
         "already_registered": "Sie haben auf diesem Gerät bereits einen Passkey für dieses Konto registriert.",
         "cancelled": "Passkey-Aufforderung wurde abgebrochen oder ist abgelaufen.",
         "register_failed": "Passkey konnte nicht registriert werden."
+    },
+    "contacts": {
+        "title": "Kontakte",
+        "create": "Kontakt erstellen",
+        "edit": "Kontakt bearbeiten",
+        "delete": "Kontakt löschen",
+        "image": "Bild",
+        "search_placeholder": "Kontakte suchen…",
+        "clear_search": "Suche zurücksetzen",
+        "import": "Importieren",
+        "export": "Exportieren",
+        "create_short": "Erstellen",
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "no_results_for": "Keine Kontakte zu „{q}“ gefunden.",
+        "no_contacts": "Noch keine Kontakte vorhanden.",
+        "showing_one": "Zeige {from}–{to} von {total} Kontakt",
+        "showing_many": "Zeige {from}–{to} von {total} Kontakten",
+        "delete_confirm_title": "{name} löschen?",
+        "delete_confirm_body": "Dadurch werden der Kontakt sowie alle zugehörigen Adressen, Telefonnummern, E-Mails, Termine, Webseiten, Notizen, Anrufe und Geschenkideen endgültig entfernt.",
+        "fields": {
+            "salutation": "Anrede",
+            "title": "Titel",
+            "title_after": "Titel (nachgestellt)",
+            "firstname": "Vorname",
+            "lastname": "Nachname",
+            "nickname": "Spitzname",
+            "date_of_birth": "Geburtsdatum",
+            "iban": "IBAN",
+            "company": "Unternehmen",
+            "vatin": "USt-IdNr.",
+            "department": "Abteilung",
+            "job": "Beruf",
+            "gender": "Geschlecht",
+            "custom_id": "Eigene ID",
+            "contact_groups": "Kontaktgruppen",
+            "status": "Status",
+            "active": "Aktiv",
+            "inactive": "Inaktiv",
+            "first_met": "Erstes Treffen",
+            "first_met_label": "Erstes Treffen (Notizen)",
+            "note": "Notiz",
+            "note_label": "Allgemeine Notizen",
+            "died_at": "Verstorben am",
+            "died_from": "Verstorben durch",
+            "nationality": "Nationalität",
+            "name": "Name"
+        },
+        "form_sections": {
+            "basic": "Grunddaten",
+            "details": "Details",
+            "work": "Beruf",
+            "additional": "Zusätzliches"
+        },
+        "markdown_hint": "Markdown unterstützt: **fett**, *kursiv*, [Link](url), `Code`, Listen, > Zitate.",
+        "section": {
+            "addresses": "Adressen",
+            "numbers": "Telefonnummern",
+            "emails": "E-Mails",
+            "urls": "Webseiten",
+            "dates": "Wichtige Termine",
+            "notes": "Notizen",
+            "calls": "Anrufe",
+            "gift_ideas": "Geschenkideen",
+            "comments": "Kommentare",
+            "activities": "Aktivität",
+            "first_met": "Erstes Treffen",
+            "general_notes": "Notizen"
+        },
+        "tile_manage": "Verwalten ({count})",
+        "tile_view": "Ansehen",
+        "slideover": {
+            "close": "Schließen",
+            "back": "Zurück",
+            "create": "Hinzufügen",
+            "edit": "Bearbeiten",
+            "delete": "Löschen",
+            "save": "Speichern",
+            "cancel": "Abbrechen",
+            "add_phone_number": "Telefonnummer hinzufügen",
+            "add_email": "E-Mail-Adresse hinzufügen",
+            "add_website": "Webseite hinzufügen",
+            "add_note": "Notiz hinzufügen",
+            "add_call": "Anruf protokollieren",
+            "add_date": "Wichtigen Termin hinzufügen",
+            "add_gift_idea": "Geschenkidee hinzufügen",
+            "add_address": "Adresse hinzufügen",
+            "add_comment": "Kommentar hinzufügen",
+            "reply_to": "Antwort an {name}",
+            "remove_confirm": "Möchten Sie das wirklich entfernen?",
+            "empty_addresses": "Noch keine Adressen vorhanden.",
+            "empty_numbers": "Noch keine Telefonnummern vorhanden.",
+            "empty_emails": "Noch keine E-Mail-Adressen vorhanden.",
+            "empty_urls": "Noch keine Webseiten vorhanden.",
+            "empty_notes": "Noch keine Notizen vorhanden.",
+            "empty_calls": "Noch keine Anrufe protokolliert.",
+            "empty_dates": "Noch keine wichtigen Termine vorhanden.",
+            "empty_gift_ideas": "Noch keine Geschenkideen vorhanden.",
+            "empty_comments": "Noch keine Kommentare vorhanden.",
+            "empty_activities": "Noch keine Aktivitäten aufgezeichnet.",
+            "address_fields": {
+                "type": "Typ",
+                "street": "Straße",
+                "city": "Stadt",
+                "zip": "PLZ",
+                "state": "Bundesland / Region",
+                "country": "Land"
+            },
+            "number_fields": {
+                "type": "Typ",
+                "number": "Nummer"
+            },
+            "email_fields": {
+                "type": "Typ",
+                "email": "E-Mail-Adresse"
+            },
+            "url_fields": {
+                "type": "Typ",
+                "url": "Webseite"
+            },
+            "date_fields": {
+                "title": "Anlass",
+                "date": "Datum",
+                "yearly": "Wiederholt sich jährlich"
+            },
+            "note_fields": {
+                "body": "Notiz"
+            },
+            "call_fields": {
+                "called_at": "Angerufen am",
+                "body": "Worüber wurde gesprochen"
+            },
+            "gift_fields": {
+                "title": "Titel",
+                "description": "Beschreibung",
+                "due_at": "Fällig am"
+            },
+            "comment_fields": {
+                "body": "Kommentar",
+                "reply": "Antworten",
+                "deleted": "(gelöscht)"
+            }
+        }
     }
 }

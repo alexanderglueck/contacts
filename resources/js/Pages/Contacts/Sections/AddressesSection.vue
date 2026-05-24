@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import SlideOver from '@/Components/SlideOver.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -9,6 +10,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import MiniMap from '@/Components/MiniMap.vue';
 
 const props = defineProps({
     open: { type: Boolean, required: true },
@@ -19,6 +21,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const { t } = useI18n();
 
 const mode = ref('list');
 const selected = ref(null);
@@ -30,8 +33,6 @@ const blankAddress = () => ({
     city: '',
     state: '',
     country_id: 164,
-    latitude: '',
-    longitude: '',
 });
 
 const createForm = useForm(blankAddress());
@@ -54,11 +55,11 @@ watch(
 
 const title = computed(() => {
     switch (mode.value) {
-        case 'create': return 'Add address';
-        case 'show': return selected.value?.name ?? 'Address';
-        case 'edit': return `Edit ${selected.value?.name}`;
-        case 'delete': return `Delete ${selected.value?.name}?`;
-        default: return 'Addresses';
+        case 'create': return t('contacts.slideover.add_address');
+        case 'show': return selected.value?.name ?? t('contacts.section.addresses');
+        case 'edit': return `${t('contacts.slideover.edit')} ${selected.value?.name}`;
+        case 'delete': return `${t('contacts.slideover.delete')} ${selected.value?.name}?`;
+        default: return t('contacts.section.addresses');
     }
 });
 
@@ -91,8 +92,6 @@ const openEdit = (item) => {
     editForm.city = item.city;
     editForm.state = item.state ?? '';
     editForm.country_id = item.country_id ?? 164;
-    editForm.latitude = item.latitude ?? '';
-    editForm.longitude = item.longitude ?? '';
     editForm.clearErrors();
     mode.value = 'edit';
 };
@@ -150,7 +149,7 @@ const submitDelete = () =>
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
-                No addresses yet.
+                {{ t('contacts.slideover.empty_addresses') }}
             </div>
             <ul v-else class="divide-y divide-gray-200 -mx-6">
                 <li v-for="item in items" :key="item.id">
@@ -189,11 +188,16 @@ const submitDelete = () =>
                     <dt class="font-medium text-gray-700">Country</dt>
                     <dd class="text-gray-900">{{ selected.country }}</dd>
                 </div>
-                <div v-if="selected.latitude || selected.longitude">
-                    <dt class="font-medium text-gray-700">Coordinates</dt>
-                    <dd class="text-gray-900">{{ selected.latitude }}, {{ selected.longitude }}</dd>
-                </div>
             </dl>
+            <MiniMap
+                v-if="selected.latitude && selected.longitude"
+                :latitude="selected.latitude"
+                :longitude="selected.longitude"
+                class="mt-4"
+            />
+            <p v-else class="mt-4 text-xs text-gray-500">
+                Coordinates will appear here once geocoding completes (queued automatically after save).
+            </p>
         </template>
 
         <!-- Create -->
@@ -239,20 +243,8 @@ const submitDelete = () =>
                 </Select>
                 <InputError :message="createForm.errors.country_id" />
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <InputLabel for="create-latitude" value="Latitude" />
-                    <TextInput id="create-latitude" v-model="createForm.latitude" />
-                    <InputError :message="createForm.errors.latitude" />
-                </div>
-                <div>
-                    <InputLabel for="create-longitude" value="Longitude" />
-                    <TextInput id="create-longitude" v-model="createForm.longitude" />
-                    <InputError :message="createForm.errors.longitude" />
-                </div>
-            </div>
             <p class="text-xs text-gray-500">
-                Geocoding from address is not wired up yet — enter coordinates manually if you need map markers.
+                Coordinates are looked up automatically via OpenStreetMap shortly after saving.
             </p>
         </form>
 
@@ -299,20 +291,8 @@ const submitDelete = () =>
                 </Select>
                 <InputError :message="editForm.errors.country_id" />
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <InputLabel for="edit-latitude" value="Latitude" />
-                    <TextInput id="edit-latitude" v-model="editForm.latitude" />
-                    <InputError :message="editForm.errors.latitude" />
-                </div>
-                <div>
-                    <InputLabel for="edit-longitude" value="Longitude" />
-                    <TextInput id="edit-longitude" v-model="editForm.longitude" />
-                    <InputError :message="editForm.errors.longitude" />
-                </div>
-            </div>
             <p class="text-xs text-gray-500">
-                Geocoding from address is not wired up yet — enter coordinates manually if you need map markers.
+                Coordinates are re-resolved automatically via OpenStreetMap when address fields change.
             </p>
         </form>
 
@@ -325,55 +305,55 @@ const submitDelete = () =>
 
         <template #footer>
             <template v-if="mode === 'list'">
-                <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
+                <SecondaryButton type="button" @click="emit('close')">{{ t('contacts.slideover.close') }}</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add address
+                    {{ t('contacts.slideover.add_address') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'show'">
-                <SecondaryButton type="button" @click="backToList">Back</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.back') }}</SecondaryButton>
                 <DangerButton v-if="can.delete" type="button" @click="openDelete(selected)">
-                    Delete
+                    {{ t('contacts.slideover.delete') }}
                 </DangerButton>
                 <PrimaryButton v-if="can.edit" type="button" @click="openEdit(selected)">
-                    Edit
+                    {{ t('contacts.slideover.edit') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'create'">
-                <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="address-create-form"
                     :disabled="createForm.processing"
                     :class="{ 'opacity-50': createForm.processing }"
                 >
-                    Create
+                    {{ t('contacts.slideover.create') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'edit'">
-                <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="openShow(selected)">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="address-edit-form"
                     :disabled="editForm.processing"
                     :class="{ 'opacity-50': editForm.processing }"
                 >
-                    Save
+                    {{ t('contacts.slideover.save') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'delete'">
-                <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="openShow(selected)">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <DangerButton
                     type="button"
                     :disabled="deleteForm.processing"
                     :class="{ 'opacity-50': deleteForm.processing }"
                     @click="submitDelete"
                 >
-                    Delete
+                    {{ t('contacts.slideover.delete') }}
                 </DangerButton>
             </template>
         </template>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import SlideOver from '@/Components/SlideOver.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -18,6 +19,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+const { t } = useI18n();
 
 const mode = ref('list');
 const selected = ref(null);
@@ -42,11 +44,11 @@ watch(
 
 const title = computed(() => {
     switch (mode.value) {
-        case 'create': return 'Add note';
-        case 'show': return selected.value?.name ?? 'Note';
-        case 'edit': return `Edit ${selected.value?.name}`;
-        case 'delete': return `Delete ${selected.value?.name}?`;
-        default: return 'Notes';
+        case 'create': return t('contacts.slideover.add_note');
+        case 'show': return selected.value?.name ?? t('contacts.section.notes');
+        case 'edit': return `${t('contacts.slideover.edit')} ${selected.value?.name}`;
+        case 'delete': return `${t('contacts.slideover.delete')} ${selected.value?.name}?`;
+        default: return t('contacts.section.notes');
     }
 });
 
@@ -132,7 +134,7 @@ const submitDelete = () =>
         <!-- List -->
         <template v-if="mode === 'list'">
             <div v-if="items.length === 0" class="text-sm text-gray-500 text-center py-6">
-                No notes yet.
+                {{ t('contacts.slideover.empty_notes') }}
             </div>
             <ul v-else class="divide-y divide-gray-200 -mx-6">
                 <li v-for="item in items" :key="item.id">
@@ -215,55 +217,55 @@ const submitDelete = () =>
 
         <template #footer>
             <template v-if="mode === 'list'">
-                <SecondaryButton type="button" @click="emit('close')">Close</SecondaryButton>
+                <SecondaryButton type="button" @click="emit('close')">{{ t('contacts.slideover.close') }}</SecondaryButton>
                 <PrimaryButton v-if="can.create" type="button" @click="openCreate">
-                    Add note
+                    {{ t('contacts.slideover.add_note') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'show'">
-                <SecondaryButton type="button" @click="backToList">Back</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.back') }}</SecondaryButton>
                 <DangerButton v-if="can.delete" type="button" @click="openDelete(selected)">
-                    Delete
+                    {{ t('contacts.slideover.delete') }}
                 </DangerButton>
                 <PrimaryButton v-if="can.edit" type="button" @click="openEdit(selected)">
-                    Edit
+                    {{ t('contacts.slideover.edit') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'create'">
-                <SecondaryButton type="button" @click="backToList">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="backToList">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="note-create-form"
                     :disabled="createForm.processing"
                     :class="{ 'opacity-50': createForm.processing }"
                 >
-                    Create
+                    {{ t('contacts.slideover.create') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'edit'">
-                <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="openShow(selected)">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <PrimaryButton
                     type="submit"
                     form="note-edit-form"
                     :disabled="editForm.processing"
                     :class="{ 'opacity-50': editForm.processing }"
                 >
-                    Save
+                    {{ t('contacts.slideover.save') }}
                 </PrimaryButton>
             </template>
 
             <template v-else-if="mode === 'delete'">
-                <SecondaryButton type="button" @click="openShow(selected)">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="openShow(selected)">{{ t('contacts.slideover.cancel') }}</SecondaryButton>
                 <DangerButton
                     type="button"
                     :disabled="deleteForm.processing"
                     :class="{ 'opacity-50': deleteForm.processing }"
                     @click="submitDelete"
                 >
-                    Delete
+                    {{ t('contacts.slideover.delete') }}
                 </DangerButton>
             </template>
         </template>

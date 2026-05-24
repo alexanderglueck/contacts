@@ -194,5 +194,148 @@
         "already_registered": "You've already registered a passkey on this device for this account.",
         "cancelled": "Passkey prompt was cancelled or timed out.",
         "register_failed": "Could not register passkey."
+    },
+    "contacts": {
+        "title": "Contacts",
+        "create": "Create contact",
+        "edit": "Edit contact",
+        "delete": "Delete contact",
+        "image": "Picture",
+        "search_placeholder": "Search contacts…",
+        "clear_search": "Clear search",
+        "import": "Import",
+        "export": "Export",
+        "create_short": "Create",
+        "save": "Save",
+        "cancel": "Cancel",
+        "no_results_for": "No contacts match \"{q}\".",
+        "no_contacts": "No contacts yet.",
+        "showing_one": "Showing {from}–{to} of {total} contact",
+        "showing_many": "Showing {from}–{to} of {total} contacts",
+        "delete_confirm_title": "Delete {name}?",
+        "delete_confirm_body": "This will permanently remove the contact and all associated addresses, phone numbers, emails, dates, URLs, notes, calls, and gift ideas.",
+        "fields": {
+            "salutation": "Salutation",
+            "title": "Title",
+            "title_after": "Title after",
+            "firstname": "First name",
+            "lastname": "Last name",
+            "nickname": "Nickname",
+            "date_of_birth": "Date of birth",
+            "iban": "IBAN",
+            "company": "Company",
+            "vatin": "VAT ID",
+            "department": "Department",
+            "job": "Job",
+            "gender": "Gender",
+            "custom_id": "Custom ID",
+            "contact_groups": "Contact groups",
+            "status": "Status",
+            "active": "Active",
+            "inactive": "Inactive",
+            "first_met": "First met",
+            "first_met_label": "First met (notes)",
+            "note": "Note",
+            "note_label": "General notes",
+            "died_at": "Died at",
+            "died_from": "Died from",
+            "nationality": "Nationality",
+            "name": "Name"
+        },
+        "form_sections": {
+            "basic": "Basic information",
+            "details": "Details",
+            "work": "Work",
+            "additional": "Additional"
+        },
+        "markdown_hint": "Markdown supported: **bold**, *italic*, [link](url), `code`, lists, > quotes.",
+        "section": {
+            "addresses": "Addresses",
+            "numbers": "Phone numbers",
+            "emails": "Emails",
+            "urls": "Websites",
+            "dates": "Important dates",
+            "notes": "Notes",
+            "calls": "Calls",
+            "gift_ideas": "Gift ideas",
+            "comments": "Comments",
+            "activities": "Activity",
+            "first_met": "First met",
+            "general_notes": "Notes"
+        },
+        "tile_manage": "Manage ({count})",
+        "tile_view": "View",
+        "slideover": {
+            "close": "Close",
+            "back": "Back",
+            "create": "Add",
+            "edit": "Edit",
+            "delete": "Delete",
+            "save": "Save",
+            "cancel": "Cancel",
+            "add_phone_number": "Add phone number",
+            "add_email": "Add email",
+            "add_website": "Add website",
+            "add_note": "Add note",
+            "add_call": "Log call",
+            "add_date": "Add important date",
+            "add_gift_idea": "Add gift idea",
+            "add_address": "Add address",
+            "add_comment": "Add comment",
+            "reply_to": "Reply to {name}",
+            "remove_confirm": "Are you sure you want to remove this?",
+            "empty_addresses": "No addresses yet.",
+            "empty_numbers": "No phone numbers yet.",
+            "empty_emails": "No email addresses yet.",
+            "empty_urls": "No websites yet.",
+            "empty_notes": "No notes yet.",
+            "empty_calls": "No calls logged yet.",
+            "empty_dates": "No important dates yet.",
+            "empty_gift_ideas": "No gift ideas yet.",
+            "empty_comments": "No comments yet.",
+            "empty_activities": "No activity recorded yet.",
+            "address_fields": {
+                "type": "Type",
+                "street": "Street",
+                "city": "City",
+                "zip": "Postcode",
+                "state": "State / region",
+                "country": "Country"
+            },
+            "number_fields": {
+                "type": "Type",
+                "number": "Number"
+            },
+            "email_fields": {
+                "type": "Type",
+                "email": "Email address"
+            },
+            "url_fields": {
+                "type": "Type",
+                "url": "Website"
+            },
+            "date_fields": {
+                "title": "Occasion",
+                "date": "Date",
+                "yearly": "Repeats yearly"
+            },
+            "note_fields": {
+                "body": "Note"
+            },
+            "call_fields": {
+                "called_at": "Called at",
+                "body": "What was discussed"
+            },
+            "gift_fields": {
+                "title": "Title",
+                "description": "Description",
+                "due_at": "Due at"
+            },
+            "comment_fields": {
+                "body": "Comment",
+                "reply": "Reply",
+                "deleted": "(deleted)"
+            }
+        }
     }
 }
