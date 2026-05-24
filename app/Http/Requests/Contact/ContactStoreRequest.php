@@ -35,8 +35,12 @@ class ContactStoreRequest extends FormRequest
             'job' => 'present',
             'gender_id' => 'integer|exists:genders,id',
             'nickname' => 'present',
-            'date_of_birth' => 'nullable|sometimes|date_format:d.m.Y',
-            'died_at' => 'nullable|sometimes|date_format:d.m.Y',
+            // <input type="date"> always sends ISO; the legacy d.m.Y payload
+            // path (older tests + import flows) still has to validate too,
+            // so we accept both formats and let the Contact model's
+            // parseDate() mutator normalize on the way in.
+            'date_of_birth' => 'nullable|sometimes|date_format:Y-m-d,d.m.Y',
+            'died_at' => 'nullable|sometimes|date_format:Y-m-d,d.m.Y',
             'nationality_id' => 'nullable|sometimes|exists:countries,id',
             'iban' => new ValidIBANFormat
         ];
