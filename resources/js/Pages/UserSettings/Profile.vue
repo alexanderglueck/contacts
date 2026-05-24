@@ -1,9 +1,10 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import SettingsLayout from '@/Layouts/SettingsLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
+import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
@@ -13,13 +14,14 @@ const props = defineProps({
 const form = useForm({
     name: props.user.name ?? '',
     email: props.user.email ?? '',
+    password_reset_disabled: !!props.user.password_reset_disabled,
 });
 
 const submit = () => form.put(route('user_settings.profile.update'));
 </script>
 
 <template>
-    <AppLayout title="Profile">
+    <SettingsLayout title="Profile">
         <Head title="Profile" />
 
         <form @submit.prevent="submit" class="bg-white shadow rounded-lg">
@@ -39,6 +41,20 @@ const submit = () => form.put(route('user_settings.profile.update'));
                     <TextInput id="email" type="email" v-model="form.email" required />
                     <InputError :message="form.errors.email" />
                 </div>
+
+                <div class="pt-2 border-t border-gray-200">
+                    <label class="flex items-start gap-2">
+                        <Checkbox v-model:checked="form.password_reset_disabled" class="mt-1" />
+                        <span class="text-sm text-gray-700">
+                            <span class="font-medium text-gray-900">Disable password reset emails</span>
+                            <span class="block text-xs text-gray-600 mt-0.5">
+                                When checked, the "forgot password" flow won't send a reset link
+                                to this address. Useful if you sign in with a passkey or SSO and
+                                want to make sure the password is the only path in.
+                            </span>
+                        </span>
+                    </label>
+                </div>
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
@@ -47,5 +63,5 @@ const submit = () => form.put(route('user_settings.profile.update'));
                 </PrimaryButton>
             </div>
         </form>
-    </AppLayout>
+    </SettingsLayout>
 </template>

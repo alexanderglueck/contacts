@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $this->user()->id,
+            'password_reset_disabled' => 'sometimes|boolean',
         ];
     }
 }

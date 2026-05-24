@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Domain\Users\Actions\GenerateProfileImageAction;
 use App\Models\Admin\Announcement;
 use App\Models\Concerns\HasUlidRouteKey;
-use App\Models\System\News;
 use App\Models\Traits\HasRoles;
 use App\Models\Traits\HasSubscriptions;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -39,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'name',
         'email',
         'password',
+        'password_reset_disabled',
         'current_team_id',
     ];
 
@@ -52,7 +52,24 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
+        'password_reset_disabled' => 'boolean',
     ];
+
+    /**
+     * Per-user opt-out: when password_reset_disabled is true, drop the
+     * reset notification on the floor. The password broker still goes
+     * through its normal motions and returns its usual response — so a
+     * stranger hitting POST /forgot-password with this address can't
+     * tell whether the email was accepted or silently discarded.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        if ($this->password_reset_disabled) {
+            return;
+        }
+
+        parent::sendPasswordResetNotification($token);
+    }
 
     public function contacts()
     {
@@ -130,13 +147,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return $this->belongsToMany(
             Announcement::class
-        );
-    }
-
-    public function readNews()
-    {
-        return $this->belongsToMany(
-            News::class
         );
     }
 
