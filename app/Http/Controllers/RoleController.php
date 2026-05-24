@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,6 +74,8 @@ class RoleController extends Controller
         $permissions = $role->permissions()->get(['permissions.id', 'permissions.name']);
         $users = $role->users()->get(['users.id', 'users.name']);
 
+        $deletionBlockedReason = $this->roleDeletionBlockedReason($role);
+
         return Inertia::render('Roles/Show', [
             'role' => [
                 'id' => $role->id,
@@ -83,8 +86,9 @@ class RoleController extends Controller
             'users' => $users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]),
             'can' => [
                 'edit' => $user->checkPermissionTo('edit roles'),
-                'delete' => $user->checkPermissionTo('delete roles'),
+                'delete' => $user->checkPermissionTo('delete roles') && $deletionBlockedReason === null,
             ],
+            'deletion_blocked_reason' => $deletionBlockedReason,
         ]);
     }
 
@@ -110,11 +114,19 @@ class RoleController extends Controller
 
     public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
+        $proposedUserIds = $this->normaliseIds($request->users);
+
+        if ($blocked = $this->adminProtectionBlockedReason($role, $proposedUserIds)) {
+            Session::flash('alert-danger', $blocked);
+
+            return redirect()->route('roles.edit', [$role->ulid]);
+        }
+
         $role->fill($request->except(['users', 'permissions']));
 
         $role->syncPermissions($this->normaliseIds($request->permissions));
 
-        $role->syncUsers($this->normaliseIds($request->users));
+        $role->syncUsers($proposedUserIds);
 
         if ($role->save()) {
             Session::flash('alert-success', trans('flash_message.role.updated'));
@@ -130,6 +142,12 @@ class RoleController extends Controller
     public function destroy(Role $role): RedirectResponse
     {
         $this->can('delete');
+
+        if ($blocked = $this->roleDeletionBlockedReason($role)) {
+            Session::flash('alert-danger', $blocked);
+
+            return redirect()->route('roles.show', [$role->ulid]);
+        }
 
         if ($role->delete()) {
             Session::flash('alert-success', trans('flash_message.role.deleted'));
@@ -152,7 +170,65 @@ class RoleController extends Controller
                 'ulid' => $role->ulid,
                 'name' => $role->name,
             ],
+            'deletion_blocked_reason' => $this->roleDeletionBlockedReason($role),
         ]);
+    }
+
+    /**
+     * Reason this role cannot be deleted, or null if it can.
+     *
+     * Two invariants are enforced regardless of permission grant:
+     *   1. A user cannot delete a role they themselves are assigned to —
+     *      doing so would silently strip their own permissions.
+     *   2. A team must always retain at least one user assigned to the
+     *      'admin' role. Deleting the admin role (or the only admin
+     *      role) when it has any users would leave the team unable to
+     *      manage itself.
+     */
+    private function roleDeletionBlockedReason(Role $role): ?string
+    {
+        if ($role->users()->whereKey(Auth::id())->exists()) {
+            return "You can't delete a role you're currently assigned to.";
+        }
+
+        return $this->adminProtectionBlockedReason($role, []);
+    }
+
+    /**
+     * Reason an operation on $role would violate the
+     * "at least one admin user on the team" invariant, or null if not.
+     *
+     * Pass $proposedUserIds as the post-change user list for update,
+     * or an empty array to model a delete. Counts distinct admin
+     * users across all admin-named roles in the current team.
+     */
+    private function adminProtectionBlockedReason(Role $role, array $proposedUserIds): ?string
+    {
+        if ($role->name !== 'admin') {
+            return null;
+        }
+
+        $teamId = $role->team_id;
+
+        $remainingAdminUserIds = User::query()
+            ->whereHas('roles', function ($q) use ($teamId, $role) {
+                $q->where('roles.team_id', $teamId)
+                    ->where('roles.name', 'admin')
+                    ->where('roles.id', '!=', $role->id);
+            })
+            ->pluck('users.id')
+            ->all();
+
+        $futureAdminCount = count(array_unique(array_merge(
+            $remainingAdminUserIds,
+            array_map('intval', $proposedUserIds),
+        )));
+
+        if ($futureAdminCount < 1) {
+            return 'At least one user must keep admin access — assign another admin first.';
+        }
+
+        return null;
     }
 
     private function normaliseIds($value): array

@@ -6,6 +6,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     role: { type: Object, required: true },
+    deletion_blocked_reason: { type: String, default: null },
 });
 
 const form = useForm({});
@@ -22,15 +23,25 @@ const submit = () => form.delete(route('roles.destroy', props.role.ulid));
                 <h2 class="text-lg font-medium text-gray-900">Delete role {{ role.name }}?</h2>
             </div>
 
-            <div class="px-6 py-4 text-sm text-gray-700">
+            <div class="px-6 py-4 text-sm text-gray-700 space-y-3">
                 <p>This will permanently remove the role <span class="font-medium">{{ role.name }}</span>.</p>
+                <div
+                    v-if="deletion_blocked_reason"
+                    class="rounded border border-amber-200 bg-amber-50 text-amber-800 px-3 py-2"
+                >
+                    {{ deletion_blocked_reason }}
+                </div>
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
                 <Link :href="route('roles.show', role.ulid)">
                     <SecondaryButton type="button">Cancel</SecondaryButton>
                 </Link>
-                <DangerButton type="submit" :disabled="form.processing" :class="{ 'opacity-50': form.processing }">
+                <DangerButton
+                    type="submit"
+                    :disabled="form.processing || !!deletion_blocked_reason"
+                    :class="{ 'opacity-50': form.processing || !!deletion_blocked_reason }"
+                >
                     Delete role
                 </DangerButton>
             </div>

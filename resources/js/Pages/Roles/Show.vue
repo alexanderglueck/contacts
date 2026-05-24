@@ -7,6 +7,7 @@ defineProps({
     permissions: { type: Array, default: () => [] },
     users: { type: Array, default: () => [] },
     can: { type: Object, default: () => ({}) },
+    deletion_blocked_reason: { type: String, default: null },
 });
 </script>
 
@@ -38,6 +39,13 @@ defineProps({
                     >
                         Delete
                     </Link>
+                    <span
+                        v-else-if="deletion_blocked_reason"
+                        class="text-gray-400 cursor-not-allowed"
+                        :title="deletion_blocked_reason"
+                    >
+                        Delete
+                    </span>
                 </div>
             </div>
 
