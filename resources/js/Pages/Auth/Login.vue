@@ -59,12 +59,6 @@ const submit = () => {
 
             <div class="flex items-center justify-end gap-4 pt-2">
                 <Link
-                    :href="route('activation.resend')"
-                    class="text-sm text-gray-600 hover:text-gray-900 underline"
-                >
-                    Resend activation
-                </Link>
-                <Link
                     :href="route('password.request')"
                     class="text-sm text-gray-600 hover:text-gray-900 underline"
                 >
