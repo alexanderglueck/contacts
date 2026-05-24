@@ -174,8 +174,13 @@ CMD ["php-fpm"]
 # =====================================================================
 FROM base AS dev
 
+# xdebug for step-debugging from PHPStorm; pcov for fast PHPUnit code-
+# coverage. PHPUnit auto-selects pcov over xdebug when both are loaded,
+# and pcov adds ~0% runtime overhead when `pcov.enabled=0` (default), so
+# keeping both in the dev image costs nothing for normal `composer test`
+# runs and lets `--coverage-html` work without swapping images.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" && \
-    install-php-extensions xdebug
+    install-php-extensions xdebug pcov
 
 RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION:-24}.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
