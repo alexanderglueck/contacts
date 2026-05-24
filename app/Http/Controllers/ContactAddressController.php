@@ -2,109 +2,128 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Models\Country;
-use App\Models\ContactAddress;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ContactAddress\ContactAddressStoreRequest;
 use App\Http\Requests\ContactAddress\ContactAddressUpdateRequest;
+use App\Models\Contact;
+use App\Models\ContactAddress;
+use App\Models\Country;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactAddressController extends Controller
 {
     protected ?string $accessEntity = 'addresses';
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Contact $contact): View
+    public function index(Contact $contact): Response
     {
         $this->can('view');
 
-        return view('contact_address.index', [
-            'contact' => $contact,
-            'contactAddresses' => $contact->addresses
+        return Inertia::render('ContactAddresses/Index', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'items' => $contact->addresses->map(fn ($a) => [
+                'id' => $a->id,
+                'slug' => $a->slug,
+                'name' => $a->name,
+                'street' => $a->street,
+                'zip' => $a->zip,
+                'city' => $a->city,
+                'latitude' => $a->latitude,
+                'longitude' => $a->longitude,
+            ]),
+            'canCreate' => Auth::user()->checkPermissionTo('create addresses'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Contact $contact): View
+    public function create(Contact $contact): Response
     {
         $this->can('create');
 
-        return view('contact_address.create', [
-            'contact' => $contact,
-            'countries' => Country::all(),
-            'contactAddress' => new ContactAddress
+        return Inertia::render('ContactAddresses/Create', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'countries' => Country::all(['id', 'country']),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ContactAddressStoreRequest $request, Contact $contact): RedirectResponse
     {
         if ($contact->addresses()->create($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_address.created'));
 
             return redirect()->route('contact_addresses.index', [$contact->slug]);
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact_address.not_created'));
-
-            return redirect()->route('contact_addresses.create', [$contact->slug]);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact_address.not_created'));
+
+        return redirect()->route('contact_addresses.create', [$contact->slug]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Contact $contact, ContactAddress $contactAddress): View
+    public function show(Contact $contact, ContactAddress $contactAddress): Response
     {
         $this->can('view');
 
-        return view('contact_address.show', [
-            'contact' => $contact,
-            'contactAddress' => $contactAddress
+        $contactAddress->load('country:id,country');
+
+        $user = Auth::user();
+
+        return Inertia::render('ContactAddresses/Show', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactAddress->id,
+                'slug' => $contactAddress->slug,
+                'name' => $contactAddress->name,
+                'street' => $contactAddress->street,
+                'zip' => $contactAddress->zip,
+                'city' => $contactAddress->city,
+                'state' => $contactAddress->state,
+                'country' => $contactAddress->country?->country,
+                'latitude' => $contactAddress->latitude,
+                'longitude' => $contactAddress->longitude,
+            ],
+            'can' => [
+                'edit' => $user->checkPermissionTo('edit addresses'),
+                'delete' => $user->checkPermissionTo('delete addresses'),
+            ],
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact, ContactAddress $contactAddress): View
+    public function edit(Contact $contact, ContactAddress $contactAddress): Response
     {
         $this->can('edit');
 
-        return view('contact_address.edit', [
-            'createButtonText' => 'Adresse bearbeiten',
-            'contact' => $contact,
-            'contactAddress' => $contactAddress,
-            'countries' => Country::all()
+        return Inertia::render('ContactAddresses/Edit', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactAddress->id,
+                'slug' => $contactAddress->slug,
+                'name' => $contactAddress->name,
+                'street' => $contactAddress->street,
+                'zip' => $contactAddress->zip,
+                'city' => $contactAddress->city,
+                'state' => $contactAddress->state,
+                'country_id' => $contactAddress->country_id,
+                'latitude' => $contactAddress->latitude,
+                'longitude' => $contactAddress->longitude,
+            ],
+            'countries' => Country::all(['id', 'country']),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ContactAddressUpdateRequest $request, Contact $contact, ContactAddress $contactAddress): RedirectResponse
     {
         if ($contactAddress->update($request->all())) {
             Session::flash('alert-success', trans('flash_message.contact_address.updated'));
 
             return redirect()->route('contact_addresses.show', [$contact->slug, $contactAddress->slug]);
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact_address.not_updated'));
-
-            return redirect()->route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact_address.not_updated'));
+
+        return redirect()->route('contact_addresses.edit', [$contact->slug, $contactAddress->slug]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contact $contact, ContactAddress $contactAddress): RedirectResponse
     {
         $this->can('delete');
@@ -113,23 +132,26 @@ class ContactAddressController extends Controller
             Session::flash('alert-success', trans('flash_message.contact_address.deleted'));
 
             return redirect()->route('contact_addresses.index', [$contact->slug]);
-        } else {
-            Session::flash('alert-danger', trans('flash_message.contact_address.not_deleted'));
-
-            return redirect()->route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]);
         }
+
+        Session::flash('alert-danger', trans('flash_message.contact_address.not_deleted'));
+
+        return redirect()->route('contact_addresses.delete', [$contact->slug, $contactAddress->slug]);
     }
 
-    /**
-     * Show the form for deleting the specified resource.
-     */
-    public function delete(Contact $contact, ContactAddress $contactAddress): View
+    public function delete(Contact $contact, ContactAddress $contactAddress): Response
     {
         $this->can('delete');
 
-        return view('contact_address.delete', [
-            'contact' => $contact,
-            'contactAddress' => $contactAddress
+        return Inertia::render('ContactAddresses/Delete', [
+            'contact' => ['slug' => $contact->slug, 'fullname' => $contact->fullname],
+            'item' => [
+                'id' => $contactAddress->id,
+                'slug' => $contactAddress->slug,
+                'name' => $contactAddress->name,
+                'street' => $contactAddress->street,
+                'city' => $contactAddress->city,
+            ],
         ]);
     }
 }
