@@ -43,6 +43,9 @@ const remove = () => deleteForm.delete(route('comments.destroy', [props.contact.
                 <div>
                     <InputLabel for="comment" value="Comment *" />
                     <Textarea id="comment" v-model="editForm.comment" rows="6" required />
+                    <p class="mt-1 text-xs text-gray-500">
+                        Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                    </p>
                     <InputError :message="editForm.errors.comment" />
                 </div>
             </div>

@@ -155,6 +155,7 @@ class ContactController extends Controller
                 'ulid' => $c->ulid,
                 'formatted_called_at' => $c->formatted_called_at,
                 'note' => $c->note,
+                'note_html' => $c->note_html,
             ])->values()),
             'dates' => Inertia::optional(fn () => $contact->dates->map(fn ($d) => [
                 'id' => $d->id,
@@ -167,6 +168,7 @@ class ContactController extends Controller
                 'ulid' => $g->ulid,
                 'name' => $g->name,
                 'description' => $g->description,
+                'description_html' => $g->description_html,
                 'url' => $g->url,
                 'formatted_due_at' => $g->formatted_due_at,
             ])->values()),

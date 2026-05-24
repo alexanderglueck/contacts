@@ -157,7 +157,7 @@ const submitDelete = () =>
                 </div>
                 <div v-if="selected.note">
                     <dt class="font-medium text-gray-700">Note</dt>
-                    <dd class="text-gray-900 whitespace-pre-line">{{ selected.note }}</dd>
+                    <dd class="prose-note text-gray-900" v-html="selected.note_html" />
                 </div>
             </dl>
         </template>
@@ -183,6 +183,9 @@ const submitDelete = () =>
             <div>
                 <InputLabel for="create-note" value="Note" />
                 <Textarea id="create-note" v-model="createForm.note" :rows="3" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="createForm.errors.note" />
             </div>
         </form>
@@ -208,6 +211,9 @@ const submitDelete = () =>
             <div>
                 <InputLabel for="edit-note" value="Note" />
                 <Textarea id="edit-note" v-model="editForm.note" :rows="3" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="editForm.errors.note" />
             </div>
         </form>

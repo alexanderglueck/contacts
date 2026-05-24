@@ -161,7 +161,7 @@ const submitDelete = () =>
                 </div>
                 <div v-if="selected.description">
                     <dt class="font-medium text-gray-700">Description</dt>
-                    <dd class="text-gray-900 whitespace-pre-line">{{ selected.description }}</dd>
+                    <dd class="prose-note text-gray-900" v-html="selected.description_html" />
                 </div>
                 <div v-if="selected.url">
                     <dt class="font-medium text-gray-700">URL</dt>
@@ -198,6 +198,9 @@ const submitDelete = () =>
             <div>
                 <InputLabel for="create-description" value="Description" />
                 <Textarea id="create-description" v-model="createForm.description" :rows="3" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="createForm.errors.description" />
             </div>
             <div>
@@ -231,6 +234,9 @@ const submitDelete = () =>
             <div>
                 <InputLabel for="edit-description" value="Description" />
                 <Textarea id="edit-description" v-model="editForm.description" :rows="3" />
+                <p class="mt-1 text-xs text-gray-500">
+                    Markdown supported: **bold**, *italic*, [link](url), `code`, lists, &gt; quotes.
+                </p>
                 <InputError :message="editForm.errors.description" />
             </div>
             <div>

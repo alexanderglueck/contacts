@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
+use App\Models\Concerns\RendersMarkdown;
 use Illuminate\Database\Eloquent\Model;
 
 class GiftIdea extends Model
 {
     use HasUlidRouteKey;
+    use RendersMarkdown;
 
     protected $fillable = [
         'contact_id',
@@ -16,6 +18,11 @@ class GiftIdea extends Model
         'url',
         'due_at'
     ];
+
+    public function getDescriptionHtmlAttribute(): string
+    {
+        return $this->renderMarkdown($this->description);
+    }
 
     public function setDueAtAttribute($value)
     {

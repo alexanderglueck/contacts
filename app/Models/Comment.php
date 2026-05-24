@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Collections\CommentCollection;
 use App\Models\Concerns\HasUlidRouteKey;
+use App\Models\Concerns\RendersMarkdown;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
     use HasUlidRouteKey;
+    use RendersMarkdown;
 
     protected $fillable = [
         'created_by',
@@ -18,6 +20,11 @@ class Comment extends Model
         'updated_at',
         'contact_id'
     ];
+
+    public function getCommentHtmlAttribute(): string
+    {
+        return $this->renderMarkdown($this->comment);
+    }
 
     public function contact()
     {
