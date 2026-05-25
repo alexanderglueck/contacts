@@ -49,6 +49,8 @@ Route::group(['middleware' => 'subscription.active'], function () {
      */
     Route::get('contacts/duplicates', [\App\Http\Controllers\DuplicateContactController::class, 'index'])
         ->name('duplicates.index');
+    Route::get('contacts/duplicates/search', [\App\Http\Controllers\DuplicateContactController::class, 'search'])
+        ->name('duplicates.search');
     Route::get('contacts/duplicates/compare/{left}/{right}', [\App\Http\Controllers\DuplicateContactController::class, 'compare'])
         ->where(['left' => '[0-9A-Za-z]+', 'right' => '[0-9A-Za-z]+'])
         ->name('duplicates.compare');

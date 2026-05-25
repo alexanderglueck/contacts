@@ -65,7 +65,13 @@ class MergeContactRequest extends FormRequest
                 }
 
                 if (! in_array($this->input("choices.{$field}"), ['left', 'right'], true)) {
-                    $v->errors()->add("choices.{$field}", __('duplicates.errors.choice_required', ['field' => $field]));
+                    $label = __('duplicates.fields.' . $field);
+                    // __ returns the key string when no translation exists — fall back to the
+                    // column name in that case rather than printing "duplicates.fields.firstname".
+                    if ($label === 'duplicates.fields.' . $field) {
+                        $label = $field;
+                    }
+                    $v->errors()->add("choices.{$field}", __('duplicates.errors.choice_required', ['field' => $label]));
                 }
             }
         });

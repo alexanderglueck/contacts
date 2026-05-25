@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MergeContactRequest;
 use App\Models\Contact;
 use App\Services\DuplicateContactDetector;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,8 +19,90 @@ class DuplicateContactController extends Controller
         $detector = new DuplicateContactDetector(auth()->user()->current_team_id);
 
         return Inertia::render('Contacts/Duplicates/Index', [
-            'groups' => $detector->find(),
+            'groups' => $this->mergeGroupsBySameSet($detector->find()),
         ]);
+    }
+
+    /**
+     * The detector produces one group per signal. When the exact same set of
+     * contacts shows up under more than one signal (e.g. two contacts share
+     * both an email AND a phone number), collapse them into a single group
+     * carrying every signal that matched. Otherwise users see what looks
+     * like the same list 2–4 times in a row.
+     *
+     * Set identity = the unordered set of contact ULIDs. Different signals
+     * with overlapping-but-not-identical contact sets stay separate, since
+     * dropping one would hide a real picking option.
+     */
+    private function mergeGroupsBySameSet(array $groups): array
+    {
+        $byKey = [];
+
+        foreach ($groups as $group) {
+            $ulids = array_map(fn ($c) => $c['ulid'], $group['contacts']);
+            sort($ulids);
+            $key = implode('|', $ulids);
+
+            if (! isset($byKey[$key])) {
+                $byKey[$key] = [
+                    'signals' => [],
+                    'contacts' => $group['contacts'],
+                ];
+            }
+            $byKey[$key]['signals'][] = [
+                'type' => $group['signal'],
+                'value' => $group['value'],
+            ];
+        }
+
+        return array_values($byKey);
+    }
+
+    /**
+     * Autocomplete endpoint for the "merge arbitrary contacts" picker on the
+     * Duplicates index page. SQL LIKE rather than Scout so the picker keeps
+     * working even when Meilisearch is unhappy — and the per-tenant rowcount
+     * makes the difference irrelevant.
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $q = trim((string) $request->get('q', ''));
+
+        if ($q === '') {
+            return response()->json([]);
+        }
+
+        $teamId = auth()->user()->current_team_id;
+        $like = '%' . addcslashes($q, '%_\\') . '%';
+
+        $matches = Contact::query()
+            ->withoutGlobalScopes()
+            ->where('team_id', $teamId)
+            ->where(function ($qb) use ($like) {
+                $qb->where('firstname', 'like', $like)
+                    ->orWhere('lastname', 'like', $like)
+                    ->orWhere('company', 'like', $like)
+                    ->orWhere('nickname', 'like', $like);
+            })
+            ->orderBy('lastname')
+            ->orderBy('firstname')
+            ->limit(15)
+            ->get(['ulid', 'firstname', 'lastname', 'company', 'date_of_birth']);
+
+        return response()->json($matches->map(function (Contact $c) {
+            $parts = [trim(($c->firstname ?? '') . ' ' . ($c->lastname ?? ''))];
+            if ($c->company) {
+                $parts[] = $c->company;
+            }
+            if ($c->date_of_birth) {
+                $parts[] = $c->date_of_birth;
+            }
+
+            return [
+                'ulid' => $c->ulid,
+                'label' => implode(' · ', array_filter($parts)),
+            ];
+        }));
     }
 
     public function compare(string $leftUlid, string $rightUlid): Response|RedirectResponse
@@ -35,6 +119,16 @@ class DuplicateContactController extends Controller
             'left' => $this->shapeForCompare($left),
             'right' => $this->shapeForCompare($right),
             'fields' => MergeContactRequest::FIELDS,
+            'fieldLabels' => collect(MergeContactRequest::FIELDS)
+                ->mapWithKeys(function ($field) {
+                    $label = __('duplicates.fields.' . $field);
+                    if ($label === 'duplicates.fields.' . $field) {
+                        $label = $field;
+                    }
+
+                    return [$field => $label];
+                })
+                ->all(),
         ]);
     }
 

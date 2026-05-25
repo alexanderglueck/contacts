@@ -554,6 +554,12 @@
     "duplicates": {
         "title": "Mögliche doppelte Kontakte",
         "intro": "Kontaktpaare und -gruppen mit gleicher E-Mail, gleichem Namen, gleicher Telefonnummer oder gleichem Geburtstag + Nachname. Wähle zwei aus, um sie zu vergleichen und zusammenzuführen.",
+        "manual_title": "Zwei bestimmte Kontakte zusammenführen",
+        "manual_intro": "Du weißt schon, welche zwei Kontakte zusammengeführt werden sollen? Wähle sie hier aus, auch wenn die automatische Erkennung sie nicht gefunden hat.",
+        "search_placeholder": "Nach Name, Firma, Spitzname suchen…",
+        "contact_a": "Kontakt A",
+        "contact_b": "Kontakt B",
+        "no_matches": "Keine Treffer.",
         "no_duplicates": "Keine möglichen Duplikate gefunden.",
         "signal": {
             "email": "Gleiche E-Mail",

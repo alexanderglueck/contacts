@@ -12,7 +12,10 @@ const props = defineProps({
     left: { type: Object, required: true },
     right: { type: Object, required: true },
     fields: { type: Array, required: true },
+    fieldLabels: { type: Object, default: () => ({}) },
 });
+
+const labelFor = (field) => props.fieldLabels[field] ?? field;
 
 // Display sides are stable (left vs right) — what changes is which one
 // survives. `keptSide` flips between 'left' and 'right'.
@@ -126,12 +129,12 @@ const subSections = [
 
                     <!-- Scalar field rows -->
                     <template v-for="field in fields" :key="field">
-                        <div class="px-3 py-2 text-gray-600 border-t border-gray-100 font-mono">
-                            {{ field }}
+                        <div class="px-3 py-2 text-gray-600 border-t border-gray-100">
+                            {{ labelFor(field) }}
                             <span
                                 v-if="requiresChoice(field) && !choices[field]"
                                 class="ms-2 inline-block w-2 h-2 rounded-full bg-red-500"
-                                :title="t('duplicates.errors.choice_required', { field })"
+                                :title="t('duplicates.errors.choice_required', { field: labelFor(field) })"
                             ></span>
                         </div>
 

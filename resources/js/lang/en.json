@@ -554,6 +554,12 @@
     "duplicates": {
         "title": "Possible duplicate contacts",
         "intro": "Pairs and groups of contacts that share an email, name, phone number, or birthday + last name. Select two to compare and merge.",
+        "manual_title": "Merge two specific contacts",
+        "manual_intro": "Already know which two contacts to merge? Pick them here, even if the auto-detection didn't surface them.",
+        "search_placeholder": "Search by name, company, nickname…",
+        "contact_a": "Contact A",
+        "contact_b": "Contact B",
+        "no_matches": "No matches.",
         "no_duplicates": "No potential duplicates detected.",
         "signal": {
             "email": "Same email",

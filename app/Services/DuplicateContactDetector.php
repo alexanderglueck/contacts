@@ -94,33 +94,46 @@ class DuplicateContactDetector
 
     private function byPhone(): array
     {
-        $duplicatePhones = \DB::table('contact_numbers')
+        // MySQL 5.7 lacks REGEXP_REPLACE, so do the normalisation in PHP and
+        // bucket contact_ids by normalised phone. Per-tenant rowcounts make
+        // this cheap.
+        $rows = \DB::table('contact_numbers')
             ->join('contacts', 'contacts.id', '=', 'contact_numbers.contact_id')
             ->where('contacts.team_id', $this->teamId)
             ->whereNotNull('contact_numbers.number')
             ->where('contact_numbers.number', '!=', '')
-            // Normalise: strip everything but digits and +, so "+43 660 / 123" and "+43660123" match.
-            ->selectRaw("REGEXP_REPLACE(contact_numbers.number, '[^0-9+]', '') AS phone_norm")
-            ->groupBy('phone_norm')
-            ->havingRaw('COUNT(DISTINCT contacts.id) > 1')
-            ->pluck('phone_norm')
-            ->filter(fn ($p) => strlen($p) >= 5); // skip junk
+            ->select('contacts.id AS contact_id', 'contact_numbers.number')
+            ->get();
 
-        return $duplicatePhones->map(function ($phone) {
+        $byNorm = [];
+        foreach ($rows as $row) {
+            $norm = preg_replace('/[^0-9+]/', '', (string) $row->number);
+            if (strlen($norm) < 5) {
+                continue; // skip short/junk values
+            }
+            $byNorm[$norm][$row->contact_id] = true;
+        }
+
+        $groups = [];
+        foreach ($byNorm as $norm => $contactIds) {
+            if (count($contactIds) < 2) {
+                continue;
+            }
             $contacts = Contact::query()
                 ->withoutGlobalScopes()
-                ->where('team_id', $this->teamId)
-                ->whereHas('numbers', fn ($q) => $q->whereRaw("REGEXP_REPLACE(number, '[^0-9+]', '') = ?", [$phone]))
+                ->whereIn('id', array_keys($contactIds))
                 ->with('numbers')
                 ->orderBy('lastname')
                 ->get();
 
-            return [
+            $groups[] = [
                 'signal' => 'phone',
-                'value' => $phone,
+                'value' => $norm,
                 'contacts' => $this->summarise($contacts),
             ];
-        })->all();
+        }
+
+        return $groups;
     }
 
     private function byDobAndLastname(): array
