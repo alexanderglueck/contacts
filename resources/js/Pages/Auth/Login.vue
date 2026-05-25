@@ -25,7 +25,7 @@ const submit = () => {
 };
 
 const {
-    verify: signInWithPasskey,
+    verify,
     isLoading: passkeyBusy,
     error: passkeyError,
     isSupported: passkeySupported,
@@ -34,6 +34,22 @@ const {
         window.location.href = response.redirect ?? '/';
     },
 });
+
+// The @laravel/passkeys JS reads CSRF from <meta name="csrf-token"> first and
+// only falls back to the XSRF-TOKEN cookie if the tag is absent. The meta tag
+// is baked in at initial page render and never refreshes, so it goes stale once
+// the session expires (SESSION_LIFETIME), is GC'd, or is regenerated — and the
+// POST to /passkeys/login then 419s. Refresh the session via Sanctum's CSRF
+// endpoint and clear the stale meta tag so the client uses the fresh cookie.
+const signInWithPasskey = async () => {
+    try {
+        await fetch('/sanctum/csrf-cookie', { credentials: 'same-origin' });
+        document.querySelector('meta[name="csrf-token"]')?.setAttribute('content', '');
+    } catch {
+        // Network hiccup — fall through to verify() and let the user retry.
+    }
+    await verify();
+};
 </script>
 
 <template>

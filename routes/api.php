@@ -42,6 +42,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('throttle:5,1')->group(function () {
         Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
         Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
+        // Same 5/min/IP envelope as login — credential-stuffing the TOTP
+        // space is the threat model here, and a legit user only needs
+        // one or two attempts.
+        Route::post('auth/two-factor/challenge', [AuthController::class, 'twoFactorChallenge'])
+            ->name('auth.two_factor.challenge');
     });
 
     Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
