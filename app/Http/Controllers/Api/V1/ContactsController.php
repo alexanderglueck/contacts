@@ -12,7 +12,11 @@ use App\Models\Contact;
 use App\Models\ContactNumber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 
 class ContactsController extends Controller
 {
@@ -172,28 +176,50 @@ class ContactsController extends Controller
 
     /**
      * Upload (or replace) a contact's avatar. Accepts a multipart `file`
-     * field (jpeg/png, max 8MB) — the Android client uploads directly,
-     * having optionally cropped client-side. The server downsizes to
-     * 400×400 regardless of input dimensions as a safety net so storage
-     * usage stays predictable. Any prior image file is deleted to avoid
-     * orphans.
+     * field — the Android client uploads directly, having optionally
+     * cropped client-side. The server resizes to 400×400 and re-encodes
+     * to JPEG regardless of input format, so storage and bandwidth stay
+     * predictable. Any prior image file is deleted to avoid orphans.
+     *
+     * Accepted input formats: jpeg, png, webp, heic, heif, avif (max 8 MB).
+     * HEIC/HEIF/AVIF are decoded via Imagick (libheif), the others via GD.
+     * Stored output is always .jpg.
      */
     public function uploadImage(ContactImageUploadRequest $request, Contact $contact): JsonResponse
     {
-        // Visibility:public → 0755 dirs so nginx can serve the file through
-        // the public/storage symlink. The default disk would store it
-        // 0700-private and the symlinked URL would 403.
-        $fileName = $request->file('file')->storePublicly('contact_images', 'public');
-
-        Image::make(storage_path('app/public/').$fileName)
-            ->fit(400, 400)
-            ->save();
-
-        if ($contact->image && file_exists(storage_path('app/public/').$contact->image)) {
-            unlink(storage_path('app/public/').$contact->image);
+        // Imagick driver — only it can decode HEIC/HEIF/AVIF, and it also
+        // handles jpeg/png/webp uniformly, so we don't branch by mime.
+        // A per-call ImageManager keeps this isolated; the rest of the
+        // app keeps using the default (GD) Image facade.
+        try {
+            $encoded = (string) (new ImageManager(['driver' => 'imagick']))
+                ->make($request->file('file')->getRealPath())
+                ->fit(400, 400)
+                ->encode('jpg', 85);
+        } catch (\Throwable $e) {
+            // Decode failed — corrupted file, unexpected variant the
+            // installed Imagick build can't handle, etc. Surface as a
+            // validation error rather than a 500 so the Android client
+            // can show a meaningful message.
+            throw ValidationException::withMessages([
+                'file' => __('The image could not be processed. Please try a different file.'),
+            ]);
         }
 
-        $contact->image = $fileName;
+        // Storage::disk('public') is the same target the old code wrote
+        // to via storage_path('app/public') — going through the facade
+        // makes Storage::fake() work cleanly in tests and avoids manual
+        // path concatenation. visibility:public → 0755 dirs so nginx can
+        // serve the file through the public/storage symlink.
+        $disk = Storage::disk('public');
+        $newPath = 'contact_images/'.Str::ulid().'.jpg';
+        $disk->put($newPath, $encoded, 'public');
+
+        if ($contact->image && $disk->exists($contact->image)) {
+            $disk->delete($contact->image);
+        }
+
+        $contact->image = $newPath;
         $contact->save();
 
         return response()->json([
@@ -210,8 +236,9 @@ class ContactsController extends Controller
         $this->can('edit');
 
         if ($contact->image) {
-            if (file_exists(storage_path('app/public/').$contact->image)) {
-                unlink(storage_path('app/public/').$contact->image);
+            $disk = Storage::disk('public');
+            if ($disk->exists($contact->image)) {
+                $disk->delete($contact->image);
             }
 
             $contact->image = null;
@@ -228,8 +255,11 @@ class ContactsController extends Controller
         // Mirrors the web controller's pre-delete avatar cleanup so we
         // don't leak orphaned storage files. Cascades on contact_id (FK
         // ON DELETE CASCADE) take care of numbers/emails/addresses/etc.
-        if ($contact->image && file_exists(storage_path('app/public/').$contact->image)) {
-            unlink(storage_path('app/public/').$contact->image);
+        if ($contact->image) {
+            $disk = Storage::disk('public');
+            if ($disk->exists($contact->image)) {
+                $disk->delete($contact->image);
+            }
         }
 
         $contact->delete();

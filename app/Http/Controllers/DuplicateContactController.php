@@ -157,25 +157,67 @@ class DuplicateContactController extends Controller
 
             $kept->save();
 
-            // Re-parent every hasMany sub-resource. Listed explicitly rather
-            // than reflected so a new relation doesn't silently miss merging.
-            $hasMany = [
-                'contact_urls', 'contact_numbers', 'contact_emails',
-                'contact_dates', 'contact_addresses', 'comments',
-                'gift_ideas', 'contact_notes', 'contact_calls',
+            // Per-row sub-resource decisions. Default for an unspecified id is
+            // "keep" (mirrors the old union behavior); only explicit `false`
+            // drops the row. The relations->table mapping lives in one place
+            // so the wire format stays decoupled from physical table names.
+            $relations = [
+                'urls' => 'contact_urls',
+                'numbers' => 'contact_numbers',
+                'emails' => 'contact_emails',
+                'dates' => 'contact_dates',
+                'addresses' => 'contact_addresses',
+                'comments' => 'comments',
+                'giftIdeas' => 'gift_ideas',
+                'notes' => 'contact_notes',
+                'calls' => 'contact_calls',
             ];
-            foreach ($hasMany as $table) {
-                DB::table($table)->where('contact_id', $loser->id)->update(['contact_id' => $kept->id]);
+
+            $picks = (array) $request->input('subResources', []);
+
+            foreach ($relations as $relationKey => $table) {
+                $decisions = (array) ($picks[$relationKey] ?? []);
+
+                $ids = DB::table($table)
+                    ->whereIn('contact_id', [$kept->id, $loser->id])
+                    ->pluck('id');
+
+                $dropIds = [];
+                $keepIds = [];
+                foreach ($ids as $id) {
+                    // PHP-side normalisation: form posts come back as strings/bools.
+                    $decision = $decisions[(string) $id] ?? $decisions[$id] ?? null;
+                    if ($decision === false || $decision === 'false' || $decision === 0 || $decision === '0') {
+                        $dropIds[] = $id;
+                    } else {
+                        $keepIds[] = $id;
+                    }
+                }
+
+                if (! empty($dropIds)) {
+                    DB::table($table)->whereIn('id', $dropIds)->delete();
+                }
+                if (! empty($keepIds)) {
+                    DB::table($table)->whereIn('id', $keepIds)->update(['contact_id' => $kept->id]);
+                }
             }
 
-            // Pivot: union of contact_group_id sets, deduped via sync.
-            $groupIds = $kept->contactGroups()->pluck('contact_groups.id')
+            // Pivot: same decision model. Union of group ids from both contacts
+            // is filtered by the user's checkboxes, then synced to the kept
+            // contact. Detaching the loser first lets sync replace cleanly.
+            $unionGroupIds = $kept->contactGroups()->pluck('contact_groups.id')
                 ->merge($loser->contactGroups()->pluck('contact_groups.id'))
                 ->unique()
-                ->values()
-                ->all();
+                ->values();
+            $groupDecisions = (array) ($picks['contactGroups'] ?? []);
+            $finalGroupIds = $unionGroupIds->filter(function ($gid) use ($groupDecisions) {
+                $decision = $groupDecisions[(string) $gid] ?? $groupDecisions[$gid] ?? null;
+
+                return ! ($decision === false || $decision === 'false' || $decision === 0 || $decision === '0');
+            })->values()->all();
+
             $loser->contactGroups()->detach();
-            $kept->contactGroups()->sync($groupIds);
+            $kept->contactGroups()->sync($finalGroupIds);
 
             // Loser's image string is set to null already (handled above) so
             // delete() doesn't accidentally orphan a file we kept.
@@ -206,16 +248,37 @@ class DuplicateContactController extends Controller
 
         return array_merge($base, [
             'fullname' => $contact->fullname,
-            'urls' => $contact->urls->map->only(['name', 'url'])->all(),
-            'numbers' => $contact->numbers->map->only(['name', 'number'])->all(),
-            'emails' => $contact->emails->map->only(['name', 'email'])->all(),
-            'dates' => $contact->dates->map->only(['name', 'date'])->all(),
-            'addresses' => $contact->addresses->map->only(['name', 'street', 'zip', 'city', 'country_id'])->all(),
-            'comments_count' => $contact->comments->count(),
-            'gift_ideas_count' => $contact->giftIdeas->count(),
-            'notes_count' => $contact->notes->count(),
-            'calls_count' => $contact->calls->count(),
-            'contact_groups' => $contact->contactGroups->map->only(['id', 'name'])->all(),
+            'urls' => $contact->urls->map->only(['id', 'name', 'url'])->values()->all(),
+            'numbers' => $contact->numbers->map->only(['id', 'name', 'number'])->values()->all(),
+            'emails' => $contact->emails->map->only(['id', 'name', 'email'])->values()->all(),
+            'dates' => $contact->dates->map->only(['id', 'name', 'date'])->values()->all(),
+            'addresses' => $contact->addresses->map(fn ($a) => [
+                'id' => $a->id,
+                'name' => $a->name,
+                'street' => $a->street,
+                'zip' => $a->zip,
+                'city' => $a->city,
+            ])->values()->all(),
+            // Send full bodies; the Compare page line-clamps for layout and exposes
+            // the full text on hover via `title`.
+            'comments' => $contact->comments->map(fn ($c) => [
+                'id' => $c->id,
+                'body' => $c->comment ?: '—',
+            ])->values()->all(),
+            'giftIdeas' => $contact->giftIdeas->map(fn ($g) => [
+                'id' => $g->id,
+                'name' => $g->name,
+            ])->values()->all(),
+            'notes' => $contact->notes->map(fn ($n) => [
+                'id' => $n->id,
+                'body' => $n->note ?: '—',
+            ])->values()->all(),
+            'calls' => $contact->calls->map(fn ($c) => [
+                'id' => $c->id,
+                'when' => $c->called_at ?? $c->created_at,
+                'body' => $c->note ?: '—',
+            ])->values()->all(),
+            'contactGroups' => $contact->contactGroups->map->only(['id', 'name'])->values()->all(),
         ]);
     }
 

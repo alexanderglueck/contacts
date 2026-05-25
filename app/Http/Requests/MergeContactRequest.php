@@ -30,6 +30,10 @@ class MergeContactRequest extends FormRequest
             'loser_ulid' => ['required', 'string', 'different:kept_ulid'],
             'choices' => ['required', 'array'],
             'choices.*' => ['nullable', 'string', 'in:left,right'],
+            // subResources[<relation>][<id>] = bool — default true (keep)
+            'subResources' => ['nullable', 'array'],
+            'subResources.*' => ['nullable', 'array'],
+            'subResources.*.*' => ['nullable', 'boolean'],
         ];
     }
 

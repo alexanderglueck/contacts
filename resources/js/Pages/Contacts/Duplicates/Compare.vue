@@ -57,10 +57,57 @@ const displayValue = (value, field) => {
 
 const renderImage = (value) => value ? `/storage/${value}` : null;
 
+// Sub-resource sections. Each one renders a side-by-side list with a checkbox
+// per row. Default checked = keep (preserves the old union behavior); unchecking
+// drops that row. contactGroups is rendered separately (unified, dedup'd) since
+// the same group on both sides is a single relationship, not two.
+const subSections = [
+    { key: 'urls', label: 'URLs', format: (r) => [r.name, r.url].filter(Boolean).join(' — ') },
+    { key: 'numbers', label: 'Numbers', format: (r) => [r.name, r.number].filter(Boolean).join(' — ') },
+    { key: 'emails', label: 'Emails', format: (r) => [r.name, r.email].filter(Boolean).join(' — ') },
+    { key: 'dates', label: 'Dates', format: (r) => [r.name, r.date].filter(Boolean).join(' — ') },
+    { key: 'addresses', label: 'Addresses', format: (r) => [r.name, r.street, r.city].filter(Boolean).join(' — ') },
+    { key: 'comments', label: 'Comments', format: (r) => r.body },
+    { key: 'giftIdeas', label: 'Gift ideas', format: (r) => r.name },
+    { key: 'notes', label: 'Notes', format: (r) => r.body },
+    { key: 'calls', label: 'Calls', format: (r) => [r.when, r.body].filter(Boolean).join(' — ') },
+];
+
+// Per-row keep state: subPicks[relationKey][id] = true|false (default true).
+// Initialised to every id from both sides as true so "submit unchanged" still
+// produces the historical union merge.
+const subPicks = reactive({});
+for (const section of subSections) {
+    subPicks[section.key] = {};
+    for (const side of [props.left, props.right]) {
+        for (const row of (side[section.key] ?? [])) {
+            subPicks[section.key][row.id] = true;
+        }
+    }
+}
+// contactGroups: dedup'd union — a group either belongs to the merged contact
+// or it doesn't.
+const groupUnion = computed(() => {
+    const seen = new Map();
+    for (const side of [props.left, props.right]) {
+        for (const g of (side.contactGroups ?? [])) {
+            if (! seen.has(g.id)) seen.set(g.id, g);
+        }
+    }
+    return Array.from(seen.values());
+});
+subPicks.contactGroups = {};
+for (const g of groupUnion.value) subPicks.contactGroups[g.id] = true;
+
+const toggleSub = (relation, id) => {
+    subPicks[relation][id] = ! subPicks[relation][id];
+};
+
 const form = useForm({
     kept_ulid: '',
     loser_ulid: '',
     choices: {},
+    subResources: {},
 });
 
 const submit = () => {
@@ -77,19 +124,11 @@ const submit = () => {
         if (keptSide.value === 'left') return [f, choices[f]];
         return [f, choices[f] === 'left' ? 'right' : 'left'];
     }));
+    // Shallow copy — Inertia serialises this straight to the form post.
+    form.subResources = JSON.parse(JSON.stringify(subPicks));
 
     form.post(route('duplicates.merge'));
 };
-
-// Sub-resource lists — read-only previews, just so the user sees what's about to merge.
-const subSections = [
-    { key: 'urls', label: 'URLs', columns: ['name', 'url'] },
-    { key: 'numbers', label: 'Numbers', columns: ['name', 'number'] },
-    { key: 'emails', label: 'Emails', columns: ['name', 'email'] },
-    { key: 'dates', label: 'Dates', columns: ['name', 'date'] },
-    { key: 'addresses', label: 'Addresses', columns: ['name', 'street', 'city'] },
-    { key: 'contact_groups', label: 'Groups', columns: ['name'] },
-];
 </script>
 
 <template>
@@ -150,7 +189,11 @@ const subSections = [
                             <span v-if="field === 'image' && renderImage(left[field])" class="block">
                                 <img :src="renderImage(left[field])" alt="" class="h-16 w-16 object-cover rounded" />
                             </span>
-                            <span v-else class="break-words">{{ displayValue(left[field], field) }}</span>
+                            <span
+                                v-else
+                                class="break-words line-clamp-3 whitespace-pre-line"
+                                :title="String(left[field] ?? '')"
+                            >{{ displayValue(left[field], field) }}</span>
                         </label>
 
                         <label
@@ -165,38 +208,105 @@ const subSections = [
                             <span v-if="field === 'image' && renderImage(right[field])" class="block">
                                 <img :src="renderImage(right[field])" alt="" class="h-16 w-16 object-cover rounded" />
                             </span>
-                            <span v-else class="break-words">{{ displayValue(right[field], field) }}</span>
+                            <span
+                                v-else
+                                class="break-words line-clamp-3 whitespace-pre-line"
+                                :title="String(right[field] ?? '')"
+                            >{{ displayValue(right[field], field) }}</span>
                         </label>
                     </template>
                 </div>
 
                 <p class="text-xs text-gray-500 mt-4">{{ t('duplicates.deselect_hint') }}</p>
 
-                <!-- Sub-resource preview -->
-                <div class="mt-6 grid grid-cols-2 gap-4">
-                    <div v-for="side in [{key:'left', data:left}, {key:'right', data:right}]" :key="side.key">
-                        <h3 class="text-sm font-semibold text-gray-700 mb-2">
-                            {{ side.data.fullname || side.data.ulid }}
-                        </h3>
-                        <div v-for="section in subSections" :key="section.key" class="mb-3">
-                            <p class="text-xs font-medium text-gray-500 uppercase">{{ section.label }}</p>
-                            <ul v-if="(side.data[section.key] ?? []).length" class="text-xs text-gray-700 list-disc list-inside">
-                                <li v-for="(row, i) in side.data[section.key]" :key="i">
-                                    {{ section.columns.map(col => row[col]).filter(Boolean).join(' — ') }}
-                                </li>
-                            </ul>
-                            <p v-else class="text-xs text-gray-400">{{ t('duplicates.empty') }}</p>
+                <!-- Sub-resource picker -->
+                <div class="mt-8">
+                    <h3 class="text-base font-semibold text-gray-900">{{ t('duplicates.subresources_title') }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">{{ t('duplicates.subresources_hint') }}</p>
+
+                    <div
+                        v-for="section in subSections"
+                        :key="section.key"
+                        v-show="(left[section.key] ?? []).length || (right[section.key] ?? []).length"
+                        class="mt-4 border border-gray-200 rounded-md overflow-hidden"
+                    >
+                        <div class="bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">
+                            {{ section.label }}
                         </div>
-                        <div class="text-xs text-gray-500">
-                            Comments: {{ side.data.comments_count }}
-                            · Gift ideas: {{ side.data.gift_ideas_count }}
-                            · Notes: {{ side.data.notes_count }}
-                            · Calls: {{ side.data.calls_count }}
+                        <div class="grid grid-cols-2 divide-x divide-gray-200">
+                            <div class="p-2">
+                                <ul v-if="(left[section.key] ?? []).length" class="space-y-1">
+                                    <li
+                                        v-for="row in left[section.key]"
+                                        :key="`l-${row.id}`"
+                                        class="flex items-start gap-2 text-sm"
+                                        :class="{ 'opacity-50 line-through': !subPicks[section.key][row.id] }"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="mt-0.5"
+                                            :checked="subPicks[section.key][row.id]"
+                                            @change="toggleSub(section.key, row.id)"
+                                        />
+                                        <span
+                                            class="break-words line-clamp-2"
+                                            :title="section.format(row) || ''"
+                                        >{{ section.format(row) || t('duplicates.empty') }}</span>
+                                    </li>
+                                </ul>
+                                <p v-else class="text-xs text-gray-400 px-1">{{ t('duplicates.empty') }}</p>
+                            </div>
+                            <div class="p-2">
+                                <ul v-if="(right[section.key] ?? []).length" class="space-y-1">
+                                    <li
+                                        v-for="row in right[section.key]"
+                                        :key="`r-${row.id}`"
+                                        class="flex items-start gap-2 text-sm"
+                                        :class="{ 'opacity-50 line-through': !subPicks[section.key][row.id] }"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="mt-0.5"
+                                            :checked="subPicks[section.key][row.id]"
+                                            @change="toggleSub(section.key, row.id)"
+                                        />
+                                        <span
+                                            class="break-words line-clamp-2"
+                                            :title="section.format(row) || ''"
+                                        >{{ section.format(row) || t('duplicates.empty') }}</span>
+                                    </li>
+                                </ul>
+                                <p v-else class="text-xs text-gray-400 px-1">{{ t('duplicates.empty') }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <p class="text-xs text-gray-500 mt-4">{{ t('duplicates.subresources_note') }}</p>
+                    <!-- Contact groups: unified list since the same group belonging to both sides is one relationship, not two. -->
+                    <div
+                        v-show="groupUnion.length"
+                        class="mt-4 border border-gray-200 rounded-md overflow-hidden"
+                    >
+                        <div class="bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">
+                            {{ t('duplicates.section.contact_groups') }}
+                        </div>
+                        <ul class="p-2 space-y-1">
+                            <li
+                                v-for="g in groupUnion"
+                                :key="`g-${g.id}`"
+                                class="flex items-start gap-2 text-sm"
+                                :class="{ 'opacity-50 line-through': !subPicks.contactGroups[g.id] }"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="mt-0.5"
+                                    :checked="subPicks.contactGroups[g.id]"
+                                    @change="toggleSub('contactGroups', g.id)"
+                                />
+                                <span>{{ g.name }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="mt-6 flex justify-end gap-3">
                     <PrimaryButton

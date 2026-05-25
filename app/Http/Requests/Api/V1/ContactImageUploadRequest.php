@@ -14,10 +14,21 @@ class ContactImageUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Cap at 8MB so phones can upload originals without exhausting
-            // PHP's memory_limit during the Intervention fit() step. The
-            // server downsizes to 400x400 regardless of input dimensions.
-            'file' => ['required', 'file', 'mimes:jpeg,png', 'max:8192'],
+            // 8 MB cap on the raw upload (8192 KB — that's how Laravel's
+            // file `max` rule reads its argument). Phones routinely produce
+            // 5–8 MB photos out of camera, especially with HEIC capture.
+            // The server resizes to 400×400 and re-encodes to JPEG before
+            // storing, so this only protects PHP's memory_limit during
+            // the Imagick decode step.
+            //
+            // Accepted formats:
+            //   jpeg, png, webp  — decoded by GD (always available)
+            //   heic, heif, avif — decoded by Imagick + libheif (already
+            //                      compiled into the container image)
+            // On-disk output is always .jpg regardless of input so the
+            // same file renders on the web (no HEIC support in browsers)
+            // and on the Android dialer without extra decoding.
+            'file' => ['required', 'file', 'mimes:jpeg,png,webp,heic,heif,avif', 'max:8192'],
         ];
     }
 }

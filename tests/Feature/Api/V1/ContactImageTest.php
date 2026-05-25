@@ -49,6 +49,110 @@ class ContactImageTest extends TestCase
     }
 
     #[Test]
+    public function it_accepts_a_webp_upload_and_stores_it_as_jpg()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        // Imagick can synthesize a real WebP without a fixture.
+        $im = new \Imagick();
+        $im->newImage(800, 800, new \ImagickPixel('blue'));
+        $im->setImageFormat('webp');
+        $tmp = tempnam(sys_get_temp_dir(), 'webp_').'.webp';
+        $im->writeImage($tmp);
+        $im->clear();
+
+        $upload = new UploadedFile($tmp, 'avatar.webp', 'image/webp', null, true);
+
+        $response = $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => $upload,
+        ]);
+
+        $response->assertOk();
+        $contact->refresh();
+        // Output is always normalised to .jpg, regardless of input format.
+        $this->assertStringEndsWith('.jpg', $contact->image);
+        Storage::disk('public')->assertExists($contact->image);
+    }
+
+    #[Test]
+    public function it_accepts_an_avif_upload_and_stores_it_as_jpg()
+    {
+        // AVIF stands in for the HEIF family in tests: same Imagick +
+        // libheif decode path as HEIC, but unlike HEIC the libheif
+        // encoder is bundled, so we can synthesise a fixture here.
+        // HEIC at runtime follows the identical decode-then-encode-to-
+        // JPEG path; the heic-specific test below covers it when an
+        // encoder is available.
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        $im = new \Imagick();
+        $im->newImage(800, 800, new \ImagickPixel('green'));
+        $im->setImageFormat('avif');
+        $tmp = tempnam(sys_get_temp_dir(), 'avif_').'.avif';
+        $im->writeImage($tmp);
+        $im->clear();
+
+        $upload = new UploadedFile($tmp, 'avatar.avif', 'image/avif', null, true);
+
+        $response = $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => $upload,
+        ]);
+
+        $response->assertOk();
+        $contact->refresh();
+        $this->assertStringEndsWith('.jpg', $contact->image);
+        Storage::disk('public')->assertExists($contact->image);
+    }
+
+    #[Test]
+    public function it_accepts_a_heic_upload_when_imagick_can_encode_one_for_the_fixture()
+    {
+        // Most Imagick + libheif builds ship decode-only (the HEIC
+        // encoder is x265-based and excluded for licensing reasons).
+        // In that situation we can't generate a fixture, but the
+        // runtime decode path is exercised by the AVIF test above.
+        $canEncode = true;
+        try {
+            $probe = new \Imagick();
+            $probe->newImage(2, 2, new \ImagickPixel('black'));
+            $probe->setImageFormat('heic');
+            $probe->getImageBlob();
+            $probe->clear();
+        } catch (\Throwable) {
+            $canEncode = false;
+        }
+
+        if (! $canEncode) {
+            $this->markTestSkipped('Imagick build lacks a HEIC encoder — fixture cannot be synthesised here. Runtime HEIC decode covered by AVIF test (same code path).');
+        }
+
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        $im = new \Imagick();
+        $im->newImage(800, 800, new \ImagickPixel('red'));
+        $im->setImageFormat('heic');
+        $tmp = tempnam(sys_get_temp_dir(), 'heic_').'.heic';
+        $im->writeImage($tmp);
+        $im->clear();
+
+        $upload = new UploadedFile($tmp, 'avatar.heic', 'image/heic', null, true);
+
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => $upload,
+        ])->assertOk();
+
+        $contact->refresh();
+        $this->assertStringEndsWith('.jpg', $contact->image);
+        Storage::disk('public')->assertExists($contact->image);
+    }
+
+    #[Test]
     public function it_rejects_non_image_uploads()
     {
         Storage::fake('public');

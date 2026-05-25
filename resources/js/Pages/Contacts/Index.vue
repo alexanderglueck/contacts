@@ -33,6 +33,23 @@ watch(search, (value) => {
 });
 
 const clearSearch = () => { search.value = ''; };
+
+const initialsFor = (contact) => {
+    const first = (contact.firstname ?? '').trim();
+    const last = (contact.lastname ?? '').trim();
+    const i = (first[0] ?? '') + (last[0] ?? '');
+    return (i || (contact.fullname ?? '?')[0] || '?').toUpperCase();
+};
+
+// Stable per-contact background colour for the initials placeholder, so the
+// same person always lands on the same swatch instead of flickering across
+// re-renders. Hashing the ULID keeps it cheap and identity-bound.
+const avatarPalette = ['bg-rose-200', 'bg-amber-200', 'bg-lime-200', 'bg-emerald-200', 'bg-sky-200', 'bg-violet-200', 'bg-fuchsia-200'];
+const avatarBgFor = (contact) => {
+    let h = 0;
+    for (const c of (contact.ulid ?? '')) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return avatarPalette[h % avatarPalette.length];
+};
 </script>
 
 <template>
@@ -87,9 +104,22 @@ const clearSearch = () => { search.value = ''; };
                 <li v-for="contact in contacts.data" :key="contact.id">
                     <Link
                         :href="route('contacts.show', contact.ulid)"
-                        class="block px-6 py-3 hover:bg-gray-50 text-sm text-gray-900"
+                        class="flex items-center gap-3 px-6 py-2.5 hover:bg-gray-50 text-sm text-gray-900"
                     >
-                        {{ contact.fullname }}
+                        <img
+                            v-if="contact.image"
+                            :src="`/storage/${contact.image}`"
+                            :alt="contact.fullname"
+                            class="h-9 w-9 rounded-full object-cover flex-shrink-0 bg-gray-100"
+                            loading="lazy"
+                        />
+                        <span
+                            v-else
+                            class="h-9 w-9 rounded-full flex items-center justify-center text-xs font-semibold text-gray-700 flex-shrink-0"
+                            :class="avatarBgFor(contact)"
+                            aria-hidden="true"
+                        >{{ initialsFor(contact) }}</span>
+                        <span class="truncate">{{ contact.fullname }}</span>
                     </Link>
                 </li>
             </ul>

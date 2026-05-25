@@ -576,7 +576,11 @@
         "right": "Right",
         "field": "Field",
         "empty": "—",
-        "subresources_note": "Sub-resources from both contacts (urls, numbers, emails, dates, addresses, comments, gift ideas, notes, calls, and groups) will all be transferred to the kept contact.",
+        "subresources_title": "Sub-resources",
+        "subresources_hint": "All rows from both contacts are checked by default. Uncheck any you want to drop instead of merging — useful when both contacts have the same email, phone, or address.",
+        "section": {
+            "contact_groups": "Contact groups"
+        },
         "submit": "Merge contacts",
         "merged": "Contacts merged.",
         "deselect_hint": "Click a selected radio to clear it. You must pick a side for every field where at least one contact has a value.",

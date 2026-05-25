@@ -576,7 +576,11 @@
         "right": "Rechts",
         "field": "Feld",
         "empty": "—",
-        "subresources_note": "Unter­ressourcen beider Kontakte (URLs, Nummern, E-Mails, Daten, Adressen, Kommentare, Geschenkideen, Notizen, Anrufe und Gruppen) werden alle in den behaltenen Kontakt übernommen.",
+        "subresources_title": "Unter­ressourcen",
+        "subresources_hint": "Alle Einträge beider Kontakte sind standardmäßig angehakt. Hake ab, was du verwerfen möchtest statt zu übernehmen — praktisch, wenn beide Kontakte dieselbe E-Mail, Nummer oder Adresse haben.",
+        "section": {
+            "contact_groups": "Kontaktgruppen"
+        },
         "submit": "Kontakte zusammenführen",
         "merged": "Kontakte zusammengeführt.",
         "deselect_hint": "Klicke einen ausgewählten Radio-Button erneut an, um ihn zu deselektieren. Für jedes Feld, bei dem mindestens ein Kontakt einen Wert hat, musst du eine Seite wählen.",
