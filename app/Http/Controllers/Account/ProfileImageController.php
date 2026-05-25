@@ -36,7 +36,10 @@ class ProfileImageController extends Controller
 
             // Cap server-side to 400x400 even if the client uploaded larger.
             // The Vue cropper already produces 400x400 PNG, this is a safety net.
+            // orientate() applies the EXIF Orientation tag to the pixels so
+            // phone-camera shots don't end up sideways after EXIF is stripped.
             Image::make(storage_path('app/public/') . $file)
+                ->orientate()
                 ->fit(400, 400)
                 ->save();
 

@@ -397,7 +397,11 @@ class ContactController extends Controller
 
             // Cap server-side to 400x400 even if the client uploaded larger.
             // The Vue cropper already produces 400x400 PNG; this is a safety net.
+            // orientate() rotates the pixels to match the EXIF Orientation tag
+            // before resize/encode; without it, phone-camera shots come out
+            // sideways because EXIF gets stripped on save.
             Image::make(storage_path('app/public/') . $fileNameOriginal)
+                ->orientate()
                 ->fit(400, 400)
                 ->save();
 

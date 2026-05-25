@@ -404,6 +404,10 @@
     },
     "contacts": {
         "title": "Kontakte",
+        "gender": {
+            "male": "Männlich",
+            "female": "Weiblich"
+        },
         "create": "Kontakt erstellen",
         "edit": "Kontakt bearbeiten",
         "delete": "Kontakt löschen",
@@ -450,10 +454,10 @@
             "name": "Name"
         },
         "form_sections": {
-            "basic": "Grunddaten",
-            "details": "Details",
+            "identity": "Identität",
+            "personal": "Persönliches",
             "work": "Beruf",
-            "additional": "Zusätzliches"
+            "categorisation": "Kategorisierung"
         },
         "markdown_hint": "Markdown unterstützt: **fett**, *kursiv*, [Link](url), `Code`, Listen, > Zitate.",
         "section": {
@@ -584,6 +588,7 @@
         "submit": "Kontakte zusammenführen",
         "merged": "Kontakte zusammengeführt.",
         "deselect_hint": "Klicke einen ausgewählten Radio-Button erneut an, um ihn zu deselektieren. Für jedes Feld, bei dem mindestens ein Kontakt einen Wert hat, musst du eine Seite wählen.",
+        "values_differ": "Beide Kontakte haben einen Wert für dieses Feld, aber die Werte unterscheiden sich. Prüfe genau, welcher behalten werden soll.",
         "errors": {
             "same_contact": "Wähle zwei unterschiedliche Kontakte.",
             "contact_not_found": "Einer der Kontakte konnte nicht gefunden werden.",

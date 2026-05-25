@@ -194,6 +194,10 @@ class ContactsController extends Controller
         try {
             $encoded = (string) (new ImageManager(['driver' => 'imagick']))
                 ->make($request->file('file')->getRealPath())
+                // Phone JPEGs carry the rotation as an EXIF Orientation tag
+                // rather than rotated pixels; the encode step below strips
+                // EXIF, so without this the saved file displays sideways.
+                ->orientate()
                 ->fit(400, 400)
                 ->encode('jpg', 85);
         } catch (\Throwable $e) {

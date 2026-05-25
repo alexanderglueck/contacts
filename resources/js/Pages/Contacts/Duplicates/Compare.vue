@@ -46,6 +46,18 @@ const setChoice = (field, side) => {
 };
 
 const requiresChoice = (field) => isFilled(props.left[field]) || isFilled(props.right[field]);
+
+// Both sides have content AND the content differs. We highlight these rows
+// because they're the easy-to-miss case (e.g. "MSc" vs "BSc" — both look like
+// plausible values, but only one survives the merge). The empty-vs-filled
+// case is left unmarked since it's visually obvious already.
+const bothDiffer = (field) => {
+    const l = props.left[field];
+    const r = props.right[field];
+    if (! isFilled(l) || ! isFilled(r)) return false;
+    const norm = (v) => typeof v === 'string' ? v.trim() : v;
+    return norm(l) !== norm(r);
+};
 const unresolvedFields = computed(() => props.fields.filter((f) => requiresChoice(f) && !['left', 'right'].includes(choices[f])));
 const canSubmit = computed(() => unresolvedFields.value.length === 0);
 
@@ -168,7 +180,11 @@ const submit = () => {
 
                     <!-- Scalar field rows -->
                     <template v-for="field in fields" :key="field">
-                        <div class="px-3 py-2 text-gray-600 border-t border-gray-100">
+                        <div
+                            class="px-3 py-2 text-gray-600 border-t border-gray-100"
+                            :class="bothDiffer(field) ? 'border-l-4 border-l-amber-400 ps-2' : ''"
+                            :title="bothDiffer(field) ? t('duplicates.values_differ') : null"
+                        >
                             {{ labelFor(field) }}
                             <span
                                 v-if="requiresChoice(field) && !choices[field]"

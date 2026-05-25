@@ -404,6 +404,10 @@
     },
     "contacts": {
         "title": "Contacts",
+        "gender": {
+            "male": "Male",
+            "female": "Female"
+        },
         "create": "Create contact",
         "edit": "Edit contact",
         "delete": "Delete contact",
@@ -450,10 +454,10 @@
             "name": "Name"
         },
         "form_sections": {
-            "basic": "Basic information",
-            "details": "Details",
+            "identity": "Identity",
+            "personal": "Personal",
             "work": "Work",
-            "additional": "Additional"
+            "categorisation": "Categorisation"
         },
         "markdown_hint": "Markdown supported: **bold**, *italic*, [link](url), `code`, lists, > quotes.",
         "section": {
@@ -584,6 +588,7 @@
         "submit": "Merge contacts",
         "merged": "Contacts merged.",
         "deselect_hint": "Click a selected radio to clear it. You must pick a side for every field where at least one contact has a value.",
+        "values_differ": "Both contacts have a value for this field, and they differ. Double-check which one to keep.",
         "errors": {
             "same_contact": "Pick two different contacts.",
             "contact_not_found": "One of the contacts could not be found.",

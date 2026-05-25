@@ -19,7 +19,13 @@ const props = defineProps({
     can: { type: Object, default: () => ({}) },
 });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
+
+const localiseGender = (raw) => {
+    if (! raw) return null;
+    const key = `contacts.gender.${raw}`;
+    return te(key) ? t(key) : raw;
+};
 const page = usePage();
 const imageUrl = computed(() => (props.contact.image ? `/storage/${props.contact.image}` : null));
 
@@ -61,7 +67,7 @@ const closeSection = () => { activeSection.value = null; };
 
 const detailFields = computed(() => [
     { label: t('contacts.fields.name'), value: props.contact.fullname },
-    { label: t('contacts.fields.gender'), value: props.contact.gender?.gender },
+    { label: t('contacts.fields.gender'), value: localiseGender(props.contact.gender?.gender) },
     { label: t('contacts.fields.company'), value: props.contact.company },
     { label: t('contacts.fields.job'), value: props.contact.job },
     { label: t('contacts.fields.department'), value: props.contact.department },
