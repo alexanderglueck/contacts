@@ -34,6 +34,13 @@ class ContactsController extends Controller
             ? Contact::search($query)->paginate($perPage)
             : Contact::sorted()->active()->paginate($perPage);
 
+        // Eager-load numbers on the paginated slice (not the underlying
+        // query) so both the Meilisearch and Eloquent paths get the same
+        // single follow-up SELECT instead of one-per-contact. The Android
+        // dialer reads these into Room on sync; shipping them in the list
+        // avoids N+1 detail calls just to populate the local number index.
+        $contacts->getCollection()->load('numbers');
+
         return response()->json([
             'data' => $contacts->getCollection()->map(fn (Contact $c) => $this->serialize($c))->values(),
             'meta' => [
@@ -273,6 +280,16 @@ class ContactsController extends Controller
             'lastname' => $contact->lastname,
             'company' => $contact->company,
             'image_url' => $contact->image ? url('storage/'.$contact->image) : null,
+            // Same shape the detail endpoint uses — Android's Room sync
+            // reads these into the dialer's local lookup table on every
+            // list response, so it can match incoming calls without
+            // hitting /by-number on the cellular hot path.
+            'numbers' => $contact->numbers->map(fn ($n) => [
+                'ulid' => $n->ulid,
+                'name' => $n->name,
+                'number' => $n->number,
+                'e164' => $n->e164,
+            ])->values(),
         ];
     }
 

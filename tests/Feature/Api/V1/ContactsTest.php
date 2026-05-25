@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\V1;
 
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -37,6 +38,66 @@ class ContactsTest extends TestCase
         $response->assertOk();
         $this->assertCount(3, $response->json('data'));
         $this->assertSame(3, $response->json('meta.total'));
+    }
+
+    #[Test]
+    public function index_includes_each_contacts_phone_numbers_for_dialer_sync()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        $contact = create(Contact::class, [
+            'firstname' => 'Jane',
+            'lastname' => 'Bond',
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+        ]);
+        $contact->numbers()->create(['name' => 'Mobile', 'number' => '+436601234567']);
+        $contact->numbers()->create(['name' => 'Office', 'number' => '+4312345678']);
+
+        $response = $this->getJson(route('api.v1.contacts.index'));
+
+        $response->assertOk();
+        $numbers = $response->json('data.0.numbers');
+        $this->assertCount(2, $numbers);
+        $this->assertEqualsCanonicalizing(
+            ['Mobile', 'Office'],
+            collect($numbers)->pluck('name')->all(),
+        );
+        $this->assertSame(
+            ['e164', 'name', 'number', 'ulid'],
+            collect($numbers[0])->keys()->sort()->values()->all(),
+        );
+    }
+
+    #[Test]
+    public function index_eager_loads_numbers_without_n_plus_one_queries()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        // Five contacts, each with two numbers. If `numbers` weren't
+        // eager-loaded, this would issue 5 extra SELECTs on top of the
+        // pagination query — an N+1 that would scale badly for the
+        // dialer's full sync.
+        for ($i = 0; $i < 5; $i++) {
+            $c = create(Contact::class, ['created_by' => $user->id, 'updated_by' => $user->id]);
+            $c->numbers()->create(['name' => 'Mobile', 'number' => '+43660'.(1000000 + $i)]);
+            $c->numbers()->create(['name' => 'Office', 'number' => '+431'.(2000000 + $i)]);
+        }
+
+        $contactNumberQueries = 0;
+        DB::listen(function ($q) use (&$contactNumberQueries) {
+            if (str_contains($q->sql, 'contact_numbers')) {
+                $contactNumberQueries++;
+            }
+        });
+
+        $this->getJson(route('api.v1.contacts.index'))->assertOk();
+
+        // Exactly one batched query (`select ... from contact_numbers
+        // where contact_id in (...)`), not one per contact.
+        $this->assertSame(1, $contactNumberQueries, 'numbers must be loaded in a single batched query');
     }
 
     #[Test]
