@@ -1,10 +1,12 @@
 <script setup>
+import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -12,9 +14,20 @@ defineProps({
     teams: { type: Array, default: () => [] },
 });
 
-const destroy = (team) => {
-    if (!confirm(t('teams.delete_confirm', { name: team.name }))) return;
-    router.delete(route('teams.destroy', team.uuid));
+const pendingDelete = ref(null);
+const deleteBusy = ref(false);
+const askDestroy = (team) => { pendingDelete.value = team; };
+const cancelDestroy = () => { pendingDelete.value = null; };
+const confirmDestroy = () => {
+    const team = pendingDelete.value;
+    if (! team) return;
+    deleteBusy.value = true;
+    router.delete(route('teams.destroy', team.uuid), {
+        onFinish: () => {
+            deleteBusy.value = false;
+            pendingDelete.value = null;
+        },
+    });
 };
 </script>
 
@@ -74,12 +87,23 @@ const destroy = (team) => {
                                 <Link :href="route('teams.edit', team.uuid)">
                                     <SecondaryButton type="button">{{ t('common.edit') }}</SecondaryButton>
                                 </Link>
-                                <DangerButton type="button" @click="destroy(team)">{{ t('common.delete') }}</DangerButton>
+                                <DangerButton type="button" @click="askDestroy(team)">{{ t('common.delete') }}</DangerButton>
                             </template>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <ConfirmModal
+            :open="pendingDelete !== null"
+            :title="t('teams.delete_title')"
+            :body="pendingDelete ? t('teams.delete_confirm', { name: pendingDelete.name }) : ''"
+            :confirm-label="t('common.delete')"
+            variant="danger"
+            :busy="deleteBusy"
+            @confirm="confirmDestroy"
+            @cancel="cancelDestroy"
+        />
     </AppLayout>
 </template>

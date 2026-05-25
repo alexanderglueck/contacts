@@ -15,6 +15,7 @@ import deLocale from '@fullcalendar/core/locales/de';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t, locale } = useI18n();
 
@@ -25,11 +26,21 @@ const props = defineProps({
 const syncUrl = ref(null);
 const rotating = ref(false);
 
-const rotateSyncToken = async () => {
-    if (props.hasCalendarSyncToken && ! confirm(t('calendar.rotate_confirm'))) {
-        return;
-    }
+const rotateConfirmOpen = ref(false);
 
+// User-facing trigger: gated on whether a token already exists. Rotating an
+// existing one invalidates the old URL, so confirm; first-time generation is
+// harmless and runs straight through.
+const requestRotate = () => {
+    if (props.hasCalendarSyncToken) {
+        rotateConfirmOpen.value = true;
+    } else {
+        doRotate();
+    }
+};
+
+const doRotate = async () => {
+    rotateConfirmOpen.value = false;
     rotating.value = true;
     try {
         const { data } = await axios.post(route('calendar.sync_token'));
@@ -132,13 +143,24 @@ const calendarOptions = {
                     </p>
 
                     <div>
-                        <PrimaryButton type="button" @click="rotateSyncToken" :disabled="rotating" :class="{ 'opacity-50': rotating }">
+                        <PrimaryButton type="button" @click="requestRotate" :disabled="rotating" :class="{ 'opacity-50': rotating }">
                             {{ hasCalendarSyncToken ? t('calendar.rotate') : t('calendar.generate') }}
                         </PrimaryButton>
                     </div>
                 </div>
             </div>
         </div>
+
+        <ConfirmModal
+            :open="rotateConfirmOpen"
+            :title="t('calendar.rotate_title')"
+            :body="t('calendar.rotate_confirm')"
+            :confirm-label="t('calendar.rotate')"
+            variant="danger"
+            :busy="rotating"
+            @confirm="doRotate"
+            @cancel="rotateConfirmOpen = false"
+        />
     </AppLayout>
 </template>
 

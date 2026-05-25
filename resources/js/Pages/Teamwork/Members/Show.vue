@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -8,6 +9,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -26,9 +28,20 @@ const submitInvite = () => {
     });
 };
 
-const removeMember = (user) => {
-    if (!confirm(t('teams.remove_member_confirm', { name: user.name }))) return;
-    router.delete(route('teams.members.destroy', [props.team.uuid, user.ulid]));
+const pendingRemove = ref(null);
+const removeBusy = ref(false);
+const askRemoveMember = (user) => { pendingRemove.value = user; };
+const cancelRemoveMember = () => { pendingRemove.value = null; };
+const confirmRemoveMember = () => {
+    const user = pendingRemove.value;
+    if (! user) return;
+    removeBusy.value = true;
+    router.delete(route('teams.members.destroy', [props.team.uuid, user.ulid]), {
+        onFinish: () => {
+            removeBusy.value = false;
+            pendingRemove.value = null;
+        },
+    });
 };
 
 const impersonate = (ulid) => {
@@ -64,7 +77,7 @@ const impersonate = (ulid) => {
                                 <DangerButton
                                     v-if="can.manage && !user.is_self"
                                     type="button"
-                                    @click="removeMember(user)"
+                                    @click="askRemoveMember(user)"
                                 >
                                     {{ t('common.delete') }}
                                 </DangerButton>
@@ -137,5 +150,16 @@ const impersonate = (ulid) => {
                 </div>
             </form>
         </div>
+
+        <ConfirmModal
+            :open="pendingRemove !== null"
+            :title="t('teams.remove_member_title')"
+            :body="pendingRemove ? t('teams.remove_member_confirm', { name: pendingRemove.name }) : ''"
+            :confirm-label="t('common.remove')"
+            variant="danger"
+            :busy="removeBusy"
+            @confirm="confirmRemoveMember"
+            @cancel="cancelRemoveMember"
+        />
     </AppLayout>
 </template>

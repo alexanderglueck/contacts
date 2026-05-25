@@ -9,6 +9,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -46,8 +47,15 @@ const submitAdd = () => {
 
 const formatDate = (iso) => iso ? new Date(iso).toLocaleString() : '—';
 
-const remove = async (passkey) => {
-    if (!confirm(t('passkeys.remove_confirm', { name: passkey.name }))) return;
+// Two-step delete: askRemove(passkey) populates pendingRemoval, which both
+// opens the modal and identifies which passkey to act on once confirmed.
+const pendingRemoval = ref(null);
+const askRemove = (passkey) => { pendingRemoval.value = passkey; };
+const cancelRemove = () => { pendingRemoval.value = null; };
+const confirmRemove = async () => {
+    const passkey = pendingRemoval.value;
+    if (! passkey) return;
+    pendingRemoval.value = null;
     deletingId.value = passkey.id;
     try {
         await window.axios.delete(`/user/passkeys/${passkey.id}`);
@@ -142,12 +150,23 @@ const remove = async (passkey) => {
                         type="button"
                         class="text-sm text-red-600 hover:text-red-700 cursor-pointer"
                         :disabled="deletingId === passkey.id"
-                        @click="remove(passkey)"
+                        @click="askRemove(passkey)"
                     >
                         {{ deletingId === passkey.id ? t('passkeys.removing') : t('passkeys.remove') }}
                     </button>
                 </li>
             </ul>
         </div>
+
+        <ConfirmModal
+            :open="pendingRemoval !== null"
+            :title="t('passkeys.remove_title')"
+            :body="pendingRemoval ? t('passkeys.remove_confirm', { name: pendingRemoval.name }) : ''"
+            :confirm-label="t('passkeys.remove')"
+            variant="danger"
+            :busy="deletingId !== null"
+            @confirm="confirmRemove"
+            @cancel="cancelRemove"
+        />
     </section>
 </template>

@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -122,12 +123,25 @@ const form = useForm({
     subResources: {},
 });
 
-const markNotDuplicate = () => {
-    if (! confirm(t('duplicates.not_duplicate_confirm'))) return;
-    router.post(route('duplicates.not_duplicate'), {
-        left_ulid: props.left.ulid,
-        right_ulid: props.right.ulid,
-    });
+const notDuplicateConfirmOpen = ref(false);
+const notDuplicateSubmitting = ref(false);
+
+const askNotDuplicate = () => { notDuplicateConfirmOpen.value = true; };
+const confirmNotDuplicate = () => {
+    notDuplicateSubmitting.value = true;
+    router.post(
+        route('duplicates.not_duplicate'),
+        {
+            left_ulid: props.left.ulid,
+            right_ulid: props.right.ulid,
+        },
+        {
+            onFinish: () => {
+                notDuplicateSubmitting.value = false;
+                notDuplicateConfirmOpen.value = false;
+            },
+        },
+    );
 };
 
 const submit = () => {
@@ -336,7 +350,7 @@ const submit = () => {
                     <SecondaryButton
                         type="button"
                         class="cursor-pointer"
-                        @click="markNotDuplicate"
+                        @click="askNotDuplicate"
                     >
                         {{ t('duplicates.not_duplicate') }}
                     </SecondaryButton>
@@ -355,5 +369,15 @@ const submit = () => {
                 </ul>
             </div>
         </div>
+
+        <ConfirmModal
+            :open="notDuplicateConfirmOpen"
+            :title="t('duplicates.not_duplicate_title')"
+            :body="t('duplicates.not_duplicate_confirm')"
+            :confirm-label="t('duplicates.not_duplicate')"
+            :busy="notDuplicateSubmitting"
+            @confirm="confirmNotDuplicate"
+            @cancel="notDuplicateConfirmOpen = false"
+        />
     </AppLayout>
 </template>

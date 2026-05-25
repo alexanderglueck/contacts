@@ -9,6 +9,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -29,11 +30,15 @@ const submit = () => {
 };
 
 const revokingId = ref(null);
-
-const revoke = (id) => {
-    if (! confirm(t('settings.api_tokens.revoke_confirm'))) return;
-    revokingId.value = id;
-    useForm({}).delete(route('user_settings.api_token.destroy', id), {
+const pendingRevoke = ref(null);
+const askRevoke = (token) => { pendingRevoke.value = token; };
+const cancelRevoke = () => { pendingRevoke.value = null; };
+const confirmRevoke = () => {
+    const token = pendingRevoke.value;
+    if (! token) return;
+    revokingId.value = token.id;
+    pendingRevoke.value = null;
+    useForm({}).delete(route('user_settings.api_token.destroy', token.id), {
         preserveScroll: true,
         onFinish: () => { revokingId.value = null; },
     });
@@ -123,7 +128,7 @@ const copy = async (value) => {
                         <td class="px-6 py-2 text-right">
                             <DangerButton
                                 type="button"
-                                @click="revoke(token.id)"
+                                @click="askRevoke(token)"
                                 :disabled="revokingId === token.id"
                                 :class="{ 'opacity-50': revokingId === token.id }"
                             >
@@ -134,5 +139,16 @@ const copy = async (value) => {
                 </tbody>
             </table>
         </div>
+
+        <ConfirmModal
+            :open="pendingRevoke !== null"
+            :title="t('settings.api_tokens.revoke_title')"
+            :body="pendingRevoke ? t('settings.api_tokens.revoke_confirm', { name: pendingRevoke.name }) : ''"
+            :confirm-label="t('settings.api_tokens.revoke')"
+            variant="danger"
+            :busy="revokingId !== null"
+            @confirm="confirmRevoke"
+            @cancel="cancelRevoke"
+        />
     </SettingsLayout>
 </template>

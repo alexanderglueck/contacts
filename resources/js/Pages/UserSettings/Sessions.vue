@@ -8,6 +8,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { t } = useI18n();
 
@@ -47,10 +48,20 @@ const cancelLogoutOthers = () => {
     logoutForm.clearErrors();
 };
 
-const revoke = (session) => {
-    if (!confirm(t('settings.sessions.sign_out_this'))) return;
+const pendingRevoke = ref(null);
+const revokeBusy = ref(false);
+const askRevoke = (session) => { pendingRevoke.value = session; };
+const cancelRevoke = () => { pendingRevoke.value = null; };
+const confirmRevoke = () => {
+    const session = pendingRevoke.value;
+    if (! session) return;
+    revokeBusy.value = true;
     router.delete(route('user_settings.sessions.destroy', session.id), {
         preserveScroll: true,
+        onFinish: () => {
+            revokeBusy.value = false;
+            pendingRevoke.value = null;
+        },
     });
 };
 </script>
@@ -111,7 +122,7 @@ const revoke = (session) => {
                         v-if="!session.is_current"
                         type="button"
                         class="text-sm text-red-600 hover:text-red-700 cursor-pointer"
-                        @click="revoke(session)"
+                        @click="askRevoke(session)"
                     >
                         {{ t('settings.sessions.sign_out') }}
                     </button>
@@ -159,5 +170,16 @@ const revoke = (session) => {
                 </form>
             </div>
         </section>
+
+        <ConfirmModal
+            :open="pendingRevoke !== null"
+            :title="t('settings.sessions.sign_out_title')"
+            :body="t('settings.sessions.sign_out_this')"
+            :confirm-label="t('settings.sessions.sign_out')"
+            variant="danger"
+            :busy="revokeBusy"
+            @confirm="confirmRevoke"
+            @cancel="cancelRevoke"
+        />
     </SettingsLayout>
 </template>
