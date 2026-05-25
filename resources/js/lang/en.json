@@ -587,6 +587,9 @@
         },
         "submit": "Merge contacts",
         "merged": "Contacts merged.",
+        "not_duplicate": "Not a duplicate",
+        "not_duplicate_confirm": "Mark this pair as not a duplicate? They won't be suggested again.",
+        "marked_not_duplicate": "Marked as not a duplicate.",
         "deselect_hint": "Click a selected radio to clear it. You must pick a side for every field where at least one contact has a value.",
         "values_differ": "Both contacts have a value for this field, and they differ. Double-check which one to keep.",
         "errors": {

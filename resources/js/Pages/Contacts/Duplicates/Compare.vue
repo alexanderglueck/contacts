@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -121,6 +121,14 @@ const form = useForm({
     choices: {},
     subResources: {},
 });
+
+const markNotDuplicate = () => {
+    if (! confirm(t('duplicates.not_duplicate_confirm'))) return;
+    router.post(route('duplicates.not_duplicate'), {
+        left_ulid: props.left.ulid,
+        right_ulid: props.right.ulid,
+    });
+};
 
 const submit = () => {
     const kept = keptSide.value === 'left' ? props.left : props.right;
@@ -324,7 +332,14 @@ const submit = () => {
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end gap-3">
+                <div class="mt-6 flex justify-end items-center gap-3">
+                    <SecondaryButton
+                        type="button"
+                        class="cursor-pointer"
+                        @click="markNotDuplicate"
+                    >
+                        {{ t('duplicates.not_duplicate') }}
+                    </SecondaryButton>
                     <PrimaryButton
                         type="button"
                         class="cursor-pointer"

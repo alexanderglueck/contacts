@@ -56,6 +56,8 @@ Route::group(['middleware' => 'subscription.active'], function () {
         ->name('duplicates.compare');
     Route::post('contacts/duplicates/merge', [\App\Http\Controllers\DuplicateContactController::class, 'merge'])
         ->name('duplicates.merge');
+    Route::post('contacts/duplicates/not-duplicate', [\App\Http\Controllers\DuplicateContactController::class, 'markNotDuplicate'])
+        ->name('duplicates.not_duplicate');
 
     /**
      * Contacts

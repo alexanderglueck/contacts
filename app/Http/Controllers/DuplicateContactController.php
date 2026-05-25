@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MergeContactRequest;
 use App\Models\Contact;
+use App\Models\ContactNonDuplicate;
 use App\Services\DuplicateContactDetector;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,11 +17,79 @@ class DuplicateContactController extends Controller
 {
     public function index(): Response
     {
-        $detector = new DuplicateContactDetector(auth()->user()->current_team_id);
+        $teamId = auth()->user()->current_team_id;
+        $detector = new DuplicateContactDetector($teamId);
+
+        $groups = $this->mergeGroupsBySameSet($detector->find());
+        $groups = $this->filterByNonDuplicates($groups, $teamId);
 
         return Inertia::render('Contacts/Duplicates/Index', [
-            'groups' => $this->mergeGroupsBySameSet($detector->find()),
+            'groups' => $groups,
         ]);
+    }
+
+    /**
+     * Apply the user's "not a duplicate" marks. We keep a contact in a group
+     * only if it still has at least one peer that *isn't* marked as
+     * non-duplicate with it. Groups that drop below 2 contacts are removed.
+     *
+     * This handles 3+ member groups gracefully: marking pair (A,B) as
+     * non-dup doesn't hide a group of {A,B,C} where (A,C) and (B,C) are
+     * still suspicious — only (A,B)'s shared signal-row would disappear,
+     * not the whole group.
+     */
+    private function filterByNonDuplicates(array $groups, int $teamId): array
+    {
+        $allIds = collect($groups)
+            ->flatMap(fn ($g) => array_column($g['contacts'], 'id'))
+            ->unique()
+            ->values();
+
+        if ($allIds->isEmpty()) {
+            return $groups;
+        }
+
+        $nonDupPairs = ContactNonDuplicate::query()
+            ->where('team_id', $teamId)
+            ->whereIn('contact_a_id', $allIds)
+            ->whereIn('contact_b_id', $allIds)
+            ->get(['contact_a_id', 'contact_b_id']);
+
+        // Flatten to a set keyed by "min:max" so lookup is O(1) regardless
+        // of which order the user picked the pair.
+        $nonDupSet = [];
+        foreach ($nonDupPairs as $row) {
+            $a = min($row->contact_a_id, $row->contact_b_id);
+            $b = max($row->contact_a_id, $row->contact_b_id);
+            $nonDupSet["{$a}:{$b}"] = true;
+        }
+        $pairKey = fn ($i, $j) => min($i, $j) . ':' . max($i, $j);
+
+        $result = [];
+        foreach ($groups as $group) {
+            $ids = array_column($group['contacts'], 'id');
+            $kept = [];
+            foreach ($ids as $id) {
+                foreach ($ids as $other) {
+                    if ($id === $other) {
+                        continue;
+                    }
+                    if (! isset($nonDupSet[$pairKey($id, $other)])) {
+                        $kept[$id] = true;
+                        break;
+                    }
+                }
+            }
+            $group['contacts'] = array_values(array_filter(
+                $group['contacts'],
+                fn ($c) => isset($kept[$c['id']]),
+            ));
+            if (count($group['contacts']) >= 2) {
+                $result[] = $group;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -132,6 +201,45 @@ class DuplicateContactController extends Controller
         ]);
     }
 
+    /**
+     * Record this pair as "not actually a duplicate" so future detector runs
+     * stop suggesting them. Pair stored normalised (smaller id first) so the
+     * unique index catches it regardless of which order the user clicked.
+     */
+    public function markNotDuplicate(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'left_ulid' => ['required', 'string'],
+            'right_ulid' => ['required', 'string', 'different:left_ulid'],
+        ]);
+
+        $teamId = auth()->user()->current_team_id;
+
+        $left = Contact::where('ulid', $request->input('left_ulid'))->firstOrFail();
+        $right = Contact::where('ulid', $request->input('right_ulid'))->firstOrFail();
+
+        if ($left->team_id !== $teamId || $right->team_id !== $teamId) {
+            abort(403);
+        }
+
+        $a = min($left->id, $right->id);
+        $b = max($left->id, $right->id);
+
+        ContactNonDuplicate::updateOrCreate(
+            [
+                'team_id' => $teamId,
+                'contact_a_id' => $a,
+                'contact_b_id' => $b,
+            ],
+            [
+                'created_by' => auth()->id(),
+            ],
+        );
+
+        return redirect()->route('duplicates.index')
+            ->with('alert-success', __('duplicates.marked_not_duplicate'));
+    }
+
     public function merge(MergeContactRequest $request): RedirectResponse
     {
         $kept = Contact::where('ulid', $request->input('kept_ulid'))->firstOrFail();
@@ -224,7 +332,10 @@ class DuplicateContactController extends Controller
             $loser->delete();
         });
 
-        return redirect()->route('contacts.show', ['contact' => $kept->ulid])
+        // Land back on the duplicates index — typical workflow is to
+        // process a batch of duplicates in one sitting, so jumping into
+        // the kept contact's detail page interrupts that flow.
+        return redirect()->route('duplicates.index')
             ->with('alert-success', __('duplicates.merged'));
     }
 

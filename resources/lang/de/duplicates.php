@@ -2,6 +2,7 @@
 
 return [
     'merged' => 'Kontakte wurden erfolgreich zusammengeführt.',
+    'marked_not_duplicate' => 'Als kein Duplikat markiert — dieses Paar wird nicht mehr vorgeschlagen.',
 
     'errors' => [
         'same_contact' => 'Wähle zwei unterschiedliche Kontakte.',

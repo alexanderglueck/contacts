@@ -48,9 +48,11 @@ const compare = (key) => {
 };
 
 const summarise = (c) => {
-    const name = [c.firstname, c.lastname].filter(Boolean).join(' ');
-    const extras = [c.company, c.date_of_birth].filter(Boolean);
-    return `${name}${extras.length ? ' · ' + extras.join(' · ') : ''}`;
+    // Use the full server-rendered name (includes title + nickname + company);
+    // append date_of_birth as a discriminator when the user has several
+    // contacts that genuinely share a name.
+    const name = c.fullname || [c.firstname, c.lastname].filter(Boolean).join(' ');
+    return c.date_of_birth ? `${name} · ${c.date_of_birth}` : name;
 };
 
 const empty = computed(() => props.groups.length === 0);

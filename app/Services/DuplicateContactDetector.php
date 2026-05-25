@@ -172,7 +172,9 @@ class DuplicateContactDetector
     private function summarise(Collection $contacts): array
     {
         return $contacts->map(fn (Contact $c) => [
+            'id' => $c->id, // internal; controller uses it for non-duplicate filtering
             'ulid' => $c->ulid,
+            'fullname' => $c->fullname,
             'firstname' => $c->firstname,
             'lastname' => $c->lastname,
             'company' => $c->company,
