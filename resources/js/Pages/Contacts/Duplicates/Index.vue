@@ -58,10 +58,21 @@ const isNonDupPair = (group, key) => {
     return nonDupPairSet(group).has(pairKey(picks[0], picks[1]));
 };
 
-const compare = (key, group) => {
-    if (isNonDupPair(group, key)) return;
+const compare = (key) => {
     const [left, right] = selections[key];
     router.visit(route('duplicates.compare', { left, right }));
+};
+
+const unmarking = ref(false);
+const unmarkSelected = (key) => {
+    const [left, right] = selections[key];
+    if (! left || ! right) return;
+    unmarking.value = true;
+    router.delete(route('duplicates.undo_not_duplicate'), {
+        data: { left_ulid: left, right_ulid: right },
+        preserveScroll: true,
+        onFinish: () => { unmarking.value = false; },
+    });
 };
 
 const summarise = (c) => {
@@ -276,11 +287,20 @@ if (typeof window !== 'undefined') {
                             >
                                 {{ t('duplicates.pair_already_dismissed') }}
                             </span>
+                            <SecondaryButton
+                                v-if="canCompare(groupKey(group, idx)) && isNonDupPair(group, groupKey(group, idx))"
+                                type="button"
+                                class="cursor-pointer"
+                                :disabled="unmarking"
+                                @click="unmarkSelected(groupKey(group, idx))"
+                            >
+                                {{ t('duplicates.unmark_not_duplicate') }}
+                            </SecondaryButton>
                             <PrimaryButton
                                 type="button"
                                 class="cursor-pointer"
-                                :disabled="!canCompare(groupKey(group, idx)) || isNonDupPair(group, groupKey(group, idx))"
-                                @click="compare(groupKey(group, idx), group)"
+                                :disabled="!canCompare(groupKey(group, idx))"
+                                @click="compare(groupKey(group, idx))"
                             >
                                 {{ t('duplicates.compare') }}
                             </PrimaryButton>
