@@ -275,9 +275,18 @@ class ContactsController extends Controller
     {
         return [
             'ulid' => $contact->ulid,
+            // `fullname` is the server-composed display string (see
+            // Contact::getFullnameAttribute). The raw parts ship alongside
+            // so the Android client can also sort/group/render structurally
+            // (e.g. last-name-first in the dialer, no company suffix on
+            // notifications) without a follow-up detail call.
             'fullname' => $contact->fullname,
             'firstname' => $contact->firstname,
             'lastname' => $contact->lastname,
+            'nickname' => $contact->nickname,
+            'title' => $contact->title,
+            'title_after' => $contact->title_after,
+            'salutation' => $contact->salutation,
             'company' => $contact->company,
             'image_url' => $contact->image ? url('storage/'.$contact->image) : null,
             // Same shape the detail endpoint uses — Android's Room sync

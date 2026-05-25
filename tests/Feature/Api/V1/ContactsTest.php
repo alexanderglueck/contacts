@@ -71,6 +71,40 @@ class ContactsTest extends TestCase
     }
 
     #[Test]
+    public function index_includes_the_full_set_of_name_parts_alongside_fullname()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        create(Contact::class, [
+            'firstname' => 'Jane',
+            'lastname' => 'Bond',
+            'nickname' => 'JB',
+            'title' => 'Dr.',
+            'title_after' => 'PhD',
+            'salutation' => 'Frau',
+            'company' => 'Acme',
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+        ]);
+
+        $response = $this->getJson(route('api.v1.contacts.index'));
+
+        $response->assertOk();
+        $row = $response->json('data.0');
+        $this->assertSame('Jane', $row['firstname']);
+        $this->assertSame('Bond', $row['lastname']);
+        $this->assertSame('JB', $row['nickname']);
+        $this->assertSame('Dr.', $row['title']);
+        $this->assertSame('PhD', $row['title_after']);
+        $this->assertSame('Frau', $row['salutation']);
+        $this->assertSame('Acme', $row['company']);
+        // Server-composed display string stays available so clients that
+        // don't want to reimplement the composition can just use it.
+        $this->assertStringContainsString('Jane Bond', $row['fullname']);
+    }
+
+    #[Test]
     public function index_eager_loads_numbers_without_n_plus_one_queries()
     {
         $user = $this->createUser();

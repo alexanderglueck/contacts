@@ -17,6 +17,7 @@
     },
     "nav": {
         "contacts": "Kontakte",
+        "duplicates": "Duplikate",
         "groups": "Gruppen",
         "calendar": "Kalender",
         "map": "Karte",
@@ -548,6 +549,35 @@
                 "deleted": "(gelöscht)",
                 "placeholder": "Kommentar schreiben…"
             }
+        }
+    },
+    "duplicates": {
+        "title": "Mögliche doppelte Kontakte",
+        "intro": "Kontaktpaare und -gruppen mit gleicher E-Mail, gleichem Namen, gleicher Telefonnummer oder gleichem Geburtstag + Nachname. Wähle zwei aus, um sie zu vergleichen und zusammenzuführen.",
+        "no_duplicates": "Keine möglichen Duplikate gefunden.",
+        "signal": {
+            "email": "Gleiche E-Mail",
+            "name": "Gleicher Vor- + Nachname",
+            "phone": "Gleiche Telefonnummer",
+            "dob_lastname": "Gleicher Geburtstag + Nachname"
+        },
+        "compare": "Vergleichen",
+        "pick_two_to_compare": "Wähle genau zwei Kontakte in dieser Gruppe zum Vergleichen.",
+        "compare_title": "Kontakte vergleichen",
+        "keep_side": "Diese Seite behalten",
+        "swap_sides": "Behaltene Seite tauschen",
+        "left": "Links",
+        "right": "Rechts",
+        "field": "Feld",
+        "empty": "—",
+        "subresources_note": "Unter­ressourcen beider Kontakte (URLs, Nummern, E-Mails, Daten, Adressen, Kommentare, Geschenkideen, Notizen, Anrufe und Gruppen) werden alle in den behaltenen Kontakt übernommen.",
+        "submit": "Kontakte zusammenführen",
+        "merged": "Kontakte zusammengeführt.",
+        "deselect_hint": "Klicke einen ausgewählten Radio-Button erneut an, um ihn zu deselektieren. Für jedes Feld, bei dem mindestens ein Kontakt einen Wert hat, musst du eine Seite wählen.",
+        "errors": {
+            "same_contact": "Wähle zwei unterschiedliche Kontakte.",
+            "contact_not_found": "Einer der Kontakte konnte nicht gefunden werden.",
+            "choice_required": "Wähle eine Seite für :field."
         }
     }
 }

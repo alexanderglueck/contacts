@@ -17,6 +17,7 @@
     },
     "nav": {
         "contacts": "Contacts",
+        "duplicates": "Duplicates",
         "groups": "Groups",
         "calendar": "Calendar",
         "map": "Map",
@@ -548,6 +549,35 @@
                 "deleted": "(deleted)",
                 "placeholder": "Write a comment…"
             }
+        }
+    },
+    "duplicates": {
+        "title": "Possible duplicate contacts",
+        "intro": "Pairs and groups of contacts that share an email, name, phone number, or birthday + last name. Select two to compare and merge.",
+        "no_duplicates": "No potential duplicates detected.",
+        "signal": {
+            "email": "Same email",
+            "name": "Same first + last name",
+            "phone": "Same phone number",
+            "dob_lastname": "Same birthday + last name"
+        },
+        "compare": "Compare",
+        "pick_two_to_compare": "Pick exactly two contacts in this group to compare.",
+        "compare_title": "Compare contacts",
+        "keep_side": "Keep this side",
+        "swap_sides": "Swap kept side",
+        "left": "Left",
+        "right": "Right",
+        "field": "Field",
+        "empty": "—",
+        "subresources_note": "Sub-resources from both contacts (urls, numbers, emails, dates, addresses, comments, gift ideas, notes, calls, and groups) will all be transferred to the kept contact.",
+        "submit": "Merge contacts",
+        "merged": "Contacts merged.",
+        "deselect_hint": "Click a selected radio to clear it. You must pick a side for every field where at least one contact has a value.",
+        "errors": {
+            "same_contact": "Pick two different contacts.",
+            "contact_not_found": "One of the contacts could not be found.",
+            "choice_required": "Pick a side for :field."
         }
     }
 }

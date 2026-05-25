@@ -39,8 +39,11 @@ const isActive = (name) => {
                         </div>
 
                         <div class="hidden sm:-my-px sm:ms-10 sm:flex space-x-8">
-                            <NavLink :href="route('contacts.index')" :active="isActive('contacts.*')">
+                            <NavLink :href="route('contacts.index')" :active="isActive('contacts.*') &amp;&amp; !isActive('duplicates.*')">
                                 {{ t('nav.contacts') }}
+                            </NavLink>
+                            <NavLink :href="route('duplicates.index')" :active="isActive('duplicates.*')">
+                                {{ t('nav.duplicates') }}
                             </NavLink>
                             <NavLink :href="route('contact_groups.index')" :active="isActive('contact_groups.*')">
                                 {{ t('nav.groups') }}

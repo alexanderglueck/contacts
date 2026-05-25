@@ -44,6 +44,18 @@ Route::group(['middleware' => 'subscription.active'], function () {
     Route::post('contacts/import', [ContactImportController::class, 'import'])->name('import.import');
 
     /**
+     * Duplicate Contact Merge Tool
+     * Listed before /contacts/{contact} so "duplicates" isn't captured as a ULID.
+     */
+    Route::get('contacts/duplicates', [\App\Http\Controllers\DuplicateContactController::class, 'index'])
+        ->name('duplicates.index');
+    Route::get('contacts/duplicates/compare/{left}/{right}', [\App\Http\Controllers\DuplicateContactController::class, 'compare'])
+        ->where(['left' => '[0-9A-Za-z]+', 'right' => '[0-9A-Za-z]+'])
+        ->name('duplicates.compare');
+    Route::post('contacts/duplicates/merge', [\App\Http\Controllers\DuplicateContactController::class, 'merge'])
+        ->name('duplicates.merge');
+
+    /**
      * Contacts
      */
     Route::get('contacts', [ContactController::class, 'index'])->name('contacts.index');
