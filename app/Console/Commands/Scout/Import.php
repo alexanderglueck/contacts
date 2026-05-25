@@ -2,52 +2,69 @@
 
 namespace App\Console\Commands\Scout;
 
-use Laravel\Scout\Console\ImportCommand;
-use Illuminate\Contracts\Events\Dispatcher;
-use App\Tenant\Traits\Console\FetchesTenants;
 use App\Tenant\Traits\Console\AcceptsMultipleTenants;
+use App\Tenant\Traits\Console\FetchesTenants;
+use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\Console\Input\InputArgument;
 
-class Import extends ImportCommand
+class Import extends Command
 {
-    use FetchesTenants;
     use AcceptsMultipleTenants;
+    use FetchesTenants;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Import data for tenants';
+    protected $name = 'tenants:import';
 
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
+    protected $description = 'Import a Searchable model into each tenant\'s prefixed Scout index';
+
+    public function handle(): int
     {
-        parent::__construct();
-        $this->setName('tenants:import {model}');
+        $class = $this->argument('model');
 
-        $this->specifyParameters();
-    }
+        if (! class_exists($class)) {
+            $this->error("Model class [{$class}] does not exist.");
 
-    /**
-     * Execute the console command.
-     *
-     * @param Dispatcher $events
-     * @return int
-     */
-    public function handle(Dispatcher $events): int
-    {
-        $this->tenants($this->option('tenants'))->each(function ($tenant) use ($events) {
-            /*
-             * Set the scout prefix so the parent handle method imports the
-             * models into the correct index
-             */
+            return 1;
+        }
+
+        $instance = new $class;
+
+        if (! $instance instanceof Model || ! method_exists($instance, 'searchable')) {
+            $this->error("Model [{$class}] is not Searchable.");
+
+            return 1;
+        }
+
+        $chunkSize = (int) config('scout.chunk.searchable', 500);
+
+        $this->tenants($this->option('tenants'))->each(function ($tenant) use ($class, $chunkSize) {
+            // Per-tenant Scout prefix mirrors what App\Listeners\Tenant\RegisterTenant
+            // does on a normal HTTP request — Contact::searchableAs() reads this.
             config()->set('scout.prefix', 'tenant_' . $tenant->id . '_');
 
-            parent::handle($events);
+            $this->info("Tenant {$tenant->id} ({$tenant->name}) → index prefix tenant_{$tenant->id}_");
+
+            // Bypass BelongsToTenantScope (auth-based, no-op in CLI) and filter
+            // explicitly by team_id so each tenant's index holds only its own rows.
+            $query = $class::query()->withoutGlobalScopes()->where('team_id', $tenant->id);
+
+            $total = (clone $query)->count();
+            $this->info("  importing {$total} row(s)…");
+
+            $query->chunkById($chunkSize, function ($models) {
+                $models->searchable();
+            });
         });
 
+        $this->info('Done.');
+
         return 0;
+    }
+
+    protected function getArguments(): array
+    {
+        return [
+            ['model', InputArgument::REQUIRED, 'The Searchable model class (e.g. "App\\Models\\Contact")'],
+        ];
     }
 }
