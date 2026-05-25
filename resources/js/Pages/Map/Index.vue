@@ -15,6 +15,8 @@ const { t } = useI18n();
 const mapContainer = ref(null);
 let map = null;
 let markersLayer = null;
+let oms = null;
+const popup = L.popup();
 let fetchToken = 0;
 
 const defaultIcon = L.icon({
@@ -73,20 +75,18 @@ const fetchMarkers = async () => {
 
         if (requestToken !== fetchToken) return;
 
+        oms.unspiderfy();
+        oms.clearMarkers();
         markersLayer.clearLayers();
 
         data.forEach((m) => {
             const marker = L.marker([m.latitude, m.longitude], { icon: defaultIcon, title: m.title });
-            marker.bindPopup(renderPopup(m));
-            marker.on('popupopen', (event) => {
-                const link = event.popup.getElement()?.querySelector('a[href]');
-                if (! link) return;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    router.visit(link.href);
-                });
-            });
+            // Stash the popup HTML on the marker; OMS's click listener reads it
+            // and feeds the shared popup, so co-located markers still get
+            // individual popups after they spider out.
+            marker._popupHtml = renderPopup(m);
             markersLayer.addLayer(marker);
+            oms.addMarker(marker);
         });
     } catch (e) {
         if (requestToken === fetchToken) {
@@ -95,7 +95,7 @@ const fetchMarkers = async () => {
     }
 };
 
-onMounted(() => {
+onMounted(async () => {
     map = L.map(mapContainer.value, {
         center: [47.0707, 15.4395], // Graz, AT — sensible default; first fetch will adjust
         zoom: 5,
@@ -108,11 +108,44 @@ onMounted(() => {
 
     markersLayer = L.layerGroup().addTo(map);
 
+    // OMS handles the "two pins on the same house" case: clicking such a stack
+    // fans the markers out so each is individually clickable. The package is a
+    // legacy UMD that attaches itself to window and reads window.L, so we have
+    // to bridge L onto the window before its IIFE evaluates — dynamic-importing
+    // inside onMounted guarantees that ordering.
+    window.L = window.L || L;
+    await import('overlapping-marker-spiderfier-leaflet');
+    oms = new window.OverlappingMarkerSpiderfier(map, {
+        keepSpiderfied: true,
+        nearbyDistance: 20,
+    });
+
+    oms.addListener('click', (marker) => {
+        popup
+            .setLatLng(marker.getLatLng())
+            .setContent(marker._popupHtml)
+            .openOn(map);
+    });
+
+    map.on('popupopen', (event) => {
+        const link = event.popup.getElement()?.querySelector('a[href]');
+        if (! link) return;
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            router.visit(link.href);
+        });
+    });
+
     map.on('moveend', fetchMarkers);
     fetchMarkers();
 });
 
 onBeforeUnmount(() => {
+    if (oms) {
+        oms.clearListeners('click');
+        oms.clearMarkers();
+        oms = null;
+    }
     if (map) {
         map.off();
         map.remove();
