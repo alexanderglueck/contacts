@@ -42,7 +42,24 @@ const pickedCount = (key) => (selections[key] ?? []).length;
 
 const canCompare = (key) => pickedCount(key) === 2;
 
-const compare = (key) => {
+// Build a lookup of "pair already marked non-duplicate" per group, so the
+// Compare button can be disabled when the user re-picks a dismissed pair.
+const pairKey = (a, b) => [a, b].sort().join('|');
+const nonDupPairSet = (group) => {
+    const set = new Set();
+    for (const p of (group.nonDuplicatePairs ?? [])) {
+        set.add(pairKey(p.a, p.b));
+    }
+    return set;
+};
+const isNonDupPair = (group, key) => {
+    const picks = selections[key] ?? [];
+    if (picks.length !== 2) return false;
+    return nonDupPairSet(group).has(pairKey(picks[0], picks[1]));
+};
+
+const compare = (key, group) => {
+    if (isNonDupPair(group, key)) return;
     const [left, right] = selections[key];
     router.visit(route('duplicates.compare', { left, right }));
 };
@@ -253,16 +270,29 @@ if (typeof window !== 'undefined') {
                             <span class="text-xs text-gray-500" v-if="!canCompare(groupKey(group, idx))">
                                 {{ t('duplicates.pick_two_to_compare') }}
                             </span>
+                            <span
+                                v-else-if="isNonDupPair(group, groupKey(group, idx))"
+                                class="text-xs text-amber-700"
+                            >
+                                {{ t('duplicates.pair_already_dismissed') }}
+                            </span>
                             <PrimaryButton
                                 type="button"
                                 class="cursor-pointer"
-                                :disabled="!canCompare(groupKey(group, idx))"
-                                @click="compare(groupKey(group, idx))"
+                                :disabled="!canCompare(groupKey(group, idx)) || isNonDupPair(group, groupKey(group, idx))"
+                                @click="compare(groupKey(group, idx), group)"
                             >
                                 {{ t('duplicates.compare') }}
                             </PrimaryButton>
                         </div>
                     </div>
+
+                    <p
+                        v-if="(group.nonDuplicatePairs ?? []).length"
+                        class="text-xs text-gray-500 mb-2"
+                    >
+                        {{ t('duplicates.dismissed_pairs_in_group', { count: group.nonDuplicatePairs.length }) }}
+                    </p>
 
                     <ul class="divide-y divide-gray-100 border border-gray-200 rounded-md">
                         <li

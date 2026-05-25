@@ -3,6 +3,7 @@
 return [
     'merged' => 'Contacts merged successfully.',
     'marked_not_duplicate' => 'Marked as not a duplicate — this pair won\'t be suggested again.',
+    'unmarked_not_duplicate' => 'Removed — this pair will appear in duplicate suggestions again.',
 
     'errors' => [
         'same_contact' => 'Pick two different contacts.',

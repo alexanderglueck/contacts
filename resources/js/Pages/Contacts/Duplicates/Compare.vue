@@ -14,6 +14,7 @@ const props = defineProps({
     right: { type: Object, required: true },
     fields: { type: Array, required: true },
     fieldLabels: { type: Object, default: () => ({}) },
+    nonDuplicateMark: { type: Object, default: null },
 });
 
 const labelFor = (field) => props.fieldLabels[field] ?? field;
@@ -125,6 +126,18 @@ const form = useForm({
 
 const notDuplicateConfirmOpen = ref(false);
 const notDuplicateSubmitting = ref(false);
+const unmarkSubmitting = ref(false);
+
+const unmarkNotDuplicate = () => {
+    unmarkSubmitting.value = true;
+    router.delete(route('duplicates.undo_not_duplicate'), {
+        data: {
+            left_ulid: props.left.ulid,
+            right_ulid: props.right.ulid,
+        },
+        onFinish: () => { unmarkSubmitting.value = false; },
+    });
+};
 
 const askNotDuplicate = () => { notDuplicateConfirmOpen.value = true; };
 const confirmNotDuplicate = () => {
@@ -178,6 +191,26 @@ const submit = () => {
                     @click="keptSide = keptSide === 'left' ? 'right' : 'left'"
                 >
                     {{ t('duplicates.swap_sides') }} ({{ t(`duplicates.${keptSide}`) }})
+                </SecondaryButton>
+            </div>
+
+            <div
+                v-if="nonDuplicateMark"
+                class="border-b border-amber-200 bg-amber-50 px-6 py-3 flex items-start justify-between gap-3"
+            >
+                <div class="text-sm text-amber-900">
+                    <p class="font-medium">{{ t('duplicates.already_marked_title') }}</p>
+                    <p class="text-xs mt-0.5">
+                        {{ t('duplicates.already_marked_body', { date: nonDuplicateMark.marked_at }) }}
+                    </p>
+                </div>
+                <SecondaryButton
+                    type="button"
+                    class="cursor-pointer shrink-0"
+                    :disabled="unmarkSubmitting"
+                    @click="unmarkNotDuplicate"
+                >
+                    {{ t('duplicates.unmark_not_duplicate') }}
                 </SecondaryButton>
             </div>
 

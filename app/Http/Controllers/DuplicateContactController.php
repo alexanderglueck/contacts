@@ -22,10 +22,60 @@ class DuplicateContactController extends Controller
 
         $groups = $this->mergeGroupsBySameSet($detector->find());
         $groups = $this->filterByNonDuplicates($groups, $teamId);
+        $groups = $this->annotateNonDuplicatePairs($groups, $teamId);
 
         return Inertia::render('Contacts/Duplicates/Index', [
             'groups' => $groups,
         ]);
+    }
+
+    /**
+     * Attach the list of marked non-duplicate pairs (as ULIDs) to each group.
+     * The frontend uses this to disable the Compare button when the user picks
+     * a pair they've already dismissed — without dropping the contacts from
+     * the group, since other peers in the same group may still be real
+     * duplicates.
+     */
+    private function annotateNonDuplicatePairs(array $groups, int $teamId): array
+    {
+        $allIds = collect($groups)
+            ->flatMap(fn ($g) => array_column($g['contacts'], 'id'))
+            ->unique()
+            ->values();
+
+        if ($allIds->isEmpty()) {
+            return $groups;
+        }
+
+        $marks = ContactNonDuplicate::query()
+            ->where('team_id', $teamId)
+            ->whereIn('contact_a_id', $allIds)
+            ->whereIn('contact_b_id', $allIds)
+            ->get(['contact_a_id', 'contact_b_id']);
+
+        $idToUlid = [];
+        foreach ($groups as $g) {
+            foreach ($g['contacts'] as $c) {
+                $idToUlid[$c['id']] = $c['ulid'];
+            }
+        }
+
+        foreach ($groups as &$group) {
+            $idsInGroup = array_flip(array_column($group['contacts'], 'id'));
+            $pairs = [];
+            foreach ($marks as $m) {
+                if (isset($idsInGroup[$m->contact_a_id], $idsInGroup[$m->contact_b_id])) {
+                    $pairs[] = [
+                        'a' => $idToUlid[$m->contact_a_id],
+                        'b' => $idToUlid[$m->contact_b_id],
+                    ];
+                }
+            }
+            $group['nonDuplicatePairs'] = $pairs;
+        }
+        unset($group);
+
+        return $groups;
     }
 
     /**
@@ -184,10 +234,21 @@ class DuplicateContactController extends Controller
         $left = Contact::where('ulid', $leftUlid)->with($this->relationsForCompare())->firstOrFail();
         $right = Contact::where('ulid', $rightUlid)->with($this->relationsForCompare())->firstOrFail();
 
+        $teamId = auth()->user()->current_team_id;
+        $a = min($left->id, $right->id);
+        $b = max($left->id, $right->id);
+        $existingMark = ContactNonDuplicate::where('team_id', $teamId)
+            ->where('contact_a_id', $a)
+            ->where('contact_b_id', $b)
+            ->first();
+
         return Inertia::render('Contacts/Duplicates/Compare', [
             'left' => $this->shapeForCompare($left),
             'right' => $this->shapeForCompare($right),
             'fields' => MergeContactRequest::FIELDS,
+            'nonDuplicateMark' => $existingMark ? [
+                'marked_at' => optional($existingMark->created_at)->toDateTimeString(),
+            ] : null,
             'fieldLabels' => collect(MergeContactRequest::FIELDS)
                 ->mapWithKeys(function ($field) {
                     $label = __('duplicates.fields.' . $field);
@@ -238,6 +299,37 @@ class DuplicateContactController extends Controller
 
         return redirect()->route('duplicates.index')
             ->with('alert-success', __('duplicates.marked_not_duplicate'));
+    }
+
+    /**
+     * Undo a previous "not a duplicate" mark. Same input shape as
+     * markNotDuplicate, deletes by normalised id pair.
+     */
+    public function unmarkNotDuplicate(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'left_ulid' => ['required', 'string'],
+            'right_ulid' => ['required', 'string', 'different:left_ulid'],
+        ]);
+
+        $teamId = auth()->user()->current_team_id;
+
+        $left = Contact::where('ulid', $request->input('left_ulid'))->firstOrFail();
+        $right = Contact::where('ulid', $request->input('right_ulid'))->firstOrFail();
+
+        if ($left->team_id !== $teamId || $right->team_id !== $teamId) {
+            abort(403);
+        }
+
+        $a = min($left->id, $right->id);
+        $b = max($left->id, $right->id);
+
+        ContactNonDuplicate::where('team_id', $teamId)
+            ->where('contact_a_id', $a)
+            ->where('contact_b_id', $b)
+            ->delete();
+
+        return back()->with('alert-success', __('duplicates.unmarked_not_duplicate'));
     }
 
     public function merge(MergeContactRequest $request): RedirectResponse
