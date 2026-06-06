@@ -71,6 +71,46 @@ class ICalTest extends TestCase
     }
 
     #[Test]
+    public function a_real_sanctum_token_in_the_query_authenticates_the_feed()
+    {
+        // Exercises the actual Google-Calendar path: a personal access token
+        // passed as ?api_token= (with its literal "|" url-encoded to %7C) on a
+        // stateless request with no session — not the Sanctum::actingAs shortcut.
+        $user = $this->createUser();
+        $team = $user->currentTeam;
+        $token = $user->createToken('Calendar sync')->plainTextToken;
+
+        // Fully detach session/web auth so only the token can authenticate —
+        // otherwise Sanctum's session-guard fallback would mask the token path.
+        auth()->guard('web')->logout();
+        session()->flush();
+
+        $body = $this->get(route('ical', ['api_token' => $token, 'tenant' => $team->uuid]))
+            ->assertOk()
+            ->getContent();
+
+        $this->assertStringContainsString('BEGIN:VCALENDAR', $body);
+    }
+
+    #[Test]
+    public function a_revoked_or_unknown_token_is_rejected()
+    {
+        $user = $this->createUser();
+        $team = $user->currentTeam;
+        $token = $user->createToken('Calendar sync')->plainTextToken;
+
+        // Simulate a rotation/revocation after the client subscribed, and a
+        // stateless external request (no web session to fall back on).
+        $user->tokens()->delete();
+        auth()->guard('web')->logout();
+        session()->flush();
+
+        // Guests are redirected to login (302) rather than served the feed.
+        $this->get(route('ical', ['api_token' => $token, 'tenant' => $team->uuid]))
+            ->assertRedirect(route('login'));
+    }
+
+    #[Test]
     public function the_feed_is_scoped_to_the_callers_team()
     {
         $user = $this->createUser();

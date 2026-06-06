@@ -13,6 +13,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,5 +62,27 @@ class AppServiceProvider extends ServiceProvider
         Scramble::configure()->withRuleTransformers([FileMaxKilobytesTransformer::class]);
 
         ContactAddress::observe(ContactAddressObserver::class);
+
+        // Let Sanctum read the token from a ?api_token= query param as a
+        // fallback to the Authorization header. Calendar clients (Google,
+        // Apple, Outlook) subscribing to the iCal feed can only GET a URL,
+        // they can't send headers.
+        //
+        // This is done at the Sanctum layer rather than via a middleware that
+        // rewrites the header, because Laravel's middleware-priority sorting
+        // hoists the `auth` middleware ahead of any custom route middleware on
+        // routes that use the `web` group — so a header-rewriting middleware
+        // would run *after* authentication and be ignored. Reading the token
+        // here is order-independent.
+        Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
+            if ($bearer = $request->bearerToken()) {
+                return $bearer;
+            }
+
+            // Only honour the token in the URL for the iCal feed — tokens in
+            // query strings leak into access logs, so we don't accept them on
+            // the rest of the API.
+            return $request->routeIs('ical') ? $request->query('api_token') : null;
+        });
     }
 }
