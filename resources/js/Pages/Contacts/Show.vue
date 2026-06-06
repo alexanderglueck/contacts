@@ -17,6 +17,7 @@ import CommentsSection from './Sections/CommentsSection.vue';
 const props = defineProps({
     contact: { type: Object, required: true },
     can: { type: Object, default: () => ({}) },
+    todaysEvents: { type: Array, default: () => [] },
 });
 
 const { t, te } = useI18n();
@@ -96,6 +97,20 @@ const tiles = computed(() => [
 <template>
     <AppLayout :title="contact.fullname">
         <Head :title="contact.fullname" />
+
+        <div
+            v-if="todaysEvents.length"
+            class="mb-4 rounded-lg bg-amber-50 ring-1 ring-amber-200 px-6 py-4"
+        >
+            <p class="text-sm font-semibold text-amber-900">
+                {{ todaysEvents.length === 1 ? t('home.events_today_one') : t('home.events_today_many') }}
+            </p>
+            <ul class="mt-2 space-y-1">
+                <li v-for="(event, i) in todaysEvents" :key="i" class="text-sm text-amber-900">
+                    <span class="font-medium">{{ event.label }}</span>
+                </li>
+            </ul>
+        </div>
 
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">

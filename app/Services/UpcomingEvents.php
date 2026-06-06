@@ -53,4 +53,37 @@ class UpcomingEvents
 
         return $dates->concat($birthdays)->values();
     }
+
+    /**
+     * A single contact's events (birthday + important dates) whose month-day
+     * matches $date. Used by the contact page's "today" reminder banner.
+     *
+     * @return Collection<int, UpcomingEvent>
+     */
+    public static function eventsForContactOnDate(Contact $contact, DateTimeInterface $date): Collection
+    {
+        $md = $date->format('md');
+        $events = collect();
+
+        if ($contact->date_of_birth) {
+            $dob = date_create_from_format('Y-m-d', $contact->date_of_birth);
+
+            if ($dob && $dob->format('md') === $md) {
+                $events->push(UpcomingEvent::fromContact($contact));
+            }
+        }
+
+        foreach ($contact->dates as $contactDate) {
+            $cdDate = date_create_from_format('Y-m-d H:i:s', $contactDate->date)
+                ?: date_create_from_format('Y-m-d', $contactDate->date);
+
+            if ($cdDate && $cdDate->format('md') === $md) {
+                // Avoid a re-query for the (already known) contact.
+                $contactDate->setRelation('contact', $contact);
+                $events->push(UpcomingEvent::fromContactDate($contactDate));
+            }
+        }
+
+        return $events->values();
+    }
 }

@@ -7,6 +7,8 @@ use App\Models\Contact;
 use App\Models\ContactGroup;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Services\UpcomingEvent;
+use App\Services\UpcomingEvents;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,7 +101,18 @@ class ContactController extends Controller
 
         $user = Auth::user();
 
+        // Birthday and/or important dates that fall on today — drives the
+        // reminder banner on the contact page (same wording as the dashboard).
+        $todaysEvents = UpcomingEvents::eventsForContactOnDate($contact, new \DateTime('today'))
+            ->map(fn (UpcomingEvent $e) => [
+                'type' => $e->type,
+                'label' => $e->label((int) date('Y')),
+            ])
+            ->values()
+            ->all();
+
         return Inertia::render('Contacts/Show', [
+            'todaysEvents' => $todaysEvents,
             'contact' => [
                 'id' => $contact->id,
                 'ulid' => $contact->ulid,
