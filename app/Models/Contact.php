@@ -190,8 +190,25 @@ class Contact extends Model implements CalendarInterface
             ? "strftime('%m%d', date_of_birth)"
             : "DATE_FORMAT(date_of_birth, '%m%d')";
 
+        // When the range crosses a year boundary (e.g. 30 days back → 9 months
+        // forward, as the iCal feed requests), `from` is numerically greater
+        // than `to` and a naive BETWEEN matches nothing. Mirror the wraparound
+        // handling in ContactDate::datesInRange so birthdays late in one year
+        // and early in the next both qualify.
         return $query
-            ->whereRaw("({$mmdd} BETWEEN ? AND ?)", [$from, $to])
+            ->whereRaw(
+                "(
+                    {$mmdd} BETWEEN ? AND ?
+                    OR (
+                        ? > ?
+                        AND (
+                            {$mmdd} >= ?
+                            OR {$mmdd} <= ?
+                        )
+                    )
+                )",
+                [$from, $to, $from, $to, $from, $to]
+            )
             ->get();
     }
 

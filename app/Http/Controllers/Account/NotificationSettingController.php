@@ -21,6 +21,8 @@ class NotificationSettingController extends Controller
             'settings' => [
                 'send_daily' => (bool) ($settings->send_daily ?? false),
                 'send_weekly' => (bool) ($settings->send_weekly ?? false),
+                'send_daily_push' => (bool) ($settings->send_daily_push ?? false),
+                'send_weekly_push' => (bool) ($settings->send_weekly_push ?? false),
             ],
         ]);
     }

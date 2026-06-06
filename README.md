@@ -76,6 +76,55 @@ config()->set('scout.prefix', 'tenant_1_');
     ->create(['team_id' => 1, 'created_by' => 1, 'updated_by' => 1]);
 ```
 
+## Scheduling & notifications
+
+Birthday/important-date reminders are sent by the Laravel scheduler (defined in
+`bootstrap/app.php`):
+
+- `email:daily` — daily at **06:00 Europe/Vienna**, when there is at least one
+  event today (birthday from `date_of_birth` or a `ContactDate`).
+- `email:weekly` — Mondays at **06:00 Europe/Vienna**, when there is an event in
+  the next two weeks.
+
+Both honour each user's notification settings and send over **mail** and/or
+**push** independently (`send_daily` / `send_daily_push`, `send_weekly` /
+`send_weekly_push`).
+
+The scheduler needs `schedule:run` invoked every minute. Add this to the host
+crontab (or a cron sidecar container) **on the new system**:
+
+```cron
+* * * * * cd /app && php artisan schedule:run >> /dev/null 2>&1
+```
+
+### Cutover from `contacts-old`
+
+When switching domains, to avoid double-sending reminders:
+
+1. Disable the `schedule:run` cron on the **old** server (its schedule lives in
+   `app/Console/Kernel.php`).
+2. Enable the `schedule:run` cron on the **new** server (above).
+3. Run the one-off birthday data migration once, after the contacts data is in
+   place — it moves legacy `Geburtstag` `ContactDate` rows into
+   `contacts.date_of_birth` and removes the source rows:
+
+   ```bash
+   php artisan contacts:migrate-birthdays --dry-run   # review first
+   php artisan contacts:migrate-birthdays
+   ```
+
+### Push notifications (FCM)
+
+Push uses `kreait/laravel-firebase` (Firebase Cloud Messaging). Set the service
+account credentials in `.env` (see `config/firebase.php`):
+
+```env
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/firebase-service-account.json
+```
+
+Devices register their FCM token via the API (`POST /api/v1/devices`); pushes are
+sent at the lowest possible priority alongside the daily/weekly mails.
+
 ## Security
 
 If you discover a security vulnerability within this application, please send an e-mail to Alexander Glück at security@alexanderglueck.at.

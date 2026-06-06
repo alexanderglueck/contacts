@@ -7,8 +7,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 const { t, locale } = useI18n();
 
 const props = defineProps({
-    todaysBirthdays: { type: Array, default: () => [] },
-    upcomingBirthdays: { type: Array, default: () => [] },
+    todaysEvents: { type: Array, default: () => [] },
+    upcomingEvents: { type: Array, default: () => [] },
 });
 
 const page = usePage();
@@ -38,6 +38,13 @@ const relative = (days) => {
     if (days === 1) return t('home.tomorrow');
     return t('home.in_n_days', { days });
 };
+
+// Birthdays show "is turning N"; important dates show their label
+// (e.g. "16. Hochzeitstag").
+const detail = (event) =>
+    event.type === 'birthday'
+        ? t('home.turning', { age: event.turning })
+        : event.label;
 </script>
 
 <template>
@@ -46,18 +53,23 @@ const relative = (days) => {
 
         <div class="space-y-4">
             <div
-                v-if="isSubscribed && todaysBirthdays.length"
+                v-if="isSubscribed && todaysEvents.length"
                 class="rounded-lg bg-amber-50 ring-1 ring-amber-200 px-6 py-4"
             >
                 <p class="text-sm font-semibold text-amber-900">
-                    {{ todaysBirthdays.length === 1 ? t('home.birthday_today_one') : t('home.birthday_today_many') }}
+                    {{ todaysEvents.length === 1 ? t('home.events_today_one') : t('home.events_today_many') }}
                 </p>
                 <ul class="mt-2 space-y-1">
-                    <li v-for="contact in todaysBirthdays" :key="contact.ulid" class="text-sm text-amber-900">
-                        <Link :href="route('contacts.show', contact.ulid)" class="font-medium underline hover:no-underline">
-                            {{ contact.fullname }}
+                    <li v-for="(event, i) in todaysEvents" :key="event.ulid + '-' + i" class="text-sm text-amber-900">
+                        <Link :href="route('contacts.show', event.ulid)" class="font-medium underline hover:no-underline">
+                            {{ event.fullname }}
                         </Link>
-                        {{ t('home.is_turning') }} <span class="font-medium">{{ contact.turning }}</span>.
+                        <template v-if="event.type === 'birthday'">
+                            {{ t('home.is_turning') }} <span class="font-medium">{{ event.turning }}</span>.
+                        </template>
+                        <template v-else>
+                            — <span class="font-medium">{{ event.label }}</span>
+                        </template>
                     </li>
                 </ul>
             </div>
@@ -102,30 +114,40 @@ const relative = (days) => {
 
             <div v-if="isSubscribed" class="bg-white shadow rounded-lg">
                 <div class="border-b border-gray-200 px-6 py-4 flex items-baseline justify-between">
-                    <h2 class="text-sm font-semibold text-gray-900">{{ t('home.upcoming') }}</h2>
+                    <h2 class="text-sm font-semibold text-gray-900">{{ t('home.upcoming_events') }}</h2>
                     <p class="text-xs text-gray-500">{{ t('home.next_7_days') }}</p>
                 </div>
 
-                <ol v-if="upcomingBirthdays.length" class="divide-y divide-gray-100">
-                    <li v-for="contact in upcomingBirthdays" :key="contact.ulid">
+                <ol v-if="upcomingEvents.length" class="divide-y divide-gray-100">
+                    <li v-for="(event, i) in upcomingEvents" :key="event.ulid + '-' + i">
                         <Link
-                            :href="route('contacts.show', contact.ulid)"
+                            :href="route('contacts.show', event.ulid)"
                             class="block px-6 py-3 hover:bg-gray-50 flex items-baseline justify-between gap-4"
                         >
                             <div>
-                                <p class="text-sm font-medium text-gray-900">{{ contact.fullname }}</p>
-                                <p class="text-xs text-gray-500">{{ t('home.turning', { age: contact.turning }) }}</p>
+                                <p class="text-sm font-medium text-gray-900 flex items-center gap-2">
+                                    {{ event.fullname }}
+                                    <span
+                                        class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset"
+                                        :class="event.type === 'birthday'
+                                            ? 'bg-amber-50 text-amber-700 ring-amber-200'
+                                            : 'bg-sky-50 text-sky-700 ring-sky-200'"
+                                    >
+                                        {{ event.type === 'birthday' ? t('home.type_birthday') : t('home.type_date') }}
+                                    </span>
+                                </p>
+                                <p class="text-xs text-gray-500">{{ detail(event) }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-medium text-indigo-600">{{ formatDate(contact.date) }}</p>
-                                <p class="text-xs text-gray-500">{{ relative(contact.days_until) }}</p>
+                                <p class="text-xs font-medium text-indigo-600">{{ formatDate(event.date) }}</p>
+                                <p class="text-xs text-gray-500">{{ relative(event.days_until) }}</p>
                             </div>
                         </Link>
                     </li>
                 </ol>
 
                 <p v-else class="px-6 py-6 text-sm text-gray-500 text-center">
-                    {{ t('home.no_upcoming') }}
+                    {{ t('home.no_upcoming_events') }}
                 </p>
             </div>
         </div>

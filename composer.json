@@ -5,7 +5,7 @@
     "license": "TBD",
     "type": "project",
     "require": {
-        "php": "^8.2",
+        "php": "^8.5",
         "bugsnag/bugsnag-laravel": "^2.30",
         "dedoc/scramble": "^0.13.23",
         "diglactic/laravel-breadcrumbs": "^10.1",
@@ -17,6 +17,7 @@
         "inertiajs/inertia-laravel": "^3.1",
         "intervention/image": "^2.7",
         "jeroendesloovere/vcard": "^1.7",
+        "kreait/laravel-firebase": "^7.0",
         "laravel/cashier": "^16.0",
         "laravel/fortify": "^1.37",
         "laravel/framework": "^12.0",

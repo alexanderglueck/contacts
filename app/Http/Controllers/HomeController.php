@@ -2,59 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
+use App\Services\UpcomingEvent;
+use App\Services\UpcomingEvents;
 use DateTime;
+use DateTimeInterface;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
     private const UPCOMING_DAYS = 7;
-    private const UPCOMING_LIMIT = 3;
+    private const UPCOMING_LIMIT = 5;
 
     public function index(): Response
     {
         return Inertia::render('Home', [
-            'todaysBirthdays' => $this->birthdaysToday(),
-            'upcomingBirthdays' => $this->upcomingBirthdays(),
+            'todaysEvents' => $this->eventsToday(),
+            'upcomingEvents' => $this->upcomingEvents(),
         ]);
     }
 
     /**
-     * Contacts whose birthday is today. Always returned in full (no limit) —
-     * there are unlikely to be more than a handful per day in a personal
-     * contact book, and the dashboard highlights them in a prominent banner.
+     * Birthdays and important dates happening today. Always returned in full
+     * (no limit) — the dashboard highlights them in a prominent banner.
      *
      * @return array<int, array<string, mixed>>
      */
-    private function birthdaysToday(): array
+    private function eventsToday(): array
     {
         $today = new DateTime('today');
 
-        return Contact::datesInRange($today, $today)
-            ->map(fn (Contact $c) => $this->serialize($c, $today, 0))
+        return UpcomingEvents::eventsOnDate($today)
+            ->map(fn (UpcomingEvent $e) => $this->serialize($e, $today, 0))
             ->values()
             ->toArray();
     }
 
     /**
-     * Birthdays in the next UPCOMING_DAYS, sorted by days_until ascending,
-     * capped at UPCOMING_LIMIT. Excludes today (covered separately above).
+     * Events in the next UPCOMING_DAYS, sorted by days_until ascending, capped
+     * at UPCOMING_LIMIT. Excludes today (covered separately above).
      *
      * @return array<int, array<string, mixed>>
      */
-    private function upcomingBirthdays(): array
+    private function upcomingEvents(): array
     {
         $today = new DateTime('today');
         $tomorrow = (clone $today)->modify('+1 day');
         $end = (clone $today)->modify('+'.self::UPCOMING_DAYS.' days');
 
-        return Contact::datesInRange($tomorrow, $end)
-            ->map(function (Contact $c) use ($today) {
-                $occurrence = $this->resolveOccurrence($c, $today);
+        return UpcomingEvents::eventsInRange($tomorrow, $end)
+            ->map(function (UpcomingEvent $e) use ($today) {
+                $occurrence = $this->resolveOccurrence($e, $today);
                 $daysUntil = (int) $today->diff($occurrence)->format('%r%a');
 
-                return $this->serialize($c, $today, $daysUntil, $occurrence);
+                return $this->serialize($e, $today, $daysUntil, $occurrence);
             })
             ->filter(fn ($item) => $item['days_until'] >= 1
                 && $item['days_until'] <= self::UPCOMING_DAYS)
@@ -65,39 +66,48 @@ class HomeController extends Controller
     }
 
     /**
-     * Resolve a contact's birthday to the next concrete occurrence on or
-     * after $today, accounting for leap-day fallback (Feb 29 → Feb 28 in
-     * non-leap years).
+     * Resolve an event to its next concrete occurrence on or after $today,
+     * accounting for leap-day fallback (Feb 29 → Feb 28 in non-leap years).
      */
-    private function resolveOccurrence(Contact $contact, DateTime $today): DateTime
+    private function resolveOccurrence(UpcomingEvent $event, DateTime $today): DateTime
     {
-        $dob = date_create_from_format('Y-m-d', $contact->date_of_birth);
+        $source = $event->date;
         $year = (int) $today->format('Y');
 
-        $occurrence = DateTime::createFromFormat('Y-m-d', $year.'-'.$dob->format('m-d'))
-            ?: DateTime::createFromFormat('Y-m-d', $year.'-02-28');
+        $occurrence = $this->buildOccurrence($year, $source);
 
         if ($occurrence < $today) {
-            $year++;
-            $occurrence = DateTime::createFromFormat('Y-m-d', $year.'-'.$dob->format('m-d'))
-                ?: DateTime::createFromFormat('Y-m-d', $year.'-02-28');
+            $occurrence = $this->buildOccurrence($year + 1, $source);
         }
 
         return $occurrence;
     }
 
-    private function serialize(Contact $contact, DateTime $today, int $daysUntil, ?DateTime $occurrence = null): array
+    private function buildOccurrence(int $year, DateTimeInterface $source): DateTime
     {
-        $occurrence ??= $this->resolveOccurrence($contact, $today);
-        $dob = date_create_from_format('Y-m-d', $contact->date_of_birth);
+        return DateTime::createFromFormat('Y-m-d', $year.'-'.$source->format('m-d'))
+            ?: DateTime::createFromFormat('Y-m-d', $year.'-02-28');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function serialize(UpcomingEvent $event, DateTime $today, int $daysUntil, ?DateTime $occurrence = null): array
+    {
+        $occurrence ??= $this->resolveOccurrence($event, $today);
+        $occurrenceYear = (int) $occurrence->format('Y');
 
         return [
-            'ulid' => $contact->ulid,
-            'fullname' => $contact->fullname,
+            'type' => $event->type,
+            'ulid' => $event->contact->ulid,
+            'fullname' => $event->fullname(),
+            'label' => $event->label($occurrenceYear),
             'date' => $occurrence->format('Y-m-d'),
             'days_until' => $daysUntil,
             'is_today' => $daysUntil === 0,
-            'turning' => (int) $occurrence->format('Y') - (int) $dob->format('Y'),
+            'turning' => $event->isBirthday()
+                ? $occurrenceYear - (int) $event->date->format('Y')
+                : null,
         ];
     }
 }

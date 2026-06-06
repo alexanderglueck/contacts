@@ -127,6 +127,22 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->notificationSetting;
     }
 
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    /**
+     * Route notifications for the FCM (push) channel: every registered device
+     * token the user has. The FcmChannel sends one message per token.
+     *
+     * @return array<int, string>
+     */
+    public function routeNotificationForFcm(): array
+    {
+        return $this->devices()->withDeviceToken()->pluck('device_token')->unique()->values()->all();
+    }
+
     public function isOwnerOfTeam($team)
     {
         return $team->owner_id == $this->id;

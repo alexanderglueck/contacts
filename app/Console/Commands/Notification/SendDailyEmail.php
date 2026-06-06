@@ -3,8 +3,9 @@
 namespace App\Console\Commands\Notification;
 
 use App\Models\User;
-use Illuminate\Console\Command;
 use App\Notifications\TodaysDates;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 
 class SendDailyEmail extends Command
 {
@@ -39,12 +40,23 @@ class SendDailyEmail extends Command
     public function handle(): int
     {
         foreach (User::all() as $user) {
-            if ( ! $user->notificationSettings()->send_daily) {
+            $settings = $user->notificationSettings();
+
+            // Mail and push are independent — notify if either is enabled and
+            // let the notification's via() pick the channels.
+            if ( ! $settings->send_daily && ! $settings->send_daily_push) {
                 continue;
             }
 
+            // Set the auth context so the tenant global scope (and the events
+            // helper) only sees this user's team — otherwise every user would
+            // be notified about every team's events.
+            Auth::setUser($user);
+
             $user->notify($this->todaysDates);
         }
+
+        Auth::forgetUser();
 
         return 0;
     }

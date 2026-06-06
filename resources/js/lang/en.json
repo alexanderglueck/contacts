@@ -139,9 +139,13 @@
         },
         "notifications": {
             "title": "Notifications",
-            "subtitle": "Choose which reminder emails you'd like to receive.",
+            "subtitle": "Choose which reminders you'd like to receive, by email and by push.",
+            "email_heading": "Email",
+            "push_heading": "Push notifications",
             "send_daily": "Send daily upcoming dates notification",
-            "send_weekly": "Send weekly upcoming dates notification"
+            "send_weekly": "Send weekly upcoming dates notification",
+            "send_daily_push": "Send daily upcoming dates push notification",
+            "send_weekly_push": "Send weekly upcoming dates push notification"
         },
         "api_tokens": {
             "title": "API tokens",
@@ -339,6 +343,12 @@
         "upcoming": "Upcoming birthdays",
         "next_7_days": "Next 7 days",
         "no_upcoming": "No birthdays in the next 7 days.",
+        "events_today_one": "🎉 An event today!",
+        "events_today_many": "🎉 Events today!",
+        "upcoming_events": "Upcoming events",
+        "no_upcoming_events": "No events in the next 7 days.",
+        "type_birthday": "Birthday",
+        "type_date": "Date",
         "turning": "Turning {age}",
         "today": "today",
         "tomorrow": "tomorrow",

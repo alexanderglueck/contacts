@@ -26,6 +26,8 @@ class NotificationSettingUpdateRequest extends FormRequest
         return [
             'send_daily' => 'nullable|boolean',
             'send_weekly' => 'nullable|boolean',
+            'send_daily_push' => 'nullable|boolean',
+            'send_weekly_push' => 'nullable|boolean',
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\ContactNotesController;
 use App\Http\Controllers\Api\V1\ContactNumbersController;
 use App\Http\Controllers\Api\V1\ContactsController;
 use App\Http\Controllers\Api\V1\ContactUrlsController;
+use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\GiftIdeasController;
 use App\Http\Controllers\Api\V1\ReferenceController;
 use App\Http\Controllers\Api\V1\TeamsController;
@@ -55,6 +56,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::get('teams', [TeamsController::class, 'index'])->name('teams.index');
         Route::post('teams/{team}/switch', [TeamsController::class, 'switchTo'])->name('teams.switch');
+
+        // Push-notification devices belong to the user, not a team, so they
+        // sit outside the tenant group. The mobile app registers its FCM token
+        // here; the daily/weekly schedule pushes to every registered device.
+        Route::get('devices', [DeviceController::class, 'index'])->name('devices.index');
+        Route::post('devices', [DeviceController::class, 'store'])->name('devices.store');
+        Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->name('devices.destroy');
 
         // Global reference tables — not tenant-scoped, no auth required
         // beyond the user being logged in.

@@ -280,7 +280,8 @@ class ContactSubResourcesTest extends TestCase
 
         $this->post(route('contact_dates.store', $contact->ulid), [
             'name' => 'Anniversary',
-            'date' => '24.05.2020',
+            // The Vue form uses <input type="date">, which submits Y-m-d.
+            'date' => '2020-05-24',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('contact_dates', [
@@ -296,8 +297,9 @@ class ContactSubResourcesTest extends TestCase
 
         $this->post(route('contact_dates.store', $contact->ulid), [
             'name' => 'Onomastico',
-            // Skip-year rule is `date_format:d.m.` — trailing dot is literal.
-            'date' => '24.05.',
+            // Dates are always stored as Y-m-d; skip_year only hides the year
+            // when the date is displayed (see ContactDate::getFormattedDate).
+            'date' => '2020-05-24',
             'skip_year' => 1,
         ])->assertRedirect();
 

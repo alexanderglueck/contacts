@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactDate;
+use App\Services\UpcomingEvents;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
@@ -23,7 +23,10 @@ class ICalController extends Controller
         $fromYear = $fromRaw->format('Y');
         $toYear = $toRaw->format('Y');
 
-        $contactDates = ContactDate::datesInRange($fromRaw, $toRaw);
+        // Both birthdays (date_of_birth) and important dates (ContactDate),
+        // tenant-scoped via the Contact global scope. Without this the feed
+        // would drop birthdays once they are migrated out of contact_dates.
+        $upcomingEvents = UpcomingEvents::eventsInRange($fromRaw, $toRaw);
 
         $vCalendar = new Calendar();
 
@@ -31,9 +34,9 @@ class ICalController extends Controller
 
         $events = [];
 
-        foreach ($contactDates as $event) {
+        foreach ($upcomingEvents as $event) {
 
-            $eventDate = date_create_from_format('Y-m-d H:i:s', $event->date);
+            $eventDate = $event->date;
 
             /**
              * Check to see if the given date is in the from year or in the to year.
@@ -59,25 +62,17 @@ class ICalController extends Controller
                 $fromCase = true;
             }
 
-            if ($fromCase) {
-                $yearDifference = $fromYear - $eventDate->format('Y');
-                $title = $event->getCalculatedName($fromYear) . PHP_EOL . $event->contact->fullname;
-
-                $start = $fromYear . '-' . $eventDate->format('m-d');
-
-            } else {
-                $yearDifference = $toYear - $eventDate->format('Y');
-                $title = $event->getCalculatedName($toYear) . PHP_EOL . $event->contact->fullname;
-
-                $start = $toYear . '-' . $eventDate->format('m-d');
-            }
+            $displayYear = $fromCase ? (int) $fromYear : (int) $toYear;
+            $yearDifference = $displayYear - (int) $eventDate->format('Y');
+            $title = $event->calculatedName($displayYear);
+            $start = $displayYear . '-' . $eventDate->format('m-d');
 
             $tempEvent = [
-                'id' => $event->id,
+                'uid' => $event->uid,
                 'title' => $title,
                 'allDay' => true,
                 'start' => $start,
-                'url' => route('contacts.show', $event->contact->ulid)
+                'url' => $event->url(),
             ];
 
             /**
@@ -91,7 +86,7 @@ class ICalController extends Controller
         foreach ($events as $event) {
             try {
                 $vEvent = new \Eluceo\iCal\Domain\Entity\Event(
-                    new UniqueIdentifier($event['id'])
+                    new UniqueIdentifier($event['uid'])
                 );
                 $vEvent->setOccurrence(
                     new SingleDay(

@@ -3,8 +3,9 @@
 namespace App\Console\Commands\Notification;
 
 use App\Models\User;
-use Illuminate\Console\Command;
 use App\Notifications\WeeksDates;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 
 class SendWeeklyEmail extends Command
 {
@@ -39,12 +40,19 @@ class SendWeeklyEmail extends Command
     public function handle(): int
     {
         foreach (User::all() as $user) {
-            if ( ! $user->notificationSettings()->send_weekly) {
+            $settings = $user->notificationSettings();
+
+            if ( ! $settings->send_weekly && ! $settings->send_weekly_push) {
                 continue;
             }
 
+            // Scope the tenant global scope to this user's team.
+            Auth::setUser($user);
+
             $user->notify($this->upcomingDates);
         }
+
+        Auth::forgetUser();
 
         return 0;
     }

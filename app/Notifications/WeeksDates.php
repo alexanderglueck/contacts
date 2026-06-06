@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use App\Models\Contact;
 use App\Models\ContactDate;
+use App\Notifications\Channels\FcmChannel;
+use App\Services\UpcomingEvents;
 use DateInterval;
 use DateTime;
 use Illuminate\Bus\Queueable;
@@ -16,7 +18,44 @@ class WeeksDates extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+        $settings = $notifiable->notificationSettings();
+
+        $channels = [];
+
+        if ($settings->send_weekly) {
+            $channels[] = 'mail';
+        }
+
+        if ($settings->send_weekly_push) {
+            $channels[] = FcmChannel::class;
+        }
+
+        return $channels;
+    }
+
+    /**
+     * Low-priority push summary of the next two weeks' events.
+     *
+     * @return array<string, mixed>
+     */
+    public function toFcm($notifiable): array
+    {
+        $start = DateTime::createFromFormat('Ymd', date('Ymd'));
+        $end = DateTime::createFromFormat('Ymd', date('Ymd'))
+            ->add(DateInterval::createFromDateString('2 weeks'))
+            ->sub(DateInterval::createFromDateString('1 day'));
+
+        $count = UpcomingEvents::eventsInRange($start, $end)->count();
+
+        $body = $count === 1
+            ? 'In den nächsten zwei Wochen steht 1 Ereignis bevor.'
+            : 'In den nächsten zwei Wochen stehen '.$count.' Ereignisse bevor.';
+
+        return [
+            'title' => 'Bevorstehende Ereignisse',
+            'body' => $body,
+            'data' => ['type' => 'weekly'],
+        ];
     }
 
     public function toMail($notifiable)

@@ -15,7 +15,7 @@ use App\Http\Middleware\Subscription\RedirectIfNotInactive;
 use App\Http\Middleware\Subscription\RedirectIfPiggybackSubscription;
 use App\Http\Middleware\Tenant\SetTenant;
 use App\Http\Middleware\VerifyCorrectContact;
-use App\Models\ContactDate;
+use App\Services\UpcomingEvents;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -72,9 +72,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ->dailyAt('06:00')
             ->timezone('Europe/Vienna')
             ->when(function () {
-                $events = ContactDate::datesOnDate(new DateTime());
-
-                return count($events) > 0;
+                // Fire when there is anything to report today — birthdays
+                // (date_of_birth) as well as important dates (ContactDate).
+                return UpcomingEvents::eventsOnDate(new DateTime())->isNotEmpty();
             });
 
         $schedule->command(SendWeeklyEmail::class)
@@ -82,25 +82,13 @@ return Application::configure(basePath: dirname(__DIR__))
             ->at('06:00')
             ->timezone('Europe/Vienna')
             ->when(function () {
-                $startDate = DateTime::createFromFormat('Ymd', date('Ymd'));
-                $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
+                // Cover this week and next week, including birthdays.
+                $start = DateTime::createFromFormat('Ymd', date('Ymd'));
+                $end = DateTime::createFromFormat('Ymd', date('Ymd'))
+                    ->add(DateInterval::createFromDateString('2 weeks'))
+                    ->sub(DateInterval::createFromDateString('1 day'));
 
-                $oneWeek = DateInterval::createFromDateString('1 week');
-                $twoWeeks = DateInterval::createFromDateString('2 weeks');
-                $oneDay = DateInterval::createFromDateString('1 day');
-
-                $endDate->add($oneWeek)->sub($oneDay);
-
-                $contactDatesThisWeek = ContactDate::datesInRange($startDate, $endDate);
-
-                $endDate = DateTime::createFromFormat('Ymd', date('Ymd'));
-
-                $startDate->add($oneWeek);
-                $endDate->add($twoWeeks)->sub($oneDay);
-
-                $contactDatesNextWeek = ContactDate::datesInRange($startDate, $endDate);
-
-                return count($contactDatesNextWeek) > 0 || count($contactDatesThisWeek) > 0;
+                return UpcomingEvents::eventsInRange($start, $end)->isNotEmpty();
             });
     })
     ->withExceptions(function (Exceptions $exceptions) {

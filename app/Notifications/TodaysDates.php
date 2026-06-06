@@ -2,7 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Models\ContactDate;
+use App\Notifications\Channels\FcmChannel;
+use App\Services\UpcomingEvents;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -29,7 +30,43 @@ class TodaysDates extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        $settings = $notifiable->notificationSettings();
+
+        $channels = [];
+
+        if ($settings->send_daily) {
+            $channels[] = 'mail';
+        }
+
+        if ($settings->send_daily_push) {
+            $channels[] = FcmChannel::class;
+        }
+
+        return $channels;
+    }
+
+    /**
+     * Low-priority push summary of today's events.
+     *
+     * @return array<string, mixed>
+     */
+    public function toFcm($notifiable): array
+    {
+        $events = UpcomingEvents::eventsOnDate(new \DateTime());
+        $count = $events->count();
+
+        if ($count === 0) {
+            $body = 'Heute ist kein besonderes Ereignis.';
+        } else {
+            $names = $events->map(fn ($e) => $e->fullname())->implode(', ');
+            $body = $count === 1 ? $names : $count.' Ereignisse: '.$names;
+        }
+
+        return [
+            'title' => 'Heutige Ereignisse',
+            'body' => $body,
+            'data' => ['type' => 'daily'],
+        ];
     }
 
     /**
@@ -40,7 +77,8 @@ class TodaysDates extends Notification
      */
     public function toMail($notifiable)
     {
-        $events = ContactDate::datesOnDate(new \DateTime());
+        $year = (int) date('Y');
+        $events = UpcomingEvents::eventsOnDate(new \DateTime());
 
         $mailMessage = (new MailMessage)
             ->from('service@gdev.at', config('app.name'))
@@ -54,7 +92,7 @@ class TodaysDates extends Notification
             }
 
             foreach ($events as $event) {
-                $mailMessage->line($event->contact->fullname . ' - ' . $event->getCalculatedName(date('Y')) . ' - ' . $event->formattedDate);
+                $mailMessage->line($event->fullname() . ' - ' . $event->label($year) . ' - ' . $event->formatted());
             }
         } else {
             $mailMessage->line('Heute ist kein besonderes Ereignis.');
