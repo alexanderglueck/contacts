@@ -50,6 +50,25 @@ class UpcomingEventsTest extends TestCase
     }
 
     #[Test]
+    public function events_on_date_includes_a_death_anniversary()
+    {
+        $user = $this->createUser();
+        $today = new \DateTime('today');
+
+        create(Contact::class, [
+            'firstname' => 'Memorial', 'date_of_birth' => null,
+            'died_at' => '2015-'.$today->format('m-d'),
+            'active' => 1, 'created_by' => $user->id, 'updated_by' => $user->id,
+        ]);
+
+        $events = UpcomingEvents::eventsOnDate($today);
+
+        $this->assertContains(UpcomingEvent::TYPE_MEMORIAL, $events->pluck('type')->all());
+        $memorial = $events->firstWhere('type', UpcomingEvent::TYPE_MEMORIAL);
+        $this->assertStringContainsString(trans('ui.death_anniversary'), $memorial->label((int) date('Y')));
+    }
+
+    #[Test]
     public function events_in_range_handles_a_window_crossing_the_year_boundary()
     {
         $user = $this->createUser();

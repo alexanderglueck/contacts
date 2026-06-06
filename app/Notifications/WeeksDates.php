@@ -78,6 +78,7 @@ class WeeksDates extends Notification
             $mailMessage,
             ContactDate::datesInRange($thisWeekStart, $thisWeekEnd),
             $this->loadBirthdays($thisWeekStart, $thisWeekEnd),
+            Contact::diedDatesInRange($thisWeekStart, $thisWeekEnd),
             $thisWeekStart,
             $thisWeekEnd,
             isThisWeek: true,
@@ -93,6 +94,7 @@ class WeeksDates extends Notification
             $mailMessage,
             ContactDate::datesInRange($nextWeekStart, $nextWeekEnd),
             $this->loadBirthdays($nextWeekStart, $nextWeekEnd),
+            Contact::diedDatesInRange($nextWeekStart, $nextWeekEnd),
             $nextWeekStart,
             $nextWeekEnd,
             isThisWeek: false,
@@ -120,12 +122,13 @@ class WeeksDates extends Notification
         MailMessage $mailMessage,
         $contactDates,
         $birthdays,
+        $memorials,
         DateTime $startDate,
         DateTime $endDate,
         bool $isThisWeek,
         bool $includeGiftIdeas,
     ): void {
-        $totalEvents = count($contactDates) + count($birthdays);
+        $totalEvents = count($contactDates) + count($birthdays) + count($memorials);
 
         if ($totalEvents === 0) {
             $mailMessage->line($isThisWeek
@@ -177,6 +180,14 @@ class WeeksDates extends Notification
                     $mailMessage->line($line);
                 }
             }
+        }
+
+        foreach ($memorials as $contact) {
+            $year = $this->resolveEventYear($contact->died_at, $startDate, $endDate, $fromYear, $toYear);
+            $title = trim(str_replace($contact->fullname, '', $contact->getDeathCalculatedName($year)));
+            $mailMessage->line(
+                $contact->fullname.' - '.$title.' - '.$contact->formatted_died_at,
+            );
         }
     }
 

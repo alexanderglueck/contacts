@@ -34,7 +34,10 @@ class UpcomingEvents
         $birthdays = Contact::datesInRange($date, $date)
             ->map(fn (Contact $c) => UpcomingEvent::fromContact($c));
 
-        return $dates->concat($birthdays)->values();
+        $memorials = Contact::diedDatesInRange($date, $date)
+            ->map(fn (Contact $c) => UpcomingEvent::fromContactMemorial($c));
+
+        return $dates->concat($birthdays)->concat($memorials)->values();
     }
 
     /**
@@ -51,7 +54,10 @@ class UpcomingEvents
         $birthdays = Contact::datesInRange($start, $end)
             ->map(fn (Contact $c) => UpcomingEvent::fromContact($c));
 
-        return $dates->concat($birthdays)->values();
+        $memorials = Contact::diedDatesInRange($start, $end)
+            ->map(fn (Contact $c) => UpcomingEvent::fromContactMemorial($c));
+
+        return $dates->concat($birthdays)->concat($memorials)->values();
     }
 
     /**
@@ -70,6 +76,14 @@ class UpcomingEvents
 
             if ($dob && $dob->format('md') === $md) {
                 $events->push(UpcomingEvent::fromContact($contact));
+            }
+        }
+
+        if ($contact->died_at) {
+            $died = date_create_from_format('Y-m-d', $contact->died_at);
+
+            if ($died && $died->format('md') === $md) {
+                $events->push(UpcomingEvent::fromContactMemorial($contact));
             }
         }
 

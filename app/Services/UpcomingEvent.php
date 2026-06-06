@@ -19,6 +19,8 @@ class UpcomingEvent
 
     public const TYPE_DATE = 'date';
 
+    public const TYPE_MEMORIAL = 'memorial';
+
     public function __construct(
         public readonly string $type,
         public readonly Model $model,
@@ -38,6 +40,17 @@ class UpcomingEvent
         );
     }
 
+    public static function fromContactMemorial(Contact $contact): self
+    {
+        return new self(
+            type: self::TYPE_MEMORIAL,
+            model: $contact,
+            contact: $contact,
+            uid: 'memorial-'.$contact->id,
+            date: new DateTimeImmutable($contact->died_at),
+        );
+    }
+
     public static function fromContactDate(ContactDate $contactDate): self
     {
         return new self(
@@ -54,6 +67,11 @@ class UpcomingEvent
         return $this->type === self::TYPE_BIRTHDAY;
     }
 
+    public function isMemorial(): bool
+    {
+        return $this->type === self::TYPE_MEMORIAL;
+    }
+
     public function fullname(): string
     {
         return $this->contact->fullname;
@@ -61,11 +79,13 @@ class UpcomingEvent
 
     /**
      * The full calendar title for a display year, e.g. "31. Geburtstag\nMax
-     * Mustermann" — delegates to each model's existing getCalculatedName().
+     * Mustermann" — delegates to the right model method for the event type.
      */
     public function calculatedName(int $year): string
     {
-        return $this->model->getCalculatedName($year);
+        return $this->isMemorial()
+            ? $this->contact->getDeathCalculatedName($year)
+            : $this->model->getCalculatedName($year);
     }
 
     /**
@@ -82,9 +102,11 @@ class UpcomingEvent
      */
     public function formatted(): string
     {
-        return $this->isBirthday()
-            ? $this->contact->formatted_date_of_birth
-            : $this->model->formattedDate;
+        return match ($this->type) {
+            self::TYPE_BIRTHDAY => $this->contact->formatted_date_of_birth,
+            self::TYPE_MEMORIAL => $this->contact->formatted_died_at,
+            default => $this->model->formattedDate,
+        };
     }
 
     public function url(): string

@@ -85,6 +85,7 @@ return [
     'note' => 'Note',
     'died_at' => 'Died at',
     'died_from' => 'Died from',
+    'death_anniversary' => 'Anniversary of death',
     'body' => 'Text',
     'nationality' => 'Nationality',
     'comment' => 'Comment',

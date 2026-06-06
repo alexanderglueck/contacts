@@ -61,6 +61,25 @@ class ContactTodaysEventsTest extends TestCase
     }
 
     #[Test]
+    public function it_includes_a_death_anniversary_when_it_is_today()
+    {
+        $user = $this->createUser();
+        $today = new \DateTime('today');
+
+        $contact = create(Contact::class, [
+            'date_of_birth' => null,
+            'died_at' => '2015-'.$today->format('m-d'),
+            'created_by' => $user->id, 'updated_by' => $user->id,
+        ]);
+
+        $this->get(route('contacts.show', $contact->ulid))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->has('todaysEvents', 1)
+                ->where('todaysEvents.0.type', 'memorial'));
+    }
+
+    #[Test]
     public function it_is_empty_when_nothing_falls_on_today()
     {
         $user = $this->createUser();

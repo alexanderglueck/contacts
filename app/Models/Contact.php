@@ -171,9 +171,33 @@ class Contact extends Model implements CalendarInterface
         \DateTimeInterface $startDate, \DateTimeInterface $endDate
     )
     {
+        return self::recurringDatesInRange('date_of_birth', $startDate, $endDate);
+    }
+
+    /**
+     * Death anniversaries (recurring on the died_at month-day) within a range,
+     * using the same MMDD/wraparound logic as birthdays.
+     */
+    public static function diedDatesInRange(
+        \DateTimeInterface $startDate, \DateTimeInterface $endDate
+    )
+    {
+        return self::recurringDatesInRange('died_at', $startDate, $endDate);
+    }
+
+    /**
+     * Active contacts whose $column month-day falls within [$start, $end].
+     * Shared by birthdays (date_of_birth) and death anniversaries (died_at).
+     *
+     * $column is an internal constant, never user input — safe to interpolate.
+     */
+    private static function recurringDatesInRange(
+        string $column, \DateTimeInterface $startDate, \DateTimeInterface $endDate
+    ) {
         $query = self::select('contacts.*')
             ->where('active', 1)
-            ->whereNotNull('date_of_birth');
+            ->whereNotNull($column)
+            ->where($column, '!=', '');
 
         // FullCalendar's listYear view requests start..end spanning a full
         // year (e.g. 2026-01-01 → 2027-01-01). Both MMDDs come out '0101',
@@ -187,13 +211,13 @@ class Contact extends Model implements CalendarInterface
         $from = $startDate->format('md');
         $to = $endDate->format('md');
         $mmdd = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite'
-            ? "strftime('%m%d', date_of_birth)"
-            : "DATE_FORMAT(date_of_birth, '%m%d')";
+            ? "strftime('%m%d', {$column})"
+            : "DATE_FORMAT({$column}, '%m%d')";
 
         // When the range crosses a year boundary (e.g. 30 days back → 9 months
         // forward, as the iCal feed requests), `from` is numerically greater
         // than `to` and a naive BETWEEN matches nothing. Mirror the wraparound
-        // handling in ContactDate::datesInRange so birthdays late in one year
+        // handling in ContactDate::datesInRange so dates late in one year
         // and early in the next both qualify.
         return $query
             ->whereRaw(
@@ -225,6 +249,24 @@ class Contact extends Model implements CalendarInterface
             $title = trans('ui.date_of_birth');
         } else {
             $title = ($year - $eventDate->format('Y')) . '. ' . trans('ui.date_of_birth');
+        }
+
+        return $title . PHP_EOL . $this->fullname;
+    }
+
+    /**
+     * Calendar title for a death anniversary in the given year, e.g.
+     * "5. Todestag\nFullname" (no ordinal in the year of death itself).
+     */
+    public function getDeathCalculatedName($year)
+    {
+        $eventDate = date_create_from_format('Y-m-d', $this->died_at);
+        $yearDifference = $year - $eventDate->format('Y');
+
+        if ($yearDifference == 0) {
+            $title = trans('ui.death_anniversary');
+        } else {
+            $title = $yearDifference . '. ' . trans('ui.death_anniversary');
         }
 
         return $title . PHP_EOL . $this->fullname;

@@ -42,6 +42,20 @@ const relative = (days) => {
 // Both birthdays and important dates show their label (e.g. "32. Geburtstag",
 // "16. Hochzeitstag") — same wording the ContactDate reminders have always used.
 const detail = (event) => event.label;
+
+const badgeClass = (type) =>
+    ({
+        birthday: 'bg-amber-50 text-amber-700 ring-amber-200',
+        memorial: 'bg-gray-100 text-gray-600 ring-gray-300',
+        date: 'bg-sky-50 text-sky-700 ring-sky-200',
+    })[type] ?? 'bg-sky-50 text-sky-700 ring-sky-200';
+
+const typeLabel = (type) =>
+    ({
+        birthday: t('home.type_birthday'),
+        memorial: t('home.type_memorial'),
+        date: t('home.type_date'),
+    })[type] ?? t('home.type_date');
 </script>
 
 <template>
@@ -121,11 +135,9 @@ const detail = (event) => event.label;
                                     {{ event.fullname }}
                                     <span
                                         class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset"
-                                        :class="event.type === 'birthday'
-                                            ? 'bg-amber-50 text-amber-700 ring-amber-200'
-                                            : 'bg-sky-50 text-sky-700 ring-sky-200'"
+                                        :class="badgeClass(event.type)"
                                     >
-                                        {{ event.type === 'birthday' ? t('home.type_birthday') : t('home.type_date') }}
+                                        {{ typeLabel(event.type) }}
                                     </span>
                                 </p>
                                 <p class="text-xs text-gray-500">{{ detail(event) }}</p>

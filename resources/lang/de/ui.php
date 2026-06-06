@@ -85,6 +85,7 @@ return [
     'note' => 'Notiz',
     'died_at' => 'Verstorben am',
     'died_from' => 'Verstorben durch',
+    'death_anniversary' => 'Todestag',
     'body' => 'Text',
     'nationality' => 'Nationalität',
     'comment' => 'Kommentar',
