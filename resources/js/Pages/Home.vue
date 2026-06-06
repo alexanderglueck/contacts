@@ -39,12 +39,9 @@ const relative = (days) => {
     return t('home.in_n_days', { days });
 };
 
-// Birthdays show "is turning N"; important dates show their label
-// (e.g. "16. Hochzeitstag").
-const detail = (event) =>
-    event.type === 'birthday'
-        ? t('home.turning', { age: event.turning })
-        : event.label;
+// Both birthdays and important dates show their label (e.g. "32. Geburtstag",
+// "16. Hochzeitstag") — same wording the ContactDate reminders have always used.
+const detail = (event) => event.label;
 </script>
 
 <template>
@@ -64,12 +61,7 @@ const detail = (event) =>
                         <Link :href="route('contacts.show', event.ulid)" class="font-medium underline hover:no-underline">
                             {{ event.fullname }}
                         </Link>
-                        <template v-if="event.type === 'birthday'">
-                            {{ t('home.is_turning') }} <span class="font-medium">{{ event.turning }}</span>.
-                        </template>
-                        <template v-else>
-                            — <span class="font-medium">{{ event.label }}</span>
-                        </template>
+                        — <span class="font-medium">{{ event.label }}</span>
                     </li>
                 </ul>
             </div>
