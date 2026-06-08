@@ -490,7 +490,8 @@
             "comments": "Kommentare",
             "activities": "Aktivität",
             "first_met": "Erstes Treffen",
-            "general_notes": "Notizen"
+            "general_notes": "Notizen",
+            "relations": "Beziehungen"
         },
         "tile_manage": "Verwalten ({count})",
         "tile_view": "Ansehen",
@@ -511,6 +512,10 @@
             "add_gift_idea": "Geschenkidee hinzufügen",
             "add_address": "Adresse hinzufügen",
             "add_comment": "Kommentar hinzufügen",
+            "add_relation": "Beziehung hinzufügen",
+            "change": "Ändern",
+            "relation_search_placeholder": "Kontakte suchen…",
+            "relation_search_empty": "Keine passenden Kontakte.",
             "reply_to": "Antwort an {name}",
             "remove_confirm": "Möchten Sie das wirklich entfernen?",
             "empty_addresses": "Noch keine Adressen vorhanden.",
@@ -523,6 +528,7 @@
             "empty_gift_ideas": "Noch keine Geschenkideen vorhanden.",
             "empty_comments": "Noch keine Kommentare vorhanden.",
             "empty_activities": "Noch keine Aktivitäten aufgezeichnet.",
+            "empty_relations": "Noch keine Beziehungen vorhanden.",
             "name": "Name",
             "remove_q": "{item} endgültig entfernen?",
             "remove_comment_q": "Diesen Kommentar endgültig entfernen? Antworten bleiben dem Kontakt zugeordnet, verlieren aber ihren übergeordneten Kommentar.",
@@ -550,6 +556,13 @@
                 "name": "Name",
                 "date": "Datum",
                 "skip_year": "Jahr überspringen"
+            },
+            "relation_fields": {
+                "related_contact": "Kontakt",
+                "forward_label": "Ist dein/e…",
+                "inverse_label": "Du bist dessen…",
+                "forward_hint": "Was dieser Kontakt für dich ist (z. B. Vater, Ehefrau, Bruder).",
+                "inverse_hint": "Was du für diesen Kontakt bist (z. B. Sohn, Ehemann). Leer lassen, um die obige Bezeichnung zu spiegeln."
             },
             "note_fields": {
                 "name": "Name",

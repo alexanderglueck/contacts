@@ -13,6 +13,7 @@ import GiftIdeasSection from './Sections/GiftIdeasSection.vue';
 import AddressesSection from './Sections/AddressesSection.vue';
 import ActivitySection from './Sections/ActivitySection.vue';
 import CommentsSection from './Sections/CommentsSection.vue';
+import RelationsSection from './Sections/RelationsSection.vue';
 
 const props = defineProps({
     contact: { type: Object, required: true },
@@ -41,6 +42,8 @@ const addresses = computed(() => page.props.addresses ?? []);
 const countries = computed(() => page.props.countries ?? []);
 const activities = computed(() => page.props.activities ?? []);
 const comments = computed(() => page.props.comments ?? []);
+const relations = computed(() => page.props.relations ?? []);
+const relationLabels = computed(() => page.props.relationLabels ?? []);
 
 const activeSection = ref(null);
 
@@ -55,6 +58,7 @@ const sectionDataKey = {
     addresses: ['addresses', 'countries'],
     activities: ['activities'],
     comments: ['comments'],
+    relations: ['relations', 'relationLabels'],
 };
 
 const openSection = (key) => {
@@ -90,6 +94,7 @@ const tiles = computed(() => [
     { key: 'calls', label: t('contacts.section.calls'), count: props.contact.calls_count ?? 0, canView: props.can.view_calls, action: () => openSection('calls') },
     { key: 'gift_ideas', label: t('contacts.section.gift_ideas'), count: props.contact.gift_ideas_count ?? 0, canView: props.can.view_gift_ideas, action: () => openSection('gift_ideas') },
     { key: 'comments', label: t('contacts.section.comments'), count: props.contact.comments_count ?? 0, canView: props.can.view_comments, action: () => openSection('comments') },
+    { key: 'relations', label: t('contacts.section.relations'), count: props.contact.relations_count ?? 0, canView: props.can.view_relations, action: () => openSection('relations') },
     { key: 'activities', label: t('contacts.section.activities'), count: null, canView: props.can.view_activities, action: () => openSection('activities') },
 ]);
 </script>
@@ -182,5 +187,6 @@ const tiles = computed(() => [
         <AddressesSection :open="activeSection === 'addresses'" :contact="contact" :items="addresses" :countries="countries" :can="{ create: can.create_addresses, edit: can.edit_addresses, delete: can.delete_addresses }" @close="closeSection" />
         <ActivitySection :open="activeSection === 'activities'" :contact="contact" :items="activities" @close="closeSection" />
         <CommentsSection :open="activeSection === 'comments'" :contact="contact" :items="comments" :can="{ create: can.create_comments, edit: can.edit_comments, delete: can.delete_comments }" @close="closeSection" />
+        <RelationsSection :open="activeSection === 'relations'" :contact="contact" :items="relations" :labels="relationLabels" :can="{ create: can.create_relations, edit: can.edit_relations, delete: can.delete_relations }" @close="closeSection" />
     </AppLayout>
 </template>

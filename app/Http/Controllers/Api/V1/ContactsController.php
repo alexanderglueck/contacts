@@ -431,6 +431,18 @@ class ContactsController extends Controller
                 'url' => $g->url,
                 'due_at' => $g->due_at,
             ])->values(),
+
+            // Bidirectional links, oriented to this contact: `label` is what
+            // the related contact is to this one; `inverse` is the reverse.
+            'relations' => $contact->relationEntries()->map(fn (array $entry) => [
+                'ulid' => $entry['relation']->ulid,
+                'label' => $entry['label'],
+                'inverse' => $entry['inverse'],
+                'contact' => [
+                    'ulid' => $entry['contact']->ulid,
+                    'fullname' => $entry['contact']->fullname,
+                ],
+            ])->values(),
         ];
     }
 }

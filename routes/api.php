@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ContactDatesController;
 use App\Http\Controllers\Api\V1\ContactEmailsController;
 use App\Http\Controllers\Api\V1\ContactNotesController;
 use App\Http\Controllers\Api\V1\ContactNumbersController;
+use App\Http\Controllers\Api\V1\ContactRelationsController;
 use App\Http\Controllers\Api\V1\ContactsController;
 use App\Http\Controllers\Api\V1\ContactUrlsController;
 use App\Http\Controllers\Api\V1\DeviceController;
@@ -110,6 +111,23 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 ->name('contacts.image.upload');
             Route::delete('contacts/{contact}/image', [ContactsController::class, 'destroyImage'])
                 ->name('contacts.image.destroy');
+
+            // Contact relations. Kept out of the scopeBindings loop below
+            // because the pivot has two contact sides (not a single
+            // child->contact), so nested binding can't auto-scope it; the
+            // controller verifies the relation involves {contact} itself.
+            // {relation} binds by ulid and is tenant-scoped via the model's
+            // BelongsToTenantScope.
+            Route::get('contacts/{contact}/relations', [ContactRelationsController::class, 'index'])
+                ->name('contacts.relations.index');
+            Route::get('contacts/{contact}/relations/{relation}', [ContactRelationsController::class, 'show'])
+                ->name('contacts.relations.show');
+            Route::post('contacts/{contact}/relations', [ContactRelationsController::class, 'store'])
+                ->name('contacts.relations.store');
+            Route::match(['put', 'patch'], 'contacts/{contact}/relations/{relation}', [ContactRelationsController::class, 'update'])
+                ->name('contacts.relations.update');
+            Route::delete('contacts/{contact}/relations/{relation}', [ContactRelationsController::class, 'destroy'])
+                ->name('contacts.relations.destroy');
 
             // Sub-resources. scopeBindings() makes nested route-model binding
             // verify each child belongs to its {contact} parent — saves us

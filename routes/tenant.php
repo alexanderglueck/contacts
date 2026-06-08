@@ -139,6 +139,18 @@ Route::group(['middleware' => 'subscription.active'], function () {
     });
 
     /**
+     * Contact Relations (managed inline via Contacts/Show slideover)
+     *
+     * verify_contact can't guard these — the pivot has two contact sides, not
+     * a single child->contact. ContactRelationController verifies ownership
+     * itself, and the BelongsToTenantScope keeps binding tenant-scoped.
+     */
+    Route::get('contact-relations/{contact}/search', [\App\Http\Controllers\ContactRelationController::class, 'search'])->name('contact_relations.search');
+    Route::post('contact-relations/{contact}', [\App\Http\Controllers\ContactRelationController::class, 'store'])->name('contact_relations.store');
+    Route::put('contact-relations/{contact}/{contactRelation}', [\App\Http\Controllers\ContactRelationController::class, 'update'])->name('contact_relations.update');
+    Route::delete('contact-relations/{contact}/{contactRelation}', [\App\Http\Controllers\ContactRelationController::class, 'destroy'])->name('contact_relations.destroy');
+
+    /**
      * Contact Groups
      */
     Route::get('contact-groups', [ContactGroupController::class, 'index'])->name('contact_groups.index');

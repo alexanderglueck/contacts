@@ -38,6 +38,17 @@ return [
         'not_deleted' => 'Datum konnte nicht gelöscht werden!',
     ],
 
+    'contact_relation' => [
+        'created' => 'Beziehung wurde erfolgreich erstellt!',
+        'not_created' => 'Beziehung konnte nicht erstellt werden!',
+        'updated' => 'Beziehung wurde erfolgreich aktualisiert!',
+        'not_updated' => 'Beziehung konnte nicht aktualisiert werden!',
+        'deleted' => 'Beziehung wurde erfolgreich gelöscht!',
+        'not_deleted' => 'Beziehung konnte nicht gelöscht werden!',
+        'self' => 'Ein Kontakt kann nicht mit sich selbst verknüpft werden.',
+        'duplicate' => 'Diese Kontakte sind bereits verknüpft.',
+    ],
+
     'contact_email' => [
         'created' => 'E-Mail wurde erfolgreich erstellt!',
         'not_created' => 'E-Mail konnte nicht erstellt werden!',

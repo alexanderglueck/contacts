@@ -96,6 +96,10 @@ class ContactController extends Controller
             'calls',
             'comments',
             'giftIdeas as gift_ideas_count',
+            // A contact sits on exactly one side of each relation row, so the
+            // two sides sum to its total relation count with no overlap.
+            'relationsAsA as relations_as_a_count',
+            'relationsAsB as relations_as_b_count',
         ]);
         $contact->load(['gender:id,gender', 'country:id,country']);
 
@@ -141,6 +145,7 @@ class ContactController extends Controller
                 'calls_count' => $contact->calls_count,
                 'comments_count' => $contact->comments_count,
                 'gift_ideas_count' => $contact->gift_ideas_count,
+                'relations_count' => ($contact->relations_as_a_count ?? 0) + ($contact->relations_as_b_count ?? 0),
             ],
             // Lazy props — only loaded when a Section slideover requests them
             // via router.reload({ only: ['numbers'] }) etc.
@@ -249,6 +254,16 @@ class ContactController extends Controller
                 'longitude' => $a->longitude,
             ])->values()),
             'countries' => Inertia::optional(fn () => Country::all(['id', 'country'])),
+            'relations' => Inertia::optional(fn () => $contact->relationEntries()->map(fn ($entry) => [
+                'ulid' => $entry['relation']->ulid,
+                'label' => $entry['label'],     // what the related contact is to this one
+                'inverse' => $entry['inverse'], // what this contact is to the related one
+                'contact' => [
+                    'ulid' => $entry['contact']->ulid,
+                    'fullname' => $entry['contact']->fullname,
+                ],
+            ])->values()),
+            'relationLabels' => Inertia::optional(fn () => Contact::relationLabels()),
             'can' => [
                 'edit' => $user->checkPermissionTo('edit contacts'),
                 'delete' => $user->checkPermissionTo('delete contacts'),
@@ -289,6 +304,10 @@ class ContactController extends Controller
                 'create_comments' => $user->checkPermissionTo('create comments'),
                 'edit_comments' => $user->checkPermissionTo('edit comments'),
                 'delete_comments' => $user->checkPermissionTo('delete comments'),
+                'view_relations' => $user->checkPermissionTo('view relations'),
+                'create_relations' => $user->checkPermissionTo('create relations'),
+                'edit_relations' => $user->checkPermissionTo('edit relations'),
+                'delete_relations' => $user->checkPermissionTo('delete relations'),
             ],
         ]);
     }

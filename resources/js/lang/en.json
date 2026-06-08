@@ -490,7 +490,8 @@
             "comments": "Comments",
             "activities": "Activity",
             "first_met": "First met",
-            "general_notes": "Notes"
+            "general_notes": "Notes",
+            "relations": "Relations"
         },
         "tile_manage": "Manage ({count})",
         "tile_view": "View",
@@ -511,6 +512,10 @@
             "add_gift_idea": "Add gift idea",
             "add_address": "Add address",
             "add_comment": "Add comment",
+            "add_relation": "Add relation",
+            "change": "Change",
+            "relation_search_placeholder": "Search contacts…",
+            "relation_search_empty": "No matching contacts.",
             "reply_to": "Reply to {name}",
             "remove_confirm": "Are you sure you want to remove this?",
             "empty_addresses": "No addresses yet.",
@@ -523,6 +528,7 @@
             "empty_gift_ideas": "No gift ideas yet.",
             "empty_comments": "No comments yet.",
             "empty_activities": "No activity recorded yet.",
+            "empty_relations": "No relations yet.",
             "name": "Name",
             "remove_q": "Permanently remove {item}?",
             "remove_comment_q": "Permanently remove this comment? Replies stay attached to the contact but lose their parent.",
@@ -550,6 +556,13 @@
                 "name": "Name",
                 "date": "Date",
                 "skip_year": "Skip year"
+            },
+            "relation_fields": {
+                "related_contact": "Contact",
+                "forward_label": "Is your…",
+                "inverse_label": "You are their…",
+                "forward_hint": "What this contact is to you (e.g. father, wife, brother).",
+                "inverse_hint": "What you are to this contact (e.g. son, husband). Leave blank to mirror the label above."
             },
             "note_fields": {
                 "name": "Name",

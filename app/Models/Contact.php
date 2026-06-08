@@ -504,6 +504,80 @@ class Contact extends Model implements CalendarInterface
         return $this->hasMany(ContactCall::class);
     }
 
+    /**
+     * Relations where this contact is the "a" side of the stored pair.
+     * Use relationEntries() for the unified, perspective-correct list —
+     * a contact can appear as either side depending on id ordering.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function relationsAsA()
+    {
+        return $this->hasMany(ContactRelation::class, 'contact_a_id');
+    }
+
+    /**
+     * Relations where this contact is the "b" side of the stored pair.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function relationsAsB()
+    {
+        return $this->hasMany(ContactRelation::class, 'contact_b_id');
+    }
+
+    /**
+     * Unified, perspective-correct list of this contact's relations. Each
+     * entry exposes the relation row, the contact on the far side, and the
+     * two labels oriented to *this* contact's point of view:
+     *   'label'   — what the other contact is to this one (the forward label)
+     *   'inverse' — what this contact is to the other one
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function relationEntries(): \Illuminate\Support\Collection
+    {
+        // The orWhere must be wrapped so the BelongsToTenantScope's team_id
+        // predicate isn't split by OR precedence into a cross-tenant leak.
+        $relations = ContactRelation::with(['contactA', 'contactB'])
+            ->where(function ($query) {
+                $query->where('contact_a_id', $this->id)
+                    ->orWhere('contact_b_id', $this->id);
+            })
+            ->get();
+
+        return $relations->map(function (ContactRelation $relation) {
+            $isA = $relation->contact_a_id === $this->id;
+
+            return [
+                'relation' => $relation,
+                'contact' => $isA ? $relation->contactB : $relation->contactA,
+                'label' => $isA ? $relation->a_to_b_label : $relation->b_to_a_label,
+                'inverse' => $isA ? $relation->b_to_a_label : $relation->a_to_b_label,
+            ];
+        })->sortBy([
+            ['label', 'asc'],
+        ])->values();
+    }
+
+    /**
+     * Distinct relation labels already used across the team, for the
+     * autocomplete datalist in the create/edit form.
+     *
+     * @return array<int, string>
+     */
+    public static function relationLabels(): array
+    {
+        return ContactRelation::query()
+            ->get(['a_to_b_label', 'b_to_a_label'])
+            ->flatMap(fn (ContactRelation $r) => [$r->a_to_b_label, $r->b_to_a_label])
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+    }
+
     public function searchableAs()
     {
         return config()->get('scout.prefix') . 'contact';

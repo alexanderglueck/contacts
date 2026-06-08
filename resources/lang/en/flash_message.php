@@ -52,6 +52,20 @@ return [
     ],
 
     /**
+     * Contact Relation
+     */
+    'contact_relation' => [
+        'created' => 'Relation was created successfully!',
+        'not_created' => 'Relation could not be created!',
+        'updated' => 'Relation was updated successfully!',
+        'not_updated' => 'Relation could not be updated!',
+        'deleted' => 'Relation was deleted successfully!',
+        'not_deleted' => 'Relation could not be deleted!',
+        'self' => 'A contact cannot be related to itself.',
+        'duplicate' => 'These contacts are already related.',
+    ],
+
+    /**
      * Contact Email
      */
     'contact_email' => [
