@@ -241,6 +241,25 @@ class ContactSubResourcesTest extends TestCase
     }
 
     #[Test]
+    public function it_stores_a_call_submitted_as_utc_iso()
+    {
+        // The Vue client converts the datetime-local input to a UTC ISO-8601
+        // string (e.g. 20:00 Vienna -> 18:00Z) before posting. The instant must
+        // land in the DB as UTC, unshifted.
+        $contact = $this->aContact();
+
+        $this->post(route('contact_calls.store', $contact->ulid), [
+            'called_at' => '2026-05-24T18:00:00.000Z',
+            'note' => 'iso payload',
+        ])->assertRedirect();
+
+        $this->assertSame(
+            '2026-05-24 18:00:00',
+            ContactCall::where('note', 'iso payload')->first()->called_at->utc()->format('Y-m-d H:i:s')
+        );
+    }
+
+    #[Test]
     public function it_can_update_a_call()
     {
         $contact = $this->aContact();

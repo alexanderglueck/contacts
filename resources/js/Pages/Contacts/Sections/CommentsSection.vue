@@ -17,7 +17,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+// The relative "x ago" label is computed server-side; created_at_iso carries
+// the UTC instant so we can show the absolute local time on hover.
+const formatDateTime = (iso) => {
+    if (! iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleString(locale.value, {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+};
 
 // 'list' | 'create' | 'edit' | 'delete'
 // (no 'show' — the list IS the detail view for comments)
@@ -167,7 +179,7 @@ const submitDelete = () =>
                         <template v-else>
                             <header class="flex items-baseline justify-between gap-2 mb-1">
                                 <span class="font-medium text-gray-900">{{ comment.owner?.name ?? 'Unknown' }}</span>
-                                <span class="text-xs text-gray-500">{{ comment.created_at }}</span>
+                                <span class="text-xs text-gray-500" :title="formatDateTime(comment.created_at_iso)">{{ comment.created_at }}</span>
                             </header>
 
                             <div class="prose-note text-gray-800" v-html="comment.comment_html" />
@@ -217,7 +229,7 @@ const submitDelete = () =>
                                 <template v-else>
                                     <header class="flex items-baseline justify-between gap-2 mb-1">
                                         <span class="font-medium text-gray-900">{{ reply.owner?.name ?? 'Unknown' }}</span>
-                                        <span class="text-xs text-gray-500">{{ reply.created_at }}</span>
+                                        <span class="text-xs text-gray-500" :title="formatDateTime(reply.created_at_iso)">{{ reply.created_at }}</span>
                                     </header>
 
                                     <div class="prose-note text-gray-800" v-html="reply.comment_html" />

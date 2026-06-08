@@ -37,7 +37,7 @@ const humanize = (action) => {
                 <div class="flex items-baseline justify-between gap-3">
                     <span class="text-gray-900">
                         <span class="font-medium">{{ item.user?.name ?? 'System' }}</span>
-                        <span class="text-gray-600"> {{ humanize(item.action) }}</span>
+                        <span class="text-gray-600 ms-1">{{ humanize(item.action) }}</span>
                     </span>
                     <span class="text-xs text-gray-500 shrink-0">{{ item.created_at }}</span>
                 </div>

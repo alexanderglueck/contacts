@@ -19,7 +19,38 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+// called_at travels as UTC ISO-8601. The server never localizes — the browser
+// does, using the device's own zone. These three helpers bridge that boundary.
+const pad = (n) => String(n).padStart(2, '0');
+
+// UTC ISO -> "YYYY-MM-DDTHH:mm" in the local zone, for <input type="datetime-local">.
+const toLocalInput = (iso) => {
+    if (! iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+// Local datetime-local value -> UTC ISO-8601 (browser reads the naive value as local).
+const toUtcIso = (local) => {
+    if (! local) return null;
+    const d = new Date(local);
+    if (isNaN(d.getTime())) return local;
+    return d.toISOString();
+};
+
+// UTC ISO -> localized display string in the device zone.
+const formatDisplay = (iso) => {
+    if (! iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleString(locale.value, {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+};
 
 const mode = ref('list');
 const selected = ref(null);
@@ -45,7 +76,7 @@ watch(
 const title = computed(() => {
     switch (mode.value) {
         case 'create': return t('contacts.slideover.add_call');
-        case 'show': return selected.value?.formatted_called_at ?? 'Call';
+        case 'show': return formatDisplay(selected.value?.called_at) || 'Call';
         case 'edit': return `Edit call`;
         case 'delete': return `Delete call?`;
         default: return t('contacts.section.calls');
@@ -75,7 +106,7 @@ const openShow = (item) => {
 
 const openEdit = (item) => {
     selected.value = item;
-    editForm.called_at = item.called_at ?? '';
+    editForm.called_at = toLocalInput(item.called_at);
     editForm.note = item.note ?? '';
     editForm.clearErrors();
     mode.value = 'edit';
@@ -105,19 +136,23 @@ const handleHeaderClose = () => {
 };
 
 const submitCreate = () =>
-    createForm.post(route('contact_calls.store', props.contact.ulid), {
-        preserveScroll: true,
-        onSuccess: () => { refreshItems(); backToList(); },
-    });
-
-const submitEdit = () =>
-    editForm.put(
-        route('contact_calls.update', [props.contact.ulid, selected.value.ulid]),
-        {
+    createForm
+        .transform((data) => ({ ...data, called_at: toUtcIso(data.called_at) }))
+        .post(route('contact_calls.store', props.contact.ulid), {
             preserveScroll: true,
             onSuccess: () => { refreshItems(); backToList(); },
-        },
-    );
+        });
+
+const submitEdit = () =>
+    editForm
+        .transform((data) => ({ ...data, called_at: toUtcIso(data.called_at) }))
+        .put(
+            route('contact_calls.update', [props.contact.ulid, selected.value.ulid]),
+            {
+                preserveScroll: true,
+                onSuccess: () => { refreshItems(); backToList(); },
+            },
+        );
 
 const submitDelete = () =>
     deleteForm.delete(
@@ -143,7 +178,7 @@ const submitDelete = () =>
                         class="block w-full text-left px-6 py-3 cursor-pointer hover:bg-gray-50"
                         @click="openShow(item)"
                     >
-                        <div class="text-sm font-medium text-gray-900">{{ item.formatted_called_at }}</div>
+                        <div class="text-sm font-medium text-gray-900">{{ formatDisplay(item.called_at) }}</div>
                         <div v-if="item.note" class="text-sm text-gray-600 truncate">{{ item.note }}</div>
                     </button>
                 </li>
@@ -155,7 +190,7 @@ const submitDelete = () =>
             <dl class="space-y-3 text-sm">
                 <div>
                     <dt class="font-medium text-gray-700">{{ t('contacts.slideover.call_fields.when') }}</dt>
-                    <dd class="text-gray-900">{{ selected.formatted_called_at }}</dd>
+                    <dd class="text-gray-900">{{ formatDisplay(selected.called_at) }}</dd>
                 </div>
                 <div v-if="selected.note">
                     <dt class="font-medium text-gray-700">{{ t('contacts.slideover.call_fields.body') }}</dt>
@@ -223,7 +258,7 @@ const submitDelete = () =>
         <!-- Delete -->
         <template v-else-if="mode === 'delete'">
             <p class="text-sm text-gray-700">
-                {{ t('contacts.slideover.remove_q', { item: selected.formatted_called_at }) }}
+                {{ t('contacts.slideover.remove_q', { item: formatDisplay(selected.called_at) }) }}
             </p>
         </template>
 

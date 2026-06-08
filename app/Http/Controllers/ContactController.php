@@ -171,10 +171,7 @@ class ContactController extends Controller
             ])->values()),
             'calls' => Inertia::optional(fn () => $contact->calls->map(fn ($c) => [
                 'ulid' => $c->ulid,
-                // Raw value for <input type="datetime-local"> (drop the seconds);
-                // formatted version is for display.
-                'called_at' => $c->called_at ? substr($c->called_at, 0, 16) : null,
-                'formatted_called_at' => $c->formatted_called_at,
+                'called_at' => $c->called_at,
                 'note' => $c->note,
                 'note_html' => $c->note_html,
             ])->values()),
@@ -215,6 +212,9 @@ class ContactController extends Controller
                         'comment' => $isDeleted ? null : $c->comment,
                         'comment_html' => $isDeleted ? '' : $c->comment_html,
                         'created_at' => optional($c->created_at)->diffForHumans(),
+                        // UTC ISO-8601 for the hover tooltip; the client renders
+                        // it as an absolute time in the viewer's local zone.
+                        'created_at_iso' => $c->created_at,
                         'owner' => $isDeleted
                             ? null
                             : ($c->owner ? ['name' => $c->owner->name] : null),

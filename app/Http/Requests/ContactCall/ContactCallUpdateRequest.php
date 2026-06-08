@@ -25,7 +25,7 @@ class ContactCallUpdateRequest extends FormRequest
     {
         return [
             'note' => 'nullable',
-            'called_at' => 'required|date_format:Y-m-d\TH:i,Y-m-d\TH:i:s,d.m.Y H:i',
+            'called_at' => 'required|date',
         ];
     }
 }

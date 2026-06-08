@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
 use App\Models\Concerns\RendersMarkdown;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactCall extends Model
@@ -12,6 +13,23 @@ class ContactCall extends Model
     use RendersMarkdown;
 
     protected $fillable = ['note', 'called_at'];
+
+    // Stored in UTC (the app timezone). Clients send/receive ISO-8601 and
+    // convert to/from their local zone themselves — the server never renders a
+    // local time-of-day. Carbon parses an incoming Z/offset string to the
+    // correct UTC instant; a naive value is treated as already-UTC.
+    protected $casts = ['called_at' => 'datetime'];
+
+    // Normalize any incoming value to UTC before storing. Laravel's datetime
+    // cast alone would drop an explicit offset (it keeps the wall-clock and
+    // assumes the app tz), so we parse here: Carbon::parse honors a Z/offset
+    // and a naive value is read as already-UTC. The cast handles the read side.
+    public function setCalledAtAttribute($value): void
+    {
+        $this->attributes['called_at'] = $value === null || $value === ''
+            ? null
+            : Carbon::parse($value)->utc()->format('Y-m-d H:i:s');
+    }
 
     public function getNoteHtmlAttribute(): string
     {
@@ -33,39 +51,6 @@ class ContactCall extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
-    }
-
-    public function setCalledAtAttribute($value)
-    {
-        if ($value === null || trim((string) $value) === '') {
-            $this->attributes['called_at'] = null;
-
-            return;
-        }
-
-        // Accept ISO from <input type="datetime-local"> (2026-05-24T14:30 or
-        // 2026-05-24T14:30:00) plus the legacy d.m.Y H:i format.
-        $date = date_create_from_format('Y-m-d\TH:i:s', $value)
-            ?: date_create_from_format('Y-m-d\TH:i', $value)
-            ?: date_create_from_format('d.m.Y H:i', $value);
-
-        if ($date) {
-            $this->attributes['called_at'] = $date->format('Y-m-d H:i:s');
-        }
-    }
-
-    /**
-     * @return string A d.m.Y or d.m. formatted date
-     */
-    public function getFormattedCalledAtAttribute()
-    {
-        if ($this->called_at) {
-            $value = date_create_from_format('Y-m-d H:i:s', $this->called_at);
-
-            return $value->format('d.m.Y H:i');
-        }
-
-        return '';
     }
 
     /**

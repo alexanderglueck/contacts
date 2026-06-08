@@ -61,7 +61,7 @@ class ContactCallsController extends Controller
     {
         return [
             'ulid' => $c->ulid,
-            'called_at' => $c->called_at ? substr($c->called_at, 0, 16) : null,
+            'called_at' => $c->called_at,
             'note' => $c->note,
         ];
     }

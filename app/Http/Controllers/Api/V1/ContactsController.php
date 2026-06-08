@@ -420,7 +420,7 @@ class ContactsController extends Controller
 
             'calls' => $contact->calls->map(fn ($c) => [
                 'ulid' => $c->ulid,
-                'called_at' => $c->called_at ? substr($c->called_at, 0, 16) : null,
+                'called_at' => $c->called_at,
                 'note' => $c->note,
             ])->values(),
 

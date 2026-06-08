@@ -71,6 +71,17 @@ const displayValue = (value, field) => {
 
 const renderImage = (value) => value ? `/storage/${value}` : null;
 
+// Call times arrive as UTC ISO-8601; render them in the device's local zone.
+const formatDateTime = (iso) => {
+    if (! iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return String(iso);
+    return d.toLocaleString(undefined, {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+};
+
 // Sub-resource sections. Each one renders a side-by-side list with a checkbox
 // per row. Default checked = keep (preserves the old union behavior); unchecking
 // drops that row. contactGroups is rendered separately (unified, dedup'd) since
@@ -84,7 +95,7 @@ const subSections = [
     { key: 'comments', label: 'Comments', format: (r) => r.body },
     { key: 'giftIdeas', label: 'Gift ideas', format: (r) => r.name },
     { key: 'notes', label: 'Notes', format: (r) => r.body },
-    { key: 'calls', label: 'Calls', format: (r) => [r.when, r.body].filter(Boolean).join(' — ') },
+    { key: 'calls', label: 'Calls', format: (r) => [formatDateTime(r.when), r.body].filter(Boolean).join(' — ') },
 ];
 
 // Per-row keep state: subPicks[relationKey][id] = true|false (default true).
