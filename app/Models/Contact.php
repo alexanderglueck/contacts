@@ -20,6 +20,29 @@ class Contact extends Model implements CalendarInterface
     use Searchable;
     use HasFactory;
 
+    /**
+     * Sentinel birth year meaning "year unknown". When date_of_birth carries
+     * this year we suppress the year everywhere it would otherwise produce a
+     * misleading age/ordinal (e.g. a "126. Geburtstag") — the day/month is
+     * still shown, the year is not.
+     */
+    public const UNKNOWN_BIRTH_YEAR = 1900;
+
+    /**
+     * Whether the contact's birth year is actually known (i.e. a birthday with
+     * a non-sentinel year). False when there is no DOB or the year is 1900.
+     */
+    public function hasKnownBirthYear(): bool
+    {
+        if (! $this->date_of_birth) {
+            return false;
+        }
+
+        $dob = date_create_from_format('Y-m-d', $this->date_of_birth);
+
+        return $dob && (int) $dob->format('Y') !== self::UNKNOWN_BIRTH_YEAR;
+    }
+
     public function getNoteHtmlAttribute(): string
     {
         return $this->renderMarkdown($this->note);
@@ -140,7 +163,10 @@ class Contact extends Model implements CalendarInterface
         if ($this->date_of_birth) {
             $value = date_create_from_format('Y-m-d', $this->date_of_birth);
 
-            return $value->format('d.m.Y');
+            // Year 1900 means "unknown" — show day/month only, no year.
+            return $this->hasKnownBirthYear()
+                ? $value->format('d.m.Y')
+                : $value->format('d.m.');
         }
 
         return '';
@@ -243,12 +269,13 @@ class Contact extends Model implements CalendarInterface
 
         /**
          * Only calculate the x. appearance of the event if it is not the first
-         * time and if the year is not hidden.
+         * time and if the year is known (1900 = "year unknown", so we can't
+         * give a meaningful "Nth birthday" — show the plain title instead).
          */
-        if ($yearDifference == 0) {
+        if ($yearDifference == 0 || ! $this->hasKnownBirthYear()) {
             $title = trans('ui.date_of_birth');
         } else {
-            $title = ($year - $eventDate->format('Y')) . '. ' . trans('ui.date_of_birth');
+            $title = $yearDifference . '. ' . trans('ui.date_of_birth');
         }
 
         return $title . PHP_EOL . $this->fullname;

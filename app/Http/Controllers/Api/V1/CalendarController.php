@@ -203,7 +203,11 @@ class CalendarController extends Controller
         $dateStr = $this->resolveOccurrenceDate($targetYear, $eventDate);
         $contact = $source instanceof Contact ? $source : $source->contact;
 
-        $skipYear = $source instanceof ContactDate ? (bool) $source->skip_year : false;
+        // Important dates carry an explicit skip_year flag; birthdays use the
+        // 1900 sentinel to mean "year unknown". Either way, suppress the age.
+        $skipYear = $source instanceof ContactDate
+            ? (bool) $source->skip_year
+            : ! $source->hasKnownBirthYear();
         $years = $skipYear ? null : $yearDifference;
 
         $events[] = [

@@ -477,6 +477,7 @@
             "categorisation": "Kategorisierung"
         },
         "markdown_hint": "Markdown unterstützt: **fett**, *kursiv*, [Link](url), `Code`, Listen, > Zitate.",
+        "date_of_birth_hint": "Wenn du das Jahr nicht kennst, verwende 1900 — das Alter wird dann ausgeblendet.",
         "section": {
             "addresses": "Adressen",
             "numbers": "Telefonnummern",

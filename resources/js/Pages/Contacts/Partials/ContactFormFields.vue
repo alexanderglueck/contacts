@@ -103,6 +103,7 @@ defineProps({
                 <div>
                     <InputLabel for="date_of_birth" :value="t('contacts.fields.date_of_birth')" />
                     <TextInput id="date_of_birth" type="date" v-model="form.date_of_birth" />
+                    <p class="mt-1 text-xs text-gray-500">{{ t('contacts.date_of_birth_hint') }}</p>
                     <InputError :message="form.errors.date_of_birth" />
                 </div>
                 <div>

@@ -48,6 +48,34 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function events_suppresses_the_age_for_an_unknown_year_1900_birthday()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        create(Contact::class, [
+            'firstname' => 'Unknown',
+            'lastname' => 'Year',
+            // 1900 = "year unknown" sentinel — no meaningful age.
+            'date_of_birth' => '1900-05-25',
+            'active' => 1,
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+        ]);
+
+        $response = $this->getJson(route('api.v1.calendar.events', [
+            'from' => '2026-05-01',
+            'to' => '2026-05-31',
+        ]));
+
+        $response->assertOk();
+        $birthday = collect($response->json('data'))->firstWhere('type', 'birthday');
+        $this->assertSame('2026-05-25', $birthday['date']);
+        $this->assertTrue($birthday['skip_year']);
+        $this->assertNull($birthday['years']);
+    }
+
+    #[Test]
     public function events_excludes_birthdays_outside_the_window()
     {
         $user = $this->createUser();

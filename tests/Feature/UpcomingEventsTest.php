@@ -69,6 +69,28 @@ class UpcomingEventsTest extends TestCase
     }
 
     #[Test]
+    public function a_birthday_with_an_unknown_year_1900_hides_the_age_and_year()
+    {
+        $user = $this->createUser();
+        $today = new \DateTime('today');
+
+        create(Contact::class, [
+            'firstname' => 'Unknown', 'lastname' => 'Year',
+            // 1900 = "year unknown" sentinel.
+            'date_of_birth' => '1900-'.$today->format('m-d'),
+            'active' => 1, 'created_by' => $user->id, 'updated_by' => $user->id,
+        ]);
+
+        $event = UpcomingEvents::eventsOnDate($today)
+            ->firstWhere('type', UpcomingEvent::TYPE_BIRTHDAY);
+
+        // Plain title, no "126. " ordinal prefix.
+        $this->assertSame(trans('ui.date_of_birth'), $event->label((int) date('Y')));
+        // Formatted date drops the year.
+        $this->assertSame($today->format('d.m.'), $event->formatted());
+    }
+
+    #[Test]
     public function events_in_range_handles_a_window_crossing_the_year_boundary()
     {
         $user = $this->createUser();

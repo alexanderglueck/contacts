@@ -477,6 +477,7 @@
             "categorisation": "Categorisation"
         },
         "markdown_hint": "Markdown supported: **bold**, *italic*, [link](url), `code`, lists, > quotes.",
+        "date_of_birth_hint": "If you don't know the year, use 1900 — the age will be hidden.",
         "section": {
             "addresses": "Addresses",
             "numbers": "Phone numbers",

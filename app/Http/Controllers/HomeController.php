@@ -105,7 +105,8 @@ class HomeController extends Controller
             'date' => $occurrence->format('Y-m-d'),
             'days_until' => $daysUntil,
             'is_today' => $daysUntil === 0,
-            'turning' => $event->isBirthday()
+            // No meaningful age when the birth year is unknown (1900 sentinel).
+            'turning' => $event->isBirthday() && $event->contact->hasKnownBirthYear()
                 ? $occurrenceYear - (int) $event->date->format('Y')
                 : null,
         ];
