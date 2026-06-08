@@ -21,28 +21,29 @@ class MapController extends Controller
 
     public function contacts(MapContactsRequest $request): JsonResponse
     {
-        $rawBounds = explode(',', $request->bounds);
+        $rawBounds = array_map('floatval', explode(',', (string) $request->bounds));
+        [$swLat, $swLng, $neLat, $neLng] = array_pad($rawBounds, 4, 0.0);
 
-        $bounds = [
-            'sw_lat' => $rawBounds[0],
-            'sw_lng' => $rawBounds[1],
-            'ne_lat' => $rawBounds[2],
-            'ne_lng' => $rawBounds[3],
-        ];
-
-        $contactAddresses = ContactAddress::whereNotNull('latitude')
+        // whereHas('contact') runs through the Contact model, so its
+        // BelongsToTenantScope applies — only addresses whose contact is visible
+        // to the current tenant come back, and the eager-loaded relation is
+        // therefore never null below. (A raw join here would bypass that scope
+        // and hand us cross-tenant rows whose ->contact resolves to null.)
+        // Bounds are bound as parameters, not interpolated, to avoid injection.
+        $contactAddresses = ContactAddress::query()
+            ->whereNotNull('latitude')
             ->whereNotNull('longitude')
-            ->join('contacts', 'contact_id', '=', 'contacts.id')
-            ->where('active', 1)
-            ->whereRaw('(CASE WHEN ' . $bounds['ne_lat'] . ' < ' . $bounds['sw_lat'] . '
-                    THEN latitude BETWEEN ' . $bounds['ne_lat'] . ' AND ' . $bounds['sw_lat'] . '
-                    ELSE latitude BETWEEN ' . $bounds['sw_lat'] . ' AND ' . $bounds['ne_lat'] . '
-            END)
-            AND
-            (CASE WHEN ' . $bounds['ne_lng'] . ' < ' . $bounds['sw_lng'] . '
-                    THEN longitude BETWEEN ' . $bounds['ne_lng'] . ' AND ' . $bounds['sw_lng'] . '
-                    ELSE longitude BETWEEN ' . $bounds['sw_lng'] . ' AND ' . $bounds['ne_lng'] . '
-            END)')
+            ->whereHas('contact', fn ($q) => $q->where('active', 1))
+            ->whereRaw(
+                '(CASE WHEN ? < ? THEN latitude BETWEEN ? AND ? ELSE latitude BETWEEN ? AND ? END)
+                AND
+                (CASE WHEN ? < ? THEN longitude BETWEEN ? AND ? ELSE longitude BETWEEN ? AND ? END)',
+                [
+                    $neLat, $swLat, $neLat, $swLat, $swLat, $neLat,
+                    $neLng, $swLng, $neLng, $swLng, $swLng, $neLng,
+                ]
+            )
+            ->with(['contact', 'country'])
             ->get();
 
         $markers = [];
