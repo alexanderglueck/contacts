@@ -23,8 +23,7 @@ class SendTestPush extends Command
                             {user : User id or email}
                             {--message= : Custom body text}
                             {--device= : Limit to a single device ulid}
-                            {--type=test : data.type value the app branches on (e.g. daily, weekly, test)}
-                            {--low-priority : Send at lowest priority, like the real reminders}';
+                            {--type=test : data.type value the app branches on (e.g. daily, weekly, test)}';
 
     protected $description = 'Send a test push notification to a user\'s devices via FCM.';
 
@@ -74,10 +73,6 @@ class SendTestPush extends Command
                     'title' => $title,
                     'body' => $body,
                 ]);
-
-            if ($this->option('low-priority')) {
-                $message = $message->withLowestPossiblePriority();
-            }
 
             try {
                 Firebase::messaging()->send($message);
