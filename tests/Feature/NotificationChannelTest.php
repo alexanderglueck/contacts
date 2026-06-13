@@ -68,7 +68,7 @@ class NotificationChannelTest extends TestCase
     }
 
     #[Test]
-    public function fcm_channel_sends_a_low_priority_message_per_device_token()
+    public function fcm_channel_sends_a_high_priority_data_only_message_per_device_token()
     {
         $user = $this->createUser();
         create(Device::class, ['user_id' => $user->id, 'device_token' => 'token-abc']);
@@ -85,9 +85,15 @@ class NotificationChannelTest extends TestCase
         (new FcmChannel())->send($user->fresh(), new TodaysDates());
 
         $payload = $captured->jsonSerialize();
-        // withLowestPossiblePriority() sets Android normal priority + APNS 5 + WebPush low.
-        $this->assertSame('normal', $payload['android']['priority'] ?? null);
-        $this->assertSame('5', $payload['apns']['headers']['apns-priority'] ?? null);
+        // withHighestPossiblePriority() sets Android high priority + APNS 10 (Doze exemption).
+        $this->assertSame('high', $payload['android']['priority'] ?? null);
+        $this->assertSame('10', $payload['apns']['headers']['apns-priority'] ?? null);
+        // Data-only: no notification block; title/body/type ride along in the data payload
+        // so onMessageReceived runs in every app state and can deep-link.
+        $this->assertArrayNotHasKey('notification', $payload);
+        $this->assertSame('daily', $payload['data']['type'] ?? null);
+        $this->assertArrayHasKey('title', $payload['data'] ?? []);
+        $this->assertArrayHasKey('body', $payload['data'] ?? []);
     }
 
     #[Test]

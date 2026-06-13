@@ -24,8 +24,8 @@ class SendTestPush extends Command
                             {--message= : Custom body text}
                             {--device= : Limit to a single device ulid}
                             {--type=test : data.type value the app branches on (e.g. daily, weekly, test)}
-                            {--data-only : Omit the notification block so onMessageReceived always runs (deep-links to the calendar even when backgrounded)}
-                            {--low-priority : Send at lowest priority, like the real reminders}';
+                            {--data-only : Omit the notification block so onMessageReceived always runs (deep-links to the calendar even when backgrounded) — matches the real reminders}
+                            {--low-priority : Send at lowest priority (real reminders now go high priority; use this only to test the deprioritised path)}';
 
     protected $description = 'Send a test push notification to a user\'s devices via FCM.';
 
@@ -82,9 +82,9 @@ class SendTestPush extends Command
                     ->withData(['type' => $type]);
             }
 
-            if ($this->option('low-priority')) {
-                $message = $message->withLowestPossiblePriority();
-            }
+            $message = $this->option('low-priority')
+                ? $message->withLowestPossiblePriority()
+                : $message->withHighestPossiblePriority();
 
             try {
                 Firebase::messaging()->send($message);
