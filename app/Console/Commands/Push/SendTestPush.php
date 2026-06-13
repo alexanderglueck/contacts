@@ -24,7 +24,6 @@ class SendTestPush extends Command
                             {--message= : Custom body text}
                             {--device= : Limit to a single device ulid}
                             {--type=test : data.type value the app branches on (e.g. daily, weekly, test)}
-                            {--data-only : Omit the notification block so onMessageReceived always runs (deep-links to the calendar even when backgrounded) — matches the real reminders}
                             {--low-priority : Send at lowest priority, like the real reminders}';
 
     protected $description = 'Send a test push notification to a user\'s devices via FCM.';
@@ -63,24 +62,18 @@ class SendTestPush extends Command
 
         $title = config('app.name').' — Test';
         $type = (string) $this->option('type');
-        $dataOnly = (bool) $this->option('data-only');
 
         foreach ($devices as $device) {
-            $message = CloudMessage::new()->withToken($device->device_token);
-
-            if ($dataOnly) {
-                // No notification block → the system tray never intercepts it, so
-                // onMessageReceived runs in every app state and can deep-link.
-                $message = $message->withData([
+            // Data-only (no notification block), like the real reminders: the system
+            // tray never intercepts it, so onMessageReceived runs in every app state
+            // and can deep-link. title/body ride along in the data payload.
+            $message = CloudMessage::new()
+                ->withToken($device->device_token)
+                ->withData([
                     'type' => $type,
                     'title' => $title,
                     'body' => $body,
                 ]);
-            } else {
-                $message = $message
-                    ->withNotification(['title' => $title, 'body' => $body])
-                    ->withData(['type' => $type]);
-            }
 
             if ($this->option('low-priority')) {
                 $message = $message->withLowestPossiblePriority();
