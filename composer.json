@@ -2,7 +2,7 @@
     "name": "alexanderglueck/contacts",
     "description": "A simple contact management system to keep track of your friends and family.",
     "keywords": ["contacts", "laravel"],
-    "license": "TBD",
+    "license": "AGPL-3.0-or-later",
     "type": "project",
     "require": {
         "php": "^8.5",

@@ -97,22 +97,6 @@ crontab (or a cron sidecar container) **on the new system**:
 * * * * * cd /app && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-### Cutover from `contacts-old`
-
-When switching domains, to avoid double-sending reminders:
-
-1. Disable the `schedule:run` cron on the **old** server (its schedule lives in
-   `app/Console/Kernel.php`).
-2. Enable the `schedule:run` cron on the **new** server (above).
-3. Run the one-off birthday data migration once, after the contacts data is in
-   place — it moves legacy `Geburtstag` `ContactDate` rows into
-   `contacts.date_of_birth` and removes the source rows:
-
-   ```bash
-   php artisan contacts:migrate-birthdays --dry-run   # review first
-   php artisan contacts:migrate-birthdays
-   ```
-
 ### Push notifications (FCM)
 
 Push uses `kreait/laravel-firebase` (Firebase Cloud Messaging). Set the service
@@ -138,10 +122,12 @@ Please do not open an issue describing the vulnerability.
 
 ## Contribute
 
-Feel free to dive in! Open an issue or submit PRs.
+Feel free to dive in! Open an issue or submit a PR. Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) first.
 
 ## License
 
-See [LICENSE.md](LICENSE.md)
+Licensed under the GNU Affero General Public License v3.0 or later
+(AGPL-3.0-or-later). See [LICENSE.md](LICENSE.md) for the full text.
 
 [maintainer-alexanderglueck]: https://github.com/alexanderglueck

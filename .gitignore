@@ -14,3 +14,4 @@ npm-debug.log
 yarn-error.log
 /storage/tmp/
 .idea/
+.claude/settings.local.json
