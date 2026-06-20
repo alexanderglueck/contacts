@@ -3,7 +3,6 @@ import { nextTick, onBeforeUnmount, ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Cropper from 'cropperjs';
-import 'cropperjs/dist/cropper.css';
 import SettingsLayout from '@/Layouts/SettingsLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -17,6 +16,30 @@ const props = defineProps({
 });
 
 const OUTPUT_SIZE = 400;
+
+// cropper.js v2 is web-component based and takes a markup template rather than
+// the v1 flat options object. A square (1:1), full-coverage selection over a
+// contained image reproduces the old aspectRatio:1 / viewMode:1 / autoCropArea:1.
+const CROPPER_TEMPLATE = `
+<cropper-canvas background style="height: 60vh;">
+    <cropper-image rotatable scalable translatable></cropper-image>
+    <cropper-shade hidden></cropper-shade>
+    <cropper-handle action="move" plain></cropper-handle>
+    <cropper-selection aspect-ratio="1" initial-coverage="1" movable resizable zoomable outlined>
+        <cropper-grid role="grid" covered></cropper-grid>
+        <cropper-crosshair centered></cropper-crosshair>
+        <cropper-handle action="move" theme-color="rgba(255,255,255,0.35)"></cropper-handle>
+        <cropper-handle action="n-resize"></cropper-handle>
+        <cropper-handle action="e-resize"></cropper-handle>
+        <cropper-handle action="s-resize"></cropper-handle>
+        <cropper-handle action="w-resize"></cropper-handle>
+        <cropper-handle action="ne-resize"></cropper-handle>
+        <cropper-handle action="nw-resize"></cropper-handle>
+        <cropper-handle action="se-resize"></cropper-handle>
+        <cropper-handle action="sw-resize"></cropper-handle>
+    </cropper-selection>
+</cropper-canvas>
+`;
 
 const currentImage = ref(props.user.image ? `/storage/${props.user.image}` : null);
 const sourceImage = ref(null);
@@ -34,15 +57,16 @@ const initCropper = async () => {
     await nextTick();
     destroyCropper();
     if (! imgEl.value) return;
-    cropper = new Cropper(imgEl.value, {
-        aspectRatio: 1,
-        viewMode: 1,
-        autoCropArea: 1,
-        background: false,
-        responsive: true,
-        zoomable: true,
-        movable: true,
-    });
+    cropper = new Cropper(imgEl.value, { template: CROPPER_TEMPLATE });
+
+    // Fit the image inside the canvas once it has loaded, then centre the
+    // square selection over it.
+    const image = cropper.getCropperImage();
+    if (image) {
+        await image.$ready();
+        image.$center('contain');
+        cropper.getCropperSelection()?.$center();
+    }
 };
 
 const destroyCropper = () => {
@@ -82,14 +106,13 @@ const onFileChange = (event) => {
     reader.readAsDataURL(file);
 };
 
-const submit = () => {
-    if (! cropper) return;
+const submit = async () => {
+    const selection = cropper?.getCropperSelection();
+    if (! selection) return;
 
-    cropper.getCroppedCanvas({
-        width: OUTPUT_SIZE,
-        height: OUTPUT_SIZE,
-        imageSmoothingQuality: 'high',
-    }).toBlob((blob) => {
+    const canvas = await selection.$toCanvas({ width: OUTPUT_SIZE, height: OUTPUT_SIZE });
+
+    canvas.toBlob((blob) => {
         if (! blob) return;
         form.image = new File([blob], 'profile.png', { type: 'image/png' });
 
