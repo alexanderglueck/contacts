@@ -21,7 +21,7 @@
         "kreait/laravel-firebase": "^7.0",
         "laravel/cashier": "^16.0",
         "laravel/fortify": "^1.37",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^13.0",
         "laravel/jetstream": "^5.5",
         "laravel/sanctum": "^4.3",
         "laravel/scout": "^11.0",
