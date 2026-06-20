@@ -15,7 +15,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Drivers\Imagick\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\ImageManager;
 
 class ContactsController extends Controller
@@ -192,14 +193,13 @@ class ContactsController extends Controller
         // A per-call ImageManager keeps this isolated; the rest of the
         // app keeps using the default (GD) Image facade.
         try {
-            $encoded = (string) (new ImageManager(['driver' => 'imagick']))
-                ->make($request->file('file')->getRealPath())
-                // Phone JPEGs carry the rotation as an EXIF Orientation tag
-                // rather than rotated pixels; the encode step below strips
-                // EXIF, so without this the saved file displays sideways.
-                ->orientate()
-                ->fit(400, 400)
-                ->encode('jpg', 85);
+            // autoOrientation rotates the pixels to match any EXIF Orientation
+            // tag on decode (phone JPEGs), and strip removes metadata on encode
+            // so viewers don't rotate a second time off the stale tag.
+            $encoded = (string) (new ImageManager(new Driver(), autoOrientation: true, strip: true))
+                ->decode($request->file('file')->getRealPath())
+                ->cover(400, 400)
+                ->encode(new JpegEncoder(quality: 85));
         } catch (\Throwable $e) {
             // Decode failed — corrupted file, unexpected variant the
             // installed Imagick build can't handle, etc. Surface as a

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Account;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -36,12 +36,11 @@ class ProfileImageController extends Controller
 
             // Cap server-side to 400x400 even if the client uploaded larger.
             // The Vue cropper already produces 400x400 PNG, this is a safety net.
-            // orientate() applies the EXIF Orientation tag to the pixels so
-            // phone-camera shots don't end up sideways after EXIF is stripped.
-            Image::make(storage_path('app/public/') . $file)
-                ->orientate()
-                ->fit(400, 400)
-                ->save();
+            // read() auto-applies the EXIF Orientation tag (config autoOrientation)
+            // so phone-camera shots don't end up sideways; EXIF is then stripped.
+            Image::decode(storage_path('app/public/') . $file)
+                ->cover(400, 400)
+                ->save(storage_path('app/public/') . $file);
 
             if ($request->user()->image) {
                 if (file_exists(storage_path('app/public/') . $request->user()->image)) {
