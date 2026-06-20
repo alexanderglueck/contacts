@@ -134,4 +134,30 @@ class UpcomingEventsTest extends TestCase
         $this->assertCount(1, $events);
         $this->assertSame('Mine', $events->first()->contact->firstname);
     }
+
+    #[Test]
+    public function important_dates_on_a_foreign_team_contact_are_excluded()
+    {
+        $user = $this->createUser();
+        $today = new \DateTime('today');
+
+        $otherTeam = create(Team::class, ['owner_id' => $user->id]);
+        $foreign = create(Contact::class, [
+            'firstname' => 'Foreign', 'lastname' => 'Date', 'date_of_birth' => null,
+            'active' => 1, 'created_by' => $user->id, 'updated_by' => $user->id,
+        ]);
+        DB::table('contacts')->where('id', $foreign->id)->update(['team_id' => $otherTeam->id]);
+        create(ContactDate::class, [
+            'contact_id' => $foreign->id, 'name' => 'Hochzeitstag',
+            'date' => '2010-'.$today->format('m-d'), 'skip_year' => false,
+            'created_by' => $user->id, 'updated_by' => $user->id,
+        ]);
+
+        // Before the tenant-filter fix, datesOnDate()/datesInRange() returned
+        // this foreign date (raw join, unscoped) and then $contactDate->contact
+        // (tenant-scoped) was null — a TypeError in UpcomingEvent::fromContactDate.
+        $events = UpcomingEvents::eventsOnDate($today);
+
+        $this->assertCount(0, $events);
+    }
 }

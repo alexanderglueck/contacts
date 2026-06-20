@@ -89,6 +89,15 @@ class ContactDate extends Model implements CalendarInterface
             ->join('contacts', 'contact_id', '=', 'contacts.id')
             ->where('active', 1);
 
+        // ContactDate isn't tenant-scoped, but Contact is. Without this filter
+        // the raw join returns dates for every team's contacts, and then
+        // $contactDate->contact (which DOES apply BelongsToTenantScope) comes
+        // back null for the out-of-team ones — a 500 and a cross-team leak.
+        // Mirror the scope here so both stay consistent.
+        if (auth()->check()) {
+            $query->where('contacts.team_id', auth()->user()->current_team_id);
+        }
+
         // FullCalendar's listYear view requests start..end spanning a full
         // year, which collapses both MMDDs to the same value and makes the
         // BETWEEN match exactly one day. When the range is 365+ days every
@@ -136,9 +145,17 @@ class ContactDate extends Model implements CalendarInterface
     {
         $mmdd = self::mmddExpression('date');
 
-        return self::select('contact_dates.*')
+        $query = self::select('contact_dates.*')
             ->join('contacts', 'contact_id', '=', 'contacts.id')
-            ->where('active', 1)
+            ->where('active', 1);
+
+        // Keep this in lockstep with the BelongsToTenantScope applied to
+        // $contactDate->contact (see datesInRange() for the rationale).
+        if (auth()->check()) {
+            $query->where('contacts.team_id', auth()->user()->current_team_id);
+        }
+
+        return $query
             ->whereRaw("{$mmdd} = ?", [$date->format('md')])
             ->get();
     }
