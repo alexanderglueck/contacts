@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Teamwork;
 
 use App\Domain\Teams\TeamInvitationService;
+use App\Support\SeatBilling;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 
@@ -23,7 +24,9 @@ class AuthController extends Controller
             $owner = $team->owner;
 
             // increase the quantity because a new user joined
-            $owner->subscription('main')->incrementQuantity();
+            if (SeatBilling::syncsToStripe()) {
+                $owner->subscription('main')->incrementQuantity();
+            }
 
             $invitations->accept($invite, auth()->user());
 

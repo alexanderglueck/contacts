@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\TeamInvite;
 use App\Domain\Teams\TeamInvitationService;
+use App\Support\SeatBilling;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -75,7 +76,9 @@ class TeamMemberController extends Controller
         }
 
         // Decrease the quantity because a user is being removed
-        $team->owner->subscription('main')->decrementQuantity();
+        if (SeatBilling::syncsToStripe()) {
+            $team->owner->subscription('main')->decrementQuantity();
+        }
 
         $user->detachTeam($team);
 
