@@ -22,12 +22,12 @@
         "laravel/cashier": "^16.0",
         "laravel/fortify": "^1.37",
         "laravel/framework": "^12.0",
+        "laravel/jetstream": "^5.5",
         "laravel/sanctum": "^4.3",
         "laravel/scout": "^11.0",
         "laravel/tinker": "^3.0",
         "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.16",
-        "mpociot/teamwork": "^10.0",
         "pusher/pusher-php-server": "^7.2",
         "symfony/html-sanitizer": "^8.0",
         "tightenco/ziggy": "^2.6"

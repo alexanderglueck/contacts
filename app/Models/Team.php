@@ -5,10 +5,9 @@ namespace App\Models;
 use App\Tenant\Models\Tenant;
 use App\Tenant\Traits\IsTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
+use Laravel\Jetstream\Team as JetstreamTeam;
 
-class Team extends Model implements Tenant
+class Team extends JetstreamTeam implements Tenant
 {
     use IsTenant, HasFactory;
 
@@ -27,6 +26,10 @@ class Team extends Model implements Tenant
         'two_factor_required',
     ];
 
+    /**
+     * This app tracks team ownership via `owner_id`, not Jetstream's default
+     * `user_id`, so override the inherited owner() relation accordingly.
+     */
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
@@ -44,7 +47,7 @@ class Team extends Model implements Tenant
 
     public function invites()
     {
-        return $this->hasMany(Config::get('teamwork.invite_model'), 'team_id', 'id');
+        return $this->hasMany(TeamInvite::class, 'team_id', 'id');
     }
 
     public function getRouteKeyName(): string

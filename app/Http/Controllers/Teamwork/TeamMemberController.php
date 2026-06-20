@@ -10,10 +10,10 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\TeamInvite;
+use App\Domain\Teams\TeamInvitationService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Mpociot\Teamwork\Facades\Teamwork;
 
 class TeamMemberController extends Controller
 {
@@ -85,22 +85,21 @@ class TeamMemberController extends Controller
         return redirect(route('teams.index'));
     }
 
-    public function invite(Request $request, Team $team): RedirectResponse
+    public function invite(Request $request, Team $team, TeamInvitationService $invitations): RedirectResponse
     {
         if ($this->isImpersonating()) {
             return redirect()->route('home');
         }
 
-        if ( ! Teamwork::hasPendingInvite($request->email, $team)) {
-            Teamwork::inviteToTeam($request->email, $team, function ($invite) {
-                Mail::to($invite->email)->send(new TeamInvitation($invite));
-                // Send email to user
-            });
-        } else {
+        if ($invitations->hasPendingInvite($request->email, $team)) {
             return redirect()->back()->withErrors([
                 'email' => 'The email address is already invited to the team.'
             ]);
         }
+
+        $invite = $invitations->invite($request->email, $team, $request->user());
+
+        Mail::to($invite->email)->send(new TeamInvitation($invite));
 
         return redirect(route('teams.members.show', $team->uuid));
     }

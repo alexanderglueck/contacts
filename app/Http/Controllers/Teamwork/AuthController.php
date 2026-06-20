@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Teamwork;
 
+use App\Domain\Teams\TeamInvitationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
-use Mpociot\Teamwork\Facades\Teamwork;
 
 class AuthController extends Controller
 {
     /**
      * Accept the given invite
      */
-    public function acceptInvite(string $token): RedirectResponse
+    public function acceptInvite(string $token, TeamInvitationService $invitations): RedirectResponse
     {
-        $invite = Teamwork::getInviteFromAcceptToken($token);
+        $invite = $invitations->fromAcceptToken($token);
         if ( ! $invite) {
             abort(404);
         }
@@ -25,7 +25,7 @@ class AuthController extends Controller
             // increase the quantity because a new user joined
             $owner->subscription('main')->incrementQuantity();
 
-            Teamwork::acceptInvite($invite);
+            $invitations->accept($invite, auth()->user());
 
             return redirect()->route('teams.index');
         } else {

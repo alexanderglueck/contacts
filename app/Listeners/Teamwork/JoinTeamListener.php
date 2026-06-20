@@ -2,10 +2,14 @@
 
 namespace App\Listeners\Teamwork;
 
-use Mpociot\Teamwork\Facades\Teamwork;
+use App\Domain\Teams\TeamInvitationService;
 
 class JoinTeamListener
 {
+    public function __construct(private TeamInvitationService $invitations)
+    {
+    }
+
     /**
      * See if the session contains an invite token on login and try to accept
      * it.
@@ -15,8 +19,8 @@ class JoinTeamListener
     public function handle($event)
     {
         if (session('invite_token')) {
-            if ($invite = Teamwork::getInviteFromAcceptToken(session('invite_token'))) {
-                Teamwork::acceptInvite($invite);
+            if ($invite = $this->invitations->fromAcceptToken(session('invite_token'))) {
+                $this->invitations->accept($invite, $event->user);
             }
             session()->forget('invite_token');
         }

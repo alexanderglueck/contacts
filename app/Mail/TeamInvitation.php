@@ -2,9 +2,9 @@
 
 namespace App\Mail;
 
+use App\Models\TeamInvite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Mpociot\Teamwork\TeamInvite;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

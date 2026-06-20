@@ -13,6 +13,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(MappingHolder::class, function () {
             return new MappingHolder();
         });
+
+        // We use Jetstream only for its team model layer (HasTeams trait +
+        // Team/Membership models); the app owns its own team routes, controllers
+        // and Vue pages. Suppress Jetstream's own route registration. Done in
+        // register() so it runs before Jetstream's service provider boots.
+        Jetstream::ignoreRoutes();
     }
 
     /**

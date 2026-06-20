@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2b4fd83446c9889b8be6365bb228e1b",
+    "content-hash": "101eae81cd424b41cc0fe5b9385abf30",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4011,6 +4011,72 @@
             "time": "2026-06-04T14:22:52+00:00"
         },
         {
+            "name": "laravel/jetstream",
+            "version": "v5.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/jetstream.git",
+                "reference": "61cac5cde455311890f6981fb2da47acd298e4e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/jetstream/zipball/61cac5cde455311890f6981fb2da47acd298e4e2",
+                "reference": "61cac5cde455311890f6981fb2da47acd298e4e2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "laravel/fortify": "^1.20",
+                "mobiledetect/mobiledetectlib": "^4.8.08",
+                "php": "^8.2.0",
+                "symfony/console": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "inertiajs/inertia-laravel": "^2.0",
+                "laravel/sanctum": "^4.0",
+                "livewire/livewire": "^3.3",
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^9.15|^10.8|^11.0",
+                "phpstan/phpstan": "^1.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Jetstream\\JetstreamServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Jetstream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Tailwind scaffolding for the Laravel framework.",
+            "keywords": [
+                "auth",
+                "laravel",
+                "tailwind"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/jetstream/issues",
+                "source": "https://github.com/laravel/jetstream"
+            },
+            "time": "2026-05-19T01:30:03+00:00"
+        },
+        {
             "name": "laravel/passkeys",
             "version": "v0.2.1",
             "source": {
@@ -5389,6 +5455,70 @@
             "time": "2025-09-18T10:15:45+00:00"
         },
         {
+            "name": "mobiledetect/mobiledetectlib",
+            "version": "4.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/serbanghita/Mobile-Detect.git",
+                "reference": "ab39168b7556f44c11c80be1222b44b239f5c2e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/ab39168b7556f44c11c80be1222b44b239f5c2e4",
+                "reference": "ab39168b7556f44c11c80be1222b44b239f5c2e4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.95.1",
+                "phpbench/phpbench": "1.6.1",
+                "phpstan/phpstan": "2.1.47",
+                "phpunit/phpunit": "9.6.34",
+                "squizlabs/php_codesniffer": "3.13.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Detection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Serban Ghita",
+                    "email": "serbanghita@gmail.com",
+                    "homepage": "http://mobiledetect.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
+            "homepage": "https://github.com/serbanghita/Mobile-Detect",
+            "keywords": [
+                "detect mobile devices",
+                "mobile",
+                "mobile detect",
+                "mobile detector",
+                "php mobile detect"
+            ],
+            "support": {
+                "issues": "https://github.com/serbanghita/Mobile-Detect/issues",
+                "source": "https://github.com/serbanghita/Mobile-Detect/tree/4.11.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/serbanghita",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-24T12:32:40+00:00"
+        },
+        {
             "name": "moneyphp/money",
             "version": "v4.9.0",
             "source": {
@@ -5580,72 +5710,6 @@
                 }
             ],
             "time": "2026-01-02T08:56:05+00:00"
-        },
-        {
-            "name": "mpociot/teamwork",
-            "version": "10.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mpociot/teamwork.git",
-                "reference": "9a5e8832d7be90ef16a0f5e812539302202a89ef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mpociot/teamwork/zipball/9a5e8832d7be90ef16a0f5e812539302202a89ef",
-                "reference": "9a5e8832d7be90ef16a0f5e812539302202a89ef",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^9.0|^10.0|^11.0|^12.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "doctrine/dbal": "^2.10|^3.5|^4.2",
-                "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
-                "mockery/mockery": "^1.5.1",
-                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Teamwork": "Mpociot\\Teamwork\\Facades\\Teamwork"
-                    },
-                    "providers": [
-                        "Mpociot\\Teamwork\\TeamworkServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Mpociot\\Teamwork\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marcel Pociot",
-                    "email": "m.pociot@gmail.com"
-                },
-                {
-                    "name": "Oliver Kaufmann",
-                    "email": "okaufmann91@gmail.com"
-                }
-            ],
-            "description": "User to Team associations for the Laravel 5 Framework",
-            "homepage": "http://github.com/mpociot/teamwork",
-            "keywords": [
-                "Invite",
-                "Teams"
-            ],
-            "support": {
-                "issues": "https://github.com/mpociot/teamwork/issues",
-                "source": "https://github.com/mpociot/teamwork"
-            },
-            "time": "2025-05-21T08:10:58+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

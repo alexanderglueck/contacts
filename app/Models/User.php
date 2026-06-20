@@ -16,8 +16,8 @@ use Laravel\Cashier\Subscription;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passkeys\PasskeyAuthenticatable;
+use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
-use Mpociot\Teamwork\Traits\UserHasTeams;
 
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -26,12 +26,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     use HasFactory;
     use HasRoles;
     use HasSubscriptions;
+    use HasTeams;
     use HasUlidRouteKey;
     use Notifiable;
     use PasskeyAuthenticatable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
-    use UserHasTeams;
 
     protected $fillable = [
         'name',
@@ -143,6 +143,18 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->devices()->withDeviceToken()->pluck('device_token')->unique()->values()->all();
     }
 
+    /**
+     * The user's currently selected team. Overrides Jetstream's HasTeams
+     * version, which auto-switches to a "personal team" when current_team_id
+     * is null — this app has no personal teams and current_team_id is allowed
+     * to be null (e.g. right after the user's last team is deleted), so a
+     * plain relation is what we want.
+     */
+    public function currentTeam()
+    {
+        return $this->belongsTo(Team::class, 'current_team_id');
+    }
+
     public function isOwnerOfTeam($team)
     {
         return $team->owner_id == $this->id;
@@ -152,6 +164,40 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         $this->current_team_id = $team->id;
         $this->save();
+    }
+
+    /**
+     * Add the user to a team (and make it current if they have none yet).
+     * Replaces mpociot/teamwork's UserHasTeams::attachTeam().
+     */
+    public function attachTeam($team): void
+    {
+        $teamId = $team instanceof Team ? $team->id : $team;
+
+        if (is_null($this->current_team_id)) {
+            $this->current_team_id = $teamId;
+            $this->save();
+        }
+
+        if (! $this->teams()->where('teams.id', $teamId)->exists()) {
+            $this->teams()->attach($teamId);
+        }
+    }
+
+    /**
+     * Remove the user from a team, clearing current_team_id if they leave their
+     * current team or run out of teams. Replaces UserHasTeams::detachTeam().
+     */
+    public function detachTeam($team): void
+    {
+        $teamId = $team instanceof Team ? $team->id : $team;
+
+        $this->teams()->detach($teamId);
+
+        if ($this->teams()->count() === 0 || $this->current_team_id === $teamId) {
+            $this->current_team_id = null;
+            $this->save();
+        }
     }
 
     public function plan()
