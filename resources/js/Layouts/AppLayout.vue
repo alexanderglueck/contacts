@@ -7,6 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FlashBanner from '@/Components/FlashBanner.vue';
+import ImpersonationBanner from '@/Components/ImpersonationBanner.vue';
 
 const { t } = useI18n();
 
@@ -28,6 +29,8 @@ const isActive = (name) => {
 
 <template>
     <div class="min-h-screen bg-gray-100">
+        <ImpersonationBanner />
+
         <nav class="bg-white border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">

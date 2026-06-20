@@ -228,7 +228,7 @@ Route::group(['middleware' => 'subscription.active'], function () {
      * Impersonate user
      */
     Route::post('impersonate', [ImpersonateController::class, 'store'])->name('user.impersonate');
-    Route::delete('impersonate', [ImpersonateController::class, 'destroy']);
+    Route::delete('impersonate', [ImpersonateController::class, 'destroy'])->name('user.impersonate.destroy');
 
     /**
      * Activities

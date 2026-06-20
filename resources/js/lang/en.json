@@ -1,4 +1,8 @@
 {
+    "impersonation": {
+        "banner": "You are impersonating {name}.",
+        "stop": "Stop impersonating"
+    },
     "common": {
         "save": "Save",
         "update": "Update",

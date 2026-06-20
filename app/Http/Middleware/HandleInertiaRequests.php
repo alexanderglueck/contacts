@@ -32,6 +32,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
+                // While impersonating, $request->user() is already the
+                // impersonated user (see Impersonate middleware), so the banner
+                // reads auth.user.name; this flag just toggles its visibility.
+                'impersonating' => fn () => $request->session()->has('impersonate'),
                 'user' => fn () => $request->user()
                     ? [
                         'id' => $request->user()->id,

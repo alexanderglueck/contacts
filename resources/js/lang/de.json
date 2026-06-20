@@ -1,4 +1,8 @@
 {
+    "impersonation": {
+        "banner": "Sie agieren als {name}.",
+        "stop": "Identitätswechsel beenden"
+    },
     "common": {
         "save": "Speichern",
         "update": "Aktualisieren",
