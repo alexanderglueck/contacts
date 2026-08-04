@@ -2,10 +2,14 @@
 #
 # Multi-stage build for the contacts app.
 #
-#   composer-bin → assets ┐
-#                 vendor  ├→ production
-#                 vendor  → vendor-dev ┐
-#                                base ─┴→ dev → testing
+#   composer-bin → vendor → assets ┐
+#                          vendor  ├→ production
+#                          vendor  → vendor-dev ┐
+#                                         base ─┴→ dev → testing
+#
+# NOTE: `vendor` must stay defined BEFORE `assets` -- the JS build copies the
+# Ziggy PHP package out of it, and BuildKit only allows COPY --from a stage that
+# is already defined.
 #
 # Targets:
 #   production  — slim php-fpm image, no-dev vendor, built assets, app baked in.
@@ -28,22 +32,6 @@ ARG COMPOSER_VERSION=2.9
 # composer-bin — provides the composer binary for later stages.
 # =====================================================================
 FROM composer:${COMPOSER_VERSION} AS composer-bin
-
-
-# =====================================================================
-# assets — builds frontend assets (Vite output) into /app/public/build.
-# =====================================================================
-FROM node:${NODE_VERSION}-alpine AS assets
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci
-
-COPY vite.config.js ./
-COPY resources ./resources
-
-RUN npm run build
 
 
 # =====================================================================
@@ -79,6 +67,31 @@ RUN --mount=type=cache,target=/tmp/composer-cache \
         --prefer-dist \
         --optimize-autoloader \
         --ignore-platform-reqs
+
+
+# =====================================================================
+# assets — builds frontend assets (Vite output) into /app/public/build.
+# =====================================================================
+FROM node:${NODE_VERSION}-alpine AS assets
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
+
+COPY vite.config.js ./
+COPY resources ./resources
+
+# resources/js/app.js imports the Ziggy Vue plugin from the PHP package
+# ('../../vendor/tightenco/ziggy'), so the JS build needs that one vendor
+# directory present. Copy just it, not all of vendor/: this stage stays small and
+# its layer cache does not churn on unrelated composer changes.
+# Without this, `npm run build` fails with UNRESOLVED_IMPORT (it only shows up in
+# a clean image build -- local dev bind-mounts the whole source tree, vendor/
+# included, so the import resolves there).
+COPY --from=vendor /app/vendor/tightenco/ziggy ./vendor/tightenco/ziggy
+
+RUN npm run build
 
 
 # =====================================================================
