@@ -1,0 +1,56 @@
+name: Deploy
+
+# On push to the default branch, tell the deploy manager to build and roll this
+# app on the server. It uses the manager's generic trigger, so nothing here has to
+# know how the deploy itself works.
+#
+# SET THESE in the repo: Settings -> Secrets and variables -> Actions:
+#   DEPLOY_URL     required, the project's endpoint, e.g.
+#                  https://deploy.glck.at/api/deploy/<deploy_endpoint>
+#   DEPLOY_SECRET  required, that project's webhook secret (shown once when the
+#                  project is created)
+#
+# Both come from the deploy manager: POST /api/v1/projects returns deploy_url and
+# webhook_secret, or read them off the project's page in the UI.
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch: {}
+
+# One deploy at a time; a newer push supersedes an in-flight run. The manager
+# cancels superseded queued deployments on its side too.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        env:
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+          DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+        run: |
+          set -euo pipefail
+
+          for v in DEPLOY_URL DEPLOY_SECRET; do
+            if [ -z "${!v:-}" ]; then
+              echo "::error::$v secret is not set." >&2
+              exit 1
+            fi
+          done
+
+          # The manager's generic trigger wants event/ref/repo; sha is optional
+          # but makes the deployment show the commit it belongs to.
+          payload="$(printf '{"event":"push","ref":"%s","repo":"%s","sha":"%s"}' \
+            "${GITHUB_REF}" "${GITHUB_REPOSITORY}" "${GITHUB_SHA}")"
+
+          echo "POST ${DEPLOY_URL%/*}/... (ref=${GITHUB_REF})"
+          # Non-2xx fails the job so a broken deploy is visible in the run list.
+          curl -fsS --retry 3 --retry-delay 5 -X POST "${DEPLOY_URL}" \
+            -H 'Content-Type: application/json' \
+            -H "X-Deploy-Secret: ${DEPLOY_SECRET}" \
+            --data "${payload}"
+          echo
+          echo "Deployment triggered."
