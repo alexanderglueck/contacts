@@ -6,6 +6,7 @@ use App\Imports\MappingHolder;
 use App\Models\ContactEmail;
 use App\Models\ContactNumber;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -21,10 +22,10 @@ class NumbersSheet implements ToModel
     {
     }
 
-    public function model(array $row)
+    public function model(array $row): Model|array|null
     {
         if ( ! $row || $row[0] == null) {
-            return;
+            return null;
         }
 
         $import = new ContactNumber([

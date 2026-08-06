@@ -5,6 +5,7 @@ namespace App\Imports\Sheets;
 use App\Imports\MappingHolder;
 use App\Models\ContactAddress;
 use App\Models\Country;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 
@@ -16,10 +17,10 @@ class AddressesSheet implements ToModel
     {
     }
 
-    public function model(array $row)
+    public function model(array $row): Model|array|null
     {
         if ( ! $row || $row[0] == null) {
-            return;
+            return null;
         }
 
         $import = new ContactAddress([
