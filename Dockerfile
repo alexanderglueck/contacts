@@ -82,6 +82,13 @@ RUN --mount=type=cache,target=/root/.npm \
 COPY vite.config.js ./
 COPY resources ./resources
 
+# Vite inlines VITE_* at BUILD time and this stage has no .env, so anything the
+# bundle needs has to arrive as a build arg. Vite picks up prefixed variables
+# from the process environment, so declaring them here is enough -- deploy's
+# project variables (build_arg flag) supply the values through deploy/build.sh.
+ARG VITE_APP_NAME=""
+ENV VITE_APP_NAME=${VITE_APP_NAME}
+
 # resources/js/app.js imports the Ziggy Vue plugin from the PHP package
 # ('../../vendor/tightenco/ziggy'), so the JS build needs that one vendor
 # directory present. Copy just it, not all of vendor/: this stage stays small and
