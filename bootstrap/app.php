@@ -35,6 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withBroadcasting(__DIR__.'/../routes/channels.php')
     ->withMiddleware(function (Middleware $middleware) {
+        // TLS terminates at the Cloudflare tunnel, so the request reaches nginx
+        // as plain HTTP. Without trusting the proxy's X-Forwarded-Proto every
+        // generated URL comes out http:// on an https:// page, and the browser
+        // blocks the Inertia visit as mixed active content. Trusting any proxy
+        // is safe here because the container is only reachable through the
+        // tunnel and the internal Docker network, never directly.
+        $middleware->trustProxies(at: '*');
+
         $middleware->validateCsrfTokens(except: [
             'webhooks/*',
         ]);
