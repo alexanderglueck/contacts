@@ -111,14 +111,36 @@ class CreateTenantDatabaseEntry implements ShouldQueue
     {
         config()->set('scout.prefix', 'tenant_' . $tenant->id . '_');
 
+        if (! $this->usesMeilisearch()) {
+            return;
+        }
+
         $this->dropExistingIndex();
 
         $client = new Client(config('scout.meilisearch.host'), config('scout.meilisearch.key'));
         $client->createIndex(config('scout.prefix') . 'contact');
     }
 
+    /**
+     * Whether index management should talk to Meilisearch at all.
+     *
+     * This listener builds a Meilisearch client directly rather than going
+     * through Scout, so it ignores SCOUT_DRIVER — which meant the test suite
+     * (SCOUT_DRIVER=collection, in-memory database) still created a real index
+     * per tenant factory on whatever host the environment pointed at. A test
+     * run against a production host left thousands of orphan indexes behind.
+     */
+    protected function usesMeilisearch(): bool
+    {
+        return config('scout.driver') === 'meilisearch';
+    }
+
     protected function dropExistingIndex(): void
     {
+        if (! $this->usesMeilisearch()) {
+            return;
+        }
+
         $client = new Client(config('scout.meilisearch.host'), config('scout.meilisearch.key'));
 
         try {
