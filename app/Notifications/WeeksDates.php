@@ -64,8 +64,9 @@ class WeeksDates extends Notification
         $twoWeeks = DateInterval::createFromDateString('2 weeks');
         $oneDay = DateInterval::createFromDateString('1 day');
 
+        // See TodaysDates: the sender must stay the authenticated mailbox, so no
+        // ->from() here either.
         $mailMessage = (new MailMessage)
-            ->from('service@gdev.at', config('app.name'))
             ->subject('Bevorstehende Ereignisse');
 
         // ───── This week: today … today + 6 days ─────

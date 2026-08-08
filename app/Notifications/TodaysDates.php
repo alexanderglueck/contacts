@@ -80,8 +80,12 @@ class TodaysDates extends Notification
         $year = (int) date('Y');
         $events = UpcomingEvents::eventsOnDate(new \DateTime());
 
+        // No ->from() on purpose: the sender comes from MAIL_FROM_ADDRESS, which
+        // must be the mailbox we authenticate as. Overriding it here made the
+        // mail server reject the whole notification with "501 5.5.4 You are not
+        // allowed to send from this address" -- and because 'mail' is ordered
+        // before the push channel in via(), that exception meant no push either.
         $mailMessage = (new MailMessage)
-            ->from('service@gdev.at', config('app.name'))
             ->subject('Heutige Ereignisse');
 
         if (count($events) > 0) {
