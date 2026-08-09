@@ -8,6 +8,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FlashBanner from '@/Components/FlashBanner.vue';
 import ImpersonationBanner from '@/Components/ImpersonationBanner.vue';
+import GlobalSearch from '@/Components/GlobalSearch.vue';
 
 const { t } = useI18n();
 
@@ -17,6 +18,11 @@ defineProps({
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
+// The suggest endpoint sits behind subscription.active, so an unsubscribed
+// user would only get a box that redirects — hide it rather than tease it.
+const canSearch = computed(
+    () => page.props.auth?.can?.view_contacts === true && page.props.auth?.is_subscribed === true,
+);
 
 const isActive = (name) => {
     try {
@@ -60,6 +66,14 @@ const isActive = (name) => {
                             <NavLink :href="route('reports.index')" :active="isActive('reports.*')">
                                 {{ t('nav.reports') }}
                             </NavLink>
+                        </div>
+                    </div>
+
+                    <!-- Jump straight to a contact from any page, so reaching one
+                         no longer means visiting the contacts list first. -->
+                    <div v-if="canSearch" class="flex flex-1 min-w-0 items-center justify-end px-2 sm:px-4 lg:px-6">
+                        <div class="w-full max-w-xs">
+                            <GlobalSearch />
                         </div>
                     </div>
 

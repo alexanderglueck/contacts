@@ -35,6 +35,13 @@
         "audit_log": "Aktivitätsprotokoll",
         "logout": "Abmelden"
     },
+    "search": {
+        "label": "Kontakte durchsuchen",
+        "placeholder": "Kontakte durchsuchen…",
+        "searching": "Suche läuft…",
+        "no_results": "Keine Kontakte gefunden",
+        "show_all": "Alle Ergebnisse für „{q}“ anzeigen"
+    },
     "settings_nav": {
         "section_account": "Konto",
         "section_communication": "Kommunikation",

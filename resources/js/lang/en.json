@@ -35,6 +35,13 @@
         "audit_log": "Audit log",
         "logout": "Log out"
     },
+    "search": {
+        "label": "Search contacts",
+        "placeholder": "Search contacts…",
+        "searching": "Searching…",
+        "no_results": "No contacts found",
+        "show_all": "Show all results for “{q}”"
+    },
     "settings_nav": {
         "section_account": "Account",
         "section_communication": "Communication",

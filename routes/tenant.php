@@ -179,6 +179,7 @@ Route::group(['middleware' => 'subscription.active'], function () {
      * Search
      */
     Route::post('search', [SearchController::class, 'search'])->name('search.search');
+    Route::get('search/suggest', [SearchController::class, 'suggest'])->name('search.suggest');
 
     /**
      * Reports
