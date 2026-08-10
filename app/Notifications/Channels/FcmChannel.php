@@ -10,11 +10,10 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 
 /**
  * Sends a notification as a Firebase Cloud Messaging push to every device
- * target returned by the notifiable's routeNotificationForFcm() — a Firebase
- * Installation ID where the device has one, else its legacy registration
- * token. Both travel in the message's `token` field: kreait/firebase-php has
- * no FID target, and FCM's v1 API accepts a FID there during the transition
- * period in which `token` is deprecated.
+ * target returned by the notifiable's routeNotificationForFcm() — the device's
+ * registration token where it has one, else its Firebase Installation ID.
+ * Both travel in the message's `token` field; see Device::pushTarget() for why
+ * the deprecated token is still preferred over the FID.
  *
  * Pushes are sent data-only (no notification block) at the lowest possible
  * priority (these are non-urgent daily reminders). Data-only is what lets the

@@ -34,16 +34,22 @@ class Device extends Model
      * The value to address this device with when sending a push, or null when
      * it can't be pushed to at all.
      *
-     * Both go into the message's `token` field: kreait/firebase-php has no FID
-     * target (MessageTarget only knows condition/token/topic), and FCM's v1 API
-     * documents `token` as accepting a FID during the transition period. The
-     * FID is preferred so that devices which have stopped sending a token keep
-     * working, and so any problem with FID delivery surfaces while the token is
-     * still stored as a fallback.
+     * The registration token is preferred because FCM does not currently
+     * deliver to our FIDs. Verified against production on 2026-08-11 with a
+     * device that had both: sending its FID returned 404 UNREGISTERED, both in
+     * the message's `token` field (which the v1 discovery doc describes as
+     * accepting a FID during the transition) and in the native `fid` field via
+     * raw HTTP. The same device's registration token delivered fine, so this is
+     * not a stale registration.
+     *
+     * The FID is still stored and still used when a device has no token, so
+     * this starts working on its own once FCM accepts our FIDs — but until a
+     * real device receives a push addressed by FID, the token is what works and
+     * the app must keep sending one.
      */
     public function pushTarget(): ?string
     {
-        return $this->fid ?: $this->device_token ?: null;
+        return $this->device_token ?: $this->fid ?: null;
     }
 
     /**

@@ -115,7 +115,7 @@ class NotificationChannelTest extends TestCase
     }
 
     #[Test]
-    public function fcm_channel_addresses_the_installation_id_when_the_device_has_one()
+    public function fcm_channel_prefers_the_registration_token_over_the_installation_id()
     {
         $user = $this->createUser();
         create(Device::class, [
@@ -135,19 +135,19 @@ class NotificationChannelTest extends TestCase
 
         (new FcmChannel())->send($user->fresh(), new TodaysDates());
 
-        // The FID rides in the `token` field: kreait has no FID target and the
-        // v1 API accepts a FID there during the transition period.
-        $this->assertSame('installation-id-abc', $captured->jsonSerialize()['token'] ?? null);
+        // FCM returns UNREGISTERED for our FIDs, so the token wins while one
+        // exists — see Device::pushTarget().
+        $this->assertSame('legacy-token', $captured->jsonSerialize()['token'] ?? null);
     }
 
     #[Test]
-    public function fcm_channel_falls_back_to_the_registration_token_without_a_fid()
+    public function fcm_channel_falls_back_to_the_installation_id_without_a_token()
     {
         $user = $this->createUser();
         create(Device::class, [
             'user_id' => $user->id,
-            'device_token' => 'legacy-token',
-            'fid' => null,
+            'device_token' => null,
+            'fid' => 'installation-id-abc',
         ]);
 
         $captured = null;
@@ -161,7 +161,7 @@ class NotificationChannelTest extends TestCase
 
         (new FcmChannel())->send($user->fresh(), new TodaysDates());
 
-        $this->assertSame('legacy-token', $captured->jsonSerialize()['token'] ?? null);
+        $this->assertSame('installation-id-abc', $captured->jsonSerialize()['token'] ?? null);
     }
 
     #[Test]
