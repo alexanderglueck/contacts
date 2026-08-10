@@ -181,7 +181,15 @@ COPY --chown=${HOST_USER_ID}:${HOST_GROUP_ID} . /app
 COPY --from=vendor --chown=${HOST_USER_ID}:${HOST_GROUP_ID} /app/vendor /app/vendor
 COPY --from=assets --chown=${HOST_USER_ID}:${HOST_GROUP_ID} /app/public/build /app/public/build
 
+# Copied out of the source tree so the executable bit is set regardless of how
+# the repo was checked out.
+COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
 USER dockeruser
+
+# Runs pending migrations before handing over to php-fpm — see the script for
+# why. Overridden by compose for the init and scheduler containers.
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["php-fpm"]
 

@@ -1,4 +1,8 @@
 * text=auto
+
+# Shell scripts must keep LF: these run inside Linux containers, and a CRLF
+# shebang line ("#!/usr/bin/env sh\r") fails with "no such file or directory".
+*.sh text eol=lf
 *.css linguist-vendored
 *.scss linguist-vendored
 *.js linguist-vendored
