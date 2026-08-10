@@ -17,7 +17,7 @@ class DeviceResource extends JsonResource
         return [
             'id' => $this->ulid,
             'name' => $this->name,
-            'can_push' => (bool) $this->device_token,
+            'can_push' => (bool) $this->pushTarget(),
             'created_at' => $this->created_at,
         ];
     }

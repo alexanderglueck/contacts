@@ -59,8 +59,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('teams/{team}/switch', [TeamsController::class, 'switchTo'])->name('teams.switch');
 
         // Push-notification devices belong to the user, not a team, so they
-        // sit outside the tenant group. The mobile app registers its FCM token
-        // here; the daily/weekly schedule pushes to every registered device.
+        // sit outside the tenant group. The mobile app registers its Firebase
+        // Installation ID (and, on older builds, its FCM token) here; the
+        // daily/weekly schedule pushes to every registered device.
         Route::get('devices', [DeviceController::class, 'index'])->name('devices.index');
         Route::post('devices', [DeviceController::class, 'store'])->name('devices.store');
         Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->name('devices.destroy');

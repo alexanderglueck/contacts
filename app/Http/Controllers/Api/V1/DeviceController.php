@@ -25,28 +25,50 @@ class DeviceController extends Controller
     }
 
     /**
-     * Register a device (name + Firebase token) for the authenticated user.
+     * Register a device for the authenticated user.
      *
-     * Upserts by token: re-posting a token the user already has (e.g. after the
-     * app clears its data while FCM keeps the same registration token) updates
-     * that row's name instead of creating a duplicate — which would otherwise
-     * cause the same device to be pushed to twice.
+     * Takes a name plus at least one identifier: the Firebase Installation ID
+     * (fid) that current app builds send, and/or the legacy FCM registration
+     * token. Current builds send both, older ones only a token.
+     *
+     * Matching an existing row is deliberately fid-first-then-token rather than
+     * fid-only. On an upgraded install's first call we get a token we already
+     * know plus a FID we've never seen: a fid-only lookup would miss and insert
+     * a second row, leaving the original to be pushed to as well. Falling back
+     * to the token finds that row and adopts the FID onto it, which is what
+     * backfills FIDs as devices check in — no data migration needed.
      */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'token' => ['required', 'string', 'max:255'],
+            'token' => ['nullable', 'string', 'max:255', 'required_without:fid'],
+            'fid' => ['nullable', 'string', 'max:255', 'required_without:token'],
         ]);
 
-        $device = $request->user()->devices()->firstOrNew([
-            'device_token' => $validated['token'],
-        ]);
+        $fid = $validated['fid'] ?? null;
+        $token = $validated['token'] ?? null;
+
+        $user = $request->user();
+
+        $device = ($fid ? $user->devices()->where('fid', $fid)->first() : null)
+            ?? ($token ? $user->devices()->where('device_token', $token)->first() : null)
+            ?? $user->devices()->make();
 
         $wasNew = ! $device->exists;
 
         $device->name = $validated['name'];
-        $device->device_token = $validated['token'];
+
+        // Only overwrite an identifier the app actually sent, so a build that
+        // has dropped tokens doesn't wipe the stored fallback.
+        if ($fid) {
+            $device->fid = $fid;
+        }
+
+        if ($token) {
+            $device->device_token = $token;
+        }
+
         $device->save();
 
         return (new DeviceResource($device))

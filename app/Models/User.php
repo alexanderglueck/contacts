@@ -133,14 +133,21 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
-     * Route notifications for the FCM (push) channel: every registered device
-     * token the user has. The FcmChannel sends one message per token.
+     * Route notifications for the FCM (push) channel: the push target of every
+     * registered device — its Firebase Installation ID, or its legacy
+     * registration token when it has no FID. The FcmChannel sends one message
+     * per target.
      *
      * @return array<int, string>
      */
     public function routeNotificationForFcm(): array
     {
-        return $this->devices()->withDeviceToken()->pluck('device_token')->unique()->values()->all();
+        return $this->devices()->withPushTarget()->get()
+            ->map(fn (Device $device) => $device->pushTarget())
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**

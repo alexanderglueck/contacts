@@ -39,7 +39,7 @@ class SendTestPush extends Command
             return self::FAILURE;
         }
 
-        $query = $user->devices()->withDeviceToken();
+        $query = $user->devices()->withPushTarget();
 
         if ($deviceUlid = $this->option('device')) {
             $query->where('ulid', $deviceUlid);
@@ -48,7 +48,7 @@ class SendTestPush extends Command
         $devices = $query->get();
 
         if ($devices->isEmpty()) {
-            $this->warn("User {$user->email} has no devices with a push token".
+            $this->warn("User {$user->email} has no devices with a push target".
                 ($this->option('device') ? " matching ulid {$this->option('device')}." : '.'));
 
             return self::FAILURE;
@@ -67,7 +67,7 @@ class SendTestPush extends Command
             // tray never intercepts it, so onMessageReceived runs in every app state
             // and can deep-link. title/body ride along in the data payload.
             $message = CloudMessage::new()
-                ->withToken($device->device_token)
+                ->withToken($device->pushTarget())
                 ->withData([
                     'type' => $type,
                     'title' => $title,

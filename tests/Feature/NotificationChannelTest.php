@@ -115,11 +115,61 @@ class NotificationChannelTest extends TestCase
     }
 
     #[Test]
+    public function fcm_channel_addresses_the_installation_id_when_the_device_has_one()
+    {
+        $user = $this->createUser();
+        create(Device::class, [
+            'user_id' => $user->id,
+            'device_token' => 'legacy-token',
+            'fid' => 'installation-id-abc',
+        ]);
+
+        $captured = null;
+        $messaging = Mockery::mock(Messaging::class);
+        $messaging->shouldReceive('send')->once()->with(Mockery::on(function ($message) use (&$captured) {
+            $captured = $message;
+
+            return $message instanceof CloudMessage;
+        }));
+        Firebase::shouldReceive('messaging')->once()->andReturn($messaging);
+
+        (new FcmChannel())->send($user->fresh(), new TodaysDates());
+
+        // The FID rides in the `token` field: kreait has no FID target and the
+        // v1 API accepts a FID there during the transition period.
+        $this->assertSame('installation-id-abc', $captured->jsonSerialize()['token'] ?? null);
+    }
+
+    #[Test]
+    public function fcm_channel_falls_back_to_the_registration_token_without_a_fid()
+    {
+        $user = $this->createUser();
+        create(Device::class, [
+            'user_id' => $user->id,
+            'device_token' => 'legacy-token',
+            'fid' => null,
+        ]);
+
+        $captured = null;
+        $messaging = Mockery::mock(Messaging::class);
+        $messaging->shouldReceive('send')->once()->with(Mockery::on(function ($message) use (&$captured) {
+            $captured = $message;
+
+            return $message instanceof CloudMessage;
+        }));
+        Firebase::shouldReceive('messaging')->once()->andReturn($messaging);
+
+        (new FcmChannel())->send($user->fresh(), new TodaysDates());
+
+        $this->assertSame('legacy-token', $captured->jsonSerialize()['token'] ?? null);
+    }
+
+    #[Test]
     public function fcm_channel_does_nothing_when_the_user_has_no_device_tokens()
     {
         $user = $this->createUser();
-        // device without a token must be ignored
-        create(Device::class, ['user_id' => $user->id, 'device_token' => null]);
+        // device with neither identifier must be ignored
+        create(Device::class, ['user_id' => $user->id, 'device_token' => null, 'fid' => null]);
 
         Firebase::shouldReceive('messaging')->never();
 

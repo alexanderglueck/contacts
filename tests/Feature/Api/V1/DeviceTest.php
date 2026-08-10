@@ -71,11 +71,139 @@ class DeviceTest extends TestCase
     }
 
     #[Test]
-    public function registering_a_device_requires_a_name_and_token()
+    public function registering_a_device_requires_a_name_and_an_identifier()
     {
         Sanctum::actingAs($this->createUser());
 
         $this->postJson(route('api.v1.devices.store'), [])->assertStatus(422);
+
+        // A name alone is not enough — we need something to address the device with.
+        $this->postJson(route('api.v1.devices.store'), ['name' => 'Nameless'])
+            ->assertStatus(422);
+    }
+
+    #[Test]
+    public function a_user_can_register_a_device_with_a_fid_and_token()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'Google Pixel 9',
+            'token' => 'fcm-token-123',
+            'fid' => 'installation-id-abc',
+        ])->assertCreated()->assertJsonPath('data.can_push', true);
+
+        $this->assertDatabaseHas('devices', [
+            'user_id' => $user->id,
+            'device_token' => 'fcm-token-123',
+            'fid' => 'installation-id-abc',
+        ]);
+    }
+
+    #[Test]
+    public function a_device_can_register_with_a_fid_alone()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        // Phase 2: the app drops the deprecated token entirely.
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'Pixel',
+            'fid' => 'fid-only',
+        ])->assertCreated()->assertJsonPath('data.can_push', true);
+
+        $this->assertDatabaseHas('devices', [
+            'user_id' => $user->id,
+            'fid' => 'fid-only',
+            'device_token' => null,
+        ]);
+    }
+
+    #[Test]
+    public function an_existing_token_only_device_adopts_the_fid_instead_of_duplicating()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        // Registered by an older build: token only, no FID.
+        $existing = create(Device::class, [
+            'user_id' => $user->id,
+            'name' => 'My Pixel',
+            'device_token' => 'legacy-token',
+            'fid' => null,
+        ]);
+
+        // First check-in after the app update sends both. A fid-first-only
+        // lookup would miss and insert a second row, leaving the original to
+        // be pushed to as well.
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'My Pixel',
+            'token' => 'legacy-token',
+            'fid' => 'new-installation-id',
+        ])->assertOk();
+
+        $this->assertSame(1, $user->devices()->count());
+        $this->assertSame('new-installation-id', $existing->fresh()->fid);
+    }
+
+    #[Test]
+    public function a_rotated_token_updates_the_row_matched_by_fid()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        $device = create(Device::class, [
+            'user_id' => $user->id,
+            'device_token' => 'old-token',
+            'fid' => 'stable-fid',
+        ]);
+
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'Pixel',
+            'token' => 'rotated-token',
+            'fid' => 'stable-fid',
+        ])->assertOk();
+
+        $this->assertSame(1, $user->devices()->count());
+        $this->assertSame('rotated-token', $device->fresh()->device_token);
+    }
+
+    #[Test]
+    public function registering_with_a_fid_alone_keeps_the_stored_token_as_a_fallback()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        $device = create(Device::class, [
+            'user_id' => $user->id,
+            'device_token' => 'keep-me',
+            'fid' => 'stable-fid',
+        ]);
+
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'Pixel',
+            'fid' => 'stable-fid',
+        ])->assertOk();
+
+        $this->assertSame('keep-me', $device->fresh()->device_token);
+    }
+
+    #[Test]
+    public function a_device_belonging_to_another_user_is_never_matched()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+
+        // Same physical device, previously registered to a different account.
+        create(Device::class, ['user_id' => create(User::class)->id, 'fid' => 'shared-fid']);
+
+        $this->postJson(route('api.v1.devices.store'), [
+            'name' => 'Shared phone',
+            'fid' => 'shared-fid',
+        ])->assertCreated();
+
+        $this->assertSame(1, $user->devices()->count());
     }
 
     #[Test]

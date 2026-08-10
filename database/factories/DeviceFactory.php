@@ -15,6 +15,7 @@ class DeviceFactory extends Factory
         return [
             'name' => $this->faker->word.' Phone',
             'device_token' => $this->faker->sha256(),
+            'fid' => null,
             'user_id' => User::factory(),
         ];
     }
@@ -22,5 +23,14 @@ class DeviceFactory extends Factory
     public function withoutToken(): self
     {
         return $this->state(fn () => ['device_token' => null]);
+    }
+
+    /**
+     * A device registered by a current app build, which identifies itself by
+     * Firebase Installation ID.
+     */
+    public function withFid(?string $fid = null): self
+    {
+        return $this->state(fn () => ['fid' => $fid ?? $this->faker->regexify('[A-Za-z0-9_-]{22}')]);
     }
 }
