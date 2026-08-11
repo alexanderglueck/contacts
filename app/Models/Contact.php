@@ -10,6 +10,7 @@ use App\Traits\RecordsActivity;
 use App\Scopes\BelongsToTenantScope;
 use App\Interfaces\CalendarInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 
 class Contact extends Model implements CalendarInterface
@@ -665,5 +666,55 @@ class Contact extends Model implements CalendarInterface
         static::updating(function ($contact) {
             $contact->updated_by = auth()->id();
         });
+    }
+
+    /**
+     * Public URLs for every rendition of the contact's photo.
+     *
+     * image_url keeps meaning exactly what it always has — the 400x400 avatar —
+     * so existing clients are unaffected. The siblings are null for photos
+     * uploaded before renditions existed, and for uploads whose source was no
+     * bigger than the avatar, so clients must fall back to image_url.
+     *
+     * @return array<string, string|null>
+     */
+    public function imageUrls(): array
+    {
+        return [
+            'image_url' => $this->image ? url('storage/'.$this->image) : null,
+            'image_medium_url' => $this->image_medium ? url('storage/'.$this->image_medium) : null,
+            'image_full_url' => $this->image_full ? url('storage/'.$this->image_full) : null,
+        ];
+    }
+
+    /**
+     * Every rendition path currently stored for this contact, skipping the ones
+     * it doesn't have.
+     *
+     * @return array<int, string>
+     */
+    public function storedImagePaths(): array
+    {
+        return array_values(array_filter([
+            $this->image,
+            $this->image_medium,
+            $this->image_full,
+        ]));
+    }
+
+    /**
+     * Delete every stored rendition from disk. Used before removing a photo or
+     * a whole contact so no orphaned files are left behind — a partial cleanup
+     * here is how storage leaks, since only `image` used to be deleted.
+     */
+    public function deleteStoredImages(): void
+    {
+        $disk = Storage::disk('public');
+
+        foreach ($this->storedImagePaths() as $path) {
+            if ($disk->exists($path)) {
+                $disk->delete($path);
+            }
+        }
     }
 }

@@ -235,4 +235,149 @@ class ContactImageTest extends TestCase
 
         $this->assertNull($contact->fresh()->image);
     }
+
+    /**
+     * @return array{0: int, 1: int} width, height of a stored rendition
+     */
+    private function dimensionsOf(string $path): array
+    {
+        $info = getimagesizefromstring(Storage::disk('public')->get($path));
+
+        return [$info[0], $info[1]];
+    }
+
+    #[Test]
+    public function a_large_upload_produces_an_avatar_a_medium_and_a_full_rendition()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        // Deliberately non-square so the aspect-preserving renditions are
+        // distinguishable from the square avatar crop.
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('big.jpg', 2000, 1000),
+        ])->assertOk();
+
+        $contact->refresh();
+
+        $this->assertNotNull($contact->image_medium);
+        $this->assertNotNull($contact->image_full);
+
+        Storage::disk('public')->assertExists($contact->image);
+        Storage::disk('public')->assertExists($contact->image_medium);
+        Storage::disk('public')->assertExists($contact->image_full);
+
+        // Avatar is a square crop; the others keep the 2:1 aspect ratio.
+        $this->assertSame([400, 400], $this->dimensionsOf($contact->image));
+        $this->assertSame([1600, 800], $this->dimensionsOf($contact->image_medium));
+        // Below the 4096 cap, so the full rendition keeps its source size.
+        $this->assertSame([2000, 1000], $this->dimensionsOf($contact->image_full));
+    }
+
+    #[Test]
+    public function a_source_no_bigger_than_the_avatar_produces_no_extra_renditions()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        // What the web cropper uploads. Upscaling this would invent detail
+        // that was never uploaded, so the larger renditions stay null and
+        // clients fall back to the avatar.
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('cropped.jpg', 400, 400),
+        ])->assertOk();
+
+        $contact->refresh();
+
+        $this->assertNotNull($contact->image);
+        $this->assertNull($contact->image_medium);
+        $this->assertNull($contact->image_full);
+    }
+
+    #[Test]
+    public function a_replacement_deletes_every_previous_rendition()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('first.jpg', 2000, 1000),
+        ])->assertOk();
+
+        $old = $contact->fresh()->storedImagePaths();
+        $this->assertCount(3, $old);
+
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('second.jpg', 2000, 1000),
+        ])->assertOk();
+
+        foreach ($old as $path) {
+            Storage::disk('public')->assertMissing($path);
+        }
+
+        foreach ($contact->fresh()->storedImagePaths() as $path) {
+            Storage::disk('public')->assertExists($path);
+        }
+    }
+
+    #[Test]
+    public function destroying_the_image_removes_every_rendition_and_nulls_all_columns()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('x.jpg', 2000, 1000),
+        ])->assertOk();
+
+        $paths = $contact->fresh()->storedImagePaths();
+        $this->assertCount(3, $paths);
+
+        $this->deleteJson(route('api.v1.contacts.image.destroy', $contact->ulid))
+            ->assertNoContent();
+
+        $contact->refresh();
+        $this->assertNull($contact->image);
+        $this->assertNull($contact->image_medium);
+        $this->assertNull($contact->image_full);
+
+        foreach ($paths as $path) {
+            Storage::disk('public')->assertMissing($path);
+        }
+    }
+
+    #[Test]
+    public function the_contact_payload_exposes_a_url_for_every_rendition()
+    {
+        Storage::fake('public');
+
+        $contact = $this->aContact();
+
+        $response = $this->postJson(route('api.v1.contacts.image.upload', $contact->ulid), [
+            'file' => UploadedFile::fake()->image('big.jpg', 2000, 1000),
+        ])->assertOk();
+
+        $contact->refresh();
+
+        $response
+            ->assertJsonPath('data.image_url', url('storage/'.$contact->image))
+            ->assertJsonPath('data.image_medium_url', url('storage/'.$contact->image_medium))
+            ->assertJsonPath('data.image_full_url', url('storage/'.$contact->image_full));
+    }
+
+    #[Test]
+    public function the_rendition_urls_are_null_when_a_contact_has_no_photo()
+    {
+        $contact = $this->aContact();
+
+        $this->getJson(route('api.v1.contacts.show', $contact->ulid))
+            ->assertOk()
+            ->assertJsonPath('data.image_url', null)
+            ->assertJsonPath('data.image_medium_url', null)
+            ->assertJsonPath('data.image_full_url', null);
+    }
 }

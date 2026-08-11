@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Contacts\Actions\StoreContactImageAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\ContactImageUploadRequest;
 use App\Http\Requests\Api\V1\ContactsIndexRequest;
@@ -12,12 +13,6 @@ use App\Models\Contact;
 use App\Models\ContactNumber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
-use Intervention\Image\Drivers\Imagick\Driver;
-use Intervention\Image\Encoders\JpegEncoder;
-use Intervention\Image\ImageManager;
 
 class ContactsController extends Controller
 {
@@ -186,45 +181,11 @@ class ContactsController extends Controller
      * HEIC/HEIF/AVIF are decoded via Imagick (libheif), the others via GD.
      * Stored output is always .jpg.
      */
-    public function uploadImage(ContactImageUploadRequest $request, Contact $contact): JsonResponse
+    public function uploadImage(ContactImageUploadRequest $request, Contact $contact, StoreContactImageAction $storeImage): JsonResponse
     {
-        // Imagick driver — only it can decode HEIC/HEIF/AVIF, and it also
-        // handles jpeg/png/webp uniformly, so we don't branch by mime.
-        // A per-call ImageManager keeps this isolated; the rest of the
-        // app keeps using the default (GD) Image facade.
-        try {
-            // autoOrientation rotates the pixels to match any EXIF Orientation
-            // tag on decode (phone JPEGs), and strip removes metadata on encode
-            // so viewers don't rotate a second time off the stale tag.
-            $encoded = (string) (new ImageManager(new Driver(), autoOrientation: true, strip: true))
-                ->decode($request->file('file')->getRealPath())
-                ->cover(400, 400)
-                ->encode(new JpegEncoder(quality: 85));
-        } catch (\Throwable $e) {
-            // Decode failed — corrupted file, unexpected variant the
-            // installed Imagick build can't handle, etc. Surface as a
-            // validation error rather than a 500 so the Android client
-            // can show a meaningful message.
-            throw ValidationException::withMessages([
-                'file' => __('The image could not be processed. Please try a different file.'),
-            ]);
-        }
-
-        // Storage::disk('public') is the same target the old code wrote
-        // to via storage_path('app/public') — going through the facade
-        // makes Storage::fake() work cleanly in tests and avoids manual
-        // path concatenation. visibility:public → 0755 dirs so nginx can
-        // serve the file through the public/storage symlink.
-        $disk = Storage::disk('public');
-        $newPath = 'contact_images/'.Str::ulid().'.jpg';
-        $disk->put($newPath, $encoded, 'public');
-
-        if ($contact->image && $disk->exists($contact->image)) {
-            $disk->delete($contact->image);
-        }
-
-        $contact->image = $newPath;
-        $contact->save();
+        // Decoding, resizing, storing and cleaning up the previous renditions
+        // all live in the action so this path and the web one cannot drift.
+        $storeImage->execute($contact, $request->file('file'));
 
         return response()->json([
             'data' => $this->serializeDetail($this->withRelations($contact)),
@@ -240,12 +201,11 @@ class ContactsController extends Controller
         $this->can('edit');
 
         if ($contact->image) {
-            $disk = Storage::disk('public');
-            if ($disk->exists($contact->image)) {
-                $disk->delete($contact->image);
-            }
+            $contact->deleteStoredImages();
 
             $contact->image = null;
+            $contact->image_medium = null;
+            $contact->image_full = null;
             $contact->save();
         }
 
@@ -259,12 +219,7 @@ class ContactsController extends Controller
         // Mirrors the web controller's pre-delete avatar cleanup so we
         // don't leak orphaned storage files. Cascades on contact_id (FK
         // ON DELETE CASCADE) take care of numbers/emails/addresses/etc.
-        if ($contact->image) {
-            $disk = Storage::disk('public');
-            if ($disk->exists($contact->image)) {
-                $disk->delete($contact->image);
-            }
-        }
+        $contact->deleteStoredImages();
 
         $contact->delete();
 
@@ -322,7 +277,7 @@ class ContactsController extends Controller
             'title_after' => $contact->title_after,
             'salutation' => $contact->salutation,
             'company' => $contact->company,
-            'image_url' => $contact->image ? url('storage/'.$contact->image) : null,
+            ...$contact->imageUrls(),
             // Same shape the detail endpoint uses — Android's Room sync
             // reads these into the dialer's local lookup table on every
             // list response, so it can match incoming calls without
@@ -348,7 +303,7 @@ class ContactsController extends Controller
             'title' => $contact->title,
             'title_after' => $contact->title_after,
             'salutation' => $contact->salutation,
-            'image_url' => $contact->image ? url('storage/'.$contact->image) : null,
+            ...$contact->imageUrls(),
             'active' => (bool) $contact->active,
 
             // Professional

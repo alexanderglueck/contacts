@@ -13,7 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Intervention\Image\Laravel\Facades\Image;
+use App\Domain\Contacts\Actions\StoreContactImageAction;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\Contact\ContactStoreRequest;
@@ -372,11 +372,9 @@ class ContactController extends Controller
     {
         $this->can('delete');
 
-        if ($contact->image) {
-            if (file_exists(storage_path('app/public/') . $contact->image)) {
-                unlink(storage_path('app/public/') . $contact->image);
-            }
-        }
+        // Every rendition, not just the avatar — the larger ones would
+        // otherwise be left orphaned on disk forever.
+        $contact->deleteStoredImages();
 
         if ($contact->delete()) {
             Session::flash('alert-success', trans('flash_message.contact.deleted'));
@@ -414,41 +412,28 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateImage(Request $request, Contact $contact): RedirectResponse
+    public function updateImage(Request $request, Contact $contact, StoreContactImageAction $storeImage): RedirectResponse
     {
         $this->can('edit');
 
+        // Matches the API's rules rather than the narrower jpeg/png this path
+        // used to accept, and adds the 8 MB cap it was missing entirely — it
+        // previously leaned on PHP's post_max_size, which fails as a 413 with
+        // no usable message instead of a validation error.
         $this->validate($request, [
-            'file' => 'required|mimes:jpeg,png',
+            'file' => ['required', 'file', 'mimes:jpeg,png,webp,heic,heif,avif', 'max:8192'],
         ]);
 
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
-            // Route through the 'public' disk (visibility: public → 0755 dirs
-            // so nginx can serve the file via the public/storage symlink).
-            $fileNameOriginal = $request->file('file')->storePublicly('contact_images', 'public');
+            // Same action the API uses, so both paths decode, resize, store and
+            // clean up identically. Note cropper.js already reduces this to a
+            // 400x400 square before upload, so a web upload produces only the
+            // avatar — there is no larger source left to build renditions from.
+            $storeImage->execute($contact, $request->file('file'));
 
-            // Cap server-side to 400x400 even if the client uploaded larger.
-            // The Vue cropper already produces 400x400 PNG; this is a safety net.
-            // read() rotates the pixels to match the EXIF Orientation tag
-            // (config autoOrientation); without it, phone-camera shots come out
-            // sideways because EXIF gets stripped on save.
-            Image::decode(storage_path('app/public/') . $fileNameOriginal)
-                ->cover(400, 400)
-                ->save(storage_path('app/public/') . $fileNameOriginal);
+            Session::flash('alert-success', trans('flash_message.contact.updated'));
 
-            if ($contact->image) {
-                if (file_exists(storage_path('app/public/') . $contact->image)) {
-                    unlink(storage_path('app/public/') . $contact->image);
-                }
-            }
-
-            $contact->image = str_replace('public/', '', $fileNameOriginal);
-
-            if ($contact->save()) {
-                Session::flash('alert-success', trans('flash_message.contact.updated'));
-
-                return redirect()->route('contacts.show', $contact->ulid);
-            }
+            return redirect()->route('contacts.show', $contact->ulid);
         }
 
         Session::flash('alert-danger', trans('flash_message.contact.not_updated'));
