@@ -28,11 +28,21 @@ use Intervention\Image\ImageManager;
  *   image_full   longest edge 4096, uncropped, higher quality. The download.
  *
  * The two larger ones are only produced when the source is actually bigger
- * than the avatar. A web upload arrives already cropped to 400x400 by
- * cropper.js, and upscaling that would fabricate detail that was never
- * uploaded — so those uploads legitimately end up with null renditions and
- * clients fall back to the avatar. If the web flow ever starts sending the
- * uncropped source, it gets the full set with no change here.
+ * than the avatar — upscaling would fabricate detail nobody uploaded.
+ *
+ * Callers supply either or both files:
+ *
+ *   $source only          the Android app: one photo, centre-cropped for the
+ *                         avatar and used for both larger renditions.
+ *   $source + $avatar     a new web upload: cropper.js sends the square the
+ *                         user framed plus the untouched original, so the
+ *                         avatar keeps their framing and the renditions keep
+ *                         the full frame.
+ *   $avatar only          re-cropping the photo already on file. The larger
+ *                         renditions are LEFT ALONE — they are renditions of
+ *                         the same photo, and regenerating them from a 400px
+ *                         avatar would quietly destroy the high-res copy of a
+ *                         contact whose photo came from the app.
  */
 class StoreContactImageAction
 {
@@ -42,28 +52,42 @@ class StoreContactImageAction
 
     public const FULL_MAX_EDGE = 4096;
 
-    public function execute(Contact $contact, UploadedFile $file): void
+    public function execute(Contact $contact, ?UploadedFile $source = null, ?UploadedFile $avatar = null): void
     {
-        $previous = $contact->storedImagePaths();
-
-        [$thumb, $medium, $full] = $this->encodeRenditions($file);
+        if (! $source && ! $avatar) {
+            throw ValidationException::withMessages([
+                'file' => __('The image could not be processed. Please try a different file.'),
+            ]);
+        }
 
         $disk = Storage::disk('public');
         $basename = (string) Str::ulid();
+        $supersededPaths = [];
 
+        [$thumb, $medium, $full] = $this->encode($source, $avatar);
+
+        $supersededPaths[] = $contact->image;
         $contact->image = $this->put($disk, "contact_images/{$basename}.jpg", $thumb);
-        $contact->image_medium = $medium === null
-            ? null
-            : $this->put($disk, "contact_images/{$basename}_medium.jpg", $medium);
-        $contact->image_full = $full === null
-            ? null
-            : $this->put($disk, "contact_images/{$basename}_full.jpg", $full);
+
+        // Only touched when a new source arrived. Without one there is nothing
+        // better to build them from than what is already stored.
+        if ($source) {
+            $supersededPaths[] = $contact->image_medium;
+            $supersededPaths[] = $contact->image_full;
+
+            $contact->image_medium = $medium === null
+                ? null
+                : $this->put($disk, "contact_images/{$basename}_medium.jpg", $medium);
+            $contact->image_full = $full === null
+                ? null
+                : $this->put($disk, "contact_images/{$basename}_full.jpg", $full);
+        }
 
         $contact->save();
 
         // Only after the replacement is safely committed, so a failure above
         // can't leave the contact pointing at files that no longer exist.
-        foreach ($previous as $path) {
+        foreach (array_filter($supersededPaths) as $path) {
             if ($disk->exists($path)) {
                 $disk->delete($path);
             }
@@ -73,7 +97,7 @@ class StoreContactImageAction
     /**
      * @return array{0: string, 1: string|null, 2: string|null} thumb, medium, full
      */
-    private function encodeRenditions(UploadedFile $file): array
+    private function encode(?UploadedFile $source, ?UploadedFile $avatar): array
     {
         // Imagick: the only driver that decodes HEIC/HEIF/AVIF, and it handles
         // jpeg/png/webp uniformly so there's no branching on mime. A per-call
@@ -83,31 +107,44 @@ class StoreContactImageAction
         // decode; strip removes metadata on encode so viewers don't rotate a
         // second time off a stale tag.
         try {
-            $image = (new ImageManager(new Driver(), autoOrientation: true, strip: true))
-                ->decode($file->getRealPath());
+            $manager = new ImageManager(new Driver(), autoOrientation: true, strip: true);
 
-            $sourceEdge = max($image->width(), $image->height());
-            $hasDetailToKeep = $sourceEdge > self::THUMB_SIZE;
-
-            // Derived largest-first from the one decode, each step shrinking the
-            // same instance: avoids decoding three times, and keeps peak memory
-            // at roughly one bitmap rather than three.
             $full = null;
             $medium = null;
+            $thumb = null;
 
-            if ($hasDetailToKeep) {
-                $full = (string) $image
-                    ->scaleDown(self::FULL_MAX_EDGE, self::FULL_MAX_EDGE)
-                    ->encode(new JpegEncoder(quality: 90));
+            if ($source) {
+                $image = $manager->decode($source->getRealPath());
 
-                $medium = (string) $image
-                    ->scaleDown(self::MEDIUM_MAX_EDGE, self::MEDIUM_MAX_EDGE)
-                    ->encode(new JpegEncoder(quality: 85));
+                if (max($image->width(), $image->height()) > self::THUMB_SIZE) {
+                    // Derived largest-first from the one decode, each step
+                    // shrinking the same instance: avoids decoding repeatedly
+                    // and keeps peak memory at roughly one bitmap.
+                    $full = (string) $image
+                        ->scaleDown(self::FULL_MAX_EDGE, self::FULL_MAX_EDGE)
+                        ->encode(new JpegEncoder(quality: 90));
+
+                    $medium = (string) $image
+                        ->scaleDown(self::MEDIUM_MAX_EDGE, self::MEDIUM_MAX_EDGE)
+                        ->encode(new JpegEncoder(quality: 85));
+                }
+
+                // Reuse the same (now smaller) instance when no pre-cropped
+                // avatar was sent, rather than decoding the source twice.
+                if (! $avatar) {
+                    $thumb = (string) $image
+                        ->cover(self::THUMB_SIZE, self::THUMB_SIZE)
+                        ->encode(new JpegEncoder(quality: 85));
+                }
             }
 
-            $thumb = (string) $image
-                ->cover(self::THUMB_SIZE, self::THUMB_SIZE)
-                ->encode(new JpegEncoder(quality: 85));
+            if ($avatar) {
+                // Already the square the user framed; cover() is a safety net
+                // against a client sending something off-size.
+                $thumb = (string) $manager->decode($avatar->getRealPath())
+                    ->cover(self::THUMB_SIZE, self::THUMB_SIZE)
+                    ->encode(new JpegEncoder(quality: 85));
+            }
         } catch (\Throwable $e) {
             // Corrupt file, or a variant this Imagick build can't decode.
             // Surface as a validation error rather than a 500 so clients can

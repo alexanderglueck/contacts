@@ -133,6 +133,11 @@ class ContactController extends Controller
                 'first_met' => $contact->first_met,
                 'first_met_html' => $contact->first_met_html,
                 'image' => $contact->image,
+                // Null for photos uploaded before renditions existed, and for
+                // any whose source was no bigger than the avatar — the viewer
+                // falls back to `image`.
+                'image_medium' => $contact->image_medium,
+                'image_full' => $contact->image_full,
                 'formatted_date_of_birth' => $contact->formatted_date_of_birth,
                 'gender' => $contact->gender ? ['gender' => $contact->gender->gender] : null,
                 'nationality' => $contact->country ? ['country' => $contact->country->country] : null,
@@ -420,16 +425,21 @@ class ContactController extends Controller
         // used to accept, and adds the 8 MB cap it was missing entirely — it
         // previously leaned on PHP's post_max_size, which fails as a 413 with
         // no usable message instead of a validation error.
+        //
+        // `file` is the 400x400 square cropper.js produced, so it carries the
+        // framing the user chose. `source` is the untouched original, sent
+        // alongside it so the larger renditions keep the whole frame. It is
+        // absent when re-cropping the photo already on file, since there is no
+        // new original in that case.
         $this->validate($request, [
             'file' => ['required', 'file', 'mimes:jpeg,png,webp,heic,heif,avif', 'max:8192'],
+            'source' => ['nullable', 'file', 'mimes:jpeg,png,webp,heic,heif,avif', 'max:8192'],
         ]);
 
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
             // Same action the API uses, so both paths decode, resize, store and
-            // clean up identically. Note cropper.js already reduces this to a
-            // 400x400 square before upload, so a web upload produces only the
-            // avatar — there is no larger source left to build renditions from.
-            $storeImage->execute($contact, $request->file('file'));
+            // clean up identically.
+            $storeImage->execute($contact, $request->file('source'), $request->file('file'));
 
             Session::flash('alert-success', trans('flash_message.contact.updated'));
 

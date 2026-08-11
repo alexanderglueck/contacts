@@ -595,6 +595,11 @@
                 "deleted": "(gelöscht)",
                 "placeholder": "Kommentar schreiben…"
             }
+        },
+        "image_viewer": {
+            "open": "In voller Größe ansehen",
+            "download": "Original herunterladen",
+            "close": "Schließen"
         }
     },
     "duplicates": {

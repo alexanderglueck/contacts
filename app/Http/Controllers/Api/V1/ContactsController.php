@@ -185,6 +185,8 @@ class ContactsController extends Controller
     {
         // Decoding, resizing, storing and cleaning up the previous renditions
         // all live in the action so this path and the web one cannot drift.
+        // One file: the app sends the untouched photo and the server crops the
+        // avatar from it.
         $storeImage->execute($contact, $request->file('file'));
 
         return response()->json([

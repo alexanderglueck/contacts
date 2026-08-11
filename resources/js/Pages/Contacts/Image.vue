@@ -46,9 +46,17 @@ const imgEl = ref(null);
 const fileInputEl = ref(null);
 let cropper = null;
 
+// `file` is the 400x400 crop; `source` is the untouched original that came out
+// of the file picker. Sending both lets the server keep the user's framing for
+// the avatar while building the larger renditions from the whole frame. When
+// re-cropping the photo already on file there is no new original, so `source`
+// stays null and the server leaves the existing renditions alone.
 const form = useForm({
     file: null,
+    source: null,
 });
+
+const sourceFile = ref(null);
 
 const initCropper = async () => {
     await nextTick();
@@ -76,7 +84,9 @@ const destroyCropper = () => {
 const clearSelection = () => {
     destroyCropper();
     sourceImage.value = null;
+    sourceFile.value = null;
     form.file = null;
+    form.source = null;
     form.clearErrors();
     if (fileInputEl.value) fileInputEl.value.value = '';
 };
@@ -84,6 +94,9 @@ const clearSelection = () => {
 const cropCurrent = () => {
     if (! currentImage.value) return;
     form.clearErrors();
+    // Re-framing what is already stored — no new original to send, so any
+    // existing high-res renditions stay as they are.
+    sourceFile.value = null;
     sourceImage.value = `${currentImage.value}?t=${Date.now()}`;
     initCropper();
 };
@@ -94,6 +107,10 @@ const onFileChange = (event) => {
     const file = event.target.files?.[0];
     if (! file) return;
     form.clearErrors();
+
+    // Kept as-is for upload — the cropper only ever sees a downscaled data URL,
+    // so this is the only full-resolution copy we have.
+    sourceFile.value = file;
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -112,6 +129,7 @@ const submit = async () => {
     canvas.toBlob((blob) => {
         if (! blob) return;
         form.file = new File([blob], 'contact.png', { type: 'image/png' });
+        form.source = sourceFile.value;
 
         form.put(route('contacts.update_image', props.contact.ulid), {
             forceFormData: true,
@@ -142,7 +160,7 @@ onBeforeUnmount(destroyCropper);
                     <input
                         ref="fileInputEl"
                         type="file"
-                        accept="image/jpeg,image/png"
+                        accept="image/jpeg,image/png,image/webp"
                         class="hidden"
                         @change="onFileChange"
                     />

@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PhoneNumbersSection from './Sections/PhoneNumbersSection.vue';
@@ -30,6 +31,24 @@ const localiseGender = (raw) => {
 };
 const page = usePage();
 const imageUrl = computed(() => (props.contact.image ? `/storage/${props.contact.image}` : null));
+
+// Renditions fall back to the avatar: photos uploaded before renditions
+// existed, and any whose source was no bigger than 400px, only ever have that.
+const viewerUrl = computed(() => (props.contact.image_medium
+    ? `/storage/${props.contact.image_medium}`
+    : imageUrl.value));
+
+const downloadUrl = computed(() => (props.contact.image_full
+    ? `/storage/${props.contact.image_full}`
+    : viewerUrl.value));
+
+// Only worth offering a download when there is something better than the
+// 400x400 avatar behind it.
+const hasHighRes = computed(() => Boolean(props.contact.image_full || props.contact.image_medium));
+
+const downloadName = computed(() => `${(props.contact.fullname ?? 'contact').replace(/[^\p{L}\p{N}]+/gu, '-')}.jpg`);
+
+const viewerOpen = ref(false);
 
 const numbers = computed(() => page.props.numbers ?? []);
 const emails = computed(() => page.props.emails ?? []);
@@ -135,7 +154,18 @@ const tiles = computed(() => [
 
             <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div v-if="imageUrl" class="flex justify-center md:justify-start">
-                    <img :src="imageUrl" :alt="contact.fullname" class="rounded-lg w-32 h-32 object-cover" />
+                    <!-- Only clickable when there is more detail behind it than
+                         the avatar already shows. -->
+                    <button
+                        v-if="hasHighRes"
+                        type="button"
+                        class="rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        :title="t('contacts.image_viewer.open')"
+                        @click="viewerOpen = true"
+                    >
+                        <img :src="imageUrl" :alt="contact.fullname" class="rounded-lg w-32 h-32 object-cover cursor-zoom-in" />
+                    </button>
+                    <img v-else :src="imageUrl" :alt="contact.fullname" class="rounded-lg w-32 h-32 object-cover" />
                 </div>
 
                 <dl class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -188,5 +218,65 @@ const tiles = computed(() => [
         <ActivitySection :open="activeSection === 'activities'" :contact="contact" :items="activities" @close="closeSection" />
         <CommentsSection :open="activeSection === 'comments'" :contact="contact" :items="comments" :can="{ create: can.create_comments, edit: can.edit_comments, delete: can.delete_comments }" @close="closeSection" />
         <RelationsSection :open="activeSection === 'relations'" :contact="contact" :items="relations" :labels="relationLabels" :can="{ create: can.create_relations, edit: can.edit_relations, delete: can.delete_relations }" @close="closeSection" />
+
+        <!-- Photo viewer: shows the medium rendition rather than an upscaled
+             avatar, and offers the full-quality file as a download. The anchor
+             carries `download` instead of routing through a controller — the
+             file is same-origin, so the browser saves it directly and stays
+             cacheable. -->
+        <TransitionRoot as="template" :show="viewerOpen">
+            <Dialog as="div" class="relative z-50" @close="viewerOpen = false">
+                <TransitionChild
+                    as="template"
+                    enter="ease-out duration-200"
+                    enter-from="opacity-0"
+                    enter-to="opacity-100"
+                    leave="ease-in duration-150"
+                    leave-from="opacity-100"
+                    leave-to="opacity-0"
+                >
+                    <div class="fixed inset-0 bg-gray-900/80 transition-opacity" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-center justify-center p-4">
+                        <TransitionChild
+                            as="template"
+                            enter="ease-out duration-200"
+                            enter-from="opacity-0 sm:scale-95"
+                            enter-to="opacity-100 sm:scale-100"
+                            leave="ease-in duration-150"
+                            leave-from="opacity-100 sm:scale-100"
+                            leave-to="opacity-0 sm:scale-95"
+                        >
+                            <DialogPanel class="w-full max-w-4xl space-y-3">
+                                <img
+                                    :src="viewerUrl"
+                                    :alt="contact.fullname"
+                                    class="mx-auto max-h-[80vh] w-auto max-w-full rounded-lg shadow-xl"
+                                />
+
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    <a
+                                        :href="downloadUrl"
+                                        :download="downloadName"
+                                        class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900 shadow hover:bg-gray-100"
+                                    >
+                                        {{ t('contacts.image_viewer.download') }}
+                                    </a>
+                                    <button
+                                        type="button"
+                                        class="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white ring-1 ring-white/30 hover:bg-white/20"
+                                        @click="viewerOpen = false"
+                                    >
+                                        {{ t('contacts.image_viewer.close') }}
+                                    </button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
     </AppLayout>
 </template>
