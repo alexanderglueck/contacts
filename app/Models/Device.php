@@ -43,8 +43,16 @@ class Device extends Model
      *
      * The token stays stored and is used for devices that have no FID (older
      * app builds). Once a device reports a FID it has switched registration
-     * mode, and its token can no longer be refreshed by the app — so preferring
-     * the token past that point would address a value that quietly rots.
+     * mode, and its token is dead: measured on 2026-08-12, the Pixel's
+     * pre-cutover token returned 404 UNREGISTERED minutes after the same
+     * handset delivered fine by FID.
+     *
+     * So there is NO server-side rollback from a cutover. An earlier commit
+     * message of mine claimed flipping this back to token-first would recover a
+     * bad cutover; it would not — it would address a value FCM has already
+     * invalidated. Recovery means removing the app's
+     * firebase_messaging_installation_id_enabled manifest flag and shipping a
+     * client build, which re-enables getToken().
      */
     public function pushTarget(): ?string
     {
