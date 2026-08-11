@@ -11,9 +11,9 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 /**
  * Sends a notification as a Firebase Cloud Messaging push to every device
  * target returned by the notifiable's routeNotificationForFcm() — the device's
- * registration token where it has one, else its Firebase Installation ID.
- * Both travel in the message's `token` field; see Device::pushTarget() for why
- * the deprecated token is still preferred over the FID.
+ * Firebase Installation ID where it has one, else its legacy registration
+ * token. Both travel in the message's `token` field, which FCM's v1 API accepts
+ * for a registered FID; see Device::pushTarget().
  *
  * Pushes are sent data-only (no notification block) at the lowest possible
  * priority (these are non-urgent daily reminders). Data-only is what lets the

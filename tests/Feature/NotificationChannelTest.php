@@ -115,7 +115,7 @@ class NotificationChannelTest extends TestCase
     }
 
     #[Test]
-    public function fcm_channel_prefers_the_registration_token_over_the_installation_id()
+    public function fcm_channel_prefers_the_installation_id_over_the_registration_token()
     {
         $user = $this->createUser();
         create(Device::class, [
@@ -135,19 +135,19 @@ class NotificationChannelTest extends TestCase
 
         (new FcmChannel())->send($user->fresh(), new TodaysDates());
 
-        // FCM returns UNREGISTERED for our FIDs, so the token wins while one
-        // exists — see Device::pushTarget().
-        $this->assertSame('legacy-token', $captured->jsonSerialize()['token'] ?? null);
+        // A registered FID delivers, and a device reporting one can no longer
+        // refresh its token — see Device::pushTarget().
+        $this->assertSame('installation-id-abc', $captured->jsonSerialize()['token'] ?? null);
     }
 
     #[Test]
-    public function fcm_channel_falls_back_to_the_installation_id_without_a_token()
+    public function fcm_channel_falls_back_to_the_registration_token_without_a_fid()
     {
         $user = $this->createUser();
         create(Device::class, [
             'user_id' => $user->id,
-            'device_token' => null,
-            'fid' => 'installation-id-abc',
+            'device_token' => 'legacy-token',
+            'fid' => null,
         ]);
 
         $captured = null;
@@ -161,7 +161,7 @@ class NotificationChannelTest extends TestCase
 
         (new FcmChannel())->send($user->fresh(), new TodaysDates());
 
-        $this->assertSame('installation-id-abc', $captured->jsonSerialize()['token'] ?? null);
+        $this->assertSame('legacy-token', $captured->jsonSerialize()['token'] ?? null);
     }
 
     #[Test]
