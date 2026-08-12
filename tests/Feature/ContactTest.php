@@ -51,6 +51,40 @@ class ContactTest extends TestCase
     }
 
     #[Test]
+    public function the_contact_page_carries_the_age_alongside_the_birthday()
+    {
+        $user = $this->createUser('view contacts');
+        $dob = (new \DateTime('today'))->modify('-42 years')->modify('-2 days');
+
+        $contact = create(Contact::class, [
+            'date_of_birth' => $dob->format('Y-m-d'),
+            'died_at' => null,
+            'created_by' => $user->id,
+            'updated_by' => $user->id
+        ]);
+
+        $this->get(route('contacts.show', [$contact->ulid]))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('contact.age', 42)
+                ->where('contact.is_alive', true));
+    }
+
+    #[Test]
+    public function the_contact_page_omits_the_age_when_the_birth_year_is_unknown()
+    {
+        $user = $this->createUser('view contacts');
+
+        $contact = create(Contact::class, [
+            'date_of_birth' => '1900-03-12',
+            'created_by' => $user->id,
+            'updated_by' => $user->id
+        ]);
+
+        $this->get(route('contacts.show', [$contact->ulid]))
+            ->assertInertia(fn (Assert $page) => $page->where('contact.age', null));
+    }
+
+    #[Test]
     public function a_user_can_view_the_contact_delete_view()
     {
         $user = $this->createUser('delete contacts');

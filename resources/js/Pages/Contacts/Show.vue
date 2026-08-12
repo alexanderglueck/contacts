@@ -89,6 +89,17 @@ const openSection = (key) => {
 };
 const closeSection = () => { activeSection.value = null; };
 
+// The backend leaves age null when it can't be told (no birthday, or the 1900
+// "year unknown" sentinel). Stringified so an age of 0 still renders — the
+// detail rows hide on a falsy value.
+const ageValue = computed(() => (props.contact.age === null || props.contact.age === undefined
+    ? null
+    : String(props.contact.age)));
+
+const ageLabel = computed(() => (props.contact.is_alive
+    ? t('contacts.fields.age')
+    : t('contacts.fields.age_at_death')));
+
 const detailFields = computed(() => [
     { label: t('contacts.fields.name'), value: props.contact.fullname },
     { label: t('contacts.fields.gender'), value: localiseGender(props.contact.gender?.gender) },
@@ -97,6 +108,7 @@ const detailFields = computed(() => [
     { label: t('contacts.fields.department'), value: props.contact.department },
     { label: t('contacts.fields.salutation'), value: props.contact.salutation },
     { label: t('contacts.fields.date_of_birth'), value: props.contact.formatted_date_of_birth },
+    { label: ageLabel.value, value: ageValue.value },
     { label: t('contacts.fields.nickname'), value: props.contact.nickname },
     { label: t('contacts.fields.iban'), value: props.contact.iban },
     { label: t('contacts.fields.nationality'), value: props.contact.nationality?.country },

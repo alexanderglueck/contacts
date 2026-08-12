@@ -44,6 +44,43 @@ class Contact extends Model implements CalendarInterface
         return $dob && (int) $dob->format('Y') !== self::UNKNOWN_BIRTH_YEAR;
     }
 
+    /**
+     * The contact's age in whole years, or null when it can't be told: no date
+     * of birth, or the 1900 "year unknown" sentinel. For a contact who has
+     * died this is the age they reached, not the age they would be today.
+     */
+    public function getAgeAttribute(): ?int
+    {
+        if (! $this->hasKnownBirthYear()) {
+            return null;
+        }
+
+        // The leading `!` zeroes the time-of-day. Without it the DOB carries
+        // "now" while the comparison date sits at midnight, so on the
+        // birthday itself the diff falls hours short of a full year.
+        $dob = date_create_from_format('!Y-m-d', $this->date_of_birth);
+
+        $until = new \DateTime('today');
+
+        if (trim((string) $this->died_at) !== '') {
+            $died = date_create_from_format('!Y-m-d', $this->died_at);
+
+            // A death date we can't read means we can't say which age is the
+            // right one — today's would be wrong for someone who has died.
+            if (! $died) {
+                return null;
+            }
+
+            $until = $died;
+        }
+
+        $diff = $dob->diff($until);
+
+        // Guards a died_at (or an imported DOB) in the future, which would
+        // otherwise read as a perfectly plausible age.
+        return $diff->invert ? null : (int) $diff->y;
+    }
+
     public function getNoteHtmlAttribute(): string
     {
         return $this->renderMarkdown($this->note);
@@ -123,7 +160,7 @@ class Contact extends Model implements CalendarInterface
 
     public function getIsAliveAttribute()
     {
-        return trim($this->died_at) === '';
+        return trim((string) $this->died_at) === '';
     }
 
     public function setDateOfBirthAttribute($value)

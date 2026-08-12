@@ -461,6 +461,8 @@
             "lastname": "Last name",
             "nickname": "Nickname",
             "date_of_birth": "Date of birth",
+            "age": "Age",
+            "age_at_death": "Age at death",
             "iban": "IBAN",
             "company": "Company",
             "vatin": "VAT ID",

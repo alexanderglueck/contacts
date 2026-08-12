@@ -461,6 +461,8 @@
             "lastname": "Nachname",
             "nickname": "Spitzname",
             "date_of_birth": "Geburtsdatum",
+            "age": "Alter",
+            "age_at_death": "Sterbealter",
             "iban": "IBAN",
             "company": "Unternehmen",
             "vatin": "USt-IdNr.",

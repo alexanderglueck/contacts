@@ -139,6 +139,11 @@ class ContactController extends Controller
                 'image_medium' => $contact->image_medium,
                 'image_full' => $contact->image_full,
                 'formatted_date_of_birth' => $contact->formatted_date_of_birth,
+                // Null whenever the age is unknowable (no DOB, or the 1900
+                // sentinel year); is_alive picks the label, since for someone
+                // who has died the number is the age they reached.
+                'age' => $contact->age,
+                'is_alive' => $contact->is_alive,
                 'gender' => $contact->gender ? ['gender' => $contact->gender->gender] : null,
                 'nationality' => $contact->country ? ['country' => $contact->country->country] : null,
                 'addresses_count' => $contact->addresses_count,
