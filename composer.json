@@ -26,7 +26,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/scout": "^11.0",
         "laravel/tinker": "^3.0",
-        "maatwebsite/excel": "^3.1",
+        "maatwebsite/excel": "^4.0",
         "meilisearch/meilisearch-php": "^1.16",
         "pusher/pusher-php-server": "^7.2",
         "symfony/html-sanitizer": "^8.0",

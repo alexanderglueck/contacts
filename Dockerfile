@@ -39,9 +39,9 @@ FROM composer:${COMPOSER_VERSION} AS composer-bin
 #
 # --ignore-platform-reqs skips PHP-version and ext-* checks: this stage
 # only downloads packages, the runtime image (base) is the one that has
-# the extensions. The PHP-version skip is also needed because
-# phpoffice/phpspreadsheet 1.30 caps PHP at <8.5 — composer.json declares
-# ^8.2 so the constraint is upstream-only. See memory: project-dep-pins.
+# the extensions. Nothing in the lock caps the PHP version any more --
+# phpoffice/phpspreadsheet 5 dropped the <8.5 ceiling that 1.30 carried --
+# so the ext-* skip is the only reason the flag is still here.
 # =====================================================================
 FROM php:${PHP_VERSION}-cli AS vendor
 WORKDIR /app

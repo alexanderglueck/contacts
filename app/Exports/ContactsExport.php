@@ -10,11 +10,15 @@ use App\Exports\Sheets\NumbersSheet;
 use App\Exports\Sheets\UrlsSheet;
 use App\Models\ContactGroup;
 use Illuminate\Database\Eloquent\Collection;
+use Maatwebsite\Excel\Concerns\Export;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class ContactsExport implements WithMultipleSheets, WithTitle
+// Export is a marker interface the individual sheets pick up through FromArray.
+// This class only aggregates them, so it has to declare it itself -- without it
+// the workbook fails the type check on Excel::download().
+class ContactsExport implements Export, WithMultipleSheets, WithTitle
 {
     use Exportable;
 
