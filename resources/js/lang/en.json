@@ -108,7 +108,8 @@
         "verify_email_sent": "A new verification link has been sent to the email address you provided during registration.",
         "resend_verification_email": "Resend verification email",
         "register_terms": "I accept the terms of service",
-        "have_account": "Have an account?"
+        "have_account": "Have an account?",
+        "confirm_password_failed": "Could not confirm your password. Please try again."
     },
     "settings": {
         "password": {
@@ -271,7 +272,9 @@
         "remove": "Remove",
         "already_registered": "You've already registered a passkey on this device for this account.",
         "cancelled": "Passkey prompt was cancelled or timed out.",
-        "register_failed": "Could not register passkey."
+        "register_failed": "Could not register passkey.",
+        "confirm_password_help": "Passkeys guard your account, so please confirm your password before adding or removing one.",
+        "remove_failed": "Could not remove passkey."
     },
     "map": {
         "title": "Map",

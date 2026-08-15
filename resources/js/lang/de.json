@@ -108,7 +108,8 @@
         "verify_email_sent": "Ein neuer Bestätigungslink wurde an die bei der Registrierung angegebene E-Mail-Adresse gesendet.",
         "resend_verification_email": "Bestätigungs-E-Mail erneut senden",
         "register_terms": "Ich akzeptiere die Nutzungsbedingungen",
-        "have_account": "Sie haben bereits ein Konto?"
+        "have_account": "Sie haben bereits ein Konto?",
+        "confirm_password_failed": "Ihr Passwort konnte nicht bestätigt werden. Bitte versuchen Sie es erneut."
     },
     "settings": {
         "password": {
@@ -271,7 +272,9 @@
         "remove": "Entfernen",
         "already_registered": "Sie haben auf diesem Gerät bereits einen Passkey für dieses Konto registriert.",
         "cancelled": "Passkey-Aufforderung wurde abgebrochen oder ist abgelaufen.",
-        "register_failed": "Passkey konnte nicht registriert werden."
+        "register_failed": "Passkey konnte nicht registriert werden.",
+        "confirm_password_help": "Passkeys schützen Ihr Konto. Bitte bestätigen Sie Ihr Passwort, bevor Sie einen hinzufügen oder entfernen.",
+        "remove_failed": "Passkey konnte nicht entfernt werden."
     },
     "map": {
         "title": "Karte",

@@ -10,6 +10,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmModal from '@/Components/ConfirmModal.vue';
+import ConfirmPasswordModal from '@/Components/ConfirmPasswordModal.vue';
 
 const { t } = useI18n();
 
@@ -40,9 +41,39 @@ const startAdd = () => {
 
 const cancelAdd = () => { adding.value = false; };
 
-const submitAdd = () => {
-    if (!newName.value.trim()) return;
-    register(newName.value.trim());
+// Passkey management routes sit behind Laravel's `password.confirm` middleware.
+// Because the passkey client sends XHRs, that middleware answers with a bare
+// 423 "Password confirmation required." instead of redirecting to the confirm
+// screen -- so we have to collect the password ourselves before the protected
+// request goes out, otherwise the WebAuthn prompt never even opens.
+//
+// While a prompt is open, passwordPrompt holds the promise resolver that the
+// pending action is parked on; resolving it with false means "user cancelled".
+const passwordPrompt = ref(null);
+
+const ensurePasswordConfirmed = async () => {
+    try {
+        const { data } = await window.axios.get('/user/confirmed-password-status');
+        if (data?.confirmed) return true;
+    } catch {
+        // An unreadable status is treated as "not confirmed" -- asking for the
+        // password once too often beats a request that fails with 423.
+    }
+
+    return new Promise((resolve) => { passwordPrompt.value = resolve; });
+};
+
+const resolvePasswordPrompt = (confirmed) => {
+    const resolve = passwordPrompt.value;
+    passwordPrompt.value = null;
+    resolve?.(confirmed);
+};
+
+const submitAdd = async () => {
+    const name = newName.value.trim();
+    if (!name) return;
+    if (! await ensurePasswordConfirmed()) return;
+    register(name);
 };
 
 const formatDate = (iso) => iso ? new Date(iso).toLocaleString() : '—';
@@ -56,16 +87,13 @@ const confirmRemove = async () => {
     const passkey = pendingRemoval.value;
     if (! passkey) return;
     pendingRemoval.value = null;
+    if (! await ensurePasswordConfirmed()) return;
     deletingId.value = passkey.id;
     try {
         await window.axios.delete(`/user/passkeys/${passkey.id}`);
         loadList();
     } catch (e) {
-        if (e?.response?.status === 423 || e?.response?.status === 401) {
-            window.location.href = '/user/confirm-password';
-            return;
-        }
-        alert(e?.response?.data?.message ?? t('passkeys.register_failed'));
+        alert(e?.response?.data?.message ?? t('passkeys.remove_failed'));
     } finally {
         deletingId.value = null;
     }
@@ -167,6 +195,13 @@ const confirmRemove = async () => {
             :busy="deletingId !== null"
             @confirm="confirmRemove"
             @cancel="cancelRemove"
+        />
+
+        <ConfirmPasswordModal
+            :open="passwordPrompt !== null"
+            :body="t('passkeys.confirm_password_help')"
+            @confirmed="resolvePasswordPrompt(true)"
+            @cancel="resolvePasswordPrompt(false)"
         />
     </section>
 </template>
