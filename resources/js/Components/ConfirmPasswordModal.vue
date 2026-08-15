@@ -1,6 +1,7 @@
 <script setup>
-import { nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -17,6 +18,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['confirmed', 'cancel']);
+
+const page = usePage();
+
+// Names the account whose password is being asked for -- see the field itself
+// for why a password manager needs it.
+const username = computed(() => page.props.auth?.user?.email ?? '');
 
 const password = ref('');
 const error = ref('');
@@ -97,12 +104,33 @@ const cancel = () => {
                                         {{ body || t('auth.confirm_password_help') }}
                                     </p>
 
+                                    <!--
+                                        A password manager matches a saved login by pairing a
+                                        username field with the password field. Given a lone
+                                        password box it reads the form as a place to invent a
+                                        password, so 1Password was offering to suggest one
+                                        instead of filling the one on file. This field is what
+                                        tells it which account to look up; it stays in the
+                                        layout rather than `hidden`, because managers skip
+                                        fields that aren't rendered at all.
+                                    -->
+                                    <input
+                                        type="text"
+                                        :value="username"
+                                        autocomplete="username"
+                                        class="sr-only"
+                                        tabindex="-1"
+                                        aria-hidden="true"
+                                        readonly
+                                    />
+
                                     <div>
-                                        <InputLabel for="confirm_password" :value="t('auth.password')" />
+                                        <InputLabel for="current_password" :value="t('auth.password')" />
                                         <TextInput
-                                            id="confirm_password"
+                                            id="current_password"
                                             ref="input"
                                             v-model="password"
+                                            name="current_password"
                                             type="password"
                                             autocomplete="current-password"
                                             :disabled="busy"
