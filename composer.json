@@ -11,7 +11,7 @@
         "diglactic/laravel-breadcrumbs": "^10.1",
         "eluceo/ical": "^2.16",
         "giggsey/libphonenumber-for-php-lite": "^9.0",
-        "globalcitizen/php-iban": "^4.2",
+        "globalcitizen/php-iban": "^5.0",
         "guzzlehttp/guzzle": "^7.10",
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "^3.1",
