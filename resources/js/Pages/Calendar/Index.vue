@@ -105,6 +105,9 @@ const calendarOptions = computed(() => ({
     views: {
         listYear: { buttonText: t('calendar.list_year') },
     },
+    // Let the wrapper own the card: without this forma rounds its own root to
+    // 4px and adds a shadow, which fights the rounded-lg clip around it.
+    borderless: true,
     firstDay: 1,
     weekNumbers: true,
     height: 'auto',

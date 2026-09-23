@@ -56,19 +56,13 @@
 }
 
 /*
- * Let forma's own card be the card: the wrapper only rounds it to rounded-lg
- * and clips, instead of the app drawing a second white box around it.
- *
- * forma carries a single radius rule (border-radius: 4px) on the card element
- * itself, so clipping at 8px alone leaves the card's own 4px corners short of
- * the clip. The child inherits the wrapper's radius instead, so both corners
- * are the same curve -- and 'inherit' keeps it in step if the value changes.
+ * The wrapper is the card. The calendar runs with borderless: true, so forma
+ * skips the 4px radius and shadow it would otherwise put on its own root --
+ * trying to override those meant fighting a hashed class that changes between
+ * releases. Here the radius is declared once, on an element we own.
  */
 .fc-app-card {
+    background: #ffffff;
     border-radius: 0.5rem; /* rounded-lg */
     overflow: hidden;
-}
-
-.fc-app-card > * {
-    border-radius: inherit;
 }
