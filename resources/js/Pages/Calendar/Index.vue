@@ -37,8 +37,12 @@ import '@fullcalendar/vue3/themes/monarch/palettes/purple.css';
 import pulseTheme from '@fullcalendar/vue3/themes/pulse';
 import '@fullcalendar/vue3/themes/pulse/theme.css';
 import '@fullcalendar/vue3/themes/pulse/palettes/purple.css';
+// Our own palette, layered on forma. Scoped to .fc-app-theme so stock forma
+// stays available for comparison while we settle on one.
+import '../../../css/fullcalendar-app-theme.css';
 
 const THEMES = {
+    app: formaTheme,
     breezy: breezyTheme,
     classic: classicTheme,
     forma: formaTheme,
@@ -115,7 +119,7 @@ const onEventClick = (info) => {
 
 // Which theme is active. Kept in localStorage so a choice survives reloads
 // while we are evaluating; nothing server-side stores it yet.
-const theme = ref('breezy');
+const theme = ref('app');
 try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     if (stored && stored in THEMES) {
@@ -162,11 +166,11 @@ const calendarOptions = computed(() => ({
         <Head :title="t('calendar.title')" />
 
         <div class="space-y-4">
-            <div class="bg-white shadow rounded-lg p-4">
-                <!-- Temporary while we settle on a FullCalendar 7 theme. The choice
-                     lives in localStorage only; remove this block and keep a single
-                     theme import once one is picked. -->
-                <div class="mb-3 flex flex-wrap items-center gap-2 border-b border-gray-200 pb-3">
+            <!-- Temporary while we settle on a FullCalendar 7 theme. The choice
+                 lives in localStorage only; remove this block and keep a single
+                 theme import once one is picked. -->
+            <div class="bg-white shadow rounded-lg px-4 py-3">
+                <div class="flex flex-wrap items-center gap-2">
                     <span class="text-xs font-medium text-gray-500">Theme</span>
                     <button
                         v-for="name in Object.keys(THEMES)"
@@ -179,7 +183,12 @@ const calendarOptions = computed(() => ({
                         @click="setTheme(name)"
                     >{{ name }}</button>
                 </div>
-                <!-- Swapping a theme swaps a plugin, so remount rather than patch. -->
+            </div>
+
+            <!-- No bg-white/shadow wrapper here on purpose: the theme draws its own
+                 card, so the app only rounds and clips it to match rounded-lg.
+                 Swapping a theme swaps a plugin, so remount rather than patch. -->
+            <div class="fc-app-card shadow" :class="theme === 'app' ? 'fc-app-theme' : ''">
                 <FullCalendar :key="theme" :options="calendarOptions" />
             </div>
 

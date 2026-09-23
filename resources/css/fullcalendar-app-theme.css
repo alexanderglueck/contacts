@@ -1,0 +1,65 @@
+/*
+ * Our own FullCalendar palette, layered on the "forma" theme.
+ *
+ * v7 themes are plugins that emit build-generated class names (.fc-forma-uqo
+ * and friends). Those hashes change between releases, so nothing here targets
+ * them: colours come from the documented --fc-forma-* custom properties, and
+ * the only shape override keys off a real <button> element under a class we
+ * own. Both survive a FullCalendar upgrade.
+ *
+ * Scoped to .fc-app-theme rather than :root so it can sit alongside forma's
+ * stock palette while we compare the two; custom properties inherit, so
+ * putting the class on the wrapper is enough.
+ *
+ * Values are the Tailwind tokens the rest of the app already uses.
+ */
+.fc-app-theme {
+    /* primary — indigo-600, hover indigo-500, active indigo-700, as PrimaryButton */
+    --fc-forma-primary: #4f46e5;
+    --fc-forma-primary-over: #6366f1;
+    --fc-forma-primary-down: #4338ca;
+    --fc-forma-primary-foreground: #ffffff;
+
+    /* calendar content — matches the eventColor passed in calendarOptions */
+    --fc-forma-event: #4f46e5;
+    --fc-forma-event-contrast: var(--fc-forma-primary-foreground);
+    --fc-forma-background-event: var(--fc-forma-primary);
+    --fc-forma-highlight: #4f46e559;
+
+    /* neutral backgrounds — the alpha ramp is theme-agnostic, kept as shipped */
+    --fc-forma-background: #ffffff;
+    --fc-forma-faint: #00000008;
+    --fc-forma-muted: #00000012;
+    --fc-forma-strong: #0000001f;
+    --fc-forma-stronger: #00000029;
+    --fc-forma-strongest: #00000033;
+
+    /* neutral foregrounds — gray-900 / gray-400 / gray-500 */
+    --fc-forma-foreground: #111827;
+    --fc-forma-faint-foreground: #9ca3af;
+    --fc-forma-muted-foreground: #6b7280;
+
+    /* neutral borders — gray-200, and gray-300 for the strong one */
+    --fc-forma-border: #e5e7eb;
+    --fc-forma-muted-border: #e5e7eb;
+    --fc-forma-strong-border: #d1d5db;
+}
+
+/*
+ * forma hardcodes a 4px radius with no variable for it. Buttons are real
+ * <button> elements, so an element selector reaches them without naming a
+ * hashed class; .fc-app-theme button beats the theme's single-class rules on
+ * specificity, so load order does not matter.
+ */
+.fc-app-theme button {
+    border-radius: 0.375rem; /* rounded-md, as PrimaryButton */
+}
+
+/*
+ * Let forma's own card be the card: the wrapper only rounds it to rounded-lg
+ * and clips, instead of the app drawing a second white box around it.
+ */
+.fc-app-card {
+    border-radius: 0.5rem; /* rounded-lg */
+    overflow: hidden;
+}
