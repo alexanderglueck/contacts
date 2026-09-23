@@ -1,12 +1,38 @@
 <script setup>
+import { onBeforeUnmount, watch } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import FlashBanner from '@/Components/FlashBanner.vue';
+import { registerOverlay, unregisterOverlay } from '@/composables/useOverlayFlash';
 
-defineProps({
+const props = defineProps({
     open: { type: Boolean, required: true },
     title: { type: String, default: '' },
 });
 
 const emit = defineEmits(['close']);
+
+// Tell the layout to hold its own flash banner back while this panel covers the
+// page; we render one inside the panel instead, next to the action that caused it.
+let counted = false;
+watch(
+    () => props.open,
+    (open) => {
+        if (open && !counted) {
+            registerOverlay();
+            counted = true;
+        } else if (!open && counted) {
+            unregisterOverlay();
+            counted = false;
+        }
+    },
+    { immediate: true },
+);
+onBeforeUnmount(() => {
+    if (counted) {
+        unregisterOverlay();
+        counted = false;
+    }
+});
 </script>
 
 <template>
@@ -54,6 +80,7 @@ const emit = defineEmits(['close']);
                                 </div>
 
                                 <div class="flex-1 overflow-y-auto px-6 py-4">
+                                    <FlashBanner class="mb-4" />
                                     <slot />
                                 </div>
 

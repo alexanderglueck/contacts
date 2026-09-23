@@ -7,6 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FlashBanner from '@/Components/FlashBanner.vue';
+import { overlayOpen } from '@/composables/useOverlayFlash';
 import ImpersonationBanner from '@/Components/ImpersonationBanner.vue';
 import GlobalSearch from '@/Components/GlobalSearch.vue';
 
@@ -126,7 +127,8 @@ const isActive = (name) => {
 
         <main>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
-                <FlashBanner />
+                <!-- A SlideOver dims this area, so it renders its own banner instead. -->
+                <FlashBanner v-if="!overlayOpen" />
                 <slot />
             </div>
         </main>
