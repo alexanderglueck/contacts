@@ -27,7 +27,7 @@ for name in $(compgen -e | grep '^VITE_' | sort); do
 done
 
 echo "[build] ${APP}:latest  (Dockerfile target: production)"
-docker build --target production "${BUILD_ARGS[@]}" -t "${APP}:latest" .
+docker build --pull --target production "${BUILD_ARGS[@]}" -t "${APP}:latest" .
 
 echo "[build] ${APP}-web:latest  (nginx front, serves public/ from the app image)"
 docker build -f docker/nginx.Dockerfile --build-arg "APP_IMAGE=${APP}:latest" -t "${APP}-web:latest" .
