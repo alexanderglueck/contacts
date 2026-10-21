@@ -127,7 +127,7 @@ RUN install-php-extensions \
         bcmath \
         exif \
         gd \
-        imagick \
+        imagick/imagick@3.8.1 \
         intl \
         opcache \
         pcntl \
