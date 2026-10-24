@@ -12,6 +12,7 @@ use App\Http\Requests\Api\V1\LookupContactByNumberRequest;
 use App\Models\Contact;
 use App\Models\ContactNumber;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ContactsController extends Controller
@@ -39,7 +40,7 @@ class ContactsController extends Controller
         // single follow-up SELECT instead of one-per-contact. The Android
         // dialer reads these into Room on sync; shipping them in the list
         // avoids N+1 detail calls just to populate the local number index.
-        $contacts->getCollection()->load('numbers');
+        $contacts->getCollection()->load(['numbers', 'contactGroups:id']);
 
         return response()->json([
             'data' => $contacts->getCollection()->map(fn (Contact $c) => $this->serialize($c))->values(),
@@ -52,6 +53,49 @@ class ContactsController extends Controller
                 'to' => $contacts->lastItem(),
             ],
             'q' => $query,
+        ]);
+    }
+
+    /**
+     * Contacts that may be the person about to be created: same first name,
+     * and the last name matches either their last name or their birth name
+     * (or the new last name is their old one). The Android client warns with
+     * these before saving a new contact. `exclude` drops the contact being
+     * edited from the result.
+     */
+    public function possibleDuplicates(Request $request): JsonResponse
+    {
+        $this->can('view');
+
+        $validated = $request->validate([
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'birth_name' => ['nullable', 'string', 'max:255'],
+            'exclude' => ['nullable', 'string', 'max:26'],
+        ]);
+
+        $lastNames = array_values(array_filter(array_map('trim', [
+            $validated['lastname'],
+            $validated['birth_name'] ?? '',
+        ])));
+
+        $matches = Contact::query()
+            ->whereRaw('LOWER(firstname) = ?', [mb_strtolower(trim($validated['firstname']))])
+            ->where(function ($query) use ($lastNames) {
+                foreach ($lastNames as $name) {
+                    $lower = mb_strtolower($name);
+                    $query->orWhereRaw('LOWER(lastname) = ?', [$lower])
+                        ->orWhereRaw('LOWER(birth_name) = ?', [$lower]);
+                }
+            })
+            ->when($validated['exclude'] ?? null, fn ($query, $ulid) => $query->where('ulid', '!=', $ulid))
+            ->with(['numbers', 'contactGroups:id'])
+            ->sorted()
+            ->limit(5)
+            ->get();
+
+        return response()->json([
+            'data' => $matches->map(fn (Contact $c) => $this->serialize($c))->values(),
         ]);
     }
 
@@ -280,6 +324,9 @@ class ContactsController extends Controller
             'title_after' => $contact->title_after,
             'salutation' => $contact->salutation,
             'company' => $contact->company,
+            // Group ids let the client filter its full contact list by group
+            // without a request per group.
+            'group_ids' => $contact->contactGroups->pluck('id')->values(),
             ...$contact->imageUrls(),
             // Same shape the detail endpoint uses — Android's Room sync
             // reads these into the dialer's local lookup table on every

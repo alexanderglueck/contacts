@@ -101,6 +101,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             // Static path declared BEFORE the {contact} route binding so the
             // word "by-number" isn't interpreted as a ULID.
             Route::get('contacts/by-number', [ContactsController::class, 'byNumber'])->name('contacts.by_number');
+            Route::get('contacts/possible-duplicates', [ContactsController::class, 'possibleDuplicates'])
+                ->name('contacts.possible_duplicates');
 
             Route::get('contacts/{contact}', [ContactsController::class, 'show'])->name('contacts.show');
             Route::match(['put', 'patch'], 'contacts/{contact}', [ContactsController::class, 'update'])->name('contacts.update');
