@@ -13,9 +13,10 @@ class ContactActivitiesController extends Controller
     protected ?string $accessEntity = 'activities';
 
     /**
-     * The contact's edit history, newest first. Each update lists the fields
-     * that changed with their old and new value, the same diff the web shows.
-     * `label` is the translated field name, so clients need no label table.
+     * The contact's edit history, newest first, including its numbers,
+     * emails, URLs, addresses and dates. Each entry lists the fields that
+     * changed with their old and new value, the same diff the web shows.
+     * `summary` and `label` come translated, so clients need no label table.
      */
     public function index(Request $request, Contact $contact): JsonResponse
     {
@@ -23,7 +24,9 @@ class ContactActivitiesController extends Controller
 
         $perPage = min(max((int) $request->query('per_page', 25), 1), 100);
 
-        $activities = $contact->activity()
+        $activities = Activity::query()
+            ->where('team_id', $contact->team_id)
+            ->where('contact_id', $contact->id)
             ->with('user:id,name')
             ->latest()
             ->latest('id')
@@ -44,23 +47,12 @@ class ContactActivitiesController extends Controller
     {
         return [
             'id' => $activity->id,
-            // created_contact -> created. Contact activities are only ever
-            // created / updated / deleted.
-            'event' => strtok((string) $activity->action, '_'),
+            'event' => $activity->event(),
+            'subject' => $activity->subjectName(),
+            'summary' => $activity->summary(),
             'user' => $activity->user ? ['name' => $activity->user->name] : null,
             'created_at' => optional($activity->created_at)->toIso8601String(),
-            'changes' => array_map(fn (array $change) => [
-                ...$change,
-                'label' => $this->label($change['field']),
-            ], $activity->changes()),
+            'changes' => $activity->presentedChanges(),
         ];
-    }
-
-    private function label(string $field): string
-    {
-        $key = 'duplicates.fields.' . $field;
-        $label = __($key);
-
-        return $label === $key ? $field : $label;
     }
 }

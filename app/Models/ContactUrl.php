@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactUrl extends Model
 {
-    use HasUlidRouteKey, HasFactory;
+    use HasUlidRouteKey, HasFactory, RecordsActivity;
 
     protected $fillable = ['name', 'url'];
 

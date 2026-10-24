@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Interfaces\CalendarInterface;
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class ContactDate extends Model implements CalendarInterface
 {
-    use HasUlidRouteKey, HasFactory;
+    use HasUlidRouteKey, HasFactory, RecordsActivity;
 
     protected $fillable = ['name', 'date', 'skip_year'];
 

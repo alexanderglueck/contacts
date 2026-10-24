@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
@@ -11,7 +12,7 @@ use libphonenumber\PhoneNumberUtil;
 
 class ContactNumber extends Model
 {
-    use HasUlidRouteKey, HasFactory;
+    use HasUlidRouteKey, HasFactory, RecordsActivity;
 
     // `e164` is intentionally NOT fillable — it's derived from `number` by
     // the mutator below. Letting clients set it directly would mean it

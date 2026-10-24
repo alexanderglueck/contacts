@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\ContactGroup;
@@ -239,7 +240,9 @@ class ContactController extends Controller
                     ];
                 })->values();
             }),
-            'activities' => Inertia::optional(fn () => $contact->activity()
+            'activities' => Inertia::optional(fn () => Activity::query()
+                ->where('team_id', $contact->team_id)
+                ->where('contact_id', $contact->id)
                 ->with('user:id,name')
                 ->latest()
                 ->take(50)
@@ -247,7 +250,8 @@ class ContactController extends Controller
                 ->map(fn ($activity) => [
                     'id' => $activity->id,
                     'action' => $activity->action,
-                    'changes' => $activity->changes(),
+                    'summary' => $activity->summary(),
+                    'changes' => $activity->presentedChanges(),
                     'created_at' => optional($activity->created_at)->diffForHumans(),
                     'user' => $activity->user ? ['name' => $activity->user->name] : null,
                 ])

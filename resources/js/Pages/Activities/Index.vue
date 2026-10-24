@@ -29,7 +29,7 @@ defineProps({
                 <li v-for="activity in activities.data" :key="activity.id" class="px-6 py-3 text-sm">
                     <div class="text-gray-900">
                         <span class="font-medium">{{ activity.user ? activity.user.name : t('activities.unknown_user') }}</span>
-                        <span class="text-gray-600"> {{ activity.action }} </span>
+                        <span class="text-gray-600"> {{ activity.summary ?? activity.action }} </span>
                         <span v-if="activity.object && activity.object.fullname" class="font-medium">{{ activity.object.fullname }}</span>
                         <span class="text-gray-500"> &middot; {{ activity.created_at }}</span>
                     </div>

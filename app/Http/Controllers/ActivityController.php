@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Contact;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -10,26 +11,27 @@ class ActivityController extends Controller
 {
     public function index(): Response
     {
-        $activities = Activity::with('user:id,name')
+        $activities = Activity::forCurrentTeam()
+            ->with('user:id,name')
             ->latest()
+            ->latest('id')
             ->paginate(50)
             ->through(function (Activity $activity) {
+                // Entries of numbers, addresses etc. belong to their contact too.
                 $object = null;
-                if ($activity->object_type && $activity->object_id) {
-                    $model = $activity->object_type::find($activity->object_id);
-                    if ($model) {
-                        $object = [
-                            'type' => class_basename($activity->object_type),
-                            'fullname' => $model->fullname ?? null,
-                            'ulid' => $model->ulid ?? null,
-                        ];
-                    }
+                if ($activity->contact_id && $contact = Contact::find($activity->contact_id)) {
+                    $object = [
+                        'type' => 'Contact',
+                        'fullname' => $contact->fullname,
+                        'ulid' => $contact->ulid,
+                    ];
                 }
 
                 return [
                     'id' => $activity->id,
                     'action' => $activity->action,
-                    'changes' => $activity->changes(),
+                    'summary' => $activity->summary(),
+                    'changes' => $activity->presentedChanges(),
                     'created_at' => optional($activity->created_at)->diffForHumans(),
                     'user' => $activity->user ? ['name' => $activity->user->name] : null,
                     'object' => $object,

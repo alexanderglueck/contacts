@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Models\Concerns\HasUlidRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactAddress extends Model
 {
-    use HasUlidRouteKey, HasFactory;
+    use HasUlidRouteKey, HasFactory, RecordsActivity;
 
     protected $fillable = [
         'contact_id',
@@ -40,6 +41,18 @@ class ContactAddress extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    /**
+     * Human-readable value for the field diff in the activity log.
+     */
+    public function formatActivityValue(string $field, ?string $value): ?string
+    {
+        if ($value !== null && $field === 'country_id') {
+            return Country::find($value)?->country ?? $value;
+        }
+
+        return $value;
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

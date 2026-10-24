@@ -145,6 +145,27 @@ class ActivityTest extends TestCase
     }
 
     #[Test]
+    public function the_activity_log_only_lists_the_current_teams_entries()
+    {
+        $alice = $this->createUser();
+        $alice->forceFill(['name' => 'Alice Uniquename'])->save();
+        Contact::factory()->create([
+            'created_by' => $alice->id,
+            'updated_by' => $alice->id,
+            'lastname' => 'Alicesecret',
+        ]);
+
+        $bob = $this->createUser();
+        $this->actingAs($bob);
+
+        $response = $this->get(route('activities.index'))->assertOk();
+
+        $this->assertSame(0, data_get($response->viewData('page'), 'props.activities.total'));
+        $response->assertDontSee('Alice Uniquename');
+        $response->assertDontSee('Alicesecret');
+    }
+
+    #[Test]
     public function a_user_can_view_activities()
     {
         $user = $this->createUser('view activities');

@@ -2,13 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Activity extends Model
 {
+    /**
+     * Short subject names for the models that record activity, used in the
+     * API payload and in the translation keys under activity.summary/fields.
+     */
+    private const SUBJECTS = [
+        Contact::class => 'contact',
+        ContactNumber::class => 'number',
+        ContactEmail::class => 'email',
+        ContactUrl::class => 'url',
+        ContactAddress::class => 'address',
+        ContactDate::class => 'date',
+    ];
+
+    private const BOOLEAN_FIELDS = ['active', 'skip_year'];
+
     protected $fillable = [
         'user_id',
+        'team_id',
+        'contact_id',
         'action',
         'body'
     ];
@@ -29,14 +47,46 @@ class Activity extends Model
     }
 
     /**
-     * Fillable fields that differ between the "old" and "new" snapshot in
-     * the body, as [field, old, new]. Empty for anything but updates.
+     * Only the signed-in user's current team. Activities carry no global
+     * scope, so every listing has to go through this.
+     */
+    public function scopeForCurrentTeam(Builder $query): Builder
+    {
+        return $query->where('team_id', auth()->user()?->current_team_id);
+    }
+
+    /** "created", "updated" or "deleted". */
+    public function event(): string
+    {
+        return strtok((string) $this->action, '_');
+    }
+
+    /** "contact", "number", "email", ... or the raw model name for anything else. */
+    public function subjectName(): string
+    {
+        return self::SUBJECTS[$this->object_type] ?? strtolower(class_basename((string) $this->object_type));
+    }
+
+    /** Translated one-line summary, e.g. "Telefonnummer hinzugefügt". */
+    public function summary(): string
+    {
+        $key = 'activity.summary.' . $this->event() . '.' . $this->subjectName();
+        $summary = __($key);
+
+        return $summary === $key ? (string) $this->action : $summary;
+    }
+
+    /**
+     * Fillable fields worth showing, as [field, old, new]. An update lists the
+     * fields that differ between the "old" and "new" snapshot in the body. A
+     * created entry lists the values it was created with, a deleted entry the
+     * values it had.
      *
      * @return array<int, array{field: string, old: mixed, new: mixed}>
      */
     public function changes(): array
     {
-        if (! str_starts_with((string) $this->action, 'updated_') || ! class_exists((string) $this->object_type)) {
+        if (! class_exists((string) $this->object_type)) {
             return [];
         }
 
@@ -44,17 +94,19 @@ class Activity extends Model
         $old = $body['old'] ?? [];
         $new = $body['new'] ?? [];
         $subject = new $this->object_type;
+        $event = $this->event();
+        $ignored = method_exists($subject, 'activityIgnoredFields') ? $subject->activityIgnoredFields() : [];
 
         $changes = [];
-        foreach ($subject->getFillable() as $field) {
-            if (! array_key_exists($field, $new)) {
+        foreach (array_diff($subject->getFillable(), $ignored) as $field) {
+            $before = $event === 'created' ? null : $this->normalizeChangeValue($old[$field] ?? null);
+            $after = $event === 'deleted' ? null : $this->normalizeChangeValue($new[$field] ?? null);
+
+            if ($before === $after) {
                 continue;
             }
 
-            $before = $this->normalizeChangeValue($old[$field] ?? null);
-            $after = $this->normalizeChangeValue($new[$field]);
-
-            if ($before === $after) {
+            if ($event === 'updated' && ! array_key_exists($field, $new)) {
                 continue;
             }
 
@@ -66,6 +118,43 @@ class Activity extends Model
         }
 
         return $changes;
+    }
+
+    /**
+     * changes() with a translated label per field and readable booleans, for
+     * the web views and the API.
+     *
+     * @return array<int, array{field: string, label: string, old: mixed, new: mixed}>
+     */
+    public function presentedChanges(): array
+    {
+        return array_map(fn (array $change) => [
+            'field' => $change['field'],
+            'label' => $this->fieldLabel($change['field']),
+            'old' => $this->presentValue($change['field'], $change['old']),
+            'new' => $this->presentValue($change['field'], $change['new']),
+        ], $this->changes());
+    }
+
+    private function fieldLabel(string $field): string
+    {
+        foreach (['activity.fields.' . $this->subjectName() . '.' . $field, 'duplicates.fields.' . $field] as $key) {
+            $label = __($key);
+            if ($label !== $key) {
+                return $label;
+            }
+        }
+
+        return $field;
+    }
+
+    private function presentValue(string $field, ?string $value): ?string
+    {
+        if ($value === null || ! in_array($field, self::BOOLEAN_FIELDS, true)) {
+            return $value;
+        }
+
+        return $value === '1' ? __('activity.yes') : __('activity.no');
     }
 
     /**
