@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CalendarController;
+use App\Http\Controllers\Api\V1\ContactActivitiesController;
 use App\Http\Controllers\Api\V1\ContactAddressesController;
 use App\Http\Controllers\Api\V1\ContactCallsController;
 use App\Http\Controllers\Api\V1\ContactCommentsController;
@@ -112,6 +113,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 ->name('contacts.image.upload');
             Route::delete('contacts/{contact}/image', [ContactsController::class, 'destroyImage'])
                 ->name('contacts.image.destroy');
+
+            // Edit history. Read-only, and activities have no ulid, so it
+            // stays outside the sub-resource CRUD loop below.
+            // SetLocale translates the field labels; it is only in the web group.
+            Route::get('contacts/{contact}/activities', [ContactActivitiesController::class, 'index'])
+                ->middleware(\App\Http\Middleware\SetLocale::class)
+                ->name('contacts.activities.index');
 
             // Contact relations. Kept out of the scopeBindings loop below
             // because the pivot has two contact sides (not a single
