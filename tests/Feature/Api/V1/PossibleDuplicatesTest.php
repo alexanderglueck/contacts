@@ -52,6 +52,26 @@ class PossibleDuplicatesTest extends TestCase
     }
 
     #[Test]
+    public function first_names_match_by_their_parts()
+    {
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+        $cornelia = $this->makeContact($user->id, ['firstname' => 'Cornelia Maria', 'lastname' => 'Katzbauer', 'birth_name' => 'Hergan']);
+        $this->makeContact($user->id, ['firstname' => 'Anna', 'lastname' => 'Hergan']);
+
+        foreach (['Cornelia', 'maria', 'Cornelia-Maria'] as $firstname) {
+            $this->getJson(route('api.v1.contacts.possible_duplicates', ['firstname' => $firstname, 'lastname' => 'Hergan']))
+                ->assertOk()
+                ->assertJsonCount(1, 'data')
+                ->assertJsonPath('data.0.ulid', $cornelia->ulid);
+        }
+
+        $this->getJson(route('api.v1.contacts.possible_duplicates', ['firstname' => 'Corinna', 'lastname' => 'Katzbauer']))
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
+    #[Test]
     public function it_does_not_match_contacts_of_another_team()
     {
         $alice = $this->createUser();

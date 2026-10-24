@@ -57,11 +57,11 @@ class ContactsController extends Controller
     }
 
     /**
-     * Contacts that may be the person about to be created: same first name,
-     * and the last name matches either their last name or their birth name
-     * (or the new last name is their old one). The Android client warns with
-     * these before saving a new contact. `exclude` drops the contact being
-     * edited from the result.
+     * Contacts that may be the person about to be created: the last name
+     * matches either their last name or their birth name (or the new last
+     * name is their old one), and the first names fit each other. The Android
+     * client warns with these before saving a new contact. `exclude` drops
+     * the contact being edited from the result.
      */
     public function possibleDuplicates(Request $request): JsonResponse
     {
@@ -79,8 +79,12 @@ class ContactsController extends Controller
             $validated['birth_name'] ?? '',
         ])));
 
+        $firstNames = $this->nameParts($validated['firstname']);
+
+        // Narrow by last name in SQL, then compare the first names in PHP:
+        // "Cornelia" has to find "Cornelia Maria", which SQL can't express
+        // portably.
         $matches = Contact::query()
-            ->whereRaw('LOWER(firstname) = ?', [mb_strtolower(trim($validated['firstname']))])
             ->where(function ($query) use ($lastNames) {
                 foreach ($lastNames as $name) {
                     $lower = mb_strtolower($name);
@@ -91,12 +95,37 @@ class ContactsController extends Controller
             ->when($validated['exclude'] ?? null, fn ($query, $ulid) => $query->where('ulid', '!=', $ulid))
             ->with(['numbers', 'contactGroups:id'])
             ->sorted()
-            ->limit(5)
-            ->get();
+            ->limit(100)
+            ->get()
+            ->filter(fn (Contact $c) => $this->firstNamesFit($firstNames, $this->nameParts((string) $c->firstname)))
+            ->take(5);
 
         return response()->json([
             'data' => $matches->map(fn (Contact $c) => $this->serialize($c))->values(),
         ]);
+    }
+
+    /** "Cornelia-Maria  Anna" -> ["cornelia", "maria", "anna"] */
+    private function nameParts(string $name): array
+    {
+        return array_values(array_filter(preg_split('/[\s\-]+/u', mb_strtolower(trim($name)))));
+    }
+
+    /**
+     * Whether two first names can be the same person: all parts of the
+     * shorter one appear in the longer one. "Cornelia" fits "Cornelia Maria",
+     * and so does "Maria" (someone called by their middle name); "Anna" does
+     * not fit "Cornelia Maria".
+     */
+    private function firstNamesFit(array $a, array $b): bool
+    {
+        if ($a === [] || $b === []) {
+            return false;
+        }
+
+        [$shorter, $longer] = count($a) <= count($b) ? [$a, $b] : [$b, $a];
+
+        return array_diff($shorter, $longer) === [];
     }
 
     /**
