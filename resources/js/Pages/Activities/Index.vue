@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageJumper from '@/Components/PageJumper.vue';
+import ActivityChanges from '@/Components/ActivityChanges.vue';
 
 const { t } = useI18n();
 
@@ -32,7 +33,7 @@ defineProps({
                         <span v-if="activity.object && activity.object.fullname" class="font-medium">{{ activity.object.fullname }}</span>
                         <span class="text-gray-500"> &middot; {{ activity.created_at }}</span>
                     </div>
-                    <pre v-if="activity.body" class="mt-1 text-xs bg-gray-50 p-2 rounded overflow-x-auto">{{ activity.body }}</pre>
+                    <ActivityChanges :changes="activity.changes" />
                 </li>
             </ul>
 

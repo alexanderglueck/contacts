@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\Activity;
 use App\Models\Contact;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -73,6 +74,39 @@ class ActivityTest extends TestCase
             'object_id' => $contact->id,
             'object_type' => get_class($contact)
         ]);
+    }
+
+    #[Test]
+    public function an_update_activity_lists_only_the_changed_fields()
+    {
+        $user = $this->createUser([
+            'create contacts',
+            'edit contacts'
+        ]);
+
+        $contact = Contact::factory()->create([
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+            'firstname' => 'Cornelia',
+            'lastname' => 'Hergan',
+        ]);
+
+        $attributes = $contact->toArray();
+        $attributes['lastname'] = 'Katzbauer';
+
+        unset($attributes['date_of_birth']);
+
+        $this->put(route('contacts.update', $contact->ulid), $attributes)
+            ->assertSessionHas('alert-success');
+
+        $activity = Activity::where('action', 'updated_contact')
+            ->where('object_id', $contact->id)
+            ->latest('id')
+            ->firstOrFail();
+
+        $this->assertSame([
+            ['field' => 'lastname', 'old' => 'Hergan', 'new' => 'Katzbauer'],
+        ], $activity->changes());
     }
 
     #[Test]

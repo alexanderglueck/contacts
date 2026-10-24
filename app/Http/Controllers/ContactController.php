@@ -246,6 +246,7 @@ class ContactController extends Controller
                 ->map(fn ($activity) => [
                     'id' => $activity->id,
                     'action' => $activity->action,
+                    'changes' => $activity->changes(),
                     'created_at' => optional($activity->created_at)->diffForHumans(),
                     'user' => $activity->user ? ['name' => $activity->user->name] : null,
                 ])

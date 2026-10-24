@@ -29,7 +29,7 @@ class ActivityController extends Controller
                 return [
                     'id' => $activity->id,
                     'action' => $activity->action,
-                    'body' => $activity->body,
+                    'changes' => $activity->changes(),
                     'created_at' => optional($activity->created_at)->diffForHumans(),
                     'user' => $activity->user ? ['name' => $activity->user->name] : null,
                     'object' => $object,

@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SlideOver from '@/Components/SlideOver.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ActivityChanges from '@/Components/ActivityChanges.vue';
 
 const { t } = useI18n();
 
@@ -41,6 +42,7 @@ const humanize = (action) => {
                     </span>
                     <span class="text-xs text-gray-500 shrink-0">{{ item.created_at }}</span>
                 </div>
+                <ActivityChanges :changes="item.changes" />
             </li>
         </ol>
 

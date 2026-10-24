@@ -493,6 +493,22 @@ class Contact extends Model implements CalendarInterface
     }
 
     /**
+     * Human-readable value for the field diff in the activity log.
+     */
+    public function formatActivityValue(string $field, ?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return match ($field) {
+            'gender_id' => Gender::find($value)?->gender ?? $value,
+            'nationality_id' => Country::find($value)?->country ?? $value,
+            default => $value,
+        };
+    }
+
+    /**
      * Defines the has-many relationship with the Gender model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
