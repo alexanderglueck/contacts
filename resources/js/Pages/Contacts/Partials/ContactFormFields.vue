@@ -29,7 +29,7 @@ defineProps({
         <fieldset class="space-y-4">
             <legend class="text-sm font-semibold text-gray-900 mb-2">{{ t('contacts.form_sections.identity') }}</legend>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <InputLabel for="firstname" :value="`${t('contacts.fields.firstname')} *`" />
                     <TextInput id="firstname" v-model="form.firstname" required />
@@ -39,6 +39,12 @@ defineProps({
                     <InputLabel for="lastname" :value="`${t('contacts.fields.lastname')} *`" />
                     <TextInput id="lastname" v-model="form.lastname" required />
                     <InputError :message="form.errors.lastname" />
+                </div>
+                <div>
+                    <InputLabel for="birth_name" :value="t('contacts.fields.birth_name')" />
+                    <TextInput id="birth_name" v-model="form.birth_name" />
+                    <p class="mt-1 text-xs text-gray-500">{{ t('contacts.birth_name_hint') }}</p>
+                    <InputError :message="form.errors.birth_name" />
                 </div>
             </div>
 

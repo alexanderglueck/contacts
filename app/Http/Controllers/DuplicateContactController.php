@@ -201,7 +201,8 @@ class DuplicateContactController extends Controller
                 $qb->where('firstname', 'like', $like)
                     ->orWhere('lastname', 'like', $like)
                     ->orWhere('company', 'like', $like)
-                    ->orWhere('nickname', 'like', $like);
+                    ->orWhere('nickname', 'like', $like)
+                    ->orWhere('birth_name', 'like', $like);
             })
             ->orderBy('lastname')
             ->orderBy('firstname')
@@ -442,7 +443,7 @@ class DuplicateContactController extends Controller
     private function shapeForCompare(Contact $contact): array
     {
         $base = $contact->only([
-            'ulid', 'firstname', 'lastname', 'title', 'title_after',
+            'ulid', 'firstname', 'lastname', 'birth_name', 'title', 'title_after',
             'date_of_birth', 'iban', 'salutation', 'gender_id', 'company',
             'vatin', 'department', 'job', 'custom_id', 'nickname', 'active',
             'first_met', 'note', 'died_at', 'died_from', 'nationality_id',

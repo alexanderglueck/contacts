@@ -12,7 +12,7 @@ class MergeContactRequest extends FormRequest
      * timestamps stay on the kept contact and aren't part of the merge form.
      */
     public const FIELDS = [
-        'firstname', 'lastname', 'title', 'title_after', 'date_of_birth',
+        'firstname', 'lastname', 'birth_name', 'title', 'title_after', 'date_of_birth',
         'iban', 'salutation', 'gender_id', 'company', 'vatin', 'department',
         'job', 'custom_id', 'nickname', 'active', 'first_met', 'note',
         'died_at', 'died_from', 'nationality_id', 'image',

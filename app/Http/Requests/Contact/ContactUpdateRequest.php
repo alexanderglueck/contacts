@@ -35,6 +35,7 @@ class ContactUpdateRequest extends FormRequest
             'job' => 'present',
             'gender_id' => 'integer|exists:genders,id',
             'nickname' => 'present',
+            'birth_name' => 'nullable|string|max:255',
             // <input type="date"> always sends ISO; the legacy d.m.Y payload
             // path still has to validate too, so we accept both and let the
             // Contact model's parseDate() mutator normalize on the way in.

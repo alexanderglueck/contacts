@@ -20,6 +20,7 @@ const form = useForm({
     title_after: '',
     firstname: '',
     lastname: '',
+    birth_name: '',
     nickname: '',
     date_of_birth: '',
     iban: '',

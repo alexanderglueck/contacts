@@ -94,6 +94,7 @@ class Contact extends Model implements CalendarInterface
     protected $fillable = [
         'firstname',
         'lastname',
+        'birth_name',
         'title',
         'title_after',
         'date_of_birth',

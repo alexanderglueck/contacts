@@ -29,6 +29,7 @@ class ContactsSheet implements FromArray, WithTitle
                 'gender' => $contact->gender->gender,
                 'nickname' => $contact->nickname,
                 'image' => $contact->image,
+                'birth_name' => $contact->birth_name,
             ];
         })->toArray();
     }

@@ -30,6 +30,7 @@ class ContactsStoreRequest extends FormRequest
             'title' => ['sometimes', 'nullable', 'string', 'max:255'],
             'title_after' => ['sometimes', 'nullable', 'string', 'max:255'],
             'nickname' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'birth_name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'gender_id' => ['sometimes', 'nullable', 'integer', 'exists:genders,id'],
             'company' => ['sometimes', 'nullable', 'string', 'max:255'],
             'vatin' => ['sometimes', 'nullable', 'string', 'max:255'],

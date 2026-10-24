@@ -28,6 +28,7 @@ return [
         'job' => 'Job',
         'custom_id' => 'Custom ID',
         'nickname' => 'Nickname',
+        'birth_name' => 'Birth name',
         'active' => 'Active',
         'first_met' => 'First met',
         'note' => 'Note',

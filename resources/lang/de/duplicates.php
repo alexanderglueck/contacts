@@ -26,6 +26,7 @@ return [
         'job' => 'Beruf',
         'custom_id' => 'Eigene ID',
         'nickname' => 'Spitzname',
+        'birth_name' => 'Geburtsname',
         'active' => 'Aktiv',
         'first_met' => 'Erstes Treffen',
         'note' => 'Notiz',

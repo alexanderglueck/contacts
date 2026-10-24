@@ -462,6 +462,7 @@
             "title_after": "Title after",
             "firstname": "First name",
             "lastname": "Last name",
+            "birth_name": "Birth name",
             "nickname": "Nickname",
             "date_of_birth": "Date of birth",
             "age": "Age",
@@ -493,6 +494,7 @@
             "categorisation": "Categorisation"
         },
         "markdown_hint": "Markdown supported: **bold**, *italic*, [link](url), `code`, lists, > quotes.",
+        "birth_name_hint": "Surname before a name change, for example before marriage.",
         "date_of_birth_hint": "If you don't know the year, use 1900 — the age will be hidden.",
         "section": {
             "addresses": "Addresses",

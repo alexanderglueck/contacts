@@ -21,6 +21,7 @@ const form = useForm({
     title_after: props.contact.title_after ?? '',
     firstname: props.contact.firstname ?? '',
     lastname: props.contact.lastname ?? '',
+    birth_name: props.contact.birth_name ?? '',
     nickname: props.contact.nickname ?? '',
     date_of_birth: props.contact.date_of_birth ?? '',
     iban: props.contact.iban ?? '',

@@ -102,6 +102,7 @@ const ageLabel = computed(() => (props.contact.is_alive
 
 const detailFields = computed(() => [
     { label: t('contacts.fields.name'), value: props.contact.fullname },
+    { label: t('contacts.fields.birth_name'), value: props.contact.birth_name },
     { label: t('contacts.fields.gender'), value: localiseGender(props.contact.gender?.gender) },
     { label: t('contacts.fields.company'), value: props.contact.company },
     { label: t('contacts.fields.job'), value: props.contact.job },

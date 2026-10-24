@@ -462,6 +462,7 @@
             "title_after": "Titel (nachgestellt)",
             "firstname": "Vorname",
             "lastname": "Nachname",
+            "birth_name": "Geburtsname",
             "nickname": "Spitzname",
             "date_of_birth": "Geburtsdatum",
             "age": "Alter",
@@ -493,6 +494,7 @@
             "categorisation": "Kategorisierung"
         },
         "markdown_hint": "Markdown unterstützt: **fett**, *kursiv*, [Link](url), `Code`, Listen, > Zitate.",
+        "birth_name_hint": "Nachname vor einer Namensänderung, zum Beispiel vor der Heirat.",
         "date_of_birth_hint": "Wenn du das Jahr nicht kennst, verwende 1900 — das Alter wird dann ausgeblendet.",
         "section": {
             "addresses": "Adressen",
