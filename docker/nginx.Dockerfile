@@ -10,7 +10,7 @@ ARG APP_IMAGE=contacts:latest
 
 FROM ${APP_IMAGE} AS app
 
-FROM nginx:1.27-alpine
+FROM nginx:1.31-alpine
 
 # Production vhost: proxies PHP to the php-fpm container by its compose service
 # name. NOTE this differs from .docker/nginx/default.conf, which is the LOCAL dev
