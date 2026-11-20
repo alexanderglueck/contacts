@@ -25,7 +25,7 @@
 
 ARG PHP_VERSION=8.5
 ARG NODE_VERSION=24
-ARG COMPOSER_VERSION=2.9
+ARG COMPOSER_VERSION=2.11
 
 
 # =====================================================================
